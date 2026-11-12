@@ -1,0 +1,77 @@
+{
+ "id": "5vy8-gpw8",
+ "name": "Impacto Satelital en Edificaciones por Terremoto. Cali 2026",
+ "assetType": "federated_href",
+ "displayType": "federated",
+ "viewType": "href",
+ "rowsUpdatedAt": 1788463245,
+ "columns": [],
+ "federatedCatalogEntry": {
+  "id": 508696,
+  "name": "Impacto Satelital en Edificaciones por Terremoto. Cali 2026",
+  "createdAt": 1788463245,
+  "description": "<ul><li><strong>Linaje y Metodología Tecnológica:</strong> Análisis Geográfico Basado en Objetos (GEOBIA). Las geometrías base corresponden a la capa oficial de \"Construcciones\" (Geoportal Catastral Cali, 2024). Sobre estas huellas, se calculó el diferencial de textura (Desviación Estándar Focal en Banda Roja visible) cruzando imágenes pre-evento (Vantor, resolución espacial 30 cm, toma del 22 de marzo de 2026) y post-evento (Planet SkySat, resolución espacial 50 cm, toma del 11 de agosto de 2026). Para mitigar falsos positivos, el análisis se acotó espacialmente (Spatial Join) a los polígonos de afectación preliminar del visor de emergencia del IGAC.</li><li><strong>Limitaciones del Dataset:</strong> Análisis remoto automatizado basado en vista nadiral (satélite). <strong>No reemplaza la inspección técnica de ingeniería civil en terreno</strong>. Los daños estructurales internos, fisuras en fachadas laterales o daños en cimientos subterráneos no son detectables por este método.</li></ul>",
+  "federatedCatalogSelectionExternalId": "https://www.arcgis.com/home/item.html?id=27d97ef98cae4f4eb841e6aa281c1176&sublayer=0",
+  "federatedCatalogSelectionId": 528137,
+  "federatedCatalogSource": "https://datos-fondoadaptacion.opendata.arcgis.com/data.json",
+  "federatedCatalogSourceId": 21769,
+  "federatedCatalogSourceType": "open_data_metadata_v1_1",
+  "tags": "2026,edificaciones,evaluación de daños,geobia,reconstrucción,recuperación post-desastre,terremoto",
+  "viewId": 42468214,
+  "viewUid": "5vy8-gpw8"
+ },
+ "metadata_access": [
+  {
+   "urls": {
+    "text/html": "https://datos-fondoadaptacion.opendata.arcgis.com/datasets/FondoAdaptacion::impacto-satelital-en-edificaciones-por-terremoto-cali-2026"
+   },
+   "title": "ArcGIS Hub Dataset"
+  },
+  {
+   "urls": {
+    "application/json": "https://services3.arcgis.com/Hf3YbZrlZ0OA2COM/arcgis/rest/services/Impacto_Satelital_en_Edificaciones_por_Terremoto_Cali_2026/FeatureServer/0"
+   },
+   "title": "ArcGIS GeoService"
+  },
+  {
+   "urls": {
+    "text/csv": "https://datos-fondoadaptacion.opendata.arcgis.com/api/download/v1/items/27d97ef98cae4f4eb841e6aa281c1176/csv?layers=0"
+   },
+   "title": "CSV"
+  },
+  {
+   "urls": {
+    "application/zip": "https://datos-fondoadaptacion.opendata.arcgis.com/api/download/v1/items/27d97ef98cae4f4eb841e6aa281c1176/shapefile?layers=0"
+   },
+   "title": "Shapefile"
+  },
+  {
+   "urls": {
+    "application/vnd.geo+json": "https://datos-fondoadaptacion.opendata.arcgis.com/api/download/v1/items/27d97ef98cae4f4eb841e6aa281c1176/geojson?layers=0"
+   },
+   "title": "GeoJSON"
+  },
+  {
+   "urls": {
+    "application/vnd.google-earth.kml+xml": "https://datos-fondoadaptacion.opendata.arcgis.com/api/download/v1/items/27d97ef98cae4f4eb841e6aa281c1176/kml?layers=0"
+   },
+   "title": "KML"
+  }
+ ],
+ "license": null,
+ "metadata_custom_fields": {
+  "Common Core": {
+   "Contact Email": "{{orgContactEmail}}",
+   "Homepage": "https://datos-fondoadaptacion.opendata.arcgis.com/datasets/FondoAdaptacion::impacto-satelital-en-edificaciones-por-terremoto-cali-2026",
+   "Contact Name": "DavidNegreteCabrales",
+   "Issued": "2026-09-03T00:23:59.000Z",
+   "License": "https://creativecommons.org/licenses/by/4.0",
+   "Last Update": "2026-09-03T00:24:02.533Z",
+   "Theme": "geospatial",
+   "Unique Identifier": "https://www.arcgis.com/home/item.html?id=27d97ef98cae4f4eb841e6aa281c1176&sublayer=0",
+   "Geographic Coverage": "-76.5633,3.3889,-76.5243,3.4454",
+   "Publisher": "Fondo Adaptación",
+   "Public Access Level": "public"
+  }
+ }
+}

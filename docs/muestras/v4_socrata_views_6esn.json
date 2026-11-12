@@ -1,0 +1,22 @@
+{
+ "id": "6esn-pmy5",
+ "name": "Estratificación socioeconómica según estrato, por barrio en Cali 2015",
+ "assetType": "federated_href",
+ "license": null,
+ "custom_fields": {
+  "Common Core": {
+   "Contact Email": "zulma.cuervo@cali.gov.co",
+   "Homepage": "https://datos.cali.gov.co/dataset/estratificacion-socioeconomica-segun-estrato-por-barrio-en-cali-2015",
+   "Contact Name": "Departamento Administrativo de Planeación Municipal",
+   "Issued": "2018-10-30T14:34:44.402212",
+   "License": "https://creativecommons.org/publicdomain/zero/1.0/",
+   "Last Update": "2019-07-08T07:02:57.365106",
+   "Unique Identifier": "c6421d6b-2f7c-4a28-b126-fb60192e6302",
+   "Publisher": "Alcaldía Distrital de Santiago de Cali",
+   "Public Access Level": "Public"
+  }
+ },
+ "access": {
+  "text/csv": "https://datos.cali.gov.co/dataset/estratificacion-socioeconomica-segun-estrato-por-barrio-en-cali-2015/resource/f492c39c-d980-4a97-9eaa-f00dc17e451a"
+ }
+}

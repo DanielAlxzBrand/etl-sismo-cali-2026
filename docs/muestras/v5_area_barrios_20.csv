@@ -1,0 +1,21 @@
+Id_barrio,Cod_barrio,Cod_comuna,Nombre,Area (ha),Perimetro (m),Estrato_moda
+101,101,1,Terron Colorado,138.7,7418,2
+102,102,1,Vista Hermosa,114.89,5603.4,1
+196,196,1,Sector Patio Bonito,19.84,3445.3,1
+199,199,1,Aguacatal,110.8,7253.6,1
+201,201,2,Santa Rita,18.09,2766.9,6
+202,202,2,Santa Teresita,27.61,4578.5,6
+203,203,2,Arboledas,39.6,3409.7,6
+204,204,2,Normandia,27.47,3108.7,6
+205,205,2,Juanamb·,22.12,2460.9,5
+206,206,2,Centenario,21.09,2200.3,5
+207,207,2,Granada,52.36,3893.9,4
+208,208,2,Versalles,21.96,1956.5,5
+209,209,2,San Vicente,80.69,3849,4
+210,210,2,Santa Mónica,62.59,4073.5,5
+211,211,2,Prados del Norte,95.95,4241.3,5
+212,212,2,La Flora,73.02,4593.7,5
+213,213,2,La Campiña,16.92,2802.1,4
+214,214,2,La Paz,6.47,1337.4,3
+215,215,2,El Bosque,38.22,2777.5,5
+216,216,2,Menga,50.72,3049.8,6

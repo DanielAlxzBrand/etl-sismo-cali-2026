@@ -1,0 +1,131 @@
+{
+ "total": 342,
+ "crs": {
+  "type": "name",
+  "properties": {
+   "name": "urn:ogc:def:crs:EPSG::4326"
+  }
+ },
+ "muestra": [
+  {
+   "barcodigo": "0216",
+   "barnombre": "Menga",
+   "barcomuna": "02",
+   "barcategor": "Barrio"
+  },
+  {
+   "barcodigo": "0603",
+   "barnombre": "Paso del Comercio",
+   "barcomuna": "06",
+   "barcategor": "Barrio"
+  },
+  {
+   "barcodigo": "0222",
+   "barnombre": "Urbanización La Flora",
+   "barcomuna": "02",
+   "barcategor": "Barrio"
+  },
+  {
+   "barcodigo": "0614",
+   "barnombre": "San Luis II",
+   "barcomuna": "06",
+   "barcategor": "Barrio"
+  },
+  {
+   "barcodigo": "1408",
+   "barnombre": "Los Naranjos I",
+   "barcomuna": "14",
+   "barcategor": "Barrio"
+  },
+  {
+   "barcodigo": "1710",
+   "barnombre": "Mayapan - Las Vegas",
+   "barcomuna": "17",
+   "barcategor": "Barrio"
+  },
+  {
+   "barcodigo": "0223",
+   "barnombre": "Sector Altos de Menga",
+   "barcomuna": "02",
+   "barcategor": "Sector"
+  },
+  {
+   "barcodigo": "0220",
+   "barnombre": "Urbanización La Merced",
+   "barcomuna": "02",
+   "barcategor": "Barrio"
+  },
+  {
+   "barcodigo": "0217",
+   "barnombre": "Ciudad Los Álamos",
+   "barcomuna": "02",
+   "barcategor": "Barrio"
+  },
+  {
+   "barcodigo": "0610",
+   "barnombre": "Ciudadela Floralia",
+   "barcomuna": "06",
+   "barcategor": "Barrio"
+  },
+  {
+   "barcodigo": "0508",
+   "barnombre": "Villa del Sol",
+   "barcomuna": "05",
+   "barcategor": "Barrio"
+  },
+  {
+   "barcodigo": "0615",
+   "barnombre": "Urbanización Calimio",
+   "barcomuna": "06",
+   "barcategor": "Barrio"
+  },
+  {
+   "barcodigo": "0212",
+   "barnombre": "La Flora",
+   "barcomuna": "02",
+   "barcategor": "Barrio"
+  },
+  {
+   "barcodigo": "0616",
+   "barnombre": "Puente del Comercio",
+   "barcomuna": "06",
+   "barcategor": "Barrio"
+  },
+  {
+   "barcodigo": "0611",
+   "barnombre": "Los Alcázares Segunda Etapa",
+   "barcomuna": "06",
+   "barcategor": "Barrio"
+  },
+  {
+   "barcodigo": "0421",
+   "barnombre": "Calima",
+   "barcomuna": "04",
+   "barcategor": "Barrio"
+  },
+  {
+   "barcodigo": "0219",
+   "barnombre": "Brisas de los Álamos",
+   "barcomuna": "02",
+   "barcategor": "Barrio"
+  },
+  {
+   "barcodigo": "0506",
+   "barnombre": "Metropolitano del Norte",
+   "barcomuna": "05",
+   "barcategor": "Barrio"
+  },
+  {
+   "barcodigo": "0215",
+   "barnombre": "El Bosque",
+   "barcomuna": "02",
+   "barcategor": "Barrio"
+  },
+  {
+   "barcodigo": "0613",
+   "barnombre": "Fonaviemcali",
+   "barcomuna": "06",
+   "barcategor": "Barrio"
+  }
+ ]
+}

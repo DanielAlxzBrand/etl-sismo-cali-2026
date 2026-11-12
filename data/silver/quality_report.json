@@ -1,0 +1,535 @@
+{
+  "fuentes": {
+    "construcciones": {
+      "filas_entrada": 5146,
+      "filas_salida": 5146
+    },
+    "estrato_barrio": {
+      "filas_entrada": 369,
+      "filas_resumen_separadas": 23,
+      "filas_salida": 346
+    },
+    "integrado": {
+      "filas_salida": 5146
+    }
+  },
+  "duplicados_eliminados_por_regla": {
+    "objectid": 0,
+    "codigo_barrio_csv": 0,
+    "llave_catastral": 0
+  },
+  "duplicados_marcados": {
+    "geom_duplicada_filas": 18
+  },
+  "nulos_antes_bronze": {
+    "OBJECTID": 0,
+    "OBJECTID_1": 5146,
+    "DEPAPRED": 1,
+    "MUNIPRED": 10,
+    "TIPO_AVALU": 262,
+    "SECTOR": 10,
+    "COMUNA": 2,
+    "BARRIO": 2,
+    "MANZANA": 2,
+    "TERRENO": 1587,
+    "COND": 197,
+    "EDIFPRED": 4097,
+    "PREDIO": 2,
+    "NUMEPRED": 2908,
+    "NPISOS": 11,
+    "ID_PREDIO": 1509,
+    "Indice_Escombros": 435,
+    "Estado_Estructural": 0,
+    "Shape__Area": 0,
+    "Shape__Length": 0
+  },
+  "nulos_despues_construcciones": {
+    "objectid": 0,
+    "comuna": 2,
+    "barrio": 2,
+    "codigo_barrio": 2,
+    "npisos": 11,
+    "npisos_cero": 11,
+    "indice_escombros": 435,
+    "estado_estructural": 0,
+    "clase_dano": 0,
+    "sin_datos": 0,
+    "severo_estricto": 435,
+    "dano_visible": 435,
+    "geom_duplicada": 0,
+    "lon": 0,
+    "lat": 0,
+    "codigo_poligono": 0,
+    "nombre_poligono": 0,
+    "coincide_poligono": 2
+  },
+  "nulos_despues_estrato": {
+    "codigo_barrio": 0,
+    "barrio": 0,
+    "lados_e1": 0,
+    "lados_e2": 0,
+    "lados_e3": 0,
+    "lados_e4": 0,
+    "lados_e5": 0,
+    "lados_e6": 0,
+    "sin_vivienda": 0,
+    "lados_total": 0,
+    "estrato_moda_original": 0,
+    "estrato": 6,
+    "pureza_estrato": 3
+  },
+  "tratamiento": {
+    "COMUNA/BARRIO": "blancos a nulo (H4)",
+    "Indice_Escombros": "no se imputa; nulo = sin datos satelitales (H9)",
+    "NPISOS": "entero nullable sin imputar (H16)",
+    "lados_e1..6/sin_vivienda": "guion y vacío = 0 (H7)",
+    "estrato": "nulo si la moda no es 1-6 (H8)",
+    "severo_estricto/dano_visible": "nulos si sin_datos (H10)"
+  },
+  "cobertura_llave": {
+    "num": 5140,
+    "den": 5146,
+    "pct": 0.998834
+  },
+  "cobertura_estrato_valido": {
+    "num": 5138,
+    "den": 5146,
+    "pct": 0.998445
+  },
+  "umbral_cobertura_join": 0.8,
+  "resultado_umbral": "pasa",
+  "huerfanos": {
+    "izquierda": 6,
+    "causas": {
+      "COMUNA o BARRIO en blanco": 2,
+      "código ausente del CSV 2015": 4
+    },
+    "izquierda_detalle": [
+      {
+        "objectid": 71,
+        "comuna": "19",
+        "barrio": "20",
+        "codigo_barrio": "1920",
+        "codigo_poligono": "1933",
+        "nombre_poligono": "Sector Unidad Deportiva Jaime Aparicio",
+        "causa": "código ausente del CSV 2015"
+      },
+      {
+        "objectid": 1683,
+        "comuna": "19",
+        "barrio": "20",
+        "codigo_barrio": "1920",
+        "codigo_poligono": "1933",
+        "nombre_poligono": "Sector Unidad Deportiva Jaime Aparicio",
+        "causa": "código ausente del CSV 2015"
+      },
+      {
+        "objectid": 1821,
+        "comuna": null,
+        "barrio": null,
+        "codigo_barrio": null,
+        "codigo_poligono": "1913",
+        "nombre_poligono": "El Cedro",
+        "causa": "COMUNA o BARRIO en blanco"
+      },
+      {
+        "objectid": 2494,
+        "comuna": null,
+        "barrio": null,
+        "codigo_barrio": null,
+        "codigo_poligono": "2001",
+        "nombre_poligono": "El Cortijo",
+        "causa": "COMUNA o BARRIO en blanco"
+      },
+      {
+        "objectid": 2524,
+        "comuna": "19",
+        "barrio": "20",
+        "codigo_barrio": "1920",
+        "codigo_poligono": "1933",
+        "nombre_poligono": "Sector Unidad Deportiva Jaime Aparicio",
+        "causa": "código ausente del CSV 2015"
+      },
+      {
+        "objectid": 5002,
+        "comuna": "19",
+        "barrio": "20",
+        "codigo_barrio": "1920",
+        "codigo_poligono": "1933",
+        "nombre_poligono": "Sector Unidad Deportiva Jaime Aparicio",
+        "causa": "código ausente del CSV 2015"
+      }
+    ],
+    "derecha_barrios_sin_construcciones": 295
+  },
+  "sin_estrato_valido": {
+    "total": 8,
+    "sin_llave": 6,
+    "moda_NR": 2
+  },
+  "sin_datos": {
+    "total": {
+      "num": 435,
+      "den": 5146,
+      "pct": 0.084532
+    },
+    "por_estrato": {
+      "1": {
+        "n": 338,
+        "sin_datos": 36,
+        "pct_sin_datos": 0.106509,
+        "n_con_datos": 302,
+        "k_severos": 20
+      },
+      "2": {
+        "n": 126,
+        "sin_datos": 34,
+        "pct_sin_datos": 0.269841,
+        "n_con_datos": 92,
+        "k_severos": 3
+      },
+      "3": {
+        "n": 1282,
+        "sin_datos": 109,
+        "pct_sin_datos": 0.085023,
+        "n_con_datos": 1173,
+        "k_severos": 74
+      },
+      "4": {
+        "n": 2267,
+        "sin_datos": 172,
+        "pct_sin_datos": 0.075871,
+        "n_con_datos": 2095,
+        "k_severos": 145
+      },
+      "5": {
+        "n": 1114,
+        "sin_datos": 83,
+        "pct_sin_datos": 0.074506,
+        "n_con_datos": 1031,
+        "k_severos": 53
+      },
+      "6": {
+        "n": 11,
+        "sin_datos": 0,
+        "pct_sin_datos": 0.0,
+        "n_con_datos": 11,
+        "k_severos": 0
+      }
+    },
+    "por_comuna": {
+      "03": {
+        "n": 611,
+        "sin_datos": 61,
+        "pct_sin_datos": 0.099836,
+        "n_con_datos": 550,
+        "k_severos": 39
+      },
+      "09": {
+        "n": 202,
+        "sin_datos": 18,
+        "pct_sin_datos": 0.089109,
+        "n_con_datos": 184,
+        "k_severos": 7
+      },
+      "10": {
+        "n": 577,
+        "sin_datos": 36,
+        "pct_sin_datos": 0.062392,
+        "n_con_datos": 541,
+        "k_severos": 35
+      },
+      "17": {
+        "n": 99,
+        "sin_datos": 12,
+        "pct_sin_datos": 0.121212,
+        "n_con_datos": 87,
+        "k_severos": 4
+      },
+      "18": {
+        "n": 113,
+        "sin_datos": 17,
+        "pct_sin_datos": 0.150442,
+        "n_con_datos": 96,
+        "k_severos": 8
+      },
+      "19": {
+        "n": 3141,
+        "sin_datos": 232,
+        "pct_sin_datos": 0.073862,
+        "n_con_datos": 2909,
+        "k_severos": 182
+      },
+      "20": {
+        "n": 401,
+        "sin_datos": 59,
+        "pct_sin_datos": 0.147132,
+        "n_con_datos": 342,
+        "k_severos": 20
+      },
+      "sin_comuna": {
+        "n": 2,
+        "sin_datos": 0,
+        "pct_sin_datos": 0.0,
+        "n_con_datos": 2,
+        "k_severos": 1
+      }
+    }
+  },
+  "severos": {
+    "total": {
+      "n_con_datos": 4711,
+      "k_severos": 296,
+      "k_dano_visible": 1354
+    },
+    "por_estrato": {
+      "1": {
+        "n": 302,
+        "k": 20
+      },
+      "2": {
+        "n": 92,
+        "k": 3
+      },
+      "3": {
+        "n": 1173,
+        "k": 74
+      },
+      "4": {
+        "n": 2095,
+        "k": 145
+      },
+      "5": {
+        "n": 1031,
+        "k": 53
+      },
+      "6": {
+        "n": 11,
+        "k": 0
+      }
+    },
+    "por_comuna": {
+      "03": {
+        "n": 550,
+        "k": 39
+      },
+      "09": {
+        "n": 184,
+        "k": 7
+      },
+      "10": {
+        "n": 541,
+        "k": 35
+      },
+      "17": {
+        "n": 87,
+        "k": 4
+      },
+      "18": {
+        "n": 96,
+        "k": 8
+      },
+      "19": {
+        "n": 2909,
+        "k": 182
+      },
+      "20": {
+        "n": 342,
+        "k": 20
+      },
+      "sin_comuna": {
+        "n": 2,
+        "k": 1
+      }
+    }
+  },
+  "pct_coincide_poligono": {
+    "num": 4703,
+    "den": 5144,
+    "pct": 0.914269
+  },
+  "pct_nombre_validado": {
+    "global": {
+      "num": 4807,
+      "den": 5140,
+      "pct": 0.935214
+    },
+    "coincide_poligono_true": {
+      "num": 4391,
+      "den": 4703,
+      "pct": 0.933659
+    },
+    "coincide_poligono_false": {
+      "num": 416,
+      "den": 437,
+      "pct": 0.951945
+    }
+  },
+  "llave_confianza": "alta",
+  "verificaciones_csv": {
+    "vacios_tratados_como_cero": [
+      {
+        "columna": "lados_e1",
+        "codigo_barrio": "5607",
+        "barrio": "El Mango - La Reforma",
+        "estrato_moda": 2,
+        "estrato_con_mas_lados": 2,
+        "lados_total": 19,
+        "sin_cambio": true
+      },
+      {
+        "columna": "lados_e4",
+        "codigo_barrio": "202",
+        "barrio": "Santa Teresita",
+        "estrato_moda": 6,
+        "estrato_con_mas_lados": 6,
+        "lados_total": 58,
+        "sin_cambio": true
+      }
+    ],
+    "camino_real": [
+      [
+        "1922",
+        "Camino Real J. Borrero S."
+      ],
+      [
+        "1923",
+        "Camino Real Los Fundadores"
+      ]
+    ]
+  },
+  "fechas_fuente": {
+    "fecha_edicion_capa": "2026-09-02",
+    "fecha_imagen_post": "2026-08-11",
+    "fecha_imagen_pre": "2026-03-22"
+  },
+  "licencia_capa": "CC BY 4.0 (metadata.custom_fields.Common Core.License del catalogo datos.gov.co, 5vy8-gpw8); el servicio ArcGIS trae copyrightText vacio",
+  "reglas_aplicadas": [
+    {
+      "id": "R01",
+      "hallazgo": "H1",
+      "columnas": "OBJECTID",
+      "filas_afectadas": 0,
+      "justificacion": "Identificador = OBJECTID (único); la llave catastral se repite por predio con varias construcciones y no se deduplica."
+    },
+    {
+      "id": "R02",
+      "hallazgo": "H4",
+      "columnas": "COMUNA, BARRIO",
+      "filas_afectadas": 4,
+      "justificacion": "Texto vacío o solo espacios pasa a nulo; no se imputa."
+    },
+    {
+      "id": "R03",
+      "hallazgo": "H2",
+      "columnas": "geom_duplicada",
+      "filas_afectadas": 18,
+      "justificacion": "Bandera para las construcciones con geometría idéntica a otra; se conservan las filas."
+    },
+    {
+      "id": "R04",
+      "hallazgo": "H9",
+      "columnas": "clase_dano",
+      "filas_afectadas": 5146,
+      "justificacion": "Etiqueta de Estado_Estructural a 4 clases estables; Indice_Escombros no se imputa."
+    },
+    {
+      "id": "R05",
+      "hallazgo": "H9, H12",
+      "columnas": "sin_datos",
+      "filas_afectadas": 435,
+      "justificacion": "'Sin datos satelitales' queda como clase propia (no es 'sin daño'); sale del denominador."
+    },
+    {
+      "id": "R06",
+      "hallazgo": "H10",
+      "columnas": "severo_estricto, dano_visible",
+      "filas_afectadas": 4711,
+      "justificacion": "Banderas D7; nulas (no falsas) cuando no hay datos satelitales."
+    },
+    {
+      "id": "R07",
+      "hallazgo": "H16",
+      "columnas": "npisos, npisos_cero",
+      "filas_afectadas": 1234,
+      "justificacion": "NPISOS a entero nullable sin imputar; bandera para 0 pisos; no se usa como filtro."
+    },
+    {
+      "id": "R08",
+      "hallazgo": "H5",
+      "columnas": "codigo_barrio",
+      "filas_afectadas": 5144,
+      "justificacion": "Llave del JOIN = int(COMUNA)*100 + int(BARRIO) como texto; nula si falta COMUNA o BARRIO."
+    },
+    {
+      "id": "R09",
+      "hallazgo": "H13, H18",
+      "columnas": "lon, lat, codigo_poligono, nombre_poligono, coincide_poligono",
+      "filas_afectadas": 5146,
+      "justificacion": "Centroide de la huella (7 decimales) ubicado en los polígonos WFS 2026; solo valida la llave, no entra al JOIN."
+    },
+    {
+      "id": "R10",
+      "hallazgo": "H3, H4",
+      "columnas": "OBJECTID_1, Shape__Area, Shape__Length, ID_PREDIO y demás columnas catastrales",
+      "filas_afectadas": 5146,
+      "justificacion": "Se descartan columnas vacías, en grados o sin uso en Gold; ver docs/hallazgos_eda.md."
+    },
+    {
+      "id": "R11",
+      "hallazgo": "H6",
+      "columnas": "cod",
+      "filas_afectadas": 23,
+      "justificacion": "Filas 'Comuna N' y 'Otros' (código '-') se separan; no entran al JOIN."
+    },
+    {
+      "id": "R12",
+      "hallazgo": "H7",
+      "columnas": "lados_e1, lados_e2, lados_e3, lados_e4, lados_e5, lados_e6, sin_vivienda",
+      "filas_afectadas": 342,
+      "justificacion": "Guion y vacío = 0 lados, coma de miles eliminada, columnas a entero."
+    },
+    {
+      "id": "R13",
+      "hallazgo": "H7",
+      "columnas": "barrio",
+      "filas_afectadas": 26,
+      "justificacion": "strip y espacios internos colapsados; el archivo se lee como UTF-8."
+    },
+    {
+      "id": "R14",
+      "hallazgo": "H8",
+      "columnas": "estrato",
+      "filas_afectadas": 6,
+      "justificacion": "estrato = moda solo si es 1-6; 'NR' queda nulo y no se convierte en estrato."
+    },
+    {
+      "id": "R15",
+      "hallazgo": "H14",
+      "columnas": "pureza_estrato",
+      "filas_afectadas": 343,
+      "justificacion": "max(lados 1..6)/suma(lados 1..6) sin 'Sin vivienda'; nula si el total es 0."
+    },
+    {
+      "id": "R16",
+      "hallazgo": "H5, H6",
+      "columnas": "codigo_barrio",
+      "filas_afectadas": 5140,
+      "justificacion": "LEFT JOIN construcciones <- estrato por barrio; huérfanos guardados, no descartados."
+    },
+    {
+      "id": "R17",
+      "hallazgo": "H11",
+      "columnas": "n_con_datos_estrato, n_severos_estrato, muestra_baja",
+      "filas_afectadas": 5138,
+      "justificacion": "Conteos por estrato sobre construcciones con datos satelitales y bandera de muestra baja (< 30 severos)."
+    },
+    {
+      "id": "R18",
+      "hallazgo": "H18",
+      "columnas": "nombre_validado",
+      "filas_afectadas": 5140,
+      "justificacion": "Validación semántica de la llave (nombre CSV vs nombre de polígono); no cambia la llave."
+    }
+  ]
+}

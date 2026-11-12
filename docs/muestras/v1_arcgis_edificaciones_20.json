@@ -1,0 +1,622 @@
+[
+ {
+  "attributes": {
+   "OBJECTID": 1,
+   "OBJECTID_1": null,
+   "DEPAPRED": "76",
+   "MUNIPRED": "001",
+   "TIPO_AVALU": "01",
+   "SECTOR": "00",
+   "COMUNA": "19",
+   "BARRIO": "04",
+   "MANZANA": "0006",
+   "TERRENO": "0018",
+   "COND": "0",
+   "EDIFPRED": " ",
+   "PREDIO": "0018",
+   "NUMEPRED": " ",
+   "NPISOS": 1,
+   "ID_PREDIO": null,
+   "Indice_Escombros": -8.341563949744668,
+   "Estado_Estructural": "Sin cambio aparente / Daño interno",
+   "Shape__Area": 4.2693386603787076e-09,
+   "Shape__Length": 0.00026593599531485383
+  },
+  "geometry": {
+   "rings_n": 1,
+   "primer_punto": [
+    -76.5431060669999,
+    3.42089353500006
+   ]
+  }
+ },
+ {
+  "attributes": {
+   "OBJECTID": 2,
+   "OBJECTID_1": null,
+   "DEPAPRED": "76",
+   "MUNIPRED": "001",
+   "TIPO_AVALU": "01",
+   "SECTOR": "00",
+   "COMUNA": "03",
+   "BARRIO": "05",
+   "MANZANA": "0024",
+   "TERRENO": "0002",
+   "COND": "0",
+   "EDIFPRED": " ",
+   "PREDIO": "0002",
+   "NUMEPRED": " ",
+   "NPISOS": 3,
+   "ID_PREDIO": 0,
+   "Indice_Escombros": -4.004968395386595,
+   "Estado_Estructural": "Sin cambio aparente / Daño interno",
+   "Shape__Area": 1.0295792662873282e-08,
+   "Shape__Length": 0.0004494801293374449
+  },
+  "geometry": {
+   "rings_n": 1,
+   "primer_punto": [
+    -76.537278961,
+    3.44101904600006
+   ]
+  }
+ },
+ {
+  "attributes": {
+   "OBJECTID": 3,
+   "OBJECTID_1": null,
+   "DEPAPRED": "76",
+   "MUNIPRED": "001",
+   "TIPO_AVALU": "01",
+   "SECTOR": "00",
+   "COMUNA": "03",
+   "BARRIO": "06",
+   "MANZANA": "0014",
+   "TERRENO": "0019",
+   "COND": "0",
+   "EDIFPRED": " ",
+   "PREDIO": "0019",
+   "NUMEPRED": " ",
+   "NPISOS": 0,
+   "ID_PREDIO": 0,
+   "Indice_Escombros": -3.1978512429176496,
+   "Estado_Estructural": "Sin cambio aparente / Daño interno",
+   "Shape__Area": 4.78308948004269e-09,
+   "Shape__Length": 0.0003194860911983532
+  },
+  "geometry": {
+   "rings_n": 1,
+   "primer_punto": [
+    -76.536160275,
+    3.44365019500003
+   ]
+  }
+ },
+ {
+  "attributes": {
+   "OBJECTID": 4,
+   "OBJECTID_1": null,
+   "DEPAPRED": "76",
+   "MUNIPRED": "001",
+   "TIPO_AVALU": "01",
+   "SECTOR": "00",
+   "COMUNA": "17",
+   "BARRIO": "85",
+   "MANZANA": "0019",
+   "TERRENO": "0010",
+   "COND": " ",
+   "EDIFPRED": " ",
+   "PREDIO": "0010",
+   "NUMEPRED": " ",
+   "NPISOS": 1,
+   "ID_PREDIO": 0,
+   "Indice_Escombros": -2.644951690327037,
+   "Estado_Estructural": "Sin cambio aparente / Daño interno",
+   "Shape__Area": 4.5147885430196766e-10,
+   "Shape__Length": 9.370349432709486e-05
+  },
+  "geometry": {
+   "rings_n": 1,
+   "primer_punto": [
+    -76.542795645,
+    3.39266526700004
+   ]
+  }
+ },
+ {
+  "attributes": {
+   "OBJECTID": 5,
+   "OBJECTID_1": null,
+   "DEPAPRED": "76",
+   "MUNIPRED": "001",
+   "TIPO_AVALU": "01",
+   "SECTOR": "00",
+   "COMUNA": "19",
+   "BARRIO": "10",
+   "MANZANA": "0021",
+   "TERRENO": " ",
+   "COND": "0",
+   "EDIFPRED": " ",
+   "PREDIO": "0013",
+   "NUMEPRED": " ",
+   "NPISOS": 2,
+   "ID_PREDIO": 0,
+   "Indice_Escombros": -8.60857227400356,
+   "Estado_Estructural": "Sin cambio aparente / Daño interno",
+   "Shape__Area": 9.593094318915973e-09,
+   "Shape__Length": 0.0004260233245401365
+  },
+  "geometry": {
+   "rings_n": 1,
+   "primer_punto": [
+    -76.54431993,
+    3.43761434400005
+   ]
+  }
+ },
+ {
+  "attributes": {
+   "OBJECTID": 6,
+   "OBJECTID_1": null,
+   "DEPAPRED": "76",
+   "MUNIPRED": "001",
+   "TIPO_AVALU": "01",
+   "SECTOR": "00",
+   "COMUNA": "18",
+   "BARRIO": "90",
+   "MANZANA": "0021",
+   "TERRENO": " ",
+   "COND": " ",
+   "EDIFPRED": " ",
+   "PREDIO": "0003",
+   "NUMEPRED": " ",
+   "NPISOS": 0,
+   "ID_PREDIO": 0,
+   "Indice_Escombros": -6.040280778894852,
+   "Estado_Estructural": "Sin cambio aparente / Daño interno",
+   "Shape__Area": 7.345846597672789e-09,
+   "Shape__Length": 0.00034696657652417387
+  },
+  "geometry": {
+   "rings_n": 1,
+   "primer_punto": [
+    -76.560316668,
+    3.38932194400007
+   ]
+  }
+ },
+ {
+  "attributes": {
+   "OBJECTID": 7,
+   "OBJECTID_1": null,
+   "DEPAPRED": "76",
+   "MUNIPRED": "001",
+   "TIPO_AVALU": "01",
+   "SECTOR": "00",
+   "COMUNA": "19",
+   "BARRIO": "05",
+   "MANZANA": "0038",
+   "TERRENO": " ",
+   "COND": "0",
+   "EDIFPRED": " ",
+   "PREDIO": "0008",
+   "NUMEPRED": " ",
+   "NPISOS": 0,
+   "ID_PREDIO": 0,
+   "Indice_Escombros": -17.39161142334342,
+   "Estado_Estructural": "Posible desaparición de techo",
+   "Shape__Area": 1.509275193711801e-08,
+   "Shape__Length": 0.0007136515667870954
+  },
+  "geometry": {
+   "rings_n": 1,
+   "primer_punto": [
+    -76.5407566069999,
+    3.42252931200005
+   ]
+  }
+ },
+ {
+  "attributes": {
+   "OBJECTID": 8,
+   "OBJECTID_1": null,
+   "DEPAPRED": "76",
+   "MUNIPRED": "001",
+   "TIPO_AVALU": null,
+   "SECTOR": "00",
+   "COMUNA": "18",
+   "BARRIO": "90",
+   "MANZANA": "0021",
+   "TERRENO": "0001",
+   "COND": "5",
+   "EDIFPRED": null,
+   "PREDIO": "0003",
+   "NUMEPRED": "F072600010003",
+   "NPISOS": 2,
+   "ID_PREDIO": null,
+   "Indice_Escombros": 9.441946151982183,
+   "Estado_Estructural": "Alta probabilidad de escombros",
+   "Shape__Area": 7.010783065197757e-10,
+   "Shape__Length": 0.0001512817462362672
+  },
+  "geometry": {
+   "rings_n": 1,
+   "primer_punto": [
+    -76.560424219,
+    3.38914355500003
+   ]
+  }
+ },
+ {
+  "attributes": {
+   "OBJECTID": 9,
+   "OBJECTID_1": null,
+   "DEPAPRED": "76",
+   "MUNIPRED": "001",
+   "TIPO_AVALU": "01",
+   "SECTOR": "00",
+   "COMUNA": "19",
+   "BARRIO": "06",
+   "MANZANA": "0002",
+   "TERRENO": "0019",
+   "COND": "9",
+   "EDIFPRED": " ",
+   "PREDIO": "0114",
+   "NUMEPRED": "G024001140902",
+   "NPISOS": 0,
+   "ID_PREDIO": 0,
+   "Indice_Escombros": 15.948887630353997,
+   "Estado_Estructural": "Alta probabilidad de escombros",
+   "Shape__Area": 6.57905729894992e-10,
+   "Shape__Length": 0.00010528140437334095
+  },
+  "geometry": {
+   "rings_n": 1,
+   "primer_punto": [
+    -76.5426567389999,
+    3.43002625200006
+   ]
+  }
+ },
+ {
+  "attributes": {
+   "OBJECTID": 10,
+   "OBJECTID_1": null,
+   "DEPAPRED": "76",
+   "MUNIPRED": "001",
+   "TIPO_AVALU": "01",
+   "SECTOR": "00",
+   "COMUNA": "19",
+   "BARRIO": "10",
+   "MANZANA": "0021",
+   "TERRENO": " ",
+   "COND": "0",
+   "EDIFPRED": " ",
+   "PREDIO": "0010",
+   "NUMEPRED": " ",
+   "NPISOS": 3,
+   "ID_PREDIO": 0,
+   "Indice_Escombros": -10.253561264563553,
+   "Estado_Estructural": "Sin cambio aparente / Daño interno",
+   "Shape__Area": 3.855916475004051e-09,
+   "Shape__Length": 0.00027641727568111096
+  },
+  "geometry": {
+   "rings_n": 1,
+   "primer_punto": [
+    -76.5441407549999,
+    3.43781280500002
+   ]
+  }
+ },
+ {
+  "attributes": {
+   "OBJECTID": 11,
+   "OBJECTID_1": null,
+   "DEPAPRED": "76",
+   "MUNIPRED": "001",
+   "TIPO_AVALU": "01",
+   "SECTOR": "00",
+   "COMUNA": "19",
+   "BARRIO": "01",
+   "MANZANA": "0031",
+   "TERRENO": "0012",
+   "COND": "0",
+   "EDIFPRED": "00",
+   "PREDIO": "0012",
+   "NUMEPRED": "F039400120000",
+   "NPISOS": 2,
+   "ID_PREDIO": 348614,
+   "Indice_Escombros": 5.894983242428491,
+   "Estado_Estructural": "Alta probabilidad de escombros",
+   "Shape__Area": 3.1357387797470437e-09,
+   "Shape__Length": 0.0002493582373261531
+  },
+  "geometry": {
+   "rings_n": 1,
+   "primer_punto": [
+    -76.5511070759999,
+    3.39721142700006
+   ]
+  }
+ },
+ {
+  "attributes": {
+   "OBJECTID": 12,
+   "OBJECTID_1": null,
+   "DEPAPRED": "76",
+   "MUNIPRED": "001",
+   "TIPO_AVALU": "01",
+   "SECTOR": "00",
+   "COMUNA": "17",
+   "BARRIO": "85",
+   "MANZANA": "0018",
+   "TERRENO": " ",
+   "COND": " ",
+   "EDIFPRED": " ",
+   "PREDIO": "0011",
+   "NUMEPRED": " ",
+   "NPISOS": 0,
+   "ID_PREDIO": 0,
+   "Indice_Escombros": -0.7756571888923645,
+   "Estado_Estructural": "Sin cambio aparente / Daño interno",
+   "Shape__Area": 7.152067382776295e-09,
+   "Shape__Length": 0.0003417845617164296
+  },
+  "geometry": {
+   "rings_n": 1,
+   "primer_punto": [
+    -76.54319829,
+    3.39327232300008
+   ]
+  }
+ },
+ {
+  "attributes": {
+   "OBJECTID": 13,
+   "OBJECTID_1": null,
+   "DEPAPRED": "76",
+   "MUNIPRED": "001",
+   "TIPO_AVALU": "01",
+   "SECTOR": "00",
+   "COMUNA": "19",
+   "BARRIO": "12",
+   "MANZANA": "0003",
+   "TERRENO": " ",
+   "COND": "0",
+   "EDIFPRED": " ",
+   "PREDIO": "0006",
+   "NUMEPRED": " ",
+   "NPISOS": 0,
+   "ID_PREDIO": 0,
+   "Indice_Escombros": -3.720055159655487,
+   "Estado_Estructural": "Sin cambio aparente / Daño interno",
+   "Shape__Area": 2.564377155067632e-09,
+   "Shape__Length": 0.00024215070669859085
+  },
+  "geometry": {
+   "rings_n": 1,
+   "primer_punto": [
+    -76.540887417,
+    3.43436759800005
+   ]
+  }
+ },
+ {
+  "attributes": {
+   "OBJECTID": 14,
+   "OBJECTID_1": null,
+   "DEPAPRED": "76",
+   "MUNIPRED": "001",
+   "TIPO_AVALU": "01",
+   "SECTOR": "00",
+   "COMUNA": "19",
+   "BARRIO": "01",
+   "MANZANA": "0031",
+   "TERRENO": " ",
+   "COND": "0",
+   "EDIFPRED": " ",
+   "PREDIO": "0016",
+   "NUMEPRED": " ",
+   "NPISOS": 0,
+   "ID_PREDIO": 0,
+   "Indice_Escombros": -1.8642120050132598,
+   "Estado_Estructural": "Sin cambio aparente / Daño interno",
+   "Shape__Area": 1.581668129801983e-09,
+   "Shape__Length": 0.0001609278514145096
+  },
+  "geometry": {
+   "rings_n": 1,
+   "primer_punto": [
+    -76.55128149,
+    3.39720226700007
+   ]
+  }
+ },
+ {
+  "attributes": {
+   "OBJECTID": 15,
+   "OBJECTID_1": null,
+   "DEPAPRED": "76",
+   "MUNIPRED": "001",
+   "TIPO_AVALU": "01",
+   "SECTOR": "00",
+   "COMUNA": "19",
+   "BARRIO": "13",
+   "MANZANA": "0015",
+   "TERRENO": "0016",
+   "COND": "0",
+   "EDIFPRED": "00",
+   "PREDIO": "0016",
+   "NUMEPRED": "G012800160000",
+   "NPISOS": 1,
+   "ID_PREDIO": 370711,
+   "Indice_Escombros": -15.867039873936909,
+   "Estado_Estructural": "Posible desaparición de techo",
+   "Shape__Area": 1.1182237358298153e-09,
+   "Shape__Length": 0.00014418089920143054
+  },
+  "geometry": {
+   "rings_n": 1,
+   "primer_punto": [
+    -76.537740116,
+    3.43267635600006
+   ]
+  }
+ },
+ {
+  "attributes": {
+   "OBJECTID": 16,
+   "OBJECTID_1": null,
+   "DEPAPRED": "76",
+   "MUNIPRED": "001",
+   "TIPO_AVALU": "01",
+   "SECTOR": "00",
+   "COMUNA": "19",
+   "BARRIO": "06",
+   "MANZANA": "0002",
+   "TERRENO": "0027",
+   "COND": "0",
+   "EDIFPRED": " ",
+   "PREDIO": "0027",
+   "NUMEPRED": "G024000270000",
+   "NPISOS": 2,
+   "ID_PREDIO": 373839,
+   "Indice_Escombros": -26.021484915600272,
+   "Estado_Estructural": "Posible desaparición de techo",
+   "Shape__Area": 7.379099997706362e-09,
+   "Shape__Length": 0.00042656220536879935
+  },
+  "geometry": {
+   "rings_n": 1,
+   "primer_punto": [
+    -76.543374235,
+    3.43043492000004
+   ]
+  }
+ },
+ {
+  "attributes": {
+   "OBJECTID": 17,
+   "OBJECTID_1": null,
+   "DEPAPRED": "76",
+   "MUNIPRED": "001",
+   "TIPO_AVALU": "01",
+   "SECTOR": "00",
+   "COMUNA": "19",
+   "BARRIO": "10",
+   "MANZANA": "0021",
+   "TERRENO": " ",
+   "COND": "0",
+   "EDIFPRED": " ",
+   "PREDIO": "0012",
+   "NUMEPRED": " ",
+   "NPISOS": 0,
+   "ID_PREDIO": 0,
+   "Indice_Escombros": -17.580711905529952,
+   "Estado_Estructural": "Posible desaparición de techo",
+   "Shape__Area": 9.415316526428796e-09,
+   "Shape__Length": 0.00042514852755400073
+  },
+  "geometry": {
+   "rings_n": 1,
+   "primer_punto": [
+    -76.5441708819999,
+    3.43764796500005
+   ]
+  }
+ },
+ {
+  "attributes": {
+   "OBJECTID": 18,
+   "OBJECTID_1": null,
+   "DEPAPRED": "76",
+   "MUNIPRED": "001",
+   "TIPO_AVALU": "01",
+   "SECTOR": "00",
+   "COMUNA": "19",
+   "BARRIO": "14",
+   "MANZANA": "0020",
+   "TERRENO": " ",
+   "COND": "0",
+   "EDIFPRED": " ",
+   "PREDIO": "0007",
+   "NUMEPRED": " ",
+   "NPISOS": 0,
+   "ID_PREDIO": 0,
+   "Indice_Escombros": 0.00903287529945375,
+   "Estado_Estructural": "Sin cambio aparente / Daño interno",
+   "Shape__Area": 1.7447234768042108e-09,
+   "Shape__Length": 0.00024714321467158657
+  },
+  "geometry": {
+   "rings_n": 1,
+   "primer_punto": [
+    -76.5362352719999,
+    3.42749459300006
+   ]
+  }
+ },
+ {
+  "attributes": {
+   "OBJECTID": 19,
+   "OBJECTID_1": null,
+   "DEPAPRED": "76",
+   "MUNIPRED": "001",
+   "TIPO_AVALU": "01",
+   "SECTOR": "00",
+   "COMUNA": "19",
+   "BARRIO": "01",
+   "MANZANA": "0031",
+   "TERRENO": "0003",
+   "COND": "0",
+   "EDIFPRED": " ",
+   "PREDIO": "0003",
+   "NUMEPRED": " ",
+   "NPISOS": 2,
+   "ID_PREDIO": 0,
+   "Indice_Escombros": -5.307381153106689,
+   "Estado_Estructural": "Sin cambio aparente / Daño interno",
+   "Shape__Area": 3.1225795282807667e-09,
+   "Shape__Length": 0.0002854651589352708
+  },
+  "geometry": {
+   "rings_n": 1,
+   "primer_punto": [
+    -76.551167968,
+    3.39734314400005
+   ]
+  }
+ },
+ {
+  "attributes": {
+   "OBJECTID": 20,
+   "OBJECTID_1": null,
+   "DEPAPRED": "76",
+   "MUNIPRED": "001",
+   "TIPO_AVALU": "01",
+   "SECTOR": "00",
+   "COMUNA": "19",
+   "BARRIO": "03",
+   "MANZANA": "0007",
+   "TERRENO": " ",
+   "COND": "0",
+   "EDIFPRED": " ",
+   "PREDIO": "0030",
+   "NUMEPRED": " ",
+   "NPISOS": 0,
+   "ID_PREDIO": 0,
+   "Indice_Escombros": -17.604216803929628,
+   "Estado_Estructural": "Posible desaparición de techo",
+   "Shape__Area": 1.9662138583953492e-10,
+   "Shape__Length": 6.861787766669878e-05
+  },
+  "geometry": {
+   "rings_n": 1,
+   "primer_punto": [
+    -76.549116284,
+    3.42146140600005
+   ]
+  }
+ }
+]

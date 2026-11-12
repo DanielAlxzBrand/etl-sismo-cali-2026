@@ -1,0 +1,65 @@
+plan: A            
+timezone: America/Bogota
+paths:
+  bronze: data/bronze
+  silver: data/silver
+  gold: data/gold
+  manifest: data/bronze/manifest.jsonl
+  docs: docs
+http:
+  page_size: 1000
+  timeout_s: 30
+  retries: 3
+  request_delay_s: 0.5
+thresholds:
+  join_coverage_min: 0.80
+  gold_min_rows: 200
+  min_edificios_por_barrio: 10
+sources:
+  edificaciones:   # API principal: FeatureServer enlazado desde Socrata 5vy8-gpw8 (no tabular)
+    url: https://services3.arcgis.com/Hf3YbZrlZ0OA2COM/arcgis/rest/services/Impacto_Satelital_en_Edificaciones_por_Terremoto_Cali_2026/FeatureServer/0/query
+    layer: https://services3.arcgis.com/Hf3YbZrlZ0OA2COM/arcgis/rest/services/Impacto_Satelital_en_Edificaciones_por_Terremoto_Cali_2026/FeatureServer/0
+    socrata_views: https://www.datos.gov.co/api/views/5vy8-gpw8.json
+    max_record_count: 2000
+  estrato_barrio:  # CSV principal (CKAN datos.cali.gov.co, UTF-8)
+    url: https://datos.cali.gov.co/dataset/c6421d6b-2f7c-4a28-b126-fb60192e6302/resource/f492c39c-d980-4a97-9eaa-f00dc17e451a/download/estratificaci_n_socioecon_mica_seg_n_estrato__por_barrio_en_cali_2015.csv
+  area_barrios:    # respaldo CSV
+    url: https://datos.cali.gov.co/dataset/area-barrios-de-cali-2015/resource/977b1e3a-010a-4379-b24e-a2ce52ddc6e9/download/area_barrios_de_cali_2015.csv
+  estrato_comunas:
+    url: https://datos.cali.gov.co/dataset/89db273a-dcd0-459c-b995-621dbf1f94c9/resource/88f7450b-59d7-42f5-aaa3-010dbca9976b/download/estratificaci_n_socioecon_mica_urbana_por_comunas_en_cali_a_o_2015.csv
+  poligonos_barrios:
+    url: https://ws-idesc.cali.gov.co/geoserver/dapm/ows   # WFS typeName=dapm:pdt_dpa_barrios_sectores, srsName=EPSG:4326 (contingencia)
+  sgc_eval_int:
+    url: https://srvags.sgc.gov.co/arcgis/rest/services/eval_int/mapa_eval_int/FeatureServer/0/query
+  sgc_municipios:
+    url: https://srvags.sgc.gov.co/arcgis/rest/services/SIMMA/Capas_Generales/MapServer/5
+  usgs:
+    url: https://earthquake.usgs.gov/fdsnws/event/1/query
+  rud:
+    url: https://datosdelterremoto.org/data/public/rud.json
+  divipola:
+    url: https://www.datos.gov.co/resource/gdxc-w37w.json
+fechas:   # fuente = lastEditDate de la capa y descripcion del dataset 5vy8-gpw8 (docs/investigacion_fuentes.md F1)
+  fecha_edicion_capa: "2026-09-02"   # America/Bogota (lastEditDate 2026-09-03 00:24 UTC)
+  fecha_imagen_post: "2026-08-11"
+  fecha_imagen_pre: "2026-03-22"
+licencia_capa: "CC BY 4.0 (metadata.custom_fields.Common Core.License del catalogo datos.gov.co, 5vy8-gpw8); el servicio ArcGIS trae copyrightText vacio"
+llave:
+  similitud_nombre_min: 0.85       # validación semántica de la llave
+  confianza_alta: 0.90
+  confianza_media: 0.80
+silver:
+  muestra_baja_severos: 30         # H11
+paths_silver:
+  construcciones: data/silver/silver_construcciones.csv
+  estrato_barrio: data/silver/silver_estrato_barrio.csv
+  integrated: data/silver/silver_integrated.csv
+  orphans_left: data/silver/silver_orphans_left.csv
+  orphans_right: data/silver/silver_orphans_right.csv
+  quality_report: data/silver/quality_report.json
+logging:
+  level: INFO
+  dir: logs
+  file_pattern: "etl_%Y%m%d.log"
+  format: "%(asctime)s %(levelname)s %(name)s %(message)s"
+  datefmt: "%Y-%m-%d %H:%M:%S"

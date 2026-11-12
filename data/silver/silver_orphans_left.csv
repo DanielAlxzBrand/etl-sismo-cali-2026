@@ -1,0 +1,7 @@
+objectid,comuna,barrio,codigo_barrio,codigo_poligono,nombre_poligono,clase_dano,causa
+71,19,20,1920,1933,Sector Unidad Deportiva Jaime Aparicio,sin_cambio,código ausente del CSV 2015
+1683,19,20,1920,1933,Sector Unidad Deportiva Jaime Aparicio,sin_cambio,código ausente del CSV 2015
+1821,,,,1913,El Cedro,escombros,COMUNA o BARRIO en blanco
+2494,,,,2001,El Cortijo,techo,COMUNA o BARRIO en blanco
+2524,19,20,1920,1933,Sector Unidad Deportiva Jaime Aparicio,sin_cambio,código ausente del CSV 2015
+5002,19,20,1920,1933,Sector Unidad Deportiva Jaime Aparicio,sin_datos,código ausente del CSV 2015

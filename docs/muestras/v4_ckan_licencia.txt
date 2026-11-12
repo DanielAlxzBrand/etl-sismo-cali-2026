@@ -1,0 +1,2 @@
+Página https://datos.cali.gov.co/dataset/estratificacion-socioeconomica-segun-estrato-por-barrio-en-cali-2015 (consulta 2026-10-15), texto de licencia: "Licencia Creative Commons Attribution Share-Alike"
+Catálogo datos.gov.co 6esn-pmy5 (v4_socrata_views_6esn.json), Common Core.License: https://creativecommons.org/publicdomain/zero/1.0/

@@ -1,0 +1,145 @@
+# DECISIONES — Avance 2 ETL (UAO)
+
+Formato de cada entrada: **decisión / alternativas / razón / riesgo / fecha**.
+
+## Decisiones heredadas de `docs/investigacion_fuentes.md` (sección 7)
+Estado: heredadas el 2026-10-15; las que la verificación previa de las fuentes modificó están marcadas en D-FUENTES y en "Diferencias".
+
+| # | Decisión | Alternativas | Razón | Riesgo | Fecha |
+|---|---|---|---|---|---|
+| D1 | Escala principal construcción→barrio en la capa satelital | Municipal (RUD); comuna | Alineada con Proyecto 1; grano construcción da >200 filas | Depende de campos (V1, V7) → verificado en la verificación previa de las fuentes | 2026-10-15 |
+| D2 | API de edificaciones (originalmente Socrata `5vy8-gpw8`) | USGS; SGC; RUD | Relevancia y grano | **Modificada por D-FUENTES** (endpoint real es ArcGIS) | 2026-10-15 |
+| D3 | CSV: estrato por barrio (F2) | Comuna; estrato moda | Mantiene el barrio como llave | Datos de 2015 | 2026-10-15 |
+| D4 | Llave: `barrio_norm`; espacial solo si falta | Código de barrio; comuna | Explicable | **Modificada por D-FUENTES** (llave = código catastral) | 2026-10-15 |
+| D5 | Punto-en-polígono local con `shapely` | geopandas; consulta por punto | Dependencia liviana | Ya no se usa si la llave es el código; shapely queda instalado como contingencia | 2026-10-15 |
+| D6 | Bronze = respuestas crudas por página + manifiesto; sin sobrescribir | CSV consolidado | Trazabilidad e idempotencia | Más archivos | 2026-10-15 |
+| D7 | Umbral de "severo" definido tras el EDA de Bronze | Fijarlo a priori | Dominio no conocido | Discrecionalidad | 2026-10-15 |
+| D8 | USGS solo contexto (README) | Incluirlo en el JOIN | Sin llave a barrio | Ninguno | 2026-10-15 |
+| D9 | Plan B por criterio de aceptación, no por preferencia | A mano | Evita arrastrar fuente inaccesible | Cambia la pregunta | 2026-10-15 |
+| D10 | Salida CSV + SQLite | Solo CSV | Recalcular KPI con SQL | Más código | 2026-10-15 |
+
+## D-FUENTES — Resultado de los criterios de aceptación de las fuentes y plan elegido (2026-10-15)
+
+**Plan elegido: A** (construcciones de la capa satelital, en 7 comunas de Cali, + estrato por barrio). Evidencia en `docs/verificacion_fuentes.md` y `docs/muestras/`.
+
+| Criterio | Condición | Resultado | Evidencia |
+|---|---|---|---|
+| G1 | `/resource/5vy8-gpw8.json` responde 200 sin token y `count(*)` ≥ 200 | **No se cumple tal como está escrito** (HTTP 403 `no row or column access to non-tabular tables`; `assetType: federated_href`, `columns: []`). **Se cumple en la fuente real del mismo dataset**: ArcGIS FeatureServer enlazado en el metadato, HTTP 200 sin token, `count` = **5.146** | `v1_socrata_resource_403.json`, `v3_socrata_views_5vy8.json`, `v1_arcgis_edificaciones_20.json` |
+| G2 | campo barrio/comuna o geometría utilizable | **Pasa**: `COMUNA` (2 car.) y `BARRIO` (2 car.) catastrales + geometría polígono en EPSG:4326 | `v7_arcgis_edificaciones_layer.json` |
+| G3 | CSV de estrato con ≥250 barrios | **Pasa**: 346 barrios (369 filas − 22 comunas − "Otros") con estrato moda, vía CKAN `datos.cali.gov.co` (Socrata `rows.csv` → 400, `v3 export` → 500) | `v4_estrato_barrio_20.csv` |
+| G4 | polígonos de barrios (solo si G2 es solo geométrico) | **No aplica a la llave** (G2 trae código). Contingencia verificada: WFS `ws-idesc.cali.gov.co` entrega 342 polígonos en EPSG:4326 pedido al servidor | `v6_wfs_barrios_20.json` |
+| G5 | cobertura JOIN de prueba ≥80 % sobre 500 filas | **Pasa**: 100 % en 500 filas (semilla 0); 99,88 % sobre las 5.146 (6 sin coincidencia: 4 con COMUNA 19/BARRIO 20, 2 con código vacío) | prueba de cobertura de la verificación previa (ver `verificacion_fuentes.md` V4/V7) |
+
+No se bajó ningún umbral. G1 se evaluó sobre el endpoint real del mismo dataset porque el endpoint Socrata previsto no es tabular; se declara como desviación, no como "pasa" automático.
+
+### Fuentes finales
+- **API principal**: ArcGIS FeatureServer `https://services3.arcgis.com/Hf3YbZrlZ0OA2COM/arcgis/rest/services/Impacto_Satelital_en_Edificaciones_por_Terremoto_Cali_2026/FeatureServer/0` (paginación `resultOffset`/`resultRecordCount`, `maxRecordCount` 2000, `orderByFields=OBJECTID`; 3 páginas: 2000/2000/1146).
+- **CSV principal** (UTF-8): `https://datos.cali.gov.co/dataset/c6421d6b-2f7c-4a28-b126-fb60192e6302/resource/f492c39c-d980-4a97-9eaa-f00dc17e451a/download/...por_barrio_en_cali_2015.csv` (UTF-8).
+- **Respaldos**: CSV `area_barrios_de_cali_2015.csv` (CKAN `977b1e3a-...`, trae `Estrato_moda` y `Cod_barrio`); CSV por comuna (22 comunas, cobertura 99,96 %); polígonos WFS (contingencia).
+- **Contexto**: USGS (11 eventos; `us6000tjl2` profundidad vigente 116,13 km, actualizado 2026-10-12).
+- **Plan B (no activado)**: RUD (409 municipios) + DIVIPOLA (1.122 filas, códigos de 5 car. con ceros) están accesibles. La rama SGC no sirve: la capa `eval_int` no contiene un evento identificable como el M7.4 del 10-ago (ver V9).
+
+### Diferencias con `docs/investigacion_fuentes.md`
+1. **F1 no es tabular en Socrata.** `5vy8-gpw8` es `federated_href` hacia ArcGIS Hub (Fondo Adaptación); `/resource/*.json` → 403. Se usa el FeatureServer enlazado (misma fuente, mismas geometrías). Razón: respaldo real del mismo dataset. Riesgo: depende de un servicio ArcGIS Online de un tercero; la paginación es `resultOffset` (a diferencia de SGC, sí está soportada).
+2. **Llave del JOIN = código catastral, no nombre.** F1 trae `COMUNA`+`BARRIO` como códigos de 2 dígitos, no nombres. El CSV de estrato trae `Código único` (p. ej. 101 = comuna 1 + barrio 01). Llave: `int(COMUNA)*100 + int(BARRIO)` como texto sin ceros a la izquierda (`'19'+'04'` → `1904`). No hay `barrio_norm` ni alias; `shapely` no es necesario hoy. Riesgo: solo el 73 % de los códigos de los polígonos IDESC 2026 (acuerdo 0636) existen en el CSV de 2015 y el 91 % de las edificaciones cae en un código de polígono, por eso no se usa el polígono como llave.
+3. **CSV de estrato**: `datos.gov.co/api/views/6esn-pmy5/rows.csv` y `wpm5-26dr/rows.csv` fallan (400 "Non-tabular"); son enlaces federados a CKAN. Se descarga directo de `datos.cali.gov.co` (200 con User-Agent).
+4. **Columnas reales del CSV barrio**: `Código único, Barrio, Lados de manzana por estrato 1…6, Sin vivienda, Estrato moda` (no `Estrato 1…6, Total`). Incluye 22 filas "Comuna N" y "Otros" con `Código único = -`, y estrato moda `NR` en 6 barrios. El estrato es por **lados de manzana**, no por edificación. Valores con ` - ` y miles con coma: se tratan en la etapa Silver.
+5. **Cobertura geográfica de F1**: solo **7 comunas** (19, 03, 10, 20, 09, 18, 17) y 52 códigos de barrio, extensión lon −76,563…−76,524, lat 3,389…3,445. No es toda la ciudad (sesgo de selección ya anticipado, ahora cuantificado).
+6. **Variable de daño (proxy satelital)**: `Estado_Estructural` (4 clases: "Sin cambio aparente / Daño interno" 3.357; "Posible desaparición de techo" 1.058; "Sin datos satelitales" 435; "Alta probabilidad de escombros" 296) y `Indice_Escombros` (double). Umbral de "severo" a definir tras el EDA y en la etapa Silver (D7).
+7. **SGC eval_int (V9)**: 58.500 puntos; 13.085 con `FECHA_ACTUALIZACION` ≥ 2026-08-01; ningún `ID_SISMO` identificable como el M7.4 del 10-ago (intensidad máx. 7 solo en un evento del 14-oct, `SGC2026pqqmro`). `ID_CENTRO_POBLADO`: 8 dígitos en 11.746 filas, 7 en 1.339 (cero a la izquierda perdido por ser double). Irrelevante para Plan A; se documenta por si se activara Plan B.
+8. **Encabezado de la estructura**: `tests/test_quality.p` (sin la y) se renombró a `tests/test_quality.py`.
+9. **`.env`** estaba vacío y sin `HTTP_USER_AGENT`; las pruebas usaron un User-Agent genérico del proyecto. Se creó `.env.example`.
+10. **Python**: el equipo usa 3.13.0 (cumple ≥3.11). `shapely` 2.2.0 instaló sin problema (V13).
+
+## Bronze y EDA — decisiones (2026-10-15)
+
+### Cambios de contexto confirmados al extraer Bronze
+- **Codificación del CSV de estrato: UTF-8**, no latin-1 (corrige la diferencia 4 anterior y el comentario de `config.yaml`). El header HTTP decía ISO-8859-1 por defecto, pero los bytes decodifican como UTF-8 sin errores (H7). Las muestras `docs/muestras/v4_*` y `v5_*` se regeneraron en UTF-8 (las primeras versiones tenían tildes dañadas).
+- **Paginación:** la especificación inicial de la extracción prohibía `resultOffset` (válido para la capa de SGC). La capa de edificaciones sí lo soporta (`supportsPagination: true`, confirmado en la verificación previa de las fuentes), así que se usa `resultOffset` + `orderByFields=OBJECTID`; la prohibición queda solo para la capa SGC.
+- **Layout de Bronze:** `data/bronze/{api,tabular,geo}/<fuente>/snap_<UTC>/…`; los conteos antes/después y el metadato de la capa son archivos Bronze con su propia línea de manifiesto (`edificaciones_count_antes`, `edificaciones_count_despues`, `edificaciones_capa_meta`). Una extracción cuenta como completa solo si existe `count_despues`.
+- Resultado: 5.146 filas en 3 páginas (2.000/2.000/1.146), conteo antes = después = 5.146; 342 polígonos; CSV 369 filas (16.030 bytes). Segunda ejecución: "ya existe, sha256 coincide", manifiesto sin cambios (8 líneas).
+
+### Grano de la tabla izquierda
+**Decisión:** una fila por huella de construcción, identificada por `OBJECTID` (H1). **Alternativas:** una fila por predio (llave catastral). **Razón:** la llave catastral se repite en 3.719 filas; agregar por predio perdería la unidad de análisis. **Riesgo:** 9 geometrías duplicadas (H2) podrían ser doble conteo. **Fecha:** 2026-10-15.
+
+### Llave del JOIN
+**Decisión:** `codigo_barrio = int(COMUNA)*100 + int(BARRIO)` (texto sin ceros) contra `Código único` del CSV; LEFT JOIN con huérfanos guardados. **Alternativas:** nombre normalizado (las edificaciones no traen nombre); punto-en-polígono con los polígonos 2026. **Razón:** cobertura de llave 99,883 %, estrato válido 99,845 % (H5, H8). **Riesgo:** el código catastral difiere del polígono 2026 en 8,6 % de las edificaciones (H13); se mide con un KPI de sensibilidad en la etapa Gold. **Fecha:** 2026-10-15.
+
+### D7 (provisional; se confirma en la etapa Silver): definición de daño
+**Decisión provisional:** dos banderas — `severo_estricto` (construcciones con cambio satelital severo, proxy de daño) = "Alta probabilidad de escombros" (296; 6,28 % de las 4.711 con datos) y `dano_visible` = escombros + "Posible desaparición de techo" (1.354; 28,74 %). "Sin datos satelitales" (435) sale del denominador, se reporta aparte y nunca se trata como "sin daño". **Alternativas:** umbral directo sobre `Indice_Escombros`; solo una bandera. **Razón:** las clases son cortes del índice (H9), así que las banderas son equivalentes a umbrales y más explicables; dos banderas evitan fijar prematuramente el criterio. **Riesgo:** "daño visible" incluye techos desaparecidos que no equivalen a una evaluación estructural; los estratos 1, 2 y 6 tienen < 30 severos (H11) y la falta de datos satelitales se concentra en E2 (H12). **Fecha:** 2026-10-15.
+
+## Silver — decisiones (2026-10-15)
+
+### D7 definitivo: indicador de daño
+**Decisión:** `severo_estricto` (construcciones con cambio satelital severo, proxy de daño; clase "Alta probabilidad de escombros") es el **indicador principal**; `dano_visible` (escombros + "Posible desaparición de techo") es una **sensibilidad de baja confianza**. "Sin datos satelitales" sale del denominador y se reporta aparte (en Silver las banderas son nulas, no falsas, para esas 435 construcciones). **Alternativas:** `dano_visible` como principal; umbral continuo sobre `Indice_Escombros`. **Razón:** las imágenes son del 22-mar-2026 y del 11-ago-2026 (≈ 4,5 meses, sin grupo de control) y "techo" suma 22,5 % de las construcciones con datos (1.058 de 4.711), proporción que no es atribuible solo al sismo; la clase de escombros es la más específica. **Riesgo / limitación (no es regla de limpieza):** el proxy mide cambio visible desde satélite, no daño interno ni verificación ATC-20; solo 296 severos (6,28 %) y los estratos 1, 2 y 6 tienen < 30 (H11); la falta de datos se concentra en el estrato 2 (H12). **Fecha:** 2026-10-15.
+
+### Llave del JOIN: resultado de la validación semántica (H18)
+`llave_confianza = alta`: 93,52 % de las construcciones con llave (4.807 de 5.140) están en códigos cuyo nombre en el CSV 2015 coincide con el del polígono 2026 (44 de 51 códigos; similitud ≥ 0,85). Coincidencia del código con el polígono: 91,43 % (4.703 de 5.144); entre las 437 que no coinciden con el polígono, el nombre sí coincide en 95,19 %, es decir, son sobre todo recodificaciones. No se cambió la llave ni se crearon alias. **Aviso para Gold:** 7 códigos no validan por nombre (1011, 1802, 1898, 1905, 1922, 1999, 2098; 333 construcciones), casi todos por prefijos o abreviaturas; la bandera `nombre_validado` viaja a Gold para el KPI de sensibilidad. Cobertura del JOIN (llave): 99,883 % (5.140 de 5.146) ≥ 0,80 → pasa; estrato válido: 99,845 % (5.138).
+
+### Otras decisiones de Silver
+- **Licencia (corrige H17 y V3):** el catálogo de datos.gov.co declara CC BY 4.0 en `metadata.custom_fields.Common Core.License`; el servicio ArcGIS solo tiene `copyrightText` vacío. Se cita la licencia con ese origen. Fechas en `config.yaml`: edición de la capa 2026-09-02 (`America/Bogota`), imagen post 2026-08-11, imagen pre 2026-03-22.
+- **Terminología:** la unidad de análisis es la "construcción" (huella catastral), no el edificio (H1); las tablas se llaman `silver_construcciones.csv` y `silver_integrated.csv`.
+- **Paso espacial en Silver:** se calcula con `shapely` (centroide a 7 decimales y punto en polígono) para que Gold no lea Bronze. Solo valida la llave; no entra al JOIN.
+- **`geom_duplicada`:** marca las 18 construcciones (9 pares) con geometría idéntica; se conservan.
+- **Verificaciones del CSV:** los dos barrios con vacío en los lados (5607 en e1, 202 en e4) conservan su estrato moda al tratar el vacío como 0; los dos "Camino Real" son barrios distintos (1922 y 1923).
+- **Huérfanos:** 6 a la izquierda (4 con código 1920 ausente del CSV 2015, 2 con COMUNA/BARRIO en blanco) y 295 barrios del CSV sin construcciones a la derecha. 8 construcciones sin estrato válido (6 + 2 en el barrio NR 1999).
+
+## Gold — decisiones (2026-10-15)
+
+### Diseño
+Gold lee solo `silver_integrated.csv` y `config.yaml` (no Bronze). `gold_final.csv` = 5.146 construcciones (≥ 200; `objectid` único). `kpis_gold.csv` tiene 6 indicadores (K1-K6, 23 filas por grupo) con n, k, Wilson al 95 %, cotas por "sin datos", `muestra_baja` y `nota`; `kpis_sensibilidad.csv` repite K1, K2 y K6 en S0-S5. Estadística propia en Python estándar y pandas (sin scipy): Wilson, Newcombe, Mantel-Haenszel y p de permutación (`random.Random(0)`, 5.000). Las fórmulas, el K2 sin E6 y las reglas de redacción están en `docs/KPIs.md`.
+
+### Defecto encontrado y corregido: Mantel-Haenszel con "sin datos" en n1 y n0
+**Evidencia:** el recálculo independiente del notebook 04 dio RR_MH = 1,9697, mientras `kpis_gold.csv` traía 2,1000. **Causa:** `mantel_haenszel` calculaba n1 y n0 con `len()` del grupo, es decir, incluía construcciones "sin datos satelitales"; la definición del indicador pide tamaños con datos. **Corrección:** se filtra `~sin_datos` antes de agrupar por comuna (cambio de implementación, no de definición ni de umbral). Tras la corrección ambos valores coinciden (1,969696969697). El resto del recálculo SQL coincide con diferencia máxima ≈ 5e-13 (< 1e-9).
+
+### Valores esperados de K5
+cobertura_llave 99,883 %, cobertura_estrato_valido 99,845 % y pct_nombre_validado 93,52 %: coinciden con lo esperado; no hubo que documentar diferencias.
+
+### Hallazgo en Gold: el ajuste por comuna no es informativo
+Solo la comuna 18 tiene construcciones con datos en ambos grupos (3-5 y 1-2); las comunas 03, 09, 10, 17, 19 y 20 quedan fuera. RR_MH (S0 = 1,970) descansa en 44 construcciones expuestas (5 severas) y 52 de referencia (3 severas). Se publica con la advertencia "ajuste poco informativo" y se interpreta como evidencia de confusión estrato-ubicación, no como efecto. En S2 la razón queda vacía.
+
+### Lectura de K2
+Diferencia 3-5 menos 1-2 = +0,49 pp [−2,36; +2,55] (Newcombe); los intervalos de Wilson y las cotas por "sin datos" se solapan; en S0-S5 el intervalo siempre incluye 0. Redacción permitida: "con este proxy y esta muestra no se detecta diferencia".
+
+### Otras decisiones
+- Banderas de Silver `severo_estricto` y `dano_visible` son nulas en las 435 construcciones sin datos, por lo que `COUNT(severo_estricto)` en SQL equivale al denominador "con datos".
+- K6 excluye las 2 construcciones sin comuna; K3 excluye 1 severo sin barrio (295 de 296).
+- `docs/reglas_silver.md` y `docs/validacion_llave.md` se actualizan desde sus generadores en `integrate.py`; los CSV de Silver conservan el mismo sha256.
+
+## Validación y entrega (2026-10-15)
+
+### Pruebas
+26 pruebas (`pytest -q`, sin red, sin skip/xfail): Bronze (manifiesto, sha256, filas, sin paths duplicados), Silver (llaves, duplicados, tipos, zona horaria), calidad (cobertura, Gold, reporte, KPI en rango), regresión numérica de KPI (`tests/test_kpis.py`) y cifras del README (`tests/test_readme_cifras.py`). Pasaron a la primera; no hubo que alterar lógica, umbrales ni datos esperados.
+- **Regresión del defecto en Mantel-Haenszel detectado en el recálculo independiente** (Mantel-Haenszel contando construcciones "sin datos" en n1, n0 y N): `test_regresion_defecto_mh_sin_datos_no_entra_en_mh` construye una comuna con 44 expuestas (5 severas) y 52 de referencia (3 severas) → RR = 260/132 = 1,9697, y verifica que agregar 30 filas `sin_datos` por grupo NO cambia RR_MH.
+- **Zona horaria:** Silver y Gold no tienen columnas datetime; la prueba verifica `timezone: America/Bogota` en la configuración y que `lastEditDate` de la capa convertido a esa zona da la `fecha_edicion_capa` (2026-09-02, UTC−5).
+
+### Edición documental
+Se añadió el punto 8 a "Qué NO se puede concluir" de `docs/KPIs.md` (el grupo de estratos 1-2 es casi por completo la Comuna 20, 342 construcciones y 20 severos, más la Comuna 18, 52 y 3; solo la Comuna 18 tiene ambos grupos) y la tabla comuna × grupo en el notebook 05 y en el README. **No cambia ningún KPI.**
+
+### Cambios solo de texto en Gold
+- `nota` de K3: añade el % de construcciones con datos en los 10 barrios (48,7 %, 2.292 de 4.709). `nota` de K6: % de severos frente a % de construcciones por comuna (C19: 61,7 % y 61,8 %). `nota` de Mantel-Haenszel unificada con KPIs.md ("no es interpretable: descansa solo en la Comuna 18").
+- Verificación: `gold_final.csv` conserva su sha256 (496ab49e…); cambian `kpis_gold.csv` (e5c89826… → 6db3dbee…) y `kpis_sensibilidad.csv` (04d1dfc1… → 0cf75f2d…) solo por el texto de `nota`; dos corridas de `--stage gold` y de `--stage all` dan el mismo sha256 en Silver y Gold.
+
+### README generado
+El README se genera con `scripts/make_readme.py` desde `kpis_gold.csv`, `kpis_sensibilidad.csv`, `quality_report.json`, `gold_final.csv` y `docs/KPIs.md`, para que las cifras no se escriban a mano; `tests/test_readme_cifras.py` falla si el README difiere de los archivos.
+
+### Licencias
+- Capa de construcciones: CC BY 4.0 según `metadata.custom_fields.Common Core.License` del catálogo; el servicio ArcGIS tiene `copyrightText` vacío.
+- CSV de estrato: **los metadatos se contradicen**: el catálogo datos.gov.co dice CC0 (`docs/muestras/v4_socrata_views_6esn.json`) y la página de datos.cali.gov.co dice "Licencia Creative Commons Attribution Share-Alike" (`docs/muestras/v4_ckan_licencia.txt`). Decisión: aplicar y citar la más restrictiva (atribución y compartir igual). Riesgo: si la titular aclara CC0, la atribución sería voluntaria. Polígonos WFS y USGS: "licencia no verificada".
+
+### Entrega
+`scripts/make_dist.py` genera `dist/avance2_etl_<fecha>.zip` con código, docs, notebooks ejecutados, `data/` (incluido `data/bronze`, para que el pipeline funcione sin red) y README; excluye `.env`, `.venv*`, `__pycache__`, `.git`, `dist/` y `.ipynb_checkpoints`. El `.env.example` sí se incluye (sin valores). Tamaño del zip: 2,48 MB (81 archivos), muy por debajo de los 50 MB; incluye los 9 archivos de Bronze. Prueba en entorno limpio: `docs/prueba_entorno_limpio.md`.
+
+## Registro de ejecución (logs) (2026-10-15)
+**Decisión:** `logging` estándar con dos manejadores (consola/stderr y archivo diario `logs/etl_YYYYMMDD.log`, `delay=True`), formato `%(asctime)s %(levelname)s %(name)s %(message)s` y nivel INFO, todo leído de la sección `logging` de `config.yaml`. Los loggers son hijos de `etl` (`etl.integrate`, `etl.build_gold`…). **Alternativas:** `RotatingFileHandler` o JSON estructurado (descartados: una ejecución genera ~45 líneas). **Razón:** trazabilidad sin dependencias nuevas. **Riesgo:** los archivos de log llevan marcas de tiempo; por eso viven en `logs/` y nunca dentro de Silver, Gold ni Bronze.
+**Defecto encontrado por una prueba:** el filtro de secretos dejaba pasar el valor de `Authorization: Bearer <valor>` (el patrón solo cubría la primera palabra). **Corrección:** la cabecera enmascara el resto de la línea; prueba `tests/test_logger.py`.
+**Verificación:** sha256 de Silver y Gold idénticos antes y después (`docs/sha256_antes_logging.txt`, `docs/sha256_despues_logging.txt`); detalle en `docs/verificacion_logging.md`.
+
+## Defecto en la ejecución de las pruebas (2026-10-16)
+**Evidencia:** `pytest -q` (el ejecutable suelto, como lo indica el README) terminaba con 6 errores de colección (`ModuleNotFoundError: No module named 'src'`), mientras que `python -m pytest -q` pasaba las 32 pruebas. **Causa:** `python -m pytest` agrega la carpeta actual al path de importación y el ejecutable suelto no; el repositorio no tenía configuración de pytest. Todas las verificaciones anteriores usaron `python -m pytest`. **Corrección:** se añadió `pytest.ini` (`testpaths = tests`, `pythonpath = .`); no cambia ninguna salida (sha256 de Silver y Gold idénticos). **Verificación:** 32 pruebas en verde con `pytest -q` y con `python -m pytest -q`, en el repositorio y en una extracción limpia del zip con entorno nuevo, con Python 3.13.0 y con Python 3.11.9.
+
+## Retroalimentación del avance 2 (2026-11-11)
+**Decisión (revisión de códigos de barrio):** documentamos la revisión de los 7 códigos sin nombre validado, del código 1920 y de las 2 construcciones sin comuna ni barrio en `docs/revision_codigos_barrio.md`, sin cambiar columnas. **Alternativa descartada:** una columna nueva en Silver y Gold, porque cambiaría los sha256 de ambas capas sin cambiar ninguna conclusión (la sensibilidad S1 ya mide el efecto de excluir esos códigos). **Riesgo:** la clasificación es numérica; la revisión visual en el mapa sigue pendiente.
+**Decisión (alcance y vocabulario):** un recuadro canónico de «Alcance temporal» (estrato 2015 frente a imágenes 2026) y otro de «Población analizada» (7 comunas, polígonos de afectación preliminar), con recordatorios de una línea en los demás documentos; y una tabla «Indicador satelital frente a evaluación estructural». En los textos usamos «construcciones con cambio satelital severo (severo estricto, proxy de daño)» y, después, «severo estricto». No renombramos columnas ni identificadores. **Alternativa descartada:** renombrar `severo_estricto` o `dano_visible`, porque cambiaría los archivos de salida.
+**Decisión (empaquetado):** `scripts/make_dist.py` excluye cualquier carpeta de entorno virtual, sea cual sea su nombre, detectando `pyvenv.cfg`, y comprueba el zip con más cadenas prohibidas.
+Detalle y evidencia en `docs/entrega_2/registro_cambios_retroalimentacion.md`.

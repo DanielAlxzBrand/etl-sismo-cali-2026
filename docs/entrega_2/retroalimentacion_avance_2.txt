@@ -1,0 +1,39 @@
+El proyecto de análisis del impacto estructural en edificaciones de Cali mediante arquitectura Medallion, se evidencia un excelente desarrollo técnico y un cumplimiento sobresaliente de los requerimientos establecidos.
+
+Aspectos positivos:
+
+Se implementó correctamente la extracción de información desde diferentes fuentes verificables, incluyendo una API ArcGIS, archivos CSV y datos geográficos.
+
+Se presenta una arquitectura Medallion completa, con una separación clara entre las capas Bronze, Silver y Gold.
+
+Se desarrollaron procesos rigurosos de limpieza, normalización, validación de tipos, tratamiento de valores faltantes y control de duplicados.
+
+Se realizó una integración efectiva mediante JOIN, utilizando códigos de barrio y verificaciones adicionales de consistencia geográfica y semántica.
+
+Se destaca la identificación y conservación de registros sin correspondencia, lo cual fortalece la transparencia del proceso.
+
+La capa Gold incorpora indicadores pertinentes, intervalos de confianza y análisis de sensibilidad que aportan valor al estudio del problema.
+
+Se implementó una carga real a SQLite, además de la generación de archivos CSV.
+
+El proyecto presenta una documentación extensa, análisis exploratorio, registros de ejecución y mecanismos de trazabilidad.
+
+Se ejecutaron las 32 pruebas automatizadas incluidas en el proyecto y todas aprobaron. Adicionalmente, se comprobaron las etapas de transformación, generación de Gold y carga a SQLite, finalizando correctamente.
+
+Aspectos por mejorar:
+
+Se recomienda profundizar la revisión de los códigos de barrio que presentan diferencias en la validación semántica, aunque la cobertura general del JOIN es muy alta.
+
+Es importante mantener explícita la diferencia temporal entre los datos de estratificación de 2015 y la información de edificaciones de 2026.
+
+Se debe continuar diferenciando los indicadores derivados de imágenes satelitales de las evaluaciones estructurales realizadas directamente sobre las edificaciones.
+
+Se recomienda delimitar claramente la población analizada para evitar generalizaciones sobre la totalidad de edificaciones de Cali.
+
+Para futuras entregas, se recomienda excluir el entorno virtual del archivo comprimido, conservando únicamente el código, las dependencias y los archivos necesarios para su ejecución.
+
+El proyecto demuestra un excelente dominio de los procesos de extracción, transformación, integración y carga de datos mediante la arquitectura Medallion.
+
+Se reconoce especialmente la calidad del código, la integración real de las fuentes, las validaciones de consistencia, la construcción de indicadores y la implementación de una carga efectiva a base de datos.
+
+La entrega cumple satisfactoriamente los objetivos centrales del avance 2 y presenta un nivel de documentación y validación superior al básico solicitado.

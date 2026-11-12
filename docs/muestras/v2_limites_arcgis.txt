@@ -1,0 +1,2 @@
+Socrata /resource/5vy8-gpw8.json -> HTTP 403 "no row or column access to non-tabular tables" (assetType federated_href).
+ArcGIS FeatureServer/0: count=5146; maxRecordCount=2000; supportsPagination=true; paginacion observada con resultOffset: paginas 2000/2000/1146 (exceededTransferLimit True,True,None). Sin token. APP token de Socrata no aplica (.env SOCRATA_APP_TOKEN vacio).

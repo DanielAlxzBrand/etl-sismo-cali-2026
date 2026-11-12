@@ -1,0 +1,1 @@
+Python 3.13.0 (py -3); venv .venv; pip install -r requirements.txt OK; shapely 2.2.0; import shapely, tzdata, yaml, pandas, requests -> OK

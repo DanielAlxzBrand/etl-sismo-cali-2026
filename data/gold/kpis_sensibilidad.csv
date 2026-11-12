@@ -1,0 +1,108 @@
+escenario,kpi_id,grupo,k,n,tasa,ic95_inf,ic95_sup,nota
+S0,K1,estrato_1,20.0,302.0,0.066225165563,0.043275890738,0.10007151524,base
+S0,K1,estrato_2,3.0,92.0,0.032608695652,0.011150975343,0.091535123387,base
+S0,K1,estrato_3,74.0,1173.0,0.063086104007,0.050548938025,0.078475732755,base
+S0,K1,estrato_4,145.0,2095.0,0.069212410501,0.059113467923,0.080888331165,base
+S0,K1,estrato_5,53.0,1031.0,0.051406401552,0.039514521885,0.066628872428,base
+S0,K1,estrato_6,0.0,11.0,0.0,0.0,0.258840017249,base
+S0,K2,estratos_3-5,272.0,4299.0,0.06327052803,0.056375783439,0.070945101439,base; E6 queda fuera de K2
+S0,K2,estratos_1-2,23.0,394.0,0.058375634518,0.039210092354,0.086069918585,base
+S0,K2,razon_3-5_vs_1-2,,,1.083851654075,,,base
+S0,K2,diferencia_3-5_menos_1-2,,,0.004894893512,-0.023644743364,0.025539919147,base; con este proxy y esta muestra no se detecta diferencia
+S0,K2,razon_MH_ajustada_comuna,,,1.969696969697,,,"base; comunas usadas: 18; excluidas por no tener ambos grupos: 03,09,10,17,19,20; no es interpretable: descansa solo en la Comuna 18 (44 construcciones expuestas con 5 severas y 52 de referencia con 3 severas); el estrato está confundido con la ubicación"
+S0,K6,comuna_03,39.0,550.0,0.070909090909,0.052302352954,0.095468417606,base
+S0,K6,comuna_09,7.0,184.0,0.038043478261,0.018548108346,0.076434046831,base
+S0,K6,comuna_10,35.0,541.0,0.064695009242,0.046882119975,0.088646444658,base
+S0,K6,comuna_17,4.0,87.0,0.045977011494,0.018022396823,0.112331978265,base
+S0,K6,comuna_18,8.0,96.0,0.083333333333,0.042830111461,0.15590067811,base
+S0,K6,comuna_19,182.0,2909.0,0.062564455139,0.054327539823,0.071955193848,base
+S0,K6,comuna_20,20.0,342.0,0.058479532164,0.038171738012,0.088596123345,base
+S1,K1,estrato_1,20.0,284.0,0.070422535211,0.046046690625,0.106264858504,nombre_validado = true (principal para la llave)
+S1,K1,estrato_2,3.0,92.0,0.032608695652,0.011150975343,0.091535123387,nombre_validado = true (principal para la llave)
+S1,K1,estrato_3,74.0,1165.0,0.063519313305,0.050898120578,0.079009644511,nombre_validado = true (principal para la llave)
+S1,K1,estrato_4,131.0,1881.0,0.069643806486,0.058995806899,0.082046071634,nombre_validado = true (principal para la llave)
+S1,K1,estrato_5,47.0,965.0,0.048704663212,0.036822341289,0.06416589043,nombre_validado = true (principal para la llave)
+S1,K1,estrato_6,0.0,11.0,0.0,0.0,0.258840017249,nombre_validado = true (principal para la llave)
+S1,K2,estratos_3-5,252.0,4011.0,0.062827225131,0.055727937136,0.070763130407,nombre_validado = true (principal para la llave); E6 queda fuera de K2
+S1,K2,estratos_1-2,23.0,376.0,0.061170212766,0.041103081128,0.090113720823,nombre_validado = true (principal para la llave)
+S1,K2,razon_3-5_vs_1-2,,,1.027088549966,,,nombre_validado = true (principal para la llave)
+S1,K2,diferencia_3-5_menos_1-2,,,0.001657012365,-0.028144439758,0.023236362789,nombre_validado = true (principal para la llave); con este proxy y esta muestra no se detecta diferencia
+S1,K2,razon_MH_ajustada_comuna,,,2.314814814815,,,"nombre_validado = true (principal para la llave); comunas usadas: 18; excluidas por no tener ambos grupos: 03,09,10,17,19,20; no es interpretable: descansa solo en la Comuna 18 (36 construcciones expuestas con 5 severas y 50 de referencia con 3 severas); el estrato está confundido con la ubicación"
+S1,K6,comuna_03,39.0,550.0,0.070909090909,0.052302352954,0.095468417606,nombre_validado = true (principal para la llave)
+S1,K6,comuna_09,7.0,184.0,0.038043478261,0.018548108346,0.076434046831,nombre_validado = true (principal para la llave)
+S1,K6,comuna_10,28.0,493.0,0.056795131846,0.039583583099,0.080860437692,nombre_validado = true (principal para la llave)
+S1,K6,comuna_17,4.0,87.0,0.045977011494,0.018022396823,0.112331978265,nombre_validado = true (principal para la llave)
+S1,K6,comuna_18,8.0,86.0,0.093023255814,0.047891711284,0.172959208557,nombre_validado = true (principal para la llave)
+S1,K6,comuna_19,169.0,2672.0,0.063248502994,0.05463143117,0.073119628534,nombre_validado = true (principal para la llave)
+S1,K6,comuna_20,20.0,326.0,0.061349693252,0.040061743192,0.092855390366,nombre_validado = true (principal para la llave)
+S2,K1,estrato_1,17.0,234.0,0.07264957265,0.045850083461,0.113254127073,coincide_poligono = true (secundaria; no sustituye a S1)
+S2,K1,estrato_2,3.0,92.0,0.032608695652,0.011150975343,0.091535123387,coincide_poligono = true (secundaria; no sustituye a S1)
+S2,K1,estrato_3,74.0,1173.0,0.063086104007,0.050548938025,0.078475732755,coincide_poligono = true (secundaria; no sustituye a S1)
+S2,K1,estrato_4,144.0,2059.0,0.069936862555,0.059702587268,0.081772938531,coincide_poligono = true (secundaria; no sustituye a S1)
+S2,K1,estrato_5,37.0,746.0,0.049597855228,0.036194784974,0.067615939851,coincide_poligono = true (secundaria; no sustituye a S1)
+S2,K1,estrato_6,0.0,0.0,,,,coincide_poligono = true (secundaria; no sustituye a S1)
+S2,K2,estratos_3-5,255.0,3978.0,0.064102564103,0.056903575139,0.072142643073,coincide_poligono = true (secundaria; no sustituye a S1); E6 queda fuera de K2
+S2,K2,estratos_1-2,20.0,326.0,0.061349693252,0.040061743192,0.092855390366,coincide_poligono = true (secundaria; no sustituye a S1)
+S2,K2,razon_3-5_vs_1-2,,,1.044871794872,,,coincide_poligono = true (secundaria; no sustituye a S1)
+S2,K2,diferencia_3-5_menos_1-2,,,0.002752870851,-0.029564839352,0.025508522624,coincide_poligono = true (secundaria; no sustituye a S1); con este proxy y esta muestra no se detecta diferencia
+S2,K2,razon_MH_ajustada_comuna,,,,,,"coincide_poligono = true (secundaria; no sustituye a S1); comunas usadas: ; excluidas por no tener ambos grupos: 03,09,10,18,19,20; no es interpretable: ninguna comuna tiene ambos grupos"
+S2,K6,comuna_03,39.0,550.0,0.070909090909,0.052302352954,0.095468417606,coincide_poligono = true (secundaria; no sustituye a S1)
+S2,K6,comuna_09,7.0,184.0,0.038043478261,0.018548108346,0.076434046831,coincide_poligono = true (secundaria; no sustituye a S1)
+S2,K6,comuna_10,35.0,541.0,0.064695009242,0.046882119975,0.088646444658,coincide_poligono = true (secundaria; no sustituye a S1)
+S2,K6,comuna_18,5.0,44.0,0.113636363636,0.049527075896,0.239794351481,coincide_poligono = true (secundaria; no sustituye a S1)
+S2,K6,comuna_19,169.0,2659.0,0.063557728469,0.054899666053,0.073475074675,coincide_poligono = true (secundaria; no sustituye a S1)
+S2,K6,comuna_20,20.0,326.0,0.061349693252,0.040061743192,0.092855390366,coincide_poligono = true (secundaria; no sustituye a S1)
+S3,K1,estrato_1,19.0,253.0,0.075098814229,0.048601498908,0.114306690419,"pureza_estrato >= 0,8"
+S3,K1,estrato_2,0.0,0.0,,,,"pureza_estrato >= 0,8"
+S3,K1,estrato_3,74.0,1173.0,0.063086104007,0.050548938025,0.078475732755,"pureza_estrato >= 0,8"
+S3,K1,estrato_4,113.0,1507.0,0.07498341075,0.062740017466,0.089388173868,"pureza_estrato >= 0,8"
+S3,K1,estrato_5,19.0,424.0,0.044811320755,0.028872578806,0.068924362866,"pureza_estrato >= 0,8"
+S3,K1,estrato_6,0.0,11.0,0.0,0.0,0.258840017249,"pureza_estrato >= 0,8"
+S3,K2,estratos_3-5,206.0,3104.0,0.066365979381,0.058133989262,0.075669998689,"pureza_estrato >= 0,8; E6 queda fuera de K2"
+S3,K2,estratos_1-2,19.0,253.0,0.075098814229,0.048601498908,0.114306690419,"pureza_estrato >= 0,8"
+S3,K2,razon_3-5_vs_1-2,,,0.883715409658,,,"pureza_estrato >= 0,8"
+S3,K2,diferencia_3-5_menos_1-2,,,-0.008732834848,-0.048795575851,0.019350478605,"pureza_estrato >= 0,8; con este proxy y esta muestra no se detecta diferencia"
+S3,K2,razon_MH_ajustada_comuna,,,1.893939393939,,,"pureza_estrato >= 0,8; comunas usadas: 18; excluidas por no tener ambos grupos: 03,09,10,17,19,20; no es interpretable: descansa solo en la Comuna 18 (44 construcciones expuestas con 5 severas y 50 de referencia con 3 severas); el estrato está confundido con la ubicación"
+S3,K6,comuna_03,39.0,550.0,0.070909090909,0.052302352954,0.095468417606,"pureza_estrato >= 0,8"
+S3,K6,comuna_09,7.0,184.0,0.038043478261,0.018548108346,0.076434046831,"pureza_estrato >= 0,8"
+S3,K6,comuna_10,33.0,492.0,0.067073170732,0.048155066471,0.092699593566,"pureza_estrato >= 0,8"
+S3,K6,comuna_17,2.0,43.0,0.046511627907,0.012848990317,0.154557759239,"pureza_estrato >= 0,8"
+S3,K6,comuna_18,8.0,94.0,0.085106382979,0.043754964668,0.159038121299,"pureza_estrato >= 0,8"
+S3,K6,comuna_19,120.0,1802.0,0.066592674806,0.055978634331,0.079050706005,"pureza_estrato >= 0,8"
+S3,K6,comuna_20,16.0,203.0,0.07881773399,0.049094654613,0.124185768668,"pureza_estrato >= 0,8"
+S4,K1,estrato_1,82.0,302.0,0.271523178808,0.224465756144,0.324320282119,dano_visible en lugar de severo_estricto (baja confianza)
+S4,K1,estrato_2,24.0,92.0,0.260869565217,0.182020970827,0.358888195965,dano_visible en lugar de severo_estricto (baja confianza)
+S4,K1,estrato_3,341.0,1173.0,0.290707587383,0.265437735053,0.317343838949,dano_visible en lugar de severo_estricto (baja confianza)
+S4,K1,estrato_4,615.0,2095.0,0.293556085919,0.274447518551,0.313420379627,dano_visible en lugar de severo_estricto (baja confianza)
+S4,K1,estrato_5,287.0,1031.0,0.278370514064,0.251872995328,0.30651352489,dano_visible en lugar de severo_estricto (baja confianza)
+S4,K1,estrato_6,2.0,11.0,0.181818181818,0.051366600671,0.476986137578,dano_visible en lugar de severo_estricto (baja confianza)
+S4,K2,estratos_3-5,1243.0,4299.0,0.289137008607,0.275777582238,0.302872954189,dano_visible en lugar de severo_estricto (baja confianza); E6 queda fuera de K2
+S4,K2,estratos_1-2,106.0,394.0,0.269035532995,0.227632058031,0.314899441943,dano_visible en lugar de severo_estricto (baja confianza)
+S4,K2,razon_3-5_vs_1-2,,,1.074716805576,,,dano_visible en lugar de severo_estricto (baja confianza)
+S4,K2,diferencia_3-5_menos_1-2,,,0.020101475612,-0.027668519332,0.063723992047,dano_visible en lugar de severo_estricto (baja confianza); con este proxy y esta muestra no se detecta diferencia
+S4,K2,razon_MH_ajustada_comuna,,,1.396694214876,,,"dano_visible en lugar de severo_estricto (baja confianza); comunas usadas: 18; excluidas por no tener ambos grupos: 03,09,10,17,19,20; no es interpretable: descansa solo en la Comuna 18 (44 construcciones expuestas con 13 severas y 52 de referencia con 11 severas); el estrato está confundido con la ubicación"
+S4,K6,comuna_03,172.0,550.0,0.312727272727,0.275393433771,0.35265906355,dano_visible en lugar de severo_estricto (baja confianza)
+S4,K6,comuna_09,60.0,184.0,0.326086956522,0.262510214603,0.396777184993,dano_visible en lugar de severo_estricto (baja confianza)
+S4,K6,comuna_10,143.0,541.0,0.264325323475,0.228921510783,0.303052552871,dano_visible en lugar de severo_estricto (baja confianza)
+S4,K6,comuna_17,24.0,87.0,0.275862068966,0.192941581245,0.377739692533,dano_visible en lugar de severo_estricto (baja confianza)
+S4,K6,comuna_18,24.0,96.0,0.25,0.174138494178,0.345099979564,dano_visible en lugar de severo_estricto (baja confianza)
+S4,K6,comuna_19,834.0,2909.0,0.286696459264,0.270552611163,0.303402937948,dano_visible en lugar de severo_estricto (baja confianza)
+S4,K6,comuna_20,95.0,342.0,0.277777777778,0.232975242007,0.327517191524,dano_visible en lugar de severo_estricto (baja confianza)
+S5,K1,estrato_1,20.0,300.0,0.066666666667,0.043567176797,0.100723795868,sin geom_duplicada
+S5,K1,estrato_2,3.0,91.0,0.032967032967,0.011274202463,0.092494607848,sin geom_duplicada
+S5,K1,estrato_3,73.0,1165.0,0.062660944206,0.05013025153,0.07806641772,sin geom_duplicada
+S5,K1,estrato_4,144.0,2089.0,0.06893250359,0.058840946347,0.08060658757,sin geom_duplicada
+S5,K1,estrato_5,53.0,1031.0,0.051406401552,0.039514521885,0.066628872428,sin geom_duplicada
+S5,K1,estrato_6,0.0,11.0,0.0,0.0,0.258840017249,sin geom_duplicada
+S5,K2,estratos_3-5,270.0,4285.0,0.06301050175,0.056119294463,0.07068454926,sin geom_duplicada; E6 queda fuera de K2
+S5,K2,estratos_1-2,23.0,391.0,0.058823529412,0.03951338689,0.086718499517,sin geom_duplicada
+S5,K2,razon_3-5_vs_1-2,,,1.071178529755,,,sin geom_duplicada
+S5,K2,diferencia_3-5_menos_1-2,,,0.004186972339,-0.024546598534,0.024966111142,sin geom_duplicada; con este proxy y esta muestra no se detecta diferencia
+S5,K2,razon_MH_ajustada_comuna,,,1.893939393939,,,"sin geom_duplicada; comunas usadas: 18; excluidas por no tener ambos grupos: 03,09,10,17,19,20; no es interpretable: descansa solo en la Comuna 18 (44 construcciones expuestas con 5 severas y 50 de referencia con 3 severas); el estrato está confundido con la ubicación"
+S5,K6,comuna_03,38.0,546.0,0.069597069597,0.051122625816,0.094085739648,sin geom_duplicada
+S5,K6,comuna_09,7.0,180.0,0.038888888889,0.018963050548,0.078085713171,sin geom_duplicada
+S5,K6,comuna_10,35.0,541.0,0.064695009242,0.046882119975,0.088646444658,sin geom_duplicada
+S5,K6,comuna_17,4.0,87.0,0.045977011494,0.018022396823,0.112331978265,sin geom_duplicada
+S5,K6,comuna_18,8.0,94.0,0.085106382979,0.043754964668,0.159038121299,sin geom_duplicada
+S5,K6,comuna_19,181.0,2903.0,0.062349293834,0.054118817056,0.07173654431,sin geom_duplicada
+S5,K6,comuna_20,20.0,341.0,0.058651026393,0.038284622708,0.088850850507,sin geom_duplicada
