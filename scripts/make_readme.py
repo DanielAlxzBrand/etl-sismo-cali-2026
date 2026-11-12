@@ -255,6 +255,8 @@ def main():
         ("docs/referencias/", "documento de contexto del Avance 1"),
         ("docs/avance_2/", "retroalimentación recibida y registro de cambios del Avance 2"),
         ("docs/entrega_3/", "documentos de la Entrega 3: sección 1 del checklist de Data Thinking"),
+        ("docs/entrega_3/decisiones_tecnicas.md", "decisiones técnicas de la Entrega 3 (API, MySQL, dashboard, orquestación, MLOps)"),
+        ("docs/entrega_3/seccion_1/", "sección 1 del checklist: Data Thinking, stakeholders, OKR y KPI, Canvas y MVP"),
         ("docs/muestras/", "muestras de texto de cada fuente probada (no es Bronze)"),
         ("docs/enunciado_flujo.png", "imagen del enunciado de la entrega"),
     ]

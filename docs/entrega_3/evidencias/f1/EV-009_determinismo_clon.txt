@@ -1,0 +1,32 @@
+# EV-009 · Determinismo en un clon temporal
+- comando: `git clone` a carpeta temporal; dos veces `<.venv>\Scripts\python.exe main.py --stage all`; sha256 de los 9 archivos
+- fecha: 2026-11-12T16:17:41-05:00 (America/Bogota)
+- código de salida: 0
+- Python: 3.13.0
+- commit de partida: 20a3db7
+
+clon temporal fuera del repositorio, desde el commit 20a3db7 (se borró al terminar)
+Bronze contra el manifiesto antes de ejecutar: 8 de 8
+línea base antes de ejecutar: 9 de 9
+
+## corrida 1: `main.py --stage all` (código de salida 0)
+    2026-11-12 16:07:42 INFO etl.extract_api edificaciones: ya existe, sha256 coincide (3 páginas)
+    2026-11-12 16:07:42 INFO etl.extract_excel estrato_barrio: ya existe, sha256 coincide
+    2026-11-12 16:07:42 INFO etl.extract_api poligonos_barrios: ya existe, sha256 coincide
+    2026-11-12 16:07:44 INFO etl.integrate Salida: construcciones=5146 barrios=346 integrado=5146 | cobertura de llave=99.8834% (pasa) | huérfanos izquierda=6 derecha=295
+    2026-11-12 16:07:45 INFO etl.build_gold Salida: gold_final=5146 filas | kpis_gold=23 filas (6 indicadores) | sensibilidades=107 filas
+Silver y Gold contra la línea base: 9 de 9
+
+## corrida 2: `main.py --stage all` (código de salida 0)
+    2026-11-12 16:07:48 INFO etl.extract_api edificaciones: ya existe, sha256 coincide (3 páginas)
+    2026-11-12 16:07:48 INFO etl.extract_excel estrato_barrio: ya existe, sha256 coincide
+    2026-11-12 16:07:48 INFO etl.extract_api poligonos_barrios: ya existe, sha256 coincide
+    2026-11-12 16:07:49 INFO etl.integrate Salida: construcciones=5146 barrios=346 integrado=5146 | cobertura de llave=99.8834% (pasa) | huérfanos izquierda=6 derecha=295
+    2026-11-12 16:07:51 INFO etl.build_gold Salida: gold_final=5146 filas | kpis_gold=23 filas (6 indicadores) | sensibilidades=107 filas
+Silver y Gold contra la línea base: 9 de 9
+
+corridas iguales entre sí (sha256 de los 9 archivos): True
+Bronze contra el manifiesto después de ejecutar: 8 de 8
+tablas de la base del clon: {'silver_integrated': 5146, 'gold_final': 5146, 'kpis_gold': 23, 'kpis_sensibilidad': 107}
+Nota: la base SQLite del clon se regenera (archivo binario); su contenido por tabla es el mismo, pero no entra en la línea base de hashes.
+`git status` del clon sobre data/: M data/gold/etl_sismo.db

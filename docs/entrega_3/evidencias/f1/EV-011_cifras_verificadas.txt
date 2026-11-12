@@ -1,0 +1,23 @@
+# EV-011 · Cifras de los documentos recalculadas desde los archivos
+- comando: Recálculo independiente desde `quality_report.json`, `gold_final.csv`, `kpis_gold.csv` y `barrios.geojson`, y búsqueda de la cifra en el documento
+- fecha: 2026-11-12T16:17:41-05:00 (America/Bogota)
+- código de salida: 0
+- Python: 3.13.0
+- commit de partida: 20a3db7
+
+doc | cifra del documento | valor esperado recalculado | origen | resultado
+---|---|---|---|---
+01 | 27,0 % sin datos en el estrato 2 | 27,0 % | quality_report.json: sin_datos.por_estrato.2 | OK
+01 | 394 construcciones con datos en los estratos 1-2 | 394 | quality_report.json: severos.por_estrato 1 + 2 | OK
+01 | 342 construcciones del grupo 1-2 en la Comuna 20 | 342 | quality_report.json: severos.por_comuna.20 | OK
+01 | 61,7 % de los severos están en la Comuna 19 | 61,7 % | quality_report.json: severos.por_comuna (sin «sin_comuna») | OK
+01 | 91,43 % de coincidencia código-polígono | 91,43 % | quality_report.json: pct_coincide_poligono | OK
+01 | 73,4 % de los 342 códigos de polígono existen en el CSV 2015 | 73,4 % | barrios.geojson (Bronze) y silver_estrato_barrio.csv | OK
+03 | 99,883 % de cobertura de llave | 99,883 % | quality_report.json: cobertura_llave | OK
+03 | 167/295 = 56,6 % (K3) | 167/295 = 56,6 % | kpis_gold.csv: K3 | OK
+03 | 91,5 % de construcciones con dato satelital utilizable (V1) | 91,5 % | gold_final.csv: sin_datos | OK
+05 | 5.146 filas de Gold | 5.146 filas | conteo de filas de gold_final.csv | OK
+01 | 296 severos estrictos | severo estricto = 296 | gold_final.csv: severo_estricto | OK
+05 | 9 de 9 idénticos en la corrida 2 del clon | corrida 2: 9 de 9 | EV-009 (det.json del clon) | OK
+
+12 de 12 cifras verificadas

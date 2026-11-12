@@ -1,0 +1,21 @@
+# EV-007 · Hashes de la línea base antes y después de F1
+- comando: sha256 de `git show entrega3-f0:<ruta>` y de cada archivo; sha256 del manifiesto
+- fecha: 2026-11-12T16:17:27-05:00 (America/Bogota)
+- código de salida: 0
+- Python: 3.13.0
+- commit de partida: 20a3db7
+
+archivo | esperado | etiqueta entrega3-f0 (antes) | árbol de trabajo (después) | estado
+---|---|---|---|---
+data/silver/silver_construcciones.csv | 85ea33eb | 85ea33eb | 85ea33eb | OK
+data/silver/silver_estrato_barrio.csv | 0815be18 | 0815be18 | 0815be18 | OK
+data/silver/silver_integrated.csv | bc1d1c6b | bc1d1c6b | bc1d1c6b | OK
+data/silver/silver_orphans_left.csv | 04bc074b | 04bc074b | 04bc074b | OK
+data/silver/silver_orphans_right.csv | da95c33f | da95c33f | da95c33f | OK
+data/silver/quality_report.json | fa66f7f2 | fa66f7f2 | fa66f7f2 | OK
+data/gold/gold_final.csv | 496ab49e | 496ab49e | 496ab49e | OK
+data/gold/kpis_gold.csv | 6db3dbee | 6db3dbee | 6db3dbee | OK
+data/gold/kpis_sensibilidad.csv | 0cf75f2d | 0cf75f2d | 0cf75f2d | OK
+
+línea base: 9 de 9 idénticos antes y después
+manifiesto de Bronze: 8 líneas, 8 coincidencias

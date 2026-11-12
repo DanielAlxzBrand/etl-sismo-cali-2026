@@ -8,11 +8,11 @@
 
 | id | texto literal | estado actual | fase de cierre | fase(s) de evidencia | estado objetivo | cómo validar |
 |---|---|---|---|---|---|---|
-| 1.1 | «Aplicamos los fundamentos del Data Thinking y diseño estratégico para identificar insights y definir el problema central de negocio o investigación.» | Cumple con documentación | F1 | F1,F8 | Cumple con matiz | Revisión de `01_data_thinking.md` y `pytest tests/test_entrega_3_seccion_1.py` |
-| 1.2 | «Realizamos el mapeo de stakeholders (partes interesadas) y comprendimos la tipología de la compañía para adaptar la solución propuesta.» | Cumple con documentación | F1 | F1,F8 | Cumple con matiz | Revisión de `02_stakeholders.md`; la declaración de que no hubo contacto sigue vigente |
-| 1.3 | «Definimos el objetivo, alcance, los OKRs y los KPIs (métricas de valor) para evaluar el desempeño y el impacto del proyecto.» | Cumple con documentación | F1 | F1,F7,F8 | Cumple | `03_objetivo_alcance_okr_kpi.md` con KPI nuevos medidos; `pytest tests/test_entrega_3_seccion_1.py` |
-| 1.4 | «Estructuramos el Modelo de Negocio (CANVAS), Data Innovation Board y la propuesta de valor con enfoque de creación de Startups de AI/Datos.» | Cumple con documentación | F1 | F1,F8 | Cumple con matiz | Revisión de `04_canvas_data_innovation_board.md`: hipótesis etiquetadas y «no estimado» |
-| 1.5 | «Establecimos criterios verificables de aceptación para las funcionalidades esenciales del producto mínimo viable (MVP).» | Requiere desarrollo | F5 | F1,F5,F8 | Cumple | Criterios nuevos de API, carga y dashboard ejecutados con `pytest` y registrados en el documento 05 |
+| 1.1 | «Aplicamos los fundamentos del Data Thinking y diseño estratégico para identificar insights y definir el problema central de negocio o investigación.» | Cumple con matiz (F1) | F1 | F1,F8 | Cumple con matiz | Revisión de `01_data_thinking.md`; `pytest tests/test_entrega_3_seccion_1.py` |
+| 1.2 | «Realizamos el mapeo de stakeholders (partes interesadas) y comprendimos la tipología de la compañía para adaptar la solución propuesta.» | Cumple con matiz (F1) | F1 | F1,F8 | Cumple con matiz | Revisión de `02_stakeholders.md`; la tabla de puntajes se comprueba con `pytest tests/test_entrega_3_seccion_1.py` |
+| 1.3 | «Definimos el objetivo, alcance, los OKRs y los KPIs (métricas de valor) para evaluar el desempeño y el impacto del proyecto.» | Cumple con matiz (F1) | F1 | F1,F7,F8 | Cumple con matiz | `03_objetivo_alcance_okr_kpi.md` y `pytest tests/test_entrega_3_seccion_1.py`; las métricas V4 se miden en F2 a F5 |
+| 1.4 | «Estructuramos el Modelo de Negocio (CANVAS), Data Innovation Board y la propuesta de valor con enfoque de creación de Startups de AI/Datos.» | Cumple con matiz (F1) | F1 | F1,F8 | Cumple con matiz | Revisión de `04_canvas_data_innovation_board.md`: hipótesis con experimento, aviso y «no estimado» |
+| 1.5 | «Establecimos criterios verificables de aceptación para las funcionalidades esenciales del producto mínimo viable (MVP).» | Cumple con matiz (F1) | F5 | F1,F5,F8 | Cumple | Criterios AC22 a AC29 verificados en F2 a F5 y registrados en `05_mvp_criterios_aceptacion.md` |
 | 2.1 | «Diseñamos e implementamos la arquitectura de Backend, APIs y servicios para el procesamiento de datos.» | Requiere desarrollo | F2 | F2,F4 | Cumple | `pytest tests/test_api.py`; arranque de la API y `GET /health` |
 | 2.2 | «Definimos las fuentes de datos y sus metadatos» | Cumple con documentación | F2 | F2 | Cumple | Catálogo de fuentes y `GET /metadata`; coincidencia con `data/bronze/manifest.jsonl` |
 | 2.3 | «Aseguramos la gestión segura de credenciales, claves de API y tokens de acceso.» | Cumple con documentación | F2 | F2,F4 | Cumple | `pytest tests/test_secretos.py`; `.env` fuera de git y `.env.example` sin valores |
@@ -40,3 +40,23 @@
 | 7.5 | «Preparamos una demostración de extremo a extremo (Demo Day) con datos reales o representativos.» | Requiere desarrollo | F7 | F7,F8 | Cumple con matiz | Ensayo reproducible del guion de demostración y grabación del equipo |
 
 Conteo por estado objetivo: Cumple con matiz: 10, Cumple: 15, Pendiente (hecho externo): 5.
+
+## Detalle de los ítems 1.1 a 1.5 (cierre de F1, 2026-11-12)
+Cada subcriterio indica su estado según la regla, la justificación, la evidencia y cómo validarlo. Las rutas de evidencia de F1 están en `docs/entrega_3/evidencias/f1/` y en el manifiesto.
+
+| ítem | subcriterio | estado | justificación | evidencia | cómo validar |
+|---|---|---|---|---|---|
+| 1.1 | Marco de Data Thinking aplicado por fases | Cumple con matiz | Marco público (cinco etapas de d.school) con tabla de equivalencia; el mapeo es a posteriori y no hay vocabulario del curso | `docs/entrega_3/seccion_1/01_data_thinking.md` §2; `docs/entrega_3/evidencias/f1/EV-012_fuentes_externas.txt` | Leer la tabla de equivalencia y la fuente citada |
+| 1.1 | Insights con dato y fuente | Cumple | 11 insights con dato recalculado desde los archivos | `docs/entrega_3/seccion_1/01_data_thinking.md` §3; `docs/entrega_3/evidencias/f1/EV-011_cifras_verificadas.txt` | `pytest tests/test_entrega_3_seccion_1.py` y EV-011 |
+| 1.1 | Problema central y pregunta de negocio | Cumple | Árbol del Avance 1, problema refinado, cinco preguntas «¿Cómo podríamos…?» y pregunta vigente | `docs/entrega_3/seccion_1/01_data_thinking.md` §4 | Revisión del documento |
+| 1.1 | Investigación con usuarios | No realizada | No hubo investigación con usuarios; se declara y no se simula | `docs/entrega_3/seccion_1/01_data_thinking.md` §2 | — |
+| 1.2 | Tipología y usuarios objetivo | Cumple con matiz | Planteamiento propio, no un cliente real; sin contacto | `docs/entrega_3/seccion_1/02_stakeholders.md` §1 | Revisión del documento |
+| 1.2 | Mapeo con rúbrica R1 y matriz | Cumple | 11 stakeholders, puntajes recalculables, matriz generada desde la tabla | `docs/entrega_3/seccion_1/02_stakeholders.md` §2 y §3; `docs/entrega_3/img/matriz_poder_interes.png` | `pytest tests/test_entrega_3_seccion_1.py::test_rubrica_r1_y_matriz_poder_interes_son_consistentes` |
+| 1.2 | Contacto con stakeholders | Pendiente (hecho externo) | «Ninguno»; protocolo de cinco preguntas por tipo, no ejecutado | `docs/entrega_3/seccion_1/02_stakeholders.md` §6 | — |
+| 1.3 | Objetivo, alcance, OKR | Cumple | Redacción exacta del Avance 1 con el estado real de cada KR; población y alcance temporal leídos de los archivos | `docs/entrega_3/seccion_1/03_objetivo_alcance_okr_kpi.md` §1 y §2 | `pytest tests/test_entrega_3_seccion_1.py` |
+| 1.3 | KPI del fenómeno y de desempeño | Cumple | K1 a K6 y P1 a P7 con fórmula, fuente y valor | `docs/entrega_3/seccion_1/03_objetivo_alcance_okr_kpi.md` §3 | EV-011 y `pytest` |
+| 1.3 | Métricas de valor y trazabilidad | Cumple con matiz | V1 a V3 medidas; V4 (componentes de la Entrega 3) se mide en F2 a F5; el impacto en usuarios no se mide | `docs/entrega_3/seccion_1/03_objetivo_alcance_okr_kpi.md` §3.3 y §4 | Revisar V4 al cierre de F5 |
+| 1.4 | Canvas y propuesta de valor | Cumple con matiz | Nueve bloques y mapa de valor ligados a capacidades; hipótesis sin validar | `docs/entrega_3/seccion_1/04_canvas_data_innovation_board.md` §2 y §3; `docs/entrega_3/img/canvas_modelo_negocio.png` | Revisión del documento |
+| 1.4 | Data Innovation Board e hipótesis | Cumple con matiz | Diez hipótesis con base, confianza, criterio de refutación y experimento propuesto (no ejecutado); sin cifras de mercado | `docs/entrega_3/seccion_1/04_canvas_data_innovation_board.md` §4 y §5 | `pytest tests/test_entrega_3_seccion_1.py::test_1_4_declara_hipotesis_sin_validar_y_no_estimado` |
+| 1.5 | MVP y funcionalidades | Cumple | MVP de la Entrega 3 definido con FE1 a FE8 e historias | `docs/entrega_3/seccion_1/05_mvp_criterios_aceptacion.md` §1 y §2 | Revisión del documento |
+| 1.5 | Criterios verificables | Cumple con matiz | 21 criterios ejecutados hoy (incluido el determinismo directo en un clon) y 8 «no verificado aún» (API, MySQL, Airflow, dashboard) | `docs/entrega_3/seccion_1/05_mvp_criterios_aceptacion.md` §3; `docs/entrega_3/evidencias/f1/EV-009_determinismo_clon.txt` | Ejecutar los comandos de la tabla; cerrar AC22 a AC29 en F2 a F5 |

@@ -1,0 +1,26 @@
+# EV-012 · Fuentes externas consultadas
+- comando: búsquedas web y `pip index versions`/`pip download` (sin instalar)
+- fecha: 2026-11-12T16:17:41-05:00 (America/Bogota)
+- código de salida: 0
+- Python: 3.13.0
+- commit de partida: 20a3db7
+
+Consultas externas hechas el 2026-11-12 (solo lectura; nada se instaló).
+
+## Marco de Data Thinking (ítem 1.1)
+- https://dschool.stanford.edu/resources/design-thinking-bootleg (búsqueda web; resultado en el sitio oficial): describe cinco modos, Empathize, Define, Ideate, Prototype y Test. No se descargó el documento completo; la tabla de equivalencia del documento 01 es paráfrasis nuestra.
+
+## Licencia de Docker Desktop (decisión d)
+- https://docs.docker.com/subscription-billing/desktop-license/ : indica uso gratuito para educación, uso personal, código abierto no comercial y pequeñas empresas (menos de 250 empleados y menos de 10 millones de dólares de ingresos). El acuerdo de licencia es el que rige; se revisa al instalar.
+
+## Airflow (decisión d)
+- https://airflow.apache.org/docs/apache-airflow/3.3.1/howto/docker-compose/index.html : guía oficial de Docker Compose (vía de desarrollo local).
+- https://airflow.apache.org/docs/apache-airflow/3.1.1/start.html : Airflow admite Python 3.10, 3.11, 3.12 y 3.13 desde la versión 3.1.0.
+- `python -m pip index versions apache-airflow --python-version 3.13` (sin instalar): 3.4.0, 3.3.2, 3.3.1, 3.3.0, 3.2.x, 3.1.x entre las versiones disponibles.
+
+## Versiones de dependencias para Python 3.13 (decisiones b y h)
+- `pip index versions <paquete> --python-version 3.13 --only-binary=:all:`: pymysql 1.2.4; cryptography 50.0.2; fastapi 0.162.5; uvicorn 0.54.0; httpx 0.28.1; streamlit 1.67.0.
+- `pip download --only-binary=:all: --python-version 3.13 --platform win_amd64 --no-deps` a una carpeta temporal: pymysql-1.2.4-py3-none-any.whl y cryptography-50.0.2-cp311-abi3-win_amd64.whl (utilizable en Python 3.13). No se instaló nada.
+
+## Cifras de la evaluación estructural (ítem 1.1 y 1.2)
+- La consulta registrada es del 15-oct-2026 (`docs/investigacion_fuentes.md`). El 2026-11-12 las búsquedas web no recuperaron el texto del artículo de El País Cali que contiene 3.403 predios, 1.078, 1.272 y 1.053; no se pudieron recotejar esas tres cifras y se declara así. Otros artículos del mismo medio muestran cortes distintos (por ejemplo, 4.733 predios caracterizados a los dos meses), lo que confirma que las cifras cambian entre cortes.

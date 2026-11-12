@@ -7,8 +7,13 @@
 - Capturas y videos previstos: ninguno (la evidencia de F0 son archivos de texto).
 
 ## F1 · Decisiones y sección 1
-- Ítems: 1.1, 1.2, 1.3, 1.4, 1.5
-- Capturas y videos previstos: se definen al diseñar la fase.
+- Ítems: 1.1, 1.2, 1.3, 1.4, 1.5. Las capturas las toma el equipo (no se generaron en F1); las dos imágenes de `docs/entrega_3/img/` son diagramas renderizados desde datos, no capturas.
+- **1.1:** documento `01_data_thinking.md` abierto en la tabla de equivalencia (§2) y, aparte, en la tabla de insights (§3). Nombres sugeridos: `captura_1.1_equivalencia.png`, `captura_1.1_insights.png`.
+- **1.2:** `02_stakeholders.md` en la tabla de puntajes y la imagen de la matriz poder-interés (§3). Nombre: `captura_1.2_matriz.png`.
+- **1.3:** `03_objetivo_alcance_okr_kpi.md` en la tabla de trazabilidad (§4). Nombre: `captura_1.3_trazabilidad.png`.
+- **1.4:** `04_canvas_data_innovation_board.md` con el aviso inicial y la imagen del Canvas visibles (§2). Nombre: `captura_1.4_canvas.png`.
+- **1.5:** `05_mvp_criterios_aceptacion.md` en la tabla de criterios con la columna de estado visible y, en una terminal, la salida de `python -m pytest -q -p no:cacheprovider`. Nombres: `captura_1.5_criterios.png`, `captura_1.5_pytest.png`.
+- Cada captura se rotula «captura tomada por el equipo» con la fecha.
 
 ## F2 · Backend, API de solo lectura, fuentes y credenciales
 - Ítems: 2.1, 2.2, 2.3

@@ -1,0 +1,23 @@
+# EV-008 · Salida de pytest
+- comando: `python -m pytest -q -p no:cacheprovider --junitxml=docs/entrega_3/evidencias/f1/junit.xml` y `--collect-only`
+- fecha: 2026-11-12T16:17:27-05:00 (America/Bogota)
+- código de salida: 0
+- Python: 3.13.0
+- commit de partida: 20a3db7
+
+## Por archivo
+- tests/test_dist.py: 4
+- tests/test_empaquetado_y_revision.py: 5
+- tests/test_entrega_3_seccion_1.py: 9
+- tests/test_extract.py: 6
+- tests/test_kpis.py: 6
+- tests/test_logger.py: 2
+- tests/test_quality.py: 4
+- tests/test_readme_cifras.py: 12
+- tests/test_transform.py: 7
+- total: 55
+
+## Resultado
+55 passed in 9.68s
+
+Informe JUnit: `docs/entrega_3/evidencias/f1/junit.xml` (sin el nombre del equipo).

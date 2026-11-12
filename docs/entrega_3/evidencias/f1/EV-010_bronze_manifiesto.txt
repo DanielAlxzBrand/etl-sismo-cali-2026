@@ -1,0 +1,20 @@
+# EV-010 · Verificación de Bronze contra el manifiesto
+- comando: sha256 de cada archivo del manifiesto, de `git show HEAD:<ruta>` y del clon
+- fecha: 2026-11-12T16:17:41-05:00 (America/Bogota)
+- código de salida: 0
+- Python: 3.13.0
+- commit de partida: 20a3db7
+
+archivo | sha256 del manifiesto | árbol de trabajo | contenido confirmado (HEAD) | estado
+---|---|---|---|---
+count_antes.json | c20dec67463c | c20dec67463c | c20dec67463c | OK
+capa_meta.json | c5e4f4258775 | c5e4f4258775 | c5e4f4258775 | OK
+page_0001.json | 92dfda868878 | 92dfda868878 | 92dfda868878 | OK
+page_0002.json | 6b2a4849e95d | 6b2a4849e95d | 6b2a4849e95d | OK
+page_0003.json | ac23590d1a67 | ac23590d1a67 | ac23590d1a67 | OK
+count_despues.json | c20dec67463c | c20dec67463c | c20dec67463c | OK
+estratificaci_n_socioecon_mica_seg_n_estrato | c16b209e4f20 | c16b209e4f20 | c16b209e4f20 | OK
+barrios.geojson | 8e74f0630856 | 8e74f0630856 | 8e74f0630856 | OK
+
+8 de 8 coinciden en el árbol y en lo confirmado
+en el clon temporal: antes 8 de 8, después de dos ejecuciones 8 de 8
