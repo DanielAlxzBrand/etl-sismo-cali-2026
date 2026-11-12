@@ -253,7 +253,8 @@ def main():
         ("docs/comprension_proyecto1.md", "comprensión del Proyecto 1"),
         ("docs/revision_codigos_barrio.md", "revisión de los códigos de barrio con diferencias en la validación semántica"),
         ("docs/referencias/", "documento de contexto del Avance 1"),
-        ("docs/entrega_2/", "retroalimentación recibida y registro de cambios de la segunda entrega"),
+        ("docs/avance_2/", "retroalimentación recibida y registro de cambios del Avance 2"),
+        ("docs/entrega_3/", "documentos de la Entrega 3: sección 1 del checklist de Data Thinking"),
         ("docs/muestras/", "muestras de texto de cada fuente probada (no es Bronze)"),
         ("docs/enunciado_flujo.png", "imagen del enunciado de la entrega"),
     ]
@@ -265,7 +266,7 @@ def main():
                   "test_readme_cifras.py": "las cifras de este README coinciden con los archivos de salida; recuadros de alcance, población e indicador satelital", "test_logger.py": "enmascarado de secretos y nombre de los loggers",
                   "test_empaquetado_y_revision.py": "el empaquetado excluye entornos virtuales con cualquier nombre; la revisión de códigos de barrio cubre los casos pedidos y suma las construcciones sin nombre validado",
                   "test_dist.py": "el empaquetado detecta entornos virtuales por su contenido, aunque no tengan `pyvenv.cfg`",
-                  "test_entrega_seccion_1.py": "documentos de la sección 1 del checklist: existencia, términos prohibidos, cifras y avisos"}
+                  "test_entrega_3_seccion_1.py": "documentos de la sección 1 del checklist: existencia, términos prohibidos, cifras y avisos"}
     tests_md = "\n".join(f"- `tests/{n}` ({k}): {desc_tests.get(n, '')}." for n, k in tests.items())
     barrio_ej = str(ej.barrio).zfill(2) if pd.notna(ej.barrio) else ""
 

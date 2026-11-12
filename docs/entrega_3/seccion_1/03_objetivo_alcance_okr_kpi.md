@@ -71,7 +71,7 @@ Son nuestras medidas de calidad del trabajo y no miden el impacto sobre ningún 
 | P6 Determinismo | archivos de Silver y Gold con sha256 idéntico tras regenerarlos | `docs/prueba_entorno_limpio.md`, `dist/` | 100 % | 9 de 9 idénticos entre el zip del 16-oct y los archivos regenerados el 2026-10-16 15:15 | Si un tercero reproduce los resultados | No se reejecutó hoy para no regenerar la base |
 | P7 Empaquetado sin entorno virtual | entradas prohibidas en el zip | `scripts/make_dist.py`, `tests/test_dist.py` | 0 | 0 entradas prohibidas en el zip de prueba (carpeta temporal) | Si se puede entregar sin el entorno | El zip real de `dist/` es anterior a los cambios |
 
-Fuentes: [Evidencia en el repo: `config/config.yaml`; `docs/validacion_llave.md`; `docs/revision_codigos_barrio.md`; `docs/prueba_entorno_limpio.md`; `docs/entrega_2/registro_cambios_retroalimentacion.md`].
+Fuentes: [Evidencia en el repo: `config/config.yaml`; `docs/validacion_llave.md`; `docs/revision_codigos_barrio.md`; `docs/prueba_entorno_limpio.md`; `docs/avance_2/registro_cambios_retroalimentacion.md`].
 
 ## 4. Trazabilidad OKR → KPI → evidencia → verificación
 | OKR | KPI asociado | archivo de evidencia | prueba o comando de verificación |

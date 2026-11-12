@@ -20,7 +20,7 @@ Cada traslado se hizo copiando, comparando el sha256 de origen y destino y solo 
 |---|---|---|---|
 | `Retroalimentacion.txt` | `<padre>/guia_equipo/seguimiento/originales/Retroalimentacion_avance_2.txt` | `22a726e5dfb10b72a661dc17170425da9375fb33da271462b86d0eae40162feb` | copia verificada por sha256 |
 | `_Checklist-Proyecto_DataThinking.docx` | `<padre>/guia_equipo/seguimiento/originales/Checklist_Proyecto_DataThinking_plantilla.docx` | `57551e6bdd1930e4748c32ff089fd62e8c396ed6fdc15c6f4f04527cffa63465` | copia verificada por sha256 |
-| `Retroalimentacion.txt` | `docs/entrega_2/retroalimentacion_avance_2.txt` | `22a726e5dfb10b72a661dc17170425da9375fb33da271462b86d0eae40162feb` | copia verificada por sha256 |
+| `Retroalimentacion.txt` | `docs/avance_2/retroalimentacion_avance_2.txt` | `22a726e5dfb10b72a661dc17170425da9375fb33da271462b86d0eae40162feb` | copia verificada por sha256 |
 | `<padre>/reparticion.pdf` | `<padre>/guia_equipo/seguimiento/originales/reparticion.pdf` | `6a32deefaae4bc9f737bf6f904a995024c832513ecb93bcead50e9c9aa02b172` | el original ya no estaba en la raiz del repo; se copio desde <padre>/ (no se elimina nada del padre) |
 | `<padre>/guia_equipo/pdf/Guia_ETL_Equipo.pdf` | `<padre>/guia_equipo/guias_estudio/Guia_ETL_Equipo.pdf` | `e9a241172a0fdf9b2a55c81c64aa8535b9f03d71cbc8f842ae90c9d7d796fb35` | el PDF ya no estaba en el repo; se copio desde <padre>/guia_equipo/pdf/ (original intacto) |
 | `docs/guia_uso_guion_gold_6min.pdf` | `<padre>/guia_equipo/guias_estudio/guia_uso_guion_gold_6min.pdf` | `550fdf4d7b8c9d5e4bbf765f460a7f6e85b573087267615b823e457c6d68541c` | copia verificada por sha256 |
@@ -30,7 +30,7 @@ Cada traslado se hizo copiando, comparando el sha256 de origen y destino y solo 
 
 Eliminados del repo tras verificar los sha256: `Retroalimentacion.txt` (raíz del repo); `_Checklist-Proyecto_DataThinking.docx` (raíz del repo); `Avance 1 Proyecto ETL 2026 (1).pdf` (raíz del repo, trasladado a `docs/referencias/`); las tres guías de uso del guion de Gold (PDF) de la carpeta docs.
 
-Además, fuera del repo y sin tocar los originales: `<padre>/guia_equipo/entregas/entrega_1/` guarda el zip de la entrega anterior (`avance2_etl_20261016.zip`, con su `sha256.txt` y `diferencias_zip_vs_repo.txt`) y el documento de la primera entrega; `<padre>/guia_equipo/seguimiento/originales/` guarda las copias de solo lectura de la retroalimentación y del checklist (con `sha256.txt`). El checklist rellenado se generará después en `docs/entrega_2/`.
+Además, fuera del repo y sin tocar los originales: `<padre>/guia_equipo/entregas/entrega_1/` guarda el zip de la entrega anterior (`avance2_etl_20261016.zip`, con su `sha256.txt` y `diferencias_zip_vs_repo.txt`) y el documento de la primera entrega; `<padre>/guia_equipo/seguimiento/originales/` guarda las copias de solo lectura de la retroalimentación y del checklist (con `sha256.txt`). El checklist rellenado se generará después en `docs/entrega_3/`.
 
 ## Frases que generalizaban sobre Cali (antes → después)
 

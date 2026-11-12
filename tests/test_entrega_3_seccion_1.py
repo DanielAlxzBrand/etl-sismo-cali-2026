@@ -1,4 +1,4 @@
-"""Documentos de la sección 1 del checklist (docs/entrega_2/seccion_1): existencia, términos prohibidos, cifras y avisos de honestidad."""
+"""Documentos de la sección 1 del checklist (docs/entrega_3/seccion_1): existencia, términos prohibidos, cifras y avisos de honestidad."""
 import json
 import re
 from decimal import ROUND_HALF_UP, Decimal
@@ -7,7 +7,7 @@ import pandas as pd
 
 from src.common import ROOT
 
-CARPETA = ROOT / "docs" / "entrega_2" / "seccion_1"
+CARPETA = ROOT / "docs" / "entrega_3" / "seccion_1"
 ARCHIVOS = ["indice.md", "01_data_thinking.md", "02_stakeholders.md", "03_objetivo_alcance_okr_kpi.md",
             "04_canvas_data_innovation_board.md", "05_mvp_criterios_aceptacion.md"]
 PROHIBIDOS = [r"Claude", r"Anthropic", r"ChatGPT", r"Copilot", r"Gemini", r"OpenAI", r"prompt", r"inteligencia artificial", r"\bIA\b", r"TODO",
