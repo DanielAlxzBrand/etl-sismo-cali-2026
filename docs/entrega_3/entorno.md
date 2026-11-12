@@ -7,7 +7,7 @@
 |---|---|---|
 | Python | instalado | 3.13.0; el lanzador `py` también lista 3.11. El `.venv` del proyecto usa 3.13.0. |
 | Paquetes del `.venv` | instalados | pandas 3.0.6, numpy 2.5.4, requests 2.34.2, httpx 0.28.1, pytest 9.1.1, shapely 2.2.0, matplotlib 3.11.2, openpyxl 3.1.5, python-dotenv 1.2.4 |
-| Solo en el Python global (no en el `.venv` ni en `requirements.txt`) | instalados | fastapi 0.116.2, uvicorn 0.35.0, streamlit 1.58.0, SQLAlchemy 2.0.51, pydantic 2.11.9, plotly 6.8.0, PyMuPDF 1.28.0 (además de pandas 2.2.3 y pytest 8.4.1, con versiones distintas a las del `.venv`) |
+| Solo en el Python global (no en el `.venv` ni en `requirements.txt`) | instalados | fastapi 0.116.2, uvicorn 0.35.0, streamlit 1.58.0, SQLAlchemy 2.0.51 (no se usará), pydantic 2.11.9, plotly 6.8.0, PyMuPDF 1.28.0 (además de pandas 2.2.3 y pytest 8.4.1, con versiones distintas a las del `.venv`) |
 | No instalados en ninguno | faltan | PyMySQL (o `mysql-connector-python`), `python-docx` |
 | Windows | Windows 10 Home Single Language según el sistema, compilación 26300, 64 bits | Edición Home: no incluye Hyper-V completo, pero WSL2 y Docker Desktop con el motor WSL2 sí funcionan en Home. |
 | Virtualización | hipervisor presente | `HypervisorPresent` verdadero; el firmware no reporta los requisitos de Hyper-V porque ya hay un hipervisor en uso. |
@@ -27,7 +27,7 @@
 ## 2. Implicaciones para F2 a F8
 | fase | qué falta | vía de instalación y comando exacto | administrador, reinicio o credenciales |
 |---|---|---|---|
-| F2 | FastAPI, Uvicorn y SQLAlchemy en el `.venv` (hoy solo en el Python global) | `.\.venv\Scripts\python.exe -m pip install fastapi uvicorn httpx sqlalchemy` y añadirlos a `requirements.txt` con versiones fijas | No necesita administrador ni credenciales. |
+| F2 | FastAPI, Uvicorn y httpx en el `.venv` (hoy solo en el Python global; SQLAlchemy ya no se usa, ver D-E3-14) | `.\.venv\Scripts\python.exe -m pip install fastapi uvicorn httpx` y añadirlos a `requirements.txt` con versiones fijas | No necesita administrador ni credenciales. |
 | F3 | Driver de MySQL; usuario y base de datos de proyecto | `.\.venv\Scripts\python.exe -m pip install pymysql cryptography`. Para crear la base: `$env:Path += ';C:\Program Files\MySQL\MySQL Server 8.0\bin'` y `mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS etl_sismo CHARACTER SET utf8mb4; CREATE USER IF NOT EXISTS 'etl'@'localhost' IDENTIFIED BY '<definir>'; GRANT ALL ON etl_sismo.* TO 'etl'@'localhost';"` | **Credenciales:** hace falta la contraseña del administrador de MySQL local (no consta); la del usuario `etl` se define y se guarda solo en una variable de entorno de sesión. No requiere administrador de Windows ni reinicio. |
 | F4 | Distribución de WSL2 para Airflow (o Docker) | `wsl --install -d Ubuntu`; dentro de Ubuntu, un entorno virtual e instalación de Airflow con el archivo de restricciones del release que se fije en F4 (`pip install "apache-airflow==<versión>" --constraint <archivo de restricciones>`). Alternativa: `winget install -e --id Docker.DockerDesktop` y la imagen oficial de Airflow. | **PowerShell como administrador** y **posible reinicio**; hay que crear un usuario y contraseña de Linux (los define el equipo). La instalación necesita red y varios GB de descarga. |
 | F4 | `pytest-cov` si se mide cobertura | `.\.venv\Scripts\python.exe -m pip install pytest-cov` | No necesita administrador. |
