@@ -1,0 +1,25 @@
+# EV-005 · Inventario y traslado del material de referencia
+- comando: Lectura del PDF y de la carpeta, escaneo de secretos (archivo, línea y nombre) y copia verificada por sha256
+- fecha: 2026-11-12T15:48:57-05:00 (America/Bogota)
+- código de salida: 0
+- Python: 3.13.0
+- commit de partida: 0d632fe
+
+Inventario del material de referencia que estaba en la raíz del repositorio (solo lectura; nada se ejecutó).
+
+## PDF
+- `Lab3.docx.pdf`: 1.101.150 bytes, 5 páginas; orquestación de un ETL medallion con Apache Airflow (laboratorio de clase).
+
+## Carpeta `airflow-medallon` (el nombre real lleva «medallon»)
+- 576 archivos, 22.449.631 bytes. Sin `.git`, sin entornos virtuales y sin `node_modules`; sin archivos mayores de 1 MB. Contiene un `.env` real (una sola variable, `AIRFLOW_UID`) y `__pycache__`.
+- Contenido: `docker-compose.yaml`, `Dockerfile`, `requirements-airflow.txt`, `config/airflow.cfg`, `dags/` (3 archivos; uno vacío), `plugins/` (vacía), `logs/` (corridas del 31-oct al 4-nov-2026) y `expo.md` (guion de una exposición sobre series de tiempo, sin relación con Airflow).
+
+## Hallazgos de seguridad (solo archivo, línea y nombre; sin valores)
+- `docker-compose.yaml`: líneas 60 y 61 (URL con usuario y contraseña de la base de datos), 98 (`POSTGRES_PASSWORD`), 67 (`AIRFLOW__API_AUTH__JWT_SECRET`, con valor por defecto), 296 (`_AIRFLOW_WWW_USER_PASSWORD`, con valor por defecto); línea 63 (`AIRFLOW__CORE__FERNET_KEY`) sin valor por defecto.
+- `config/airflow.cfg`: líneas 106 (`simple_auth_manager_users`), 547 y 3545 (URL con usuario y contraseña), 1925 (`jwt_secret`), 952 (`min_length_masked_secret`, un parámetro).
+- Los DAG, `requirements-airflow.txt`, `Dockerfile`, los logs y el PDF no contienen asignaciones de secretos.
+
+## Traslado
+- Destino (fuera del repositorio): `guia_equipo/referencias_clase/orquestacion_airflow/`; resumen en `guia_equipo/referencias_clase/resumen_orquestacion.md`.
+- Verificación: la copia coincide con el original en número de archivos (576), bytes (22.449.631) y sha256 de cada archivo; el PDF coincide en bytes (1.101.150) y sha256. Solo después se eliminaron los originales de la raíz.
+- Resultado: la raíz del repositorio ya no los contiene y `git status` no los muestra.

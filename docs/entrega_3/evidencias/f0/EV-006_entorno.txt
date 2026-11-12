@@ -1,0 +1,100 @@
+# EV-006 · Entorno (solo lectura)
+- comando: conjunto de comandos de versión y de estado listados abajo (no se instaló ni se arrancó nada; no se probó ninguna credencial)
+- fecha: 2026-11-12T15:49:13-05:00 (America/Bogota)
+- código de salida: 0
+- Python: Python 3.13.0
+- commit de partida: 0d632fe
+
+## python --version / py -0
+Python 3.13.0
+ -V:3.13 *        Python 3.13 (64-bit)
+ -V:3.11          Python 3.11 (64-bit)
+
+## Get-ComputerInfo (Windows, memoria, hipervisor)
+
+
+WindowsProductName    : Windows 10 Home Single Language
+WindowsVersion        : 2009
+OsBuildNumber         : 26300
+OsArchitecture        : 64 bits
+CsTotalPhysicalMemory : 16890978304
+CsHypervisorPresent   : True
+
+## RAM libre (MB) y disco libre C: (GB)
+3319
+210.9
+
+## wsl --status
+Versi�n predeterminada: 2
+
+## wsl -l -v
+Subsistema de Windows para Linux no tiene distribuciones instaladas.
+Para resolverlo, instale una distribuci�n con las instrucciones siguientes:
+Use 'wsl.exe --list --online' para enumerar las distribuciones disponibles
+y "wsl.exe --install <Distro>" para instalar.
+
+## docker --version
+(error: El término 'docker' no se reconoce como nombre de un cmdlet, función, archivo de script o programa ejecutable. Compruebe si escribió correctamente el nombre o, si incluyó una ruta de acceso, compruebe que dicha ruta es correcta e inténtelo de nuevo.)
+
+## Servicio MySQL80 (estado; sin credenciales)
+Estado=Running Inicio=Auto
+
+## where mysql
+INFORMACIÓN: no se pudo encontrar ningún archivo para los patrones dados.
+
+## Versión del cliente y del servidor MySQL
+C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe  Ver 8.0.45 for Win64 on x86_64 (MySQL Community Server - GPL)
+C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqld.exe  Ver 8.0.45 for Win64 on x86_64 (MySQL Community Server - GPL)
+
+## Conexión TCP a localhost:3306, 8000, 8501, 8080, 5432 (sin autenticación)
+puerto 3306: True
+puerto 8000: False
+puerto 8501: False
+puerto 8080: False
+puerto 5432: False
+
+## node / npm
+v24.14.0
+11.9.0
+
+## Navegadores, OBS, Word, LibreOffice (existencia y versión)
+chrome.exe: presente, versión 157.0.8103.52
+msedge.exe: presente, versión 157.0.4341.46
+obs64.exe: presente, versión 32.2.2
+WINWORD.EXE: presente, versión 16.0.20527.20150
+soffice.exe: no encontrado
+
+## PowerShell
+5.1.26100.9818
+
+## Variables en .env (solo nombres) y tamaño
+nombres: (ninguna)
+tamaño: 0 bytes
+
+## pip list del .venv (paquetes relevantes)
+httpx                     0.28.1
+matplotlib                3.11.2
+numpy                     2.5.4
+openpyxl                  3.1.5
+pandas                    3.0.6
+pytest                    9.1.1
+python-dotenv             1.2.4
+requests                  2.34.2
+shapely                   2.2.0
+
+## pip list del Python global (paquetes relevantes)
+fastapi                   0.116.2
+httpx                     0.28.1
+matplotlib                3.9.2
+numpy                     2.1.2
+pandas                    2.2.3
+plotly                    6.8.0
+pydantic                  2.11.9
+pymupdf                   1.28.0
+pytest                    8.4.1
+python-dotenv             1.1.1
+requests                  2.33.1
+SQLAlchemy                2.0.51
+streamlit                 1.58.0
+uvicorn                   0.35.0
+

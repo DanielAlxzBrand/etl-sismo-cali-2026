@@ -1,0 +1,35 @@
+# EV-002 · Corrección de saltos de línea de data/
+- comando: sha256 de cada archivo de `git ls-files data` y de `git show HEAD:<ruta>` antes y después del commit «Fijar saltos de línea de los archivos de datos»
+- fecha: 2026-11-12T15:48:38-05:00 (America/Bogota)
+- código de salida: 0
+- Python: 3.13.0
+- commit de partida: 0d632fe
+
+archivo | sha256 archivo de trabajo (antes y después) | sha256 contenido confirmado antes | sha256 contenido confirmado después
+---|---|---|---
+data/bronze/api/edificaciones/snap_20261016T001024Z/capa_meta.json | c5e4f4258775 | 1791470d3cc3 | c5e4f4258775
+data/bronze/api/edificaciones/snap_20261016T001024Z/count_antes.json | c20dec67463c | c20dec67463c | c20dec67463c
+data/bronze/api/edificaciones/snap_20261016T001024Z/count_despues.json | c20dec67463c | c20dec67463c | c20dec67463c
+data/bronze/api/edificaciones/snap_20261016T001024Z/page_0001.json | 92dfda868878 | 92dfda868878 | 92dfda868878
+data/bronze/api/edificaciones/snap_20261016T001024Z/page_0002.json | 6b2a4849e95d | 6b2a4849e95d | 6b2a4849e95d
+data/bronze/api/edificaciones/snap_20261016T001024Z/page_0003.json | ac23590d1a67 | ac23590d1a67 | ac23590d1a67
+data/bronze/geo/poligonos_barrios/snap_20261016T001031Z/barrios.geojson | 8e74f0630856 | 8e74f0630856 | 8e74f0630856
+data/bronze/manifest.jsonl | 38bcbce16a0c | ac4faae41a54 | 38bcbce16a0c
+data/bronze/tabular/estrato_barrio/snap_20261016T001028Z/estratificaci_n_socioecon_mica_seg_n_estrato__por_barrio_en_cali_2015.csv | c16b209e4f20 | c16b209e4f20 | c16b209e4f20
+data/gold/etl_sismo.db | bda7b933a9c2 | bda7b933a9c2 | bda7b933a9c2
+data/gold/gold_final.csv | 496ab49eb76a | 496ab49eb76a | 496ab49eb76a
+data/gold/kpis_gold.csv | 6db3dbeeeffb | 6db3dbeeeffb | 6db3dbeeeffb
+data/gold/kpis_sensibilidad.csv | 0cf75f2d2fab | 0cf75f2d2fab | 0cf75f2d2fab
+data/silver/quality_report.json | fa66f7f26ff6 | fa66f7f26ff6 | fa66f7f26ff6
+data/silver/silver_construcciones.csv | 85ea33ebe99c | 85ea33ebe99c | 85ea33ebe99c
+data/silver/silver_estrato_barrio.csv | 0815be184766 | 0815be184766 | 0815be184766
+data/silver/silver_integrated.csv | bc1d1c6bd4bb | bc1d1c6bd4bb | bc1d1c6bd4bb
+data/silver/silver_orphans_left.csv | 04bc074bf033 | 04bc074bf033 | 04bc074bf033
+data/silver/silver_orphans_right.csv | da95c33f59f5 | da95c33f59f5 | da95c33f59f5
+
+archivos de data/ versionados: 19
+cuyo contenido confirmado difería del archivo de trabajo ANTES: data/bronze/api/edificaciones/snap_20261016T001024Z/capa_meta.json, data/bronze/manifest.jsonl
+árbol de trabajo idéntico antes y después en todo data/: True
+contenido confirmado igual al archivo de trabajo DESPUÉS: True
+`git config --get core.autocrlf`: true
+Se crea `.gitattributes` y se ejecuta `git add --renormalize .`; también cambian 7 archivos de `docs/muestras/` con CSV y JSON de muestra, que pasan a guardarse tal cual están en el árbol de trabajo (no se usan en ninguna prueba de huellas).

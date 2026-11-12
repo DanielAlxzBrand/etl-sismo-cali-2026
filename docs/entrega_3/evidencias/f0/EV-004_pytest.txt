@@ -1,0 +1,21 @@
+# EV-004 · Salida de pytest
+- comando: `python -m pytest --collect-only -q -p no:cacheprovider` y `python -m pytest -q -p no:cacheprovider`
+- fecha: 2026-11-12T15:48:50-05:00 (America/Bogota)
+- código de salida: 0
+- Python: 3.13.0
+- commit de partida: 0d632fe
+
+## Pruebas por archivo (recolección)
+- tests/test_dist.py: 4
+- tests/test_empaquetado_y_revision.py: 5
+- tests/test_entrega_3_seccion_1.py: 5
+- tests/test_extract.py: 6
+- tests/test_kpis.py: 6
+- tests/test_logger.py: 2
+- tests/test_quality.py: 4
+- tests/test_readme_cifras.py: 12
+- tests/test_transform.py: 7
+- total recolectado: 51
+
+## Resultado
+51 passed in 4.02s

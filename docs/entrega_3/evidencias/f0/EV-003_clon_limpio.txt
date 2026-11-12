@@ -1,0 +1,16 @@
+# EV-003 · Verificación en un clon limpio
+- comando: `git clone -c core.autocrlf=<v>` a una carpeta temporal; sha256 de data/; `<.venv>\Scripts\python.exe -m pytest -q -p no:cacheprovider`; el clon se borra
+- fecha: 2026-11-12T15:48:38-05:00 (America/Bogota)
+- código de salida: 0
+- Python: 3.13.0
+- commit de partida: 0d632fe
+
+## clon con core.autocrlf=true (HEAD 0d632fe)
+manifiesto 8 coinciden 8
+línea base 9 de 9
+pytest: 51 passed in 3.64s
+
+## clon con core.autocrlf=false (HEAD 0d632fe)
+manifiesto 8 coinciden 8
+línea base 9 de 9
+pytest: 51 passed in 3.44s
