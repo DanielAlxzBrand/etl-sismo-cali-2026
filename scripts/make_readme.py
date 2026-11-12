@@ -1,10 +1,13 @@
 """Genera README.md leyendo las cifras de los archivos de salida (kpis, quality_report, gold_final, manifiesto, docs)."""
 import io
 import json
+import os
 import platform
 import re
 import sqlite3
+import subprocess
 import sys
+from collections import Counter
 from datetime import datetime, timedelta
 from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
@@ -43,6 +46,15 @@ def dec(v, d=3):
 
 def leer(p):
     return (ROOT / p).read_text(encoding="utf-8")
+
+
+def pruebas_recolectadas():
+    """Pruebas por archivo según `pytest --collect-only` (funciones y métodos de clase), ordenadas por nombre de archivo."""
+    r = subprocess.run([sys.executable, "-m", "pytest", "--collect-only", "-q", "-p", "no:cacheprovider"], cwd=ROOT, capture_output=True,
+                       text=True, env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1"})
+    cuenta = Counter(l.split("::")[0].split("/")[-1] for l in r.stdout.splitlines() if "::" in l)
+    assert cuenta, f"pytest no recolectó pruebas: {r.stdout[-300:]} {r.stderr[-300:]}"
+    return dict(sorted(cuenta.items()))
 
 
 def filas_tabla(texto, prefijo):
@@ -141,7 +153,7 @@ def main():
                "45000-familias-damnificadas-2338.html")
 
     # --- pruebas
-    tests = {p.name: len(re.findall(r"^def test_", p.read_text(encoding="utf-8"), re.M)) for p in sorted((ROOT / "tests").glob("test_*.py"))}
+    tests = pruebas_recolectadas()
     n_tests = sum(tests.values())
 
     # --- ejemplo SQL ejecutado de verdad sobre la base
@@ -252,7 +264,8 @@ def main():
                   "test_quality.py": "campos del reporte, cobertura frente al umbral, mínimo de filas de Gold, KPI en rango", "test_kpis.py": "regresión numérica de los KPI, Newcombe, Mantel-Haenszel y regresión del defecto",
                   "test_readme_cifras.py": "las cifras de este README coinciden con los archivos de salida; recuadros de alcance, población e indicador satelital", "test_logger.py": "enmascarado de secretos y nombre de los loggers",
                   "test_empaquetado_y_revision.py": "el empaquetado excluye entornos virtuales con cualquier nombre; la revisión de códigos de barrio cubre los casos pedidos y suma las construcciones sin nombre validado",
-                  "test_dist.py": "el empaquetado detecta entornos virtuales por su contenido, aunque no tengan `pyvenv.cfg`"}
+                  "test_dist.py": "el empaquetado detecta entornos virtuales por su contenido, aunque no tengan `pyvenv.cfg`",
+                  "test_entrega_seccion_1.py": "documentos de la sección 1 del checklist: existencia, términos prohibidos, cifras y avisos"}
     tests_md = "\n".join(f"- `tests/{n}` ({k}): {desc_tests.get(n, '')}." for n, k in tests.items())
     barrio_ej = str(ej.barrio).zfill(2) if pd.notna(ej.barrio) else ""
 

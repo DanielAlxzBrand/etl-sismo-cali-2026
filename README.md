@@ -275,7 +275,7 @@ Debe terminar sin errores (Python 3.13.0).
 ```powershell
 Get-FileHash -Algorithm SHA256 data\silver\*.csv, data\silver\quality_report.json, data\gold\*.csv
 ```
-4. **Pruebas:** `pytest -q` → `45 passed`.
+4. **Pruebas:** `pytest -q` → `50 passed`.
 5. **Notebooks** (cada uno se ejecuta de arriba a abajo sin errores):
 ```powershell
 jupyter nbconvert --to notebook --execute --inplace notebooks\05_validacion_evidencias.ipynb
@@ -305,7 +305,7 @@ jupyter nbconvert --to notebook --execute --inplace notebooks\05_validacion_evid
 - `data/silver/`: tablas limpias, huérfanos y `quality_report.json`
 - `data/gold/`: `gold_final.csv`, `kpis_gold.csv`, `kpis_sensibilidad.csv`, `etl_sismo.db`
 - `notebooks/`: cinco notebooks ejecutados (conexión, EDA, Silver, Gold y validación)
-- `tests/`: 45 pruebas automáticas
+- `tests/`: 50 pruebas automáticas
 - `scripts/make_dist.py`: empaqueta la entrega en `dist/` sin entornos virtuales ni cachés
 - `docs/DECISIONES.md`: decisiones con alternativas, razón y riesgo
 - `docs/hallazgos_eda.md`: hallazgos H1-H18 del análisis exploratorio
@@ -326,9 +326,10 @@ jupyter nbconvert --to notebook --execute --inplace notebooks\05_validacion_evid
 - `logs/`: archivos de registro diarios (se crean al ejecutar; no se versionan)
 
 ## 14. Pruebas y validación
-Hay **45 pruebas** automáticas, sin red:
+Hay **50 pruebas** automáticas, sin red:
 - `tests/test_dist.py` (3): el empaquetado detecta entornos virtuales por su contenido, aunque no tengan `pyvenv.cfg`.
 - `tests/test_empaquetado_y_revision.py` (5): el empaquetado excluye entornos virtuales con cualquier nombre; la revisión de códigos de barrio cubre los casos pedidos y suma las construcciones sin nombre validado.
+- `tests/test_entrega_seccion_1.py` (5): documentos de la sección 1 del checklist: existencia, términos prohibidos, cifras y avisos.
 - `tests/test_extract.py` (6): manifiesto, sha256, filas y páginas de Bronze (sin red).
 - `tests/test_kpis.py` (6): regresión numérica de los KPI, Newcombe, Mantel-Haenszel y regresión del defecto.
 - `tests/test_logger.py` (2): enmascarado de secretos y nombre de los loggers.

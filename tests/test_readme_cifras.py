@@ -1,6 +1,10 @@
 """El README debe contener las cifras de los archivos de salida, tal como salen de ellos (con coma decimal)."""
 import json
+import os
 import re
+import subprocess
+import sys
+from collections import Counter
 from decimal import ROUND_HALF_UP, Decimal
 
 import pandas as pd
@@ -65,9 +69,19 @@ def test_cifras_de_gold_bronze_y_silver_en_readme():
     assert f"{REP['duplicados_marcados']['geom_duplicada_filas']} construcciones con geometría idéntica" in README
 
 
+def _recolectadas():
+    """Pruebas por archivo según `pytest --collect-only` (funciones y métodos de clase)."""
+    r = subprocess.run([sys.executable, "-m", "pytest", "--collect-only", "-q", "-p", "no:cacheprovider"], cwd=ROOT, capture_output=True,
+                       text=True, env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1"})
+    return Counter(l.split("::")[0].split("/")[-1] for l in r.stdout.splitlines() if "::" in l)
+
+
 def test_numero_de_pruebas_en_readme():
-    n = sum(len(re.findall(r"^def test_", p.read_text(encoding="utf-8"), re.M)) for p in (ROOT / "tests").glob("test_*.py"))
-    assert f"Hay **{n} pruebas**" in README and f"`pytest -q` → `{n} passed`" in README
+    por_archivo = _recolectadas()
+    n = sum(por_archivo.values())
+    assert n > 0 and f"Hay **{n} pruebas**" in README and f"`pytest -q` → `{n} passed`" in README
+    for nombre, k in por_archivo.items():
+        assert f"- `tests/{nombre}` ({k}):" in README, nombre
 
 
 def test_readme_sin_terminos_prohibidos_ni_rutas_locales():
