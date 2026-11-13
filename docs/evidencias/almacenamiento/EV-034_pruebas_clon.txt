@@ -1,0 +1,36 @@
+# Pruebas completas en un clon limpio
+- comando: `python -m pytest -q -p no:cacheprovider (cwd: <CLON>)`
+- fecha: 2026-11-13T16:57:14-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 37.9 s
+- Python: 3.13.0
+- commit del repositorio: b14031d
+
+Clon limpio del commit b14031d (carpeta temporal fuera del repositorio).
+
+- pytest: código de salida 0; 199 passed, 1 warning in 30.55s
+- pruebas recolectadas: 199
+- sha256 de los 19 archivos de `data/` del clon iguales a los del árbol de trabajo: sí
+- escáner de secretos sobre el clon (árbol e historial): código 0; hallazgos: 0
+
+Pruebas por archivo:
+| Archivo | Pruebas |
+|---|---|
+| `tests/test_api.py` | 17 |
+| `tests/test_carga_relacional.py` | 54 |
+| `tests/test_catalogo.py` | 5 |
+| `tests/test_configurar_mysql.py` | 25 |
+| `tests/test_dist.py` | 15 |
+| `tests/test_empaquetado_y_revision.py` | 5 |
+| `tests/test_estrategia.py` | 14 |
+| `tests/test_evidencias.py` | 4 |
+| `tests/test_extract.py` | 6 |
+| `tests/test_kpis.py` | 6 |
+| `tests/test_logger.py` | 2 |
+| `tests/test_quality.py` | 4 |
+| `tests/test_readme_cifras.py` | 13 |
+| `tests/test_respaldo_y_medicion.py` | 12 |
+| `tests/test_secretos.py` | 10 |
+| `tests/test_transform.py` | 7 |
+
+Resultado: todo correcto.

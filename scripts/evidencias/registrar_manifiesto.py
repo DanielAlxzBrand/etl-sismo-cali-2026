@@ -1,4 +1,4 @@
-"""Agrega al manifiesto de evidencias las filas de la capa de servicio (EV-013 a EV-024) con su sha256 calculado de cada archivo.
+"""Agrega al manifiesto de evidencias las filas de la capa de servicio (EV-013 a EV-026) y del almacenamiento relacional (EV-027 a EV-034) con su sha256 calculado de cada archivo.
 
 Idempotente: si un id ya está en el manifiesto, lo reemplaza. Solo escribe docs/evidencias/manifiesto.md.
 Uso: .\\.venv\\Scripts\\python.exe scripts\\evidencias\\registrar_manifiesto.py
@@ -40,6 +40,29 @@ FILAS = {
     "EV-024": ("2.3", "Imagen renderizada con el resultado de EV-019", "imagen", "matplotlib sobre EV-019", "EV-024_escaner.png"),
 }
 
+CARPETA_ALMACEN = "docs/evidencias/almacenamiento"
+FECHA_ALMACEN = "2026-11-13"
+FILAS_ALMACEN = {
+    "EV-027": ("4.1", "PyMySQL y cryptography instalados en el .venv, con `pip check` sin conflictos y ruedas para Python 3.13", "archivo", "`python scripts/evidencias/evidencia_conector.py` (pip install pymysql cryptography; pip check)", "EV-027_conector_mysql.txt"),
+    "EV-028": ("4.1, 4.2", "Batería en vivo sobre la base de prueba de MySQL 8.0.45: privilegios mínimos, esquema desde cero, carga conciliada al 100 %, idempotencia, historial, reversión, violaciones de integridad rechazadas y API idéntica a SQLite (26 de 26)", "archivo",
+              "`python scripts/mysql/verificar_mysql.py --evidencia`", "EV-028_verificacion_mysql.txt"),
+    "EV-029": ("4.1, 4.2", "Carga real a `sismo_cali`: 100 % de conciliación con los archivos de origen, segunda carga «ya cargada», 0 filas huérfanas y cifras iguales a gold_final.csv", "archivo", "`python scripts/evidencias/evidencia_carga_real.py`", "EV-029_carga_real_mysql.txt"),
+    "EV-030": ("4.3", "Medición de la carga fila a fila frente a lotes de 500, 1000 y 2000 (mediana, p95 y filas por segundo; 1 calentamiento y 5 repeticiones) y lote elegido", "archivo", "`python scripts/mysql/benchmark_lotes.py --evidencia --fijar`", "EV-030_benchmark_lotes.txt"),
+    "EV-030b": ("4.3", "Datos de la medición de lotes de EV-030", "archivo", "mismo comando que EV-030", "EV-030_benchmark_lotes.csv"),
+    "EV-030c": ("4.3", "Gráfico renderizado con las medianas de EV-030", "imagen", "matplotlib sobre EV-030", "EV-030_benchmark_lotes.png"),
+    "EV-031": ("4.2", "Respaldo lógico en CSV con manifiesto sha256 de la base real, restauración en la base de prueba y huellas de filas iguales en las 7 tablas", "archivo", "`python scripts/mysql/respaldar_restaurar.py --evidencia`", "EV-031_respaldo_restauracion.txt"),
+    "EV-032": ("4.1", "La API sirve las mismas respuestas desde MySQL que desde SQLite (17 rutas con servidores reales en 127.0.0.1), solo acepta GET y no cambia data/; con latencias", "archivo", "`python scripts/evidencias/evidencia_api_mysql.py`", "EV-032_api_mysql_vs_sqlite.txt"),
+    "EV-032b": ("4.1", "Datos de latencia por ruta y almacén de EV-032 (50 repeticiones tras 5 de calentamiento)", "archivo", "mismo comando que EV-032", "EV-032_latencia_api_mysql_vs_sqlite.csv"),
+    "EV-032c": ("4.1", "Gráfico renderizado con las latencias de EV-032", "imagen", "matplotlib sobre EV-032", "EV-032_latencia_api_mysql_vs_sqlite.png"),
+    "EV-033": ("2.3", "Comprobación canario: la contraseña real de MySQL no aparece en el árbol, los registros, el historial de git ni un zip de prueba; `.env` ignorado y no versionado", "archivo", "`python scripts/evidencias/evidencia_canario.py`", "EV-033_canario_credenciales.txt"),
+    "EV-034": ("4.1, 4.2, 4.3", "Las pruebas (199) pasan en un clon limpio, `data/` del clon es idéntico al del árbol de trabajo y el escáner no halla secretos", "archivo", "`python scripts/evidencias/evidencia_pruebas_clon.py`", "EV-034_pruebas_clon.txt"),
+}
+
+
+def fila(ev, item, que, tipo, cmd, archivo, carpeta, fecha):
+    p = REPO / carpeta / archivo
+    return f"| {ev} |", f"| {ev} | {item} | {que} | {tipo} | {cmd} | {fecha} | {carpeta}/{archivo} | {hashlib.sha256(p.read_bytes()).hexdigest()} |"
+
 
 def main():
     lineas = [l for l in MANIFIESTO.read_text(encoding="utf-8").split("\n")]
@@ -49,13 +72,18 @@ def main():
         if not p.exists():
             log.warning("falta %s; no se registra %s", archivo, ev)
             continue
-        nuevas.append((f"| {ev} |", f"| {ev} | {item} | {que} | {tipo} | {cmd} | {FECHA} | {CARPETA}/{archivo} | {hashlib.sha256(p.read_bytes()).hexdigest()} |"))
+        nuevas.append(fila(ev, item, que, tipo, cmd, archivo, CARPETA, FECHA))
+    for ev, (item, que, tipo, cmd, archivo) in FILAS_ALMACEN.items():
+        if not (REPO / CARPETA_ALMACEN / archivo).exists():
+            log.warning("falta %s; no se registra %s", archivo, ev)
+            continue
+        nuevas.append(fila(ev, item, que, tipo, cmd, archivo, CARPETA_ALMACEN, FECHA_ALMACEN))
     ids = {pref for pref, _ in nuevas}
     lineas = [l for l in lineas if not any(l.startswith(i) for i in ids)]
     ultima = max(i for i, l in enumerate(lineas) if l.startswith("| EV-"))   # las filas nuevas van al final de la tabla, antes de la convención
     lineas[ultima + 1:ultima + 1] = [fila for _, fila in nuevas]
     MANIFIESTO.write_text("\n".join(lineas) + "\n", encoding="utf-8", newline="\n")
-    log.info("manifiesto: %s filas de la capa de servicio registradas", len(nuevas))
+    log.info("manifiesto: %s filas registradas (capa de servicio y almacenamiento relacional)", len(nuevas))
 
 
 if __name__ == "__main__":
