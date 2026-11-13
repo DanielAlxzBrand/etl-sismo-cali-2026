@@ -10,3 +10,6 @@ jupyter>=1.0
 nbconvert>=7.16
 ipykernel>=6.29
 shapely>=2.0
+fastapi>=0.162.5
+uvicorn>=0.54.0
+httpx>=0.28.1

@@ -63,3 +63,12 @@ logging:
   file_pattern: "etl_%Y%m%d.log"
   format: "%(asctime)s %(levelname)s %(name)s %(message)s"
   datefmt: "%Y-%m-%d %H:%M:%S"
+api:   # capa de servicio de solo lectura (F2)
+  version: "1.0.0"
+  host: 127.0.0.1     # nunca exponer fuera del equipo
+  puerto: 8000
+  limite_defecto: 50
+  limite_maximo: 200
+  base_datos: data/gold/etl_sismo.db
+  catalogo_fuentes: docs/entrega_3/catalogo_fuentes.json
+  aviso: "Proxy satelital, no evaluación estructural."
