@@ -1,0 +1,1210 @@
+{
+  "version_catalogo": 1,
+  "aviso": "Proxy satelital, no evaluación estructural. Alcance: 7 comunas con polígonos de afectación preliminar; estrato 2015.",
+  "fuentes": [
+    {
+      "id": "edificaciones",
+      "rol": "principal",
+      "nombre": "Impacto Satelital en Edificaciones por Terremoto, Cali 2026",
+      "publicador": "Capa catalogada en datos.gov.co (5vy8-gpw8); servicio ArcGIS FeatureServer",
+      "url": "https://services3.arcgis.com/Hf3YbZrlZ0OA2COM/arcgis/rest/services/Impacto_Satelital_en_Edificaciones_por_Terremoto_Cali_2026/FeatureServer/0",
+      "url_consulta": "https://services3.arcgis.com/Hf3YbZrlZ0OA2COM/arcgis/rest/services/Impacto_Satelital_en_Edificaciones_por_Terremoto_Cali_2026/FeatureServer/0/query",
+      "catalogo": "datos.gov.co 5vy8-gpw8",
+      "protocolo": "ArcGIS REST (FeatureServer, consulta con paginación por resultOffset)",
+      "formato": "JSON (geometría de polígonos, EPSG:4326)",
+      "autenticacion": "ninguna (consulta pública sin token)",
+      "limites_paginacion": "maxRecordCount 2000; 3 páginas de 2000, 2000, 1146 filas",
+      "columnas_usadas": [
+        {
+          "nombre": "OBJECTID",
+          "tipo": "entero (identificador)",
+          "significado": "identificador de la construcción (se conserva como objectid)"
+        },
+        {
+          "nombre": "COMUNA",
+          "tipo": "texto",
+          "significado": "código catastral de la comuna (2 dígitos, texto); entra a la llave del JOIN"
+        },
+        {
+          "nombre": "BARRIO",
+          "tipo": "texto",
+          "significado": "código catastral del barrio dentro de la comuna (2 dígitos, texto); entra a la llave del JOIN"
+        },
+        {
+          "nombre": "NPISOS",
+          "tipo": "decimal",
+          "significado": "número de pisos declarado en la capa"
+        },
+        {
+          "nombre": "Indice_Escombros",
+          "tipo": "decimal",
+          "significado": "índice continuo de cambio de textura entre las imágenes pre y post; nulo si no hay datos satelitales"
+        },
+        {
+          "nombre": "Estado_Estructural",
+          "tipo": "texto",
+          "significado": "etiqueta de clase de la capa (se agrupa en cuatro clases estables); no es una evaluación estructural"
+        }
+      ],
+      "columnas_no_usadas": [
+        "OBJECTID_1",
+        "DEPAPRED",
+        "MUNIPRED",
+        "TIPO_AVALU",
+        "SECTOR",
+        "MANZANA",
+        "TERRENO",
+        "COND",
+        "EDIFPRED",
+        "PREDIO",
+        "NUMEPRED",
+        "ID_PREDIO",
+        "Shape__Area",
+        "Shape__Length"
+      ],
+      "cobertura_temporal": "imágenes pre 2026-03-22 y post 2026-08-11; capa editada el 2026-09-02",
+      "cobertura_espacial": "construcciones dentro de los polígonos de afectación preliminar; 7 comunas de Cali (no es toda la ciudad)",
+      "granularidad": "una fila por construcción (huella catastral)",
+      "fechas": {
+        "imagen_pre": "2026-03-22",
+        "imagen_post": "2026-08-11",
+        "edicion_capa": "2026-09-02",
+        "consulta_utc": "2026-10-16T00:10:25Z"
+      },
+      "licencia": "CC BY 4.0 (metadata.custom_fields.Common Core.License del catalogo datos.gov.co, 5vy8-gpw8); el servicio ArcGIS trae copyrightText vacio",
+      "snapshot": {
+        "ruta": "data/bronze/api/edificaciones/snap_20261016T001024Z",
+        "extraccion_utc": "2026-10-16T00:10:25Z",
+        "archivos": [
+          {
+            "source_id": "edificaciones",
+            "ruta": "data/bronze/api/edificaciones/snap_20261016T001024Z/page_0001.json",
+            "filas": 2000,
+            "bytes": 1774634,
+            "sha256": "92dfda868878fed44148bbeeb446b13f6bcf88a62dcc33aaab8afd45f717e4af"
+          },
+          {
+            "source_id": "edificaciones",
+            "ruta": "data/bronze/api/edificaciones/snap_20261016T001024Z/page_0002.json",
+            "filas": 2000,
+            "bytes": 1752478,
+            "sha256": "6b2a4849e95d8da1f04f7641cbc90b98aa4372cad9cbab02230bab8babe25729"
+          },
+          {
+            "source_id": "edificaciones",
+            "ruta": "data/bronze/api/edificaciones/snap_20261016T001024Z/page_0003.json",
+            "filas": 1146,
+            "bytes": 1055160,
+            "sha256": "ac23590d1a6713e37f711473d999a9fd10eec024076b58bb63fa48f2e7524f51"
+          },
+          {
+            "source_id": "edificaciones_capa_meta",
+            "ruta": "data/bronze/api/edificaciones/snap_20261016T001024Z/capa_meta.json",
+            "filas": 20,
+            "bytes": 17507,
+            "sha256": "c5e4f42587756d609a8f143d5b49bfc6a4fd051fef1f5d35e22f72cd34ee52df"
+          },
+          {
+            "source_id": "edificaciones_count_antes",
+            "ruta": "data/bronze/api/edificaciones/snap_20261016T001024Z/count_antes.json",
+            "filas": 5146,
+            "bytes": 181,
+            "sha256": "c20dec67463cb2026f1f47b9949fe1272a30e944e2958a1538f59138effb8f59"
+          },
+          {
+            "source_id": "edificaciones_count_despues",
+            "ruta": "data/bronze/api/edificaciones/snap_20261016T001024Z/count_despues.json",
+            "filas": 5146,
+            "bytes": 181,
+            "sha256": "c20dec67463cb2026f1f47b9949fe1272a30e944e2958a1538f59138effb8f59"
+          }
+        ],
+        "filas_de_datos": 5146,
+        "bytes": 4600141,
+        "paginas": [
+          2000,
+          2000,
+          1146
+        ]
+      },
+      "llave_union": "codigo_barrio = int(COMUNA)*100 + int(BARRIO) (texto)",
+      "uso_en_pipeline": "Bronze → Silver (silver_construcciones) → base de todos los KPI de Gold",
+      "calidad": {
+        "construcciones": 5146,
+        "sin_datos_satelitales": 435,
+        "pct_sin_datos": 0.084532,
+        "geom_duplicada_filas": 18,
+        "nulos_antes_bronze": {
+          "COMUNA": 2,
+          "BARRIO": 2,
+          "NPISOS": 11,
+          "Indice_Escombros": 435
+        }
+      },
+      "riesgos_limitaciones": [
+        "Proxy satelital: no es una evaluación estructural ni inspección en sitio.",
+        "Solo incluye construcciones dentro de polígonos de afectación preliminar: la tasa es condicional a esa zona.",
+        "El servicio no declara licencia (copyrightText vacío); la licencia se toma del catálogo.",
+        "Las imágenes pre y post están separadas unos 4,5 meses y no hay grupo de control."
+      ]
+    },
+    {
+      "id": "estrato_barrio",
+      "rol": "principal",
+      "nombre": "Estratificación socioeconómica según estrato, por barrio en Cali 2015",
+      "publicador": "DAPM Cali (datos.cali.gov.co); catálogo datos.gov.co 6esn-pmy5",
+      "url": "https://datos.cali.gov.co/dataset/c6421d6b-2f7c-4a28-b126-fb60192e6302/resource/f492c39c-d980-4a97-9eaa-f00dc17e451a/download/estratificaci_n_socioecon_mica_seg_n_estrato__por_barrio_en_cali_2015.csv",
+      "catalogo": "datos.gov.co 6esn-pmy5",
+      "protocolo": "HTTP GET de un archivo",
+      "formato": "CSV UTF-8",
+      "autenticacion": "ninguna (requiere un User-Agent)",
+      "limites_paginacion": "archivo único, sin paginación",
+      "columnas_usadas": [
+        {
+          "nombre": "Código único",
+          "tipo": "entero (con guiones como nulo)",
+          "significado": "ver columnas de silver_estrato_barrio"
+        },
+        {
+          "nombre": "Barrio",
+          "tipo": "texto",
+          "significado": "ver columnas de silver_estrato_barrio"
+        },
+        {
+          "nombre": "Lados de manzana por estrato 1",
+          "tipo": "entero (con guiones como nulo)",
+          "significado": "ver columnas de silver_estrato_barrio"
+        },
+        {
+          "nombre": "Lados de manzana por estrato 2",
+          "tipo": "entero (con guiones como nulo)",
+          "significado": "ver columnas de silver_estrato_barrio"
+        },
+        {
+          "nombre": "Lados de manzana por estrato 3",
+          "tipo": "entero (con guiones como nulo)",
+          "significado": "ver columnas de silver_estrato_barrio"
+        },
+        {
+          "nombre": "Lados de manzana por estrato 4",
+          "tipo": "entero (con guiones como nulo)",
+          "significado": "ver columnas de silver_estrato_barrio"
+        },
+        {
+          "nombre": "Lados de manzana por estrato 5",
+          "tipo": "entero (con guiones como nulo)",
+          "significado": "ver columnas de silver_estrato_barrio"
+        },
+        {
+          "nombre": "Lados de manzana por estrato 6",
+          "tipo": "entero (con guiones como nulo)",
+          "significado": "ver columnas de silver_estrato_barrio"
+        },
+        {
+          "nombre": "Sin vivienda",
+          "tipo": "entero (con guiones como nulo)",
+          "significado": "ver columnas de silver_estrato_barrio"
+        },
+        {
+          "nombre": "Estrato moda",
+          "tipo": "entero (con guiones como nulo)",
+          "significado": "ver columnas de silver_estrato_barrio"
+        }
+      ],
+      "cobertura_temporal": "año 2015 (estrato por lados de manzana)",
+      "cobertura_espacial": "Cali; 346 barrios y 23 filas resumen (comunas y «Otros»)",
+      "granularidad": "una fila por barrio",
+      "fechas": {
+        "datos": "2015",
+        "consulta_utc": "2026-10-16T00:10:28Z"
+      },
+      "licencia": "Licencia Creative Commons Attribution Share-Alike",
+      "snapshot": {
+        "ruta": "data/bronze/tabular/estrato_barrio/snap_20261016T001028Z",
+        "extraccion_utc": "2026-10-16T00:10:28Z",
+        "archivos": [
+          {
+            "source_id": "estrato_barrio",
+            "ruta": "data/bronze/tabular/estrato_barrio/snap_20261016T001028Z/estratificaci_n_socioecon_mica_seg_n_estrato__por_barrio_en_cali_2015.csv",
+            "filas": 369,
+            "bytes": 16030,
+            "sha256": "c16b209e4f20bd0983e0c44c6ad109f151e41c30c23f7708143094746136a089"
+          }
+        ]
+      },
+      "llave_union": "Código único del barrio (codigo_barrio)",
+      "uso_en_pipeline": "Bronze → Silver (silver_estrato_barrio) → estrato moda por barrio",
+      "calidad": {
+        "filas_entrada": 369,
+        "filas_resumen_separadas": 23,
+        "filas_salida": 346,
+        "cobertura_estrato_valido": 0.998445
+      },
+      "riesgos_limitaciones": [
+        "Estrato de 2015: desfase temporal frente a las imágenes de 2026.",
+        "Estrato asignado por barrio (moda), no por predio: falacia ecológica.",
+        "Los códigos de barrio de 2026 están renumerados respecto de 2015 (ver docs/revision_codigos_barrio.md)."
+      ]
+    },
+    {
+      "id": "poligonos_barrios",
+      "rol": "auxiliar (validación de la llave)",
+      "nombre": "Polígonos de barrios y sectores (WFS dapm:pdt_dpa_barrios_sectores)",
+      "publicador": "DAPM Cali (IDESC, GeoServer)",
+      "url": "https://ws-idesc.cali.gov.co/geoserver/dapm/ows",
+      "protocolo": "OGC WFS 1.0.0 GetFeature",
+      "formato": "GeoJSON (EPSG:4326)",
+      "autenticacion": "ninguna",
+      "limites_paginacion": "una sola respuesta",
+      "columnas_usadas": [
+        {
+          "nombre": "barcodigo",
+          "tipo": "texto",
+          "significado": "código del polígono 2026"
+        },
+        {
+          "nombre": "barnombre",
+          "tipo": "texto",
+          "significado": "nombre del barrio o sector"
+        },
+        {
+          "nombre": "geometry",
+          "tipo": "polígono",
+          "significado": "límite; se ubica el centroide de cada construcción"
+        }
+      ],
+      "cobertura_temporal": "polígonos vigentes en 2026 (acuerdo DIVIPOLA)",
+      "cobertura_espacial": "Cali",
+      "granularidad": "una fila por barrio o sector",
+      "fechas": {
+        "consulta_utc": "2026-10-16T00:10:31Z"
+      },
+      "licencia": "no declarada en el servicio",
+      "snapshot": {
+        "ruta": "data/bronze/geo/poligonos_barrios/snap_20261016T001031Z",
+        "extraccion_utc": "2026-10-16T00:10:31Z",
+        "archivos": [
+          {
+            "source_id": "poligonos_barrios",
+            "ruta": "data/bronze/geo/poligonos_barrios/snap_20261016T001031Z/barrios.geojson",
+            "filas": 342,
+            "bytes": 1850751,
+            "sha256": "8e74f06308568e2ccbe90f54c5bef0611c15072765a255fa6bd5bc12babe6ad1"
+          }
+        ]
+      },
+      "llave_union": "centroide de la construcción dentro del polígono (no entra al JOIN)",
+      "uso_en_pipeline": "solo valida la llave (coincide_poligono, nombre_validado)",
+      "calidad": {
+        "pct_coincide_poligono": 0.914269,
+        "pct_nombre_validado": 0.935214
+      },
+      "riesgos_limitaciones": [
+        "Los códigos de 2026 difieren de los de 2015 en parte de los barrios.",
+        "El servicio es de un tercero y puede cambiar."
+      ]
+    },
+    {
+      "id": "usgs",
+      "rol": "contexto",
+      "nombre": "USGS FDSN Event (catálogo de sismos)",
+      "publicador": "U.S. Geological Survey",
+      "url": "https://earthquake.usgs.gov/fdsnws/event/1/query",
+      "protocolo": "HTTP GET (FDSN)",
+      "formato": "CSV",
+      "autenticacion": "ninguna",
+      "limites_paginacion": "limit 1 a 20.000",
+      "columnas_usadas": [],
+      "cobertura_temporal": "evento del 2026-08-10",
+      "cobertura_espacial": "ventana de consulta cercana a Cali",
+      "granularidad": "un evento por fila",
+      "fechas": {
+        "consulta": "2026-10-15"
+      },
+      "licencia": "no declarada en esta verificación",
+      "snapshot": null,
+      "llave_union": "ninguna",
+      "uso_en_pipeline": "solo contexto del evento (id us6000tjl2, magnitud 7.4); no entra al pipeline ni a Bronze (muestra en docs/muestras/v10_usgs_11.csv)",
+      "calidad": {
+        "eventos_en_la_muestra": 11
+      },
+      "riesgos_limitaciones": [
+        "Sin llave a barrio o municipio: descartada como fuente del JOIN."
+      ]
+    },
+    {
+      "id": "atc20_prensa",
+      "rol": "contexto",
+      "nombre": "Evaluación estructural ATC-20 de la Alcaldía (cifras de prensa)",
+      "publicador": "El País Cali (reportando a la Alcaldía)",
+      "url": "https://www.elpais.com.co/cali/alcaldia-de-cali-entrega-balance-de-gestion-tras-el-sismo-mas-de-3400-edificaciones-evaluadas-y-45000-familias-damnificadas-2338.html",
+      "protocolo": "página web",
+      "formato": "artículo",
+      "autenticacion": "ninguna",
+      "limites_paginacion": "no aplica",
+      "columnas_usadas": [],
+      "cobertura_temporal": "publicado el 23-sep-2026",
+      "cobertura_espacial": "Cali (distribución por comuna desconocida)",
+      "granularidad": "predio",
+      "fechas": {
+        "consulta": "2026-10-15"
+      },
+      "licencia": "no aplica (cifras de prensa)",
+      "snapshot": null,
+      "llave_union": "ninguna",
+      "uso_en_pipeline": "solo contexto; no se compara ni se mezcla con cifras de Gold",
+      "calidad": {
+        "cifras": "3.403 predios: 1"
+      },
+      "riesgos_limitaciones": [
+        "Cifras de prensa, no recotejadas con una fuente oficial descargable.",
+        "La unidad (predios) no es la nuestra (construcciones)."
+      ]
+    }
+  ],
+  "descartadas": [
+    {
+      "id": "sgc_eval_int",
+      "nombre": "SGC · Mapa de Intensidades Evaluadas (ArcGIS REST)",
+      "motivo": "Granularidad por sitio o centro poblado, no por barrio; ningún ID_SISMO identificable como el evento (V9).",
+      "evidencia": "docs/investigacion_fuentes.md §2 F5; verificacion_fuentes.md V9"
+    },
+    {
+      "id": "sgc_municipios",
+      "nombre": "SGC · SIMMA Capas Generales, Municipios",
+      "motivo": "Solo polígonos municipales para el Plan B; no es amenaza por barrio.",
+      "evidencia": "docs/investigacion_fuentes.md §2 F6"
+    },
+    {
+      "id": "area_barrios",
+      "nombre": "Área barrios de Cali 2015 (CSV, respaldo)",
+      "motivo": "Solo estrato moda por barrio; respaldo del CSV principal, no se usa en el JOIN.",
+      "evidencia": "docs/investigacion_fuentes.md §2 F3; V5"
+    },
+    {
+      "id": "estrato_comunas",
+      "nombre": "Estratificación por comunas 2015 (CSV)",
+      "motivo": "Solo 22 filas; sirve para una llave por comuna, no por barrio.",
+      "evidencia": "docs/investigacion_fuentes.md §2 F3; V5"
+    },
+    {
+      "id": "rud",
+      "nombre": "RUD (UNGRD) vía monitor «Datos del terremoto»",
+      "motivo": "Archivo JSON estático de un monitor de un solo mantenedor, registro declarativo, sin código DIVIPOLA; Plan B municipal.",
+      "evidencia": "docs/investigacion_fuentes.md §2 F8; V11"
+    },
+    {
+      "id": "divipola",
+      "nombre": "DIVIPOLA (Socrata gdxc-w37w)",
+      "motivo": "Códigos municipales; solo útiles en el Plan B municipal.",
+      "evidencia": "docs/investigacion_fuentes.md §2 F9; V12"
+    },
+    {
+      "id": "socrata_hbdu_4927",
+      "nombre": "Socrata hbdu-4927 (portal SGC)",
+      "motivo": "Es un enlace federado sin filas; la API devuelve HTTP 400.",
+      "evidencia": "docs/investigacion_fuentes.md §2 F7"
+    },
+    {
+      "id": "mapageologia",
+      "nombre": "ArcGIS MAPAGEOLOGIA (fallas)",
+      "motivo": "Geología a escala nacional, sin llave a barrio.",
+      "evidencia": "docs/investigacion_fuentes.md §2 F6"
+    },
+    {
+      "id": "copernicus_emsr916",
+      "nombre": "Copernicus EMSR916 / ICube-SERTIT",
+      "motivo": "Solo 21 y 94 edificios en zonas parciales de Cali, sin edificios en común; uso no comercial.",
+      "evidencia": "docs/investigacion_fuentes.md §2 F11"
+    }
+  ],
+  "diccionario": {
+    "bronze": {
+      "descripcion": "Bytes crudos de cada fuente con manifiesto de sha256; nunca se sobrescriben.",
+      "archivos": [
+        {
+          "ruta": "data/bronze/api/edificaciones/snap_20261016T001024Z/count_antes.json",
+          "filas": 5146,
+          "bytes": 181,
+          "sha256": "c20dec67463cb2026f1f47b9949fe1272a30e944e2958a1538f59138effb8f59",
+          "source_id": "edificaciones_count_antes"
+        },
+        {
+          "ruta": "data/bronze/api/edificaciones/snap_20261016T001024Z/capa_meta.json",
+          "filas": 20,
+          "bytes": 17507,
+          "sha256": "c5e4f42587756d609a8f143d5b49bfc6a4fd051fef1f5d35e22f72cd34ee52df",
+          "source_id": "edificaciones_capa_meta"
+        },
+        {
+          "ruta": "data/bronze/api/edificaciones/snap_20261016T001024Z/page_0001.json",
+          "filas": 2000,
+          "bytes": 1774634,
+          "sha256": "92dfda868878fed44148bbeeb446b13f6bcf88a62dcc33aaab8afd45f717e4af",
+          "source_id": "edificaciones"
+        },
+        {
+          "ruta": "data/bronze/api/edificaciones/snap_20261016T001024Z/page_0002.json",
+          "filas": 2000,
+          "bytes": 1752478,
+          "sha256": "6b2a4849e95d8da1f04f7641cbc90b98aa4372cad9cbab02230bab8babe25729",
+          "source_id": "edificaciones"
+        },
+        {
+          "ruta": "data/bronze/api/edificaciones/snap_20261016T001024Z/page_0003.json",
+          "filas": 1146,
+          "bytes": 1055160,
+          "sha256": "ac23590d1a6713e37f711473d999a9fd10eec024076b58bb63fa48f2e7524f51",
+          "source_id": "edificaciones"
+        },
+        {
+          "ruta": "data/bronze/api/edificaciones/snap_20261016T001024Z/count_despues.json",
+          "filas": 5146,
+          "bytes": 181,
+          "sha256": "c20dec67463cb2026f1f47b9949fe1272a30e944e2958a1538f59138effb8f59",
+          "source_id": "edificaciones_count_despues"
+        },
+        {
+          "ruta": "data/bronze/tabular/estrato_barrio/snap_20261016T001028Z/estratificaci_n_socioecon_mica_seg_n_estrato__por_barrio_en_cali_2015.csv",
+          "filas": 369,
+          "bytes": 16030,
+          "sha256": "c16b209e4f20bd0983e0c44c6ad109f151e41c30c23f7708143094746136a089",
+          "source_id": "estrato_barrio"
+        },
+        {
+          "ruta": "data/bronze/geo/poligonos_barrios/snap_20261016T001031Z/barrios.geojson",
+          "filas": 342,
+          "bytes": 1850751,
+          "sha256": "8e74f06308568e2ccbe90f54c5bef0611c15072765a255fa6bd5bc12babe6ad1",
+          "source_id": "poligonos_barrios"
+        }
+      ]
+    },
+    "silver": {
+      "descripcion": "Datos limpios, tipificados e integrados; cada regla de limpieza está en docs/reglas_silver.md.",
+      "archivos": [
+        {
+          "ruta": "data/silver/silver_construcciones.csv",
+          "filas": 5146,
+          "bytes": 794579,
+          "sha256": "85ea33ebe99c9fb6087bb7eaf88fee42f6ba55b9a254348f7e9d9fee571d5c9b",
+          "columnas": [
+            {
+              "nombre": "objectid",
+              "tipo": "entero",
+              "descripcion": "identificador de la construcción (único)"
+            },
+            {
+              "nombre": "comuna",
+              "tipo": "texto",
+              "descripcion": "códigos catastrales de 2 dígitos (texto; nulos si venían en blanco)"
+            },
+            {
+              "nombre": "barrio",
+              "tipo": "texto",
+              "descripcion": "códigos catastrales de 2 dígitos (texto; nulos si venían en blanco)"
+            },
+            {
+              "nombre": "codigo_barrio",
+              "tipo": "texto",
+              "descripcion": "llave `int(comuna)*100 + int(barrio)` (texto)"
+            },
+            {
+              "nombre": "npisos",
+              "tipo": "decimal",
+              "descripcion": "número de pisos (entero nullable) y bandera de 0 pisos"
+            },
+            {
+              "nombre": "npisos_cero",
+              "tipo": "lógico (con nulos)",
+              "descripcion": "número de pisos (entero nullable) y bandera de 0 pisos"
+            },
+            {
+              "nombre": "indice_escombros",
+              "tipo": "decimal",
+              "descripcion": "índice continuo de cambio de textura (nulo si sin datos)"
+            },
+            {
+              "nombre": "estado_estructural",
+              "tipo": "texto",
+              "descripcion": "etiqueta original y clase (`escombros`, `techo`, `sin_cambio`, `sin_datos`)"
+            },
+            {
+              "nombre": "clase_dano",
+              "tipo": "texto",
+              "descripcion": "etiqueta original y clase (`escombros`, `techo`, `sin_cambio`, `sin_datos`)"
+            },
+            {
+              "nombre": "sin_datos",
+              "tipo": "lógico",
+              "descripcion": "sin datos satelitales"
+            },
+            {
+              "nombre": "severo_estricto",
+              "tipo": "lógico (con nulos)",
+              "descripcion": "banderas D7; **nulas** (no falsas) si `sin_datos`"
+            },
+            {
+              "nombre": "dano_visible",
+              "tipo": "lógico (con nulos)",
+              "descripcion": "banderas D7; **nulas** (no falsas) si `sin_datos`"
+            },
+            {
+              "nombre": "geom_duplicada",
+              "tipo": "lógico",
+              "descripcion": "comparte geometría idéntica con otra construcción (18 filas, 9 pares)"
+            },
+            {
+              "nombre": "lon",
+              "tipo": "decimal",
+              "descripcion": "centroide a 7 decimales (EPSG:4326)"
+            },
+            {
+              "nombre": "lat",
+              "tipo": "decimal",
+              "descripcion": "centroide a 7 decimales (EPSG:4326)"
+            },
+            {
+              "nombre": "codigo_poligono",
+              "tipo": "texto",
+              "descripcion": "polígono WFS 2026 donde cae el centroide y si su código coincide con `codigo_barrio`"
+            },
+            {
+              "nombre": "nombre_poligono",
+              "tipo": "texto",
+              "descripcion": "polígono WFS 2026 donde cae el centroide y si su código coincide con `codigo_barrio`"
+            },
+            {
+              "nombre": "coincide_poligono",
+              "tipo": "lógico (con nulos)",
+              "descripcion": "polígono WFS 2026 donde cae el centroide y si su código coincide con `codigo_barrio`"
+            }
+          ]
+        },
+        {
+          "ruta": "data/silver/silver_estrato_barrio.csv",
+          "filas": 346,
+          "bytes": 18030,
+          "sha256": "0815be18476695f160b3002f40c84b29afd7a69ccddc6cba5a6b99bad87a346b",
+          "columnas": [
+            {
+              "nombre": "codigo_barrio",
+              "tipo": "entero",
+              "descripcion": "código del barrio (llave del JOIN)"
+            },
+            {
+              "nombre": "barrio",
+              "tipo": "texto",
+              "descripcion": "nombre del barrio en el CSV 2015"
+            },
+            {
+              "nombre": "lados_e1",
+              "tipo": "entero",
+              "descripcion": "lados de manzana de estrato 1"
+            },
+            {
+              "nombre": "lados_e2",
+              "tipo": "entero",
+              "descripcion": "lados de manzana de estrato 2"
+            },
+            {
+              "nombre": "lados_e3",
+              "tipo": "entero",
+              "descripcion": "lados de manzana de estrato 3"
+            },
+            {
+              "nombre": "lados_e4",
+              "tipo": "entero",
+              "descripcion": "lados de manzana de estrato 4"
+            },
+            {
+              "nombre": "lados_e5",
+              "tipo": "entero",
+              "descripcion": "lados de manzana de estrato 5"
+            },
+            {
+              "nombre": "lados_e6",
+              "tipo": "entero",
+              "descripcion": "lados de manzana de estrato 6"
+            },
+            {
+              "nombre": "sin_vivienda",
+              "tipo": "entero",
+              "descripcion": "lados de manzana sin vivienda"
+            },
+            {
+              "nombre": "lados_total",
+              "tipo": "entero",
+              "descripcion": "suma de los lados de manzana por estrato (1 a 6)"
+            },
+            {
+              "nombre": "estrato_moda_original",
+              "tipo": "texto",
+              "descripcion": "estrato moda tal como viene en el CSV"
+            },
+            {
+              "nombre": "estrato",
+              "tipo": "decimal",
+              "descripcion": "estrato moda validado (1 a 6; nulo si NR)"
+            },
+            {
+              "nombre": "pureza_estrato",
+              "tipo": "decimal",
+              "descripcion": "max(lados 1..6)/suma(lados 1..6), sin «Sin vivienda»"
+            }
+          ]
+        },
+        {
+          "ruta": "data/silver/silver_integrated.csv",
+          "filas": 5146,
+          "bytes": 1048708,
+          "sha256": "bc1d1c6bd4bb3f6278a423751e63323b69ebc583f82a3f5f2b1b0d491d09ae4d",
+          "columnas": [
+            {
+              "nombre": "objectid",
+              "tipo": "entero",
+              "descripcion": "identificador de la construcción (único)"
+            },
+            {
+              "nombre": "comuna",
+              "tipo": "texto",
+              "descripcion": "códigos catastrales de 2 dígitos (texto; nulos si venían en blanco)"
+            },
+            {
+              "nombre": "barrio",
+              "tipo": "texto",
+              "descripcion": "códigos catastrales de 2 dígitos (texto; nulos si venían en blanco)"
+            },
+            {
+              "nombre": "codigo_barrio",
+              "tipo": "texto",
+              "descripcion": "llave `int(comuna)*100 + int(barrio)` (texto)"
+            },
+            {
+              "nombre": "nombre_barrio_csv",
+              "tipo": "texto",
+              "descripcion": "nombre del barrio en el CSV de estrato 2015 (nulo si no cruza)"
+            },
+            {
+              "nombre": "cruza_llave",
+              "tipo": "lógico",
+              "descripcion": "la llave existe en el CSV de estrato"
+            },
+            {
+              "nombre": "estrato",
+              "tipo": "decimal",
+              "descripcion": "estrato moda del barrio (1-6; nulo si NR o sin llave)"
+            },
+            {
+              "nombre": "pureza_estrato",
+              "tipo": "decimal",
+              "descripcion": "max(lados 1..6)/suma(lados 1..6) del barrio, sin \"Sin vivienda\""
+            },
+            {
+              "nombre": "n_con_datos_estrato",
+              "tipo": "decimal",
+              "descripcion": "conteos por estrato (construcciones con datos) y bandera k < 30"
+            },
+            {
+              "nombre": "n_severos_estrato",
+              "tipo": "decimal",
+              "descripcion": "conteos por estrato (construcciones con datos) y bandera k < 30"
+            },
+            {
+              "nombre": "muestra_baja",
+              "tipo": "lógico (con nulos)",
+              "descripcion": "conteos por estrato (construcciones con datos) y bandera k < 30"
+            },
+            {
+              "nombre": "npisos",
+              "tipo": "decimal",
+              "descripcion": "número de pisos (entero nullable) y bandera de 0 pisos"
+            },
+            {
+              "nombre": "npisos_cero",
+              "tipo": "lógico (con nulos)",
+              "descripcion": "número de pisos (entero nullable) y bandera de 0 pisos"
+            },
+            {
+              "nombre": "indice_escombros",
+              "tipo": "decimal",
+              "descripcion": "índice continuo de cambio de textura (nulo si sin datos)"
+            },
+            {
+              "nombre": "estado_estructural",
+              "tipo": "texto",
+              "descripcion": "etiqueta original y clase (`escombros`, `techo`, `sin_cambio`, `sin_datos`)"
+            },
+            {
+              "nombre": "clase_dano",
+              "tipo": "texto",
+              "descripcion": "etiqueta original y clase (`escombros`, `techo`, `sin_cambio`, `sin_datos`)"
+            },
+            {
+              "nombre": "sin_datos",
+              "tipo": "lógico",
+              "descripcion": "sin datos satelitales"
+            },
+            {
+              "nombre": "severo_estricto",
+              "tipo": "lógico (con nulos)",
+              "descripcion": "banderas D7; **nulas** (no falsas) si `sin_datos`"
+            },
+            {
+              "nombre": "dano_visible",
+              "tipo": "lógico (con nulos)",
+              "descripcion": "banderas D7; **nulas** (no falsas) si `sin_datos`"
+            },
+            {
+              "nombre": "geom_duplicada",
+              "tipo": "lógico",
+              "descripcion": "comparte geometría idéntica con otra construcción (18 filas, 9 pares)"
+            },
+            {
+              "nombre": "lon",
+              "tipo": "decimal",
+              "descripcion": "centroide a 7 decimales (EPSG:4326)"
+            },
+            {
+              "nombre": "lat",
+              "tipo": "decimal",
+              "descripcion": "centroide a 7 decimales (EPSG:4326)"
+            },
+            {
+              "nombre": "codigo_poligono",
+              "tipo": "texto",
+              "descripcion": "polígono WFS 2026 donde cae el centroide y si su código coincide con `codigo_barrio`"
+            },
+            {
+              "nombre": "nombre_poligono",
+              "tipo": "texto",
+              "descripcion": "polígono WFS 2026 donde cae el centroide y si su código coincide con `codigo_barrio`"
+            },
+            {
+              "nombre": "coincide_poligono",
+              "tipo": "lógico (con nulos)",
+              "descripcion": "polígono WFS 2026 donde cae el centroide y si su código coincide con `codigo_barrio`"
+            },
+            {
+              "nombre": "nombre_validado",
+              "tipo": "lógico (con nulos)",
+              "descripcion": "el nombre CSV 2015 coincide (similitud ≥ 0,85) con el polígono dominante del código"
+            }
+          ]
+        },
+        {
+          "ruta": "data/silver/silver_orphans_left.csv",
+          "filas": 6,
+          "bytes": 597,
+          "sha256": "04bc074bf0332eae832bff81a8be4cc3dc60857bd5398851989444a5aa00b126",
+          "columnas": [
+            {
+              "nombre": "objectid",
+              "tipo": "entero",
+              "descripcion": "identificador de la construcción"
+            },
+            {
+              "nombre": "comuna",
+              "tipo": "decimal",
+              "descripcion": "código de comuna"
+            },
+            {
+              "nombre": "barrio",
+              "tipo": "decimal",
+              "descripcion": "código de barrio"
+            },
+            {
+              "nombre": "codigo_barrio",
+              "tipo": "decimal",
+              "descripcion": "llave construida"
+            },
+            {
+              "nombre": "codigo_poligono",
+              "tipo": "entero",
+              "descripcion": "código del polígono 2026 donde cae el centroide"
+            },
+            {
+              "nombre": "nombre_poligono",
+              "tipo": "texto",
+              "descripcion": "nombre del polígono"
+            },
+            {
+              "nombre": "clase_dano",
+              "tipo": "texto",
+              "descripcion": "clase de la capa"
+            },
+            {
+              "nombre": "causa",
+              "tipo": "texto",
+              "descripcion": "motivo por el que la construcción no cruza con el CSV"
+            }
+          ]
+        },
+        {
+          "ruta": "data/silver/silver_orphans_right.csv",
+          "filas": 295,
+          "bytes": 15289,
+          "sha256": "da95c33f59f5112afb1952ab9a1824a0a791726292d7a164350ad78aa9c4c05a",
+          "columnas": [
+            {
+              "nombre": "codigo_barrio",
+              "tipo": "entero",
+              "descripcion": "código del barrio (llave del JOIN)"
+            },
+            {
+              "nombre": "barrio",
+              "tipo": "texto",
+              "descripcion": "nombre del barrio en el CSV 2015"
+            },
+            {
+              "nombre": "lados_e1",
+              "tipo": "entero",
+              "descripcion": "lados de manzana de estrato 1"
+            },
+            {
+              "nombre": "lados_e2",
+              "tipo": "entero",
+              "descripcion": "lados de manzana de estrato 2"
+            },
+            {
+              "nombre": "lados_e3",
+              "tipo": "entero",
+              "descripcion": "lados de manzana de estrato 3"
+            },
+            {
+              "nombre": "lados_e4",
+              "tipo": "entero",
+              "descripcion": "lados de manzana de estrato 4"
+            },
+            {
+              "nombre": "lados_e5",
+              "tipo": "entero",
+              "descripcion": "lados de manzana de estrato 5"
+            },
+            {
+              "nombre": "lados_e6",
+              "tipo": "entero",
+              "descripcion": "lados de manzana de estrato 6"
+            },
+            {
+              "nombre": "sin_vivienda",
+              "tipo": "entero",
+              "descripcion": "lados de manzana sin vivienda"
+            },
+            {
+              "nombre": "lados_total",
+              "tipo": "entero",
+              "descripcion": "suma de los lados de manzana por estrato (1 a 6)"
+            },
+            {
+              "nombre": "estrato_moda_original",
+              "tipo": "texto",
+              "descripcion": "estrato moda tal como viene en el CSV"
+            },
+            {
+              "nombre": "estrato",
+              "tipo": "decimal",
+              "descripcion": "estrato moda validado (1 a 6; nulo si NR)"
+            },
+            {
+              "nombre": "pureza_estrato",
+              "tipo": "decimal",
+              "descripcion": "max(lados 1..6)/suma(lados 1..6), sin «Sin vivienda»"
+            }
+          ]
+        },
+        {
+          "ruta": "data/silver/quality_report.json",
+          "filas": null,
+          "bytes": 13253,
+          "sha256": "fa66f7f26ff6b6da5255dd364228afab650a540f9cd60e1f509d8c93e84c1120",
+          "columnas": null
+        }
+      ]
+    },
+    "gold": {
+      "descripcion": "Tablas finales para análisis y servicio; diccionario de gold_final leído de docs/KPIs.md.",
+      "archivos": [
+        {
+          "ruta": "data/gold/gold_final.csv",
+          "filas": 5146,
+          "bytes": 1074233,
+          "sha256": "496ab49eb76ada329df916266befd327febfd8f6333636e9e37fbed234cbc7a9",
+          "columnas": [
+            {
+              "nombre": "objectid",
+              "tipo": "entero",
+              "descripcion": "identificador de la construcción (único)"
+            },
+            {
+              "nombre": "comuna",
+              "tipo": "texto",
+              "descripcion": "códigos catastrales de 2 dígitos (texto; nulos si venían en blanco)"
+            },
+            {
+              "nombre": "barrio",
+              "tipo": "texto",
+              "descripcion": "códigos catastrales de 2 dígitos (texto; nulos si venían en blanco)"
+            },
+            {
+              "nombre": "codigo_barrio",
+              "tipo": "texto",
+              "descripcion": "llave `int(comuna)*100 + int(barrio)` (texto)"
+            },
+            {
+              "nombre": "nombre_barrio_csv",
+              "tipo": "texto",
+              "descripcion": "nombre del barrio en el CSV de estrato 2015 (nulo si no cruza)"
+            },
+            {
+              "nombre": "cruza_llave",
+              "tipo": "lógico",
+              "descripcion": "la llave existe en el CSV de estrato"
+            },
+            {
+              "nombre": "estrato",
+              "tipo": "decimal",
+              "descripcion": "estrato moda del barrio (1-6; nulo si NR o sin llave)"
+            },
+            {
+              "nombre": "pureza_estrato",
+              "tipo": "decimal",
+              "descripcion": "max(lados 1..6)/suma(lados 1..6) del barrio, sin \"Sin vivienda\""
+            },
+            {
+              "nombre": "n_con_datos_estrato",
+              "tipo": "decimal",
+              "descripcion": "conteos por estrato (construcciones con datos) y bandera k < 30"
+            },
+            {
+              "nombre": "n_severos_estrato",
+              "tipo": "decimal",
+              "descripcion": "conteos por estrato (construcciones con datos) y bandera k < 30"
+            },
+            {
+              "nombre": "muestra_baja",
+              "tipo": "lógico (con nulos)",
+              "descripcion": "conteos por estrato (construcciones con datos) y bandera k < 30"
+            },
+            {
+              "nombre": "npisos",
+              "tipo": "decimal",
+              "descripcion": "número de pisos (entero nullable) y bandera de 0 pisos"
+            },
+            {
+              "nombre": "npisos_cero",
+              "tipo": "lógico (con nulos)",
+              "descripcion": "número de pisos (entero nullable) y bandera de 0 pisos"
+            },
+            {
+              "nombre": "indice_escombros",
+              "tipo": "decimal",
+              "descripcion": "índice continuo de cambio de textura (nulo si sin datos)"
+            },
+            {
+              "nombre": "estado_estructural",
+              "tipo": "texto",
+              "descripcion": "etiqueta original y clase (`escombros`, `techo`, `sin_cambio`, `sin_datos`)"
+            },
+            {
+              "nombre": "clase_dano",
+              "tipo": "texto",
+              "descripcion": "etiqueta original y clase (`escombros`, `techo`, `sin_cambio`, `sin_datos`)"
+            },
+            {
+              "nombre": "sin_datos",
+              "tipo": "lógico",
+              "descripcion": "sin datos satelitales"
+            },
+            {
+              "nombre": "severo_estricto",
+              "tipo": "lógico (con nulos)",
+              "descripcion": "banderas D7; **nulas** (no falsas) si `sin_datos`"
+            },
+            {
+              "nombre": "dano_visible",
+              "tipo": "lógico (con nulos)",
+              "descripcion": "banderas D7; **nulas** (no falsas) si `sin_datos`"
+            },
+            {
+              "nombre": "geom_duplicada",
+              "tipo": "lógico",
+              "descripcion": "comparte geometría idéntica con otra construcción (18 filas, 9 pares)"
+            },
+            {
+              "nombre": "lon",
+              "tipo": "decimal",
+              "descripcion": "centroide a 7 decimales (EPSG:4326)"
+            },
+            {
+              "nombre": "lat",
+              "tipo": "decimal",
+              "descripcion": "centroide a 7 decimales (EPSG:4326)"
+            },
+            {
+              "nombre": "codigo_poligono",
+              "tipo": "texto",
+              "descripcion": "polígono WFS 2026 donde cae el centroide y si su código coincide con `codigo_barrio`"
+            },
+            {
+              "nombre": "nombre_poligono",
+              "tipo": "texto",
+              "descripcion": "polígono WFS 2026 donde cae el centroide y si su código coincide con `codigo_barrio`"
+            },
+            {
+              "nombre": "coincide_poligono",
+              "tipo": "lógico (con nulos)",
+              "descripcion": "polígono WFS 2026 donde cae el centroide y si su código coincide con `codigo_barrio`"
+            },
+            {
+              "nombre": "nombre_validado",
+              "tipo": "lógico (con nulos)",
+              "descripcion": "el nombre CSV 2015 coincide (similitud ≥ 0,85) con el polígono dominante del código"
+            }
+          ]
+        },
+        {
+          "ruta": "data/gold/kpis_gold.csv",
+          "filas": 23,
+          "bytes": 8606,
+          "sha256": "6db3dbeeeffbbf5c087c9b71fd5b8c51f280d0a4c8c14b37e084418f9fbf2e4c",
+          "columnas": [
+            {
+              "nombre": "kpi_id",
+              "tipo": "texto",
+              "descripcion": "identificador del indicador (K1 a K6)"
+            },
+            {
+              "nombre": "nombre",
+              "tipo": "texto",
+              "descripcion": "nombre del indicador"
+            },
+            {
+              "nombre": "valor",
+              "tipo": "decimal",
+              "descripcion": "valor del indicador (tasa, razón o proporción)"
+            },
+            {
+              "nombre": "numerador",
+              "tipo": "decimal",
+              "descripcion": "numerador (por ejemplo, severos estrictos)"
+            },
+            {
+              "nombre": "denominador",
+              "tipo": "decimal",
+              "descripcion": "denominador (construcciones con datos satelitales)"
+            },
+            {
+              "nombre": "grupo",
+              "tipo": "texto",
+              "descripcion": "grupo o corte del indicador"
+            },
+            {
+              "nombre": "fecha_corte",
+              "tipo": "texto",
+              "descripcion": "fecha de corte de la capa"
+            },
+            {
+              "nombre": "fuente",
+              "tipo": "texto",
+              "descripcion": "fuente declarada del cálculo"
+            },
+            {
+              "nombre": "ic95_inf",
+              "tipo": "decimal",
+              "descripcion": "límite inferior del intervalo al 95 %"
+            },
+            {
+              "nombre": "ic95_sup",
+              "tipo": "decimal",
+              "descripcion": "límite superior del intervalo al 95 %"
+            },
+            {
+              "nombre": "n_sin_datos",
+              "tipo": "decimal",
+              "descripcion": "construcciones sin datos satelitales"
+            },
+            {
+              "nombre": "pct_sin_datos",
+              "tipo": "decimal",
+              "descripcion": "proporción sin datos satelitales"
+            },
+            {
+              "nombre": "muestra_baja",
+              "tipo": "lógico",
+              "descripcion": "verdadero si hay menos de 30 severos"
+            },
+            {
+              "nombre": "cota_inf",
+              "tipo": "decimal",
+              "descripcion": "cota inferior por «sin datos»"
+            },
+            {
+              "nombre": "cota_sup",
+              "tipo": "decimal",
+              "descripcion": "cota superior por «sin datos»"
+            },
+            {
+              "nombre": "nota",
+              "tipo": "texto",
+              "descripcion": "nota del indicador"
+            }
+          ]
+        },
+        {
+          "ruta": "data/gold/kpis_sensibilidad.csv",
+          "filas": 107,
+          "bytes": 12942,
+          "sha256": "0cf75f2d2fabcb56f1b6bded38a4afb02d7ede0bf0c6e550b55dd3b8c6aca40e",
+          "columnas": [
+            {
+              "nombre": "escenario",
+              "tipo": "texto",
+              "descripcion": "escenario de sensibilidad (S0 a S5)"
+            },
+            {
+              "nombre": "kpi_id",
+              "tipo": "texto",
+              "descripcion": "indicador"
+            },
+            {
+              "nombre": "grupo",
+              "tipo": "texto",
+              "descripcion": "grupo o corte"
+            },
+            {
+              "nombre": "k",
+              "tipo": "decimal",
+              "descripcion": "severos"
+            },
+            {
+              "nombre": "n",
+              "tipo": "decimal",
+              "descripcion": "construcciones con datos"
+            },
+            {
+              "nombre": "tasa",
+              "tipo": "decimal",
+              "descripcion": "k / n"
+            },
+            {
+              "nombre": "ic95_inf",
+              "tipo": "decimal",
+              "descripcion": "límite inferior del intervalo al 95 %"
+            },
+            {
+              "nombre": "ic95_sup",
+              "tipo": "decimal",
+              "descripcion": "límite superior del intervalo al 95 %"
+            },
+            {
+              "nombre": "nota",
+              "tipo": "texto",
+              "descripcion": "descripción del escenario"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
