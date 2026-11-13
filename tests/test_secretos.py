@@ -98,7 +98,7 @@ def test_el_registro_enmascara_un_token_de_prueba():
 
 def test_make_dist_excluye_env(tmp_path):
     raiz = tmp_path / "proyecto"
-    for r in ("main.py", ".env", ".env.example", "src/a.py"):
+    for r in ("main.py", "requirements.txt", ".env", ".env.example", "src/a.py"):
         (raiz / r).parent.mkdir(parents=True, exist_ok=True)
         (raiz / r).write_text("x", encoding="utf-8")
     _, nombres = make_dist.empaquetar(raiz, tmp_path / "salida")

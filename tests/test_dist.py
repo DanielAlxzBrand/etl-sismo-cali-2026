@@ -43,3 +43,83 @@ def test_lista_incluye_referencias_y_documentos_del_proyecto():
     nombres = [p.relative_to(ROOT).as_posix() for p in make_dist.listar(ROOT)]
     assert any(n.startswith("docs/proyecto/referencias/") and n.endswith(".pdf") for n in nombres)
     assert "docs/README.md" in nombres and any(n.startswith("docs/retroalimentacion/") for n in nombres)
+
+
+# --- lista de inclusión ---
+PERMITIDOS = ["main.py", "requirements.txt", "README.md", "pytest.ini", ".env.example", ".gitignore", ".gitattributes", "DECLARACION_USO_IA.md",
+              "config/c.yaml", "src/a.py", "scripts/s.py", "tests/t.py", "notebooks/n.ipynb", "docs/README.md", "data/gold/etl_sismo.db"]
+
+
+def _empaquetar(tmp_path, extra=()):
+    raiz = tmp_path / "proyecto"
+    _escribir(raiz, PERMITIDOS + list(extra))
+    return make_dist.empaquetar(raiz, tmp_path / "salida")[1]
+
+
+def test_lo_permitido_entra_y_el_zip_pasa_la_verificacion(tmp_path):
+    nombres = _empaquetar(tmp_path)
+    assert sorted(nombres) == sorted(PERMITIDOS)
+    make_dist.verificar(nombres)
+    assert "data/gold/etl_sismo.db" in nombres
+
+
+def test_un_archivo_suelto_de_la_raiz_fuera_de_la_lista_no_entra(tmp_path):
+    nombres = _empaquetar(tmp_path, ["notas.txt", "apuntes.md", "suelto.py", "datos.csv"])
+    assert not {"notas.txt", "apuntes.md", "suelto.py", "datos.csv"} & set(nombres)
+    assert make_dist.fuera_de_la_lista(nombres) == []
+
+
+def test_una_carpeta_de_la_raiz_fuera_de_la_lista_no_entra(tmp_path):
+    nombres = _empaquetar(tmp_path, ["borradores/a.md", "otro/b.py"])
+    assert not any(n.startswith(("borradores/", "otro/")) for n in nombres)
+
+
+def test_los_pdf_de_docs_solo_entran_desde_referencias_y_retroalimentacion(tmp_path):
+    nombres = _empaquetar(tmp_path, ["docs/proyecto/referencias/ref.pdf", "docs/retroalimentacion/r.pdf", "docs/otro/x.pdf", "docs/suelto.pdf", "docs/validacion/v.pdf"])
+    assert "docs/proyecto/referencias/ref.pdf" in nombres and "docs/retroalimentacion/r.pdf" in nombres
+    assert make_dist.pdf_no_permitidos(nombres) == []
+    assert not any(n in nombres for n in ("docs/otro/x.pdf", "docs/suelto.pdf", "docs/validacion/v.pdf"))
+
+
+def test_dags_entra_cuando_existe_y_no_falla_cuando_no_existe(tmp_path):
+    assert not any(n.startswith("dags/") for n in _empaquetar(tmp_path / "sin"))
+    con = _empaquetar(tmp_path / "con", ["dags/pipeline.py"])
+    assert "dags/pipeline.py" in con
+
+
+def test_un_entorno_simulado_sin_pyvenv_cfg_dentro_de_una_carpeta_permitida_no_entra(tmp_path):
+    nombres = _empaquetar(tmp_path, ["src/entorno_a/bin/python", "src/entorno_a/lib.py", "notebooks/entorno_b/Scripts/python.exe", "tests/entorno_c/python.exe",
+                                     "docs/entorno_d/conda-meta/h.json", "scripts/entorno_e/lib/python3.13/site-packages/m.py"])
+    assert sorted(nombres) == sorted(PERMITIDOS)
+
+
+def test_las_exclusiones_se_aplican_siempre(tmp_path):
+    prohibidas = [".env", "logs/etl.log", "src/logs/x.log", "dist/z.zip", ".git/config", ".venv/pyvenv.cfg", ".venv_test/a", "venv/a", "env/a", ".pytest_cache/v", "CLAUDE.md",
+                  ".claude/s.json", "src/__pycache__/a.pyc", "src/b.pyc", "notebooks/.ipynb_checkpoints/n-checkpoint.ipynb", "src/CLAUDE.md"]
+    nombres = _empaquetar(tmp_path, prohibidas)
+    assert sorted(nombres) == sorted(PERMITIDOS)
+
+
+def test_la_verificacion_falla_con_mensajes_claros():
+    import pytest
+    base = ["requirements.txt", "main.py"]
+    with pytest.raises(AssertionError, match="fuera de la lista permitida"):
+        make_dist.verificar(base + ["notas.txt"])
+    with pytest.raises(AssertionError, match="prohibidos"):
+        make_dist.verificar(base + ["src/e/bin/python"])
+    with pytest.raises(AssertionError, match="PDF de docs"):
+        make_dist.verificar(base + ["docs/otro/x.pdf"])
+    with pytest.raises(AssertionError, match="requirements.txt"):
+        make_dist.verificar(["main.py"])
+    make_dist.verificar(base + ["docs/proyecto/referencias/ref.pdf"])
+
+
+def test_el_repo_real_solo_empaqueta_primer_nivel_permitido():
+    nombres = [p.relative_to(ROOT).as_posix() for p in make_dist.listar(ROOT)]
+    assert make_dist.fuera_de_la_lista(nombres) == [] and make_dist.pdf_no_permitidos(nombres) == []
+    assert "requirements.txt" in nombres and "data/gold/etl_sismo.db" in nombres and ".env" not in nombres
+    assert not any(n.startswith(("logs/", "dist/")) for n in nombres)
+
+
+def test_una_carpeta_llamada_env_con_punto_no_entra(tmp_path):
+    assert sorted(_empaquetar(tmp_path, [".env/a", ".env/b.txt"])) == sorted(PERMITIDOS)
