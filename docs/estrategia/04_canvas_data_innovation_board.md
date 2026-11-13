@@ -7,7 +7,7 @@
 > **Etiquetas de evidencia.** [Evidencia en el repo: `ruta`] = existe en el repositorio; [Fuente externa: URL y fecha de consulta]; [Criterio aplicado: descripción] = regla o decisión nuestra, explicada; [Hipótesis de diseño: criterio y experimento de validación propuesto, no ejecutado] = hipótesis de diseño con su experimento, sin ejecutar. Las cifras se leen de `data/silver`, `data/gold` y `config/config.yaml`.
 
 ## 1. Concepto de producto (hipótesis)
-Un servicio de análisis reproducible de impacto sísmico por zonas, con incertidumbre explícita, que incluye: pipeline de datos, **API de solo lectura** (en construcción, API, fuentes y credenciales), **almacenamiento relacional con historial** (en construcción, Carga relacional), **orquestación programada** (en construcción, Pruebas y orquestación) y **dashboard** (en construcción, Panel). [Hipótesis de diseño: criterio y experimento de validación propuesto, no ejecutado] Experimento: ver los supuestos críticos de la sección 5.
+Un servicio de análisis reproducible de impacto sísmico por zonas, con incertidumbre explícita, que incluye: pipeline de datos, **API de solo lectura** (implementada), **almacenamiento relacional con historial** (en construcción), **orquestación programada** (en construcción) y **dashboard** (en construcción). [Hipótesis de diseño: criterio y experimento de validación propuesto, no ejecutado] Experimento: ver los supuestos críticos de la sección 5.
 
 Lo que existe hoy es el pipeline, sus indicadores y su documentación para 5.146 construcciones de 7 comunas. [Evidencia en el repo: `README.md`; `data/gold/`; `docs/proyecto/decisiones_tecnicas.md`] Los demás componentes están decididos, no construidos.
 

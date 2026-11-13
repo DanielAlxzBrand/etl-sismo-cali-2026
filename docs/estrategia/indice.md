@@ -16,7 +16,7 @@
 ## Supuestos adoptados
 - **S1.** Usuarios objetivo (planteamiento, no un cliente real): una entidad pública territorial de gestión del riesgo (la Secretaría de Gestión del Riesgo de Cali) y la comunidad académica. El proyecto es una investigación aplicada de estudiantes. No hubo contacto con ninguna de ellas.
 - **S2.** El ítem 1.4 es un ejercicio de diseño con hipótesis sin validar y no un plan de negocio validado; **no es N/A**.
-- **S3.** El MVP del proyecto incluye pipeline reproducible, Gold con KPI e incertidumbre, API de solo lectura, almacenamiento relacional con historial, DAG de orquestación, dashboard sobre la API y verificación automática (los cuatro componentes nuevos están en construcción hasta API, fuentes y credenciales, Carga relacional, Pruebas y orquestación y Panel).
+- **S3.** El MVP del proyecto incluye pipeline reproducible, Gold con KPI e incertidumbre, API de solo lectura, almacenamiento relacional con historial, DAG de orquestación, dashboard sobre la API y verificación automática (la API ya existe; el almacenamiento relacional, la orquestación y el dashboard están en construcción).
 
 ## Leyenda de etiquetas de evidencia
 - [Evidencia en el repo: `ruta`]: existe en el repositorio y se puede abrir.
