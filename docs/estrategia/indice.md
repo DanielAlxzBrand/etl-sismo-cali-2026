@@ -7,9 +7,9 @@
 |---|---|---|---|
 | 1.1 | Data Thinking, insights y problema central | [01_data_thinking.md](01_data_thinking.md) | Cumple con matiz: marco público adoptado a posteriori; sin investigación con usuarios |
 | 1.2 | Mapeo de stakeholders y tipología de la organización | [02_stakeholders.md](02_stakeholders.md) | Cumple con matiz: rúbrica R1 propia; sin contacto con stakeholders |
-| 1.3 | Objetivo, alcance, OKR y KPI | [03_objetivo_alcance_okr_kpi.md](03_objetivo_alcance_okr_kpi.md) | Cumple con matiz: KR2, KR3 y KR5 sin cubrir; métricas de los componentes nuevos se miden en API, fuentes y credenciales, Carga relacional, Pruebas y orquestación, Panel |
+| 1.3 | Objetivo, alcance, OKR y KPI | [03_objetivo_alcance_okr_kpi.md](03_objetivo_alcance_okr_kpi.md) | Cumple con matiz: KR2, KR3 y KR5 sin cubrir; métricas de los componentes nuevos se miden en cada componente nuevo |
 | 1.4 | Canvas, Data Innovation Board y propuesta de valor | [04_canvas_data_innovation_board.md](04_canvas_data_innovation_board.md) | Cumple con matiz: ejercicio de diseño con hipótesis sin validar |
-| 1.5 | Criterios de aceptación del MVP | [05_mvp_criterios_aceptacion.md](05_mvp_criterios_aceptacion.md) | Cumple con matiz: criterios de API, MySQL, Airflow y dashboard se verifican en API, fuentes y credenciales, Carga relacional, Pruebas y orquestación, Panel |
+| 1.5 | Criterios de aceptación del MVP | [05_mvp_criterios_aceptacion.md](05_mvp_criterios_aceptacion.md) | Cumple con matiz: criterios de API, MySQL, Airflow y dashboard se verifican en Carga relacional, Pruebas y orquestación y Panel |
 
 **Regla de estado.** Cumple: evidencia concreta y reproducible para todos los subcriterios. Cumple con matiz: entregable central verificado; algún subcriterio depende de un hecho externo declarado o de una componente posterior. Pendiente (hecho externo). N/A justificado. No cumple (solo si no es técnicamente viable). Nunca «cumple» lo que requiera un evento que no ocurrió.
 

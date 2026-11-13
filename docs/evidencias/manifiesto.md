@@ -1,6 +1,6 @@
 # Manifiesto de evidencias del proyecto
 
-**Cabecera de cada fila:** id · ítem del checklist · qué demuestra · tipo · comando que lo produce · fecha ISO (America/Bogota) · ruta · sha256 (completo). Las evidencias del componente Base y orden no cierran un ítem del checklist (ítem «0»): dejan la línea base protegida y el entorno documentado. Cada archivo de evidencia lleva además una cabecera con comando, fecha, código de salida, versión de Python y commit de partida. [Evidencia en el repo: `docs/evidencias/base/`]
+**Cabecera de cada fila:** id · ítem del checklist · qué demuestra · tipo · comando que lo produce · fecha ISO (America/Bogota) · ruta · sha256 (completo). Las evidencias de Base y orden no cierran un ítem del checklist (ítem «0»): dejan la línea base protegida y el entorno documentado. Cada archivo de evidencia lleva además una cabecera con comando, fecha, código de salida, versión de Python y commit de partida. [Evidencia en el repo: `docs/evidencias/base/`]
 
 | id EV-nnn | ítem | qué demuestra | tipo | comando | fecha | ruta | sha256 |
 |---|---|---|---|---|---|---|---|

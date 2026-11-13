@@ -57,9 +57,9 @@
 2. Limitar WSL2 para proteger el equipo: crear `%UserProfile%\.wslconfig` con `[wsl2]`, `memory=6GB` y `processors=4`; luego `wsl --shutdown`.
 3. `winget install -e --id Docker.DockerDesktop`; abrir Docker Desktop, aceptar la licencia y activar el motor WSL2.
 4. Comprobar: `docker --version` y `docker compose version`.
-5. En el componente Pruebas y orquestación: `docker compose -f orquestacion/docker-compose.yaml up airflow-init` y luego `up -d`; interfaz en `http://localhost:8080`.
+5. En Pruebas y orquestación: `docker compose -f orquestacion/docker-compose.yaml up airflow-init` y luego `up -d`; interfaz en `http://localhost:8080`.
 
-**Qué se prueba en el componente Pruebas y orquestación.** Correspondencia con las cinco pruebas del laboratorio: P1 DAG sin errores de importación y con cinco tareas (`DagBag` y `airflow dags list-import-errors`); P2 ejecución manual con Gold validado; P3 ejecución disparada por el programador con cron horario y zona `America/Bogota` documentada; P4 fallo inducido con reintento visible; P5 segunda ejecución sin duplicados y con hashes iguales. Todo sobre un clon temporal del proyecto.
+**Qué se prueba en Pruebas y orquestación.** Correspondencia con las cinco pruebas del laboratorio: P1 DAG sin errores de importación y con cinco tareas (`DagBag` y `airflow dags list-import-errors`); P2 ejecución manual con Gold validado; P3 ejecución disparada por el programador con cron horario y zona `America/Bogota` documentada; P4 fallo inducido con reintento visible; P5 segunda ejecución sin duplicados y con hashes iguales. Todo sobre un clon temporal del proyecto.
 
 **Respaldos, en orden.** (1) Docker Engine dentro de WSL2 Ubuntu, si la licencia de Docker Desktop no encajara (fuente de licencia de Docker Engine no consultada en esta ejecución). (2) Airflow con `pip` y el archivo de restricciones del release dentro de WSL2 Ubuntu (`pip install "apache-airflow==<versión>" --constraint <archivo de restricciones oficial>`; Pruebas y orquestación fija la versión). (3) Último recurso: validación estática del DAG por AST (identificador, tareas, dependencias, programación) y estado **«Cumple con matiz»** declarando que no se ejecutó `DagBag`.
 **Si la recomendada resulta inviable:** pasar al respaldo siguiente y registrarlo en `docs/DECISIONES.md`.

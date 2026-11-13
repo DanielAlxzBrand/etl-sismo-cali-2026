@@ -62,7 +62,7 @@ Imprime una línea por hallazgo (`archivo:línea: patrón`) y `hallazgos: N`; te
 **Límites del escáner:** puede dar falsos positivos (cadenas largas que no son secretos) y falsos negativos (un secreto con formato que no conocemos). Por eso es una red de seguridad y no sustituye la regla principal: los secretos nunca se escriben fuera de `.env`.
 
 ## 9. Estado del ítem 2.3 y qué se revalida
-Estado: **Cumple** para lo que el proyecto usa hoy (ningún secreto obligatorio, controles activos y verificados). Se **revalida en el componente Carga relacional** con las variables `MYSQL_*` y en **Cierre y paquete** con el escáner sobre el zip final de entrega.
+Estado: **Cumple** para lo que el proyecto usa hoy (ningún secreto obligatorio, controles activos y verificados). Se **revalida con las variables `MYSQL_*`** (Carga relacional) y **con el escáner sobre el zip final** (Cierre y paquete).
 
 ## Alcance y límites
 - **Qué afirmamos:** hoy el proyecto no necesita credenciales; las que vendrán (MySQL, Airflow) tienen lugar, regla y controles definidos; el repositorio, su historial, los notebooks, los logs y un zip de prueba no contienen secretos según el escáner. [Evidencia en el repo: `docs/evidencias/api/EV-019_escaner_secretos.txt`]

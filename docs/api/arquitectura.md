@@ -7,7 +7,7 @@
 > **Alcance de los resultados.** Los datos que la API entrega son un **proxy satelital, no una evaluación estructural**: construcciones de 7 comunas de Cali (polígonos de afectación preliminar) con estrato de **2015**. No se generaliza a Cali. Nuestro indicador es el cambio satelital severo (severo estricto, proxy de daño).
 
 ## 1. Visión general (para quien empieza)
-El proyecto es un ETL con capas: **Bronze** guarda lo descargado tal cual, **Silver** lo limpia y lo une, **Gold** calcula los indicadores. Hasta el componente Estrategia los resultados eran archivos. La capa de servicio agrega una **API**: un programa que responde preguntas por HTTP, como «dame los indicadores» o «dame las construcciones de la comuna 19». Cada pregunta se hace a un **endpoint** (una dirección, por ejemplo `/kpis`). Es de **solo lectura**: puede entregar los resultados, pero no puede cambiarlos ni crear nuevos, de modo que nadie puede dañar la línea base consultándola.
+El proyecto es un ETL con capas: **Bronze** guarda lo descargado tal cual, **Silver** lo limpia y lo une, **Gold** calcula los indicadores. Los resultados del ETL se entregan como archivos. La capa de servicio agrega una **API**: un programa que responde preguntas por HTTP, como «dame los indicadores» o «dame las construcciones de la comuna 19». Cada pregunta se hace a un **endpoint** (una dirección, por ejemplo `/kpis`). Es de **solo lectura**: puede entregar los resultados, pero no puede cambiarlos ni crear nuevos, de modo que nadie puede dañar la línea base consultándola.
 
 ![Arquitectura del backend](img/arquitectura_backend.png)
 

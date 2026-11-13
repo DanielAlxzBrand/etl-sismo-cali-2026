@@ -6,7 +6,7 @@
 
 > **Alcance de los resultados.** Proxy satelital, no evaluación estructural; 7 comunas de Cali con polígonos de afectación preliminar; estrato de 2015. No se generaliza a Cali.
 
-## Auditoría previa (qué había antes del componente API, fuentes y credenciales)
+## Auditoría previa (qué había antes de la capa de servicio)
 | aspecto | hallazgo | evidencia |
 |---|---|---|
 | Pipeline por etapas | `main.py --stage extract\|transform\|gold\|all`; módulos con una responsabilidad cada uno (`extract`, `transform`, `load`) | `main.py:24-26`; `src/` |
@@ -83,7 +83,7 @@
 | 6 | Cumple | el diccionario de `gold_final` se lee de `docs/gold/KPIs.md`; las demás columnas tienen descripción propia |
 | 7 | Cumple | dos generaciones son idénticas y `/fuentes` devuelve el mismo JSON |
 
-**Límites declarados:** las licencias son las de los catálogos consultados (no es una revisión jurídica); no volvimos a consultar los servicios en el componente API, fuentes y credenciales (la fecha de consulta es la del snapshot, 2026-10-16); las cifras de la evaluación ATC-20 vienen de prensa y no las recotejamos.
+**Límites declarados:** las licencias son las de los catálogos consultados (no es una revisión jurídica); no volvimos a consultar los servicios al cerrar la capa de servicio (la fecha de consulta es la del snapshot, 2026-10-16); las cifras de la evaluación ATC-20 vienen de prensa y no las recotejamos.
 **(h) Cómo validar.** `.\.venv\Scripts\python.exe scripts\make_catalogo_fuentes.py` (los archivos no deben cambiar: `git status`), `pytest tests/test_catalogo.py` y `GET /fuentes`.
 
 ---
@@ -104,7 +104,7 @@
 **(e) Acción realizada.** `docs/seguridad/gestion_credenciales.md`, `scripts/escanear_secretos.py`, `tests/test_secretos.py` (10 pruebas) y `.env.example` con solo `HTTP_USER_AGENT`.
 **(f) Evidencia producida.** EV-019 (escáner sobre el clon, su historial y un zip armado con `make_dist.py` en carpeta temporal: 0 hallazgos) y EV-014.
 
-**(g) Estado final: Cumple.** *Nota:* se revalida en el componente Carga relacional con las variables `MYSQL_*` y en el componente Cierre y paquete con el escáner sobre el zip final.
+**(g) Estado final: Cumple.** *Nota:* se revalida con las variables `MYSQL_*` (Carga relacional) y con el escáner sobre el zip final (Cierre y paquete).
 | subcriterio | estado | justificación |
 |---|---|---|
 | 1 | Cumple | documento con las nueve secciones; variables `MYSQL_*` y claves de Airflow como «previstas, no usadas todavía» |
@@ -120,13 +120,13 @@
 ---
 
 ## Qué falta del lado del equipo (hechos externos)
-- Las capturas de pantalla del componente API, fuentes y credenciales son **opcionales** y complementarias (D35); la evidencia suficiente son las salidas registradas, y la captura de `/docs` incluida como EV-017 es **automatizada del navegador**. La guía por ítem está en `docs/checklist/guia_de_evidencias.md`.
-- Antes del componente Carga relacional, una cuenta de MySQL local (el script SQL lo entrega Carga relacional).
+- Las capturas de pantalla de API, fuentes y credenciales son **opcionales** y complementarias (D35); la evidencia suficiente son las salidas registradas, y la captura de `/docs` incluida como EV-017 es **automatizada del navegador**. La guía por ítem está en `docs/checklist/guia_de_evidencias.md`.
+- Antes de Carga relacional, una cuenta de MySQL local (el script SQL lo entrega Carga relacional).
 
 ---
 
-## Cierre del componente API, fuentes y credenciales (2026-11-12)
-- **Estados:** 2.1 Cumple, 2.2 Cumple y 2.3 Cumple (se revalida en el componente Carga relacional con las variables `MYSQL_*` y en el componente Cierre y paquete con el escáner sobre el zip).
+## Cierre de API, fuentes y credenciales (2026-11-12)
+- **Estados:** 2.1 Cumple, 2.2 Cumple y 2.3 Cumple (se revalida con las variables `MYSQL_*` (Carga relacional) y con el escáner sobre el zip final (Cierre y paquete)).
 - **Pruebas:** 92 en el clon temporal (`EV-014`, `EV-025`); el desglose por archivo está en `README.md` §14.
 - **Sin escritura:** sha256 de los 19 archivos de `data/` (incluida la base) idénticos tras clonar, tras las pruebas y tras consultar el servidor real (`EV-015`).
 - **Latencia:** medida con el servidor real en 127.0.0.1 (`EV-018`, `EV-021`); son mediciones locales de una máquina.
