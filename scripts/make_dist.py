@@ -1,7 +1,7 @@
 """Empaqueta el proyecto en dist/etl_sismo_<fecha>.zip con una lista de INCLUSIÓN: solo entra lo permitido.
 
 Primer nivel permitido: archivos `RAIZ_ARCHIVOS` y carpetas `RAIZ_CARPETAS` (`dags/` solo si existe). Dentro de ellas se excluyen cachés,
-`*.pyc`, `logs/`, el `.env` real, `CLAUDE.md` y toda carpeta que sea un entorno virtual (por nombre y, sobre todo, por su contenido:
+`*.pyc`, `logs/`, el `.env` real, toda carpeta oculta (que empiece por punto) y toda carpeta que sea un entorno virtual (por nombre y, sobre todo, por su contenido:
 `pyvenv.cfg`, `site-packages`, `conda-meta`, `python.exe`, `Scripts/python*` o `bin/python*`). En `docs/` solo entran los PDF de
 `docs/proyecto/referencias/` y `docs/retroalimentacion/`. Tras armar el zip se verifica su contenido y falla con un mensaje claro si algo sobra.
 """
@@ -15,11 +15,11 @@ ROOT = Path(__file__).resolve().parents[1]
 RAIZ_ARCHIVOS = ("README.md", "main.py", "requirements.txt", "pytest.ini", ".env.example", ".gitignore", ".gitattributes", "DECLARACION_USO_IA.md")
 RAIZ_CARPETAS = ("config", "src", "scripts", "tests", "notebooks", "docs", "data", "dags")
 PDF_PERMITIDOS = ("docs/proyecto/referencias/", "docs/retroalimentacion/")
-EXCLUIR_DIRS = {".git", "dist", "logs", "__pycache__", ".ipynb_checkpoints", ".pytest_cache", "venv", "env", ".env", "site-packages", ".claude"}
+EXCLUIR_DIRS = {".git", "dist", "logs", "__pycache__", ".ipynb_checkpoints", ".pytest_cache", "venv", "env", ".env", "site-packages"}
 EXCLUIR_PREFIJOS = (".venv",)
-EXCLUIR_NOMBRES = {".env", "CLAUDE.md", "pyvenv.cfg"}
+EXCLUIR_NOMBRES = {".env", "pyvenv.cfg"}
 PROHIBIDOS_EN_ZIP = ("pyvenv.cfg", "site-packages", "conda-meta", "python.exe", "Scripts/python", "bin/python", ".venv", "__pycache__",
-                     ".pytest_cache", ".ipynb_checkpoints", ".git/", ".claude/", "CLAUDE.md")
+                     ".pytest_cache", ".ipynb_checkpoints", ".git/")
 LIMITE_MB = 50
 
 
@@ -33,8 +33,8 @@ def parece_entorno_virtual(d):
 
 
 def dir_excluido(d):
-    """True si la carpeta d no debe entrar al zip (por nombre o porque es un entorno virtual por su contenido)."""
-    return d.name in EXCLUIR_DIRS or d.name.startswith(EXCLUIR_PREFIJOS) or parece_entorno_virtual(d)
+    """True si la carpeta d no debe entrar al zip: por nombre, por ser una carpeta oculta (empieza por punto) o por ser un entorno virtual según su contenido."""
+    return d.name in EXCLUIR_DIRS or d.name.startswith(".") or parece_entorno_virtual(d)
 
 
 def archivo_excluido(p, root):
@@ -66,7 +66,7 @@ def prohibidos(nombres):
     for n in nombres:
         partes = n.split("/")
         if (n == ".env" or partes[-1] == ".env" or any(x in n for x in PROHIBIDOS_EN_ZIP) or n.startswith("dist/")
-                or any(x in {"venv", "env", "Scripts"} for x in partes[:-1]) or (partes[0] == "logs" and n.endswith(".log"))):
+                or any(x in {"venv", "env", "Scripts"} or x.startswith(".") for x in partes[:-1]) or (partes[0] == "logs" and n.endswith(".log"))):
             malos.append(n)
     return malos
 

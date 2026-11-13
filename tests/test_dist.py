@@ -94,8 +94,8 @@ def test_un_entorno_simulado_sin_pyvenv_cfg_dentro_de_una_carpeta_permitida_no_e
 
 
 def test_las_exclusiones_se_aplican_siempre(tmp_path):
-    prohibidas = [".env", "logs/etl.log", "src/logs/x.log", "dist/z.zip", ".git/config", ".venv/pyvenv.cfg", ".venv_test/a", "venv/a", "env/a", ".pytest_cache/v", "CLAUDE.md",
-                  ".claude/s.json", "src/__pycache__/a.pyc", "src/b.pyc", "notebooks/.ipynb_checkpoints/n-checkpoint.ipynb", "src/CLAUDE.md"]
+    prohibidas = [".env", "logs/etl.log", "src/logs/x.log", "dist/z.zip", ".git/config", ".venv/pyvenv.cfg", ".venv_test/a", "venv/a", "env/a", ".pytest_cache/v", "herramienta_local.md",
+                  ".herramienta_local/s.json", "src/__pycache__/a.pyc", "src/b.pyc", "notebooks/.ipynb_checkpoints/n-checkpoint.ipynb"]
     nombres = _empaquetar(tmp_path, prohibidas)
     assert sorted(nombres) == sorted(PERMITIDOS)
 
@@ -123,3 +123,9 @@ def test_el_repo_real_solo_empaqueta_primer_nivel_permitido():
 
 def test_una_carpeta_llamada_env_con_punto_no_entra(tmp_path):
     assert sorted(_empaquetar(tmp_path, [".env/a", ".env/b.txt"])) == sorted(PERMITIDOS)
+
+
+def test_ninguna_carpeta_oculta_dentro_de_las_carpetas_permitidas_entra(tmp_path):
+    nombres = _empaquetar(tmp_path, ["src/.herramienta_local/x.json", "docs/.otra/y.md", "tests/.cache_local/z.txt", "scripts/a/.oculta/b.py"])
+    assert sorted(nombres) == sorted(PERMITIDOS)
+    assert make_dist.prohibidos(["src/.herramienta_local/x.json"]) == ["src/.herramienta_local/x.json"]
