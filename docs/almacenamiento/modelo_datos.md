@@ -7,7 +7,7 @@ Este documento se genera con `scripts/make_modelo_datos.py` a partir de `src/loa
 ## Cómo se organiza
 
 - Una **corrida** es una carga completa de Silver integrado, Gold y los indicadores. Cada fila de las tablas de datos lleva el identificador de su corrida, de modo que la historia es la suma de corridas y comparar dos cargas es una consulta.
-- `comuna` es la única tabla sin `corrida_id`: son las siete comunas con construcciones evaluadas y sus códigos no cambian entre corridas.
+- `comuna` es la única tabla sin `corrida_id`: reúne los códigos de comuna presentes en el CSV de estrato 2015 y en las construcciones; los códigos no cambian entre corridas y por eso se cargan una sola vez.
 - Todas las claves foráneas usan `ON DELETE RESTRICT`: no se puede borrar una corrida que tenga datos ni una comuna que alguien use.
 - Las 4 construcciones cuyo código de barrio no está en el CSV de estrato 2015 se cargan con `barrio_estrato_codigo` nulo; no se descarta ninguna ni se inventa un barrio.
 
