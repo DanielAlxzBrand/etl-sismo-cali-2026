@@ -226,54 +226,32 @@ def main():
     reglas_txt = [f"**{tema}.** " + " ".join(f"({i}, {R[i][1]}, {miles(R[i][3])} filas) {R[i][4]}" for i in ids) for tema, ids in reglas_tema]
     arbol = [
         ("main.py", "puerta de entrada: `--stage extract|transform|gold|all` y `--refresh`"),
-        ("config/config.yaml", "parámetros: URL de las fuentes, umbrales, fechas, rutas y registro de ejecución"),
         ("requirements.txt", "dependencias con versión mínima"),
         ("pytest.ini", "configuración de las pruebas (carpeta de pruebas y ruta de importación)"),
         (".env.example", "variables opcionales sin valores (`HTTP_USER_AGENT`)"),
-        ("src/common.py", "rutas, configuración, sha256 y manifiesto de Bronze"),
-        ("src/logger.py", "registro de ejecución con enmascarado de secretos"),
-        ("src/extract/extract_api.py", "descarga paginada de la capa ArcGIS y de los polígonos (WFS)"),
-        ("src/extract/extract_excel.py", "descarga y lectura del archivo tabular (CSV o Excel)"),
-        ("src/transform/clean_api.py", "limpieza de las construcciones"),
-        ("src/transform/clean_excel.py", "limpieza del CSV de estrato"),
-        ("src/transform/keys.py", "llave del JOIN y normalización de nombres"),
-        ("src/transform/integrate.py", "JOIN, huérfanos, validación de la llave y reporte de calidad"),
-        ("src/transform/build_gold.py", "Gold, KPI, intervalos y sensibilidades"),
-        ("src/load/load_database.py", "carga a SQLite"),
-        ("src/api/", "API de solo lectura (FastAPI): aplicación, esquemas, repositorio de datos y manejo de errores"),
+        (".gitignore", "lo que git no versiona (`.env`, entornos virtuales, `dist/`, registros)"),
+        (".gitattributes", "fija los bytes de `data/` y los saltos de línea"),
+        ("config/", "parámetros en `config.yaml`: URL de las fuentes, umbrales, fechas, rutas, registro de ejecución y capa de servicio"),
         ("data/bronze/", "respuestas crudas, CSV original, polígonos y `manifest.jsonl`"),
         ("data/silver/", "tablas limpias, huérfanos y `quality_report.json`"),
         ("data/gold/", "`gold_final.csv`, `kpis_gold.csv`, `kpis_sensibilidad.csv`, `etl_sismo.db`"),
         ("notebooks/", "cinco notebooks ejecutados (conexión, EDA, Silver, Gold y validación)"),
+        ("src/", "código por capas (ver `src/README.md`): `extract/`, `transform/`, `load/`, `api/`, `common.py` y `logger.py`"),
         ("tests/", f"{n_tests} pruebas automáticas"),
-        ("scripts/make_dist.py", "empaqueta la entrega en `dist/` sin entornos virtuales ni cachés"),
-        ("scripts/make_catalogo_fuentes.py", "genera el catálogo de fuentes y metadatos a partir del manifiesto"),
-        ("scripts/escanear_secretos.py", "busca secretos en el árbol, el historial, los notebooks, los logs y un zip (nunca imprime valores)"),
-        ("scripts/evidencias/", "scripts que producen las evidencias de cada etapa en un clon temporal, saneadas y con manifiesto"),
+        ("scripts/", "generadores y utilidades (ver `scripts/README.md`): README, catálogo de fuentes, escáner de secretos, empaquetado y `evidencias/`"),
+        ("docs/README.md", "índice de la documentación por capas y tabla «dónde está cada cosa»"),
         ("docs/DECISIONES.md", "decisiones con alternativas, razón y riesgo"),
-        ("docs/silver/hallazgos_eda.md", "hallazgos H1-H18 del análisis exploratorio"),
-        ("docs/silver/reglas_silver.md", "reglas R01-R18 con su hallazgo"),
-        ("docs/silver/validacion_llave.md", "validación semántica de la llave por código"),
-        ("docs/gold/KPIs.md", "definición de cada KPI y diccionario de columnas de Gold"),
-        ("docs/bronze/verificacion_fuentes.md", "verificación previa de las fuentes (V1-V14)"),
-        ("docs/validacion/verificacion_entrega.md", "verificación de la entrega contra el enunciado"),
-        ("docs/validacion/prueba_entorno_limpio.md", "ejecución en una copia limpia"),
-        ("docs/validacion/verificacion_logging.md", "verificación del registro de ejecución"),
-        ("docs/bronze/investigacion_fuentes.md", "investigación y selección de fuentes"),
-        ("docs/proyecto/comprension_proyecto1.md", "comprensión del Proyecto 1"),
-        ("docs/silver/revision_codigos_barrio.md", "revisión de los códigos de barrio con diferencias en la validación semántica"),
-        ("docs/proyecto/referencias/", "documento de contexto del Avance 1"),
-        ("docs/retroalimentacion/", "retroalimentación recibida y registro de cambios del Avance 2"),
-        ("docs/", "documentos de la Entrega 3: sección 1 del checklist de Data Thinking"),
-        ("docs/proyecto/decisiones_tecnicas.md", "decisiones técnicas de la Entrega 3 (API, MySQL, dashboard, orquestación, MLOps)"),
-        ("docs/estrategia/", "sección 1 del checklist: Data Thinking, stakeholders, OKR y KPI, Canvas y MVP"),
-        ("docs/api/arquitectura.md", "arquitectura del backend y de la API de solo lectura"),
-        ("docs/bronze/catalogo_fuentes_metadatos.md", "catálogo de fuentes y metadatos (generado)"),
-        ("docs/seguridad/gestion_credenciales.md", "política de credenciales, claves y tokens"),
-        ("docs/validacion/verificacion_servicios.md", "verificación de los ítems 2.1 a 2.3: subcriterios, evidencia y estado"),
-        ("docs/checklist/guia_de_evidencias.md", "guía de evidencias por ítem del checklist (archivos adjuntables y capturas opcionales)"),
-        ("docs/bronze/muestras/", "muestras de texto de cada fuente probada (no es Bronze)"),
-        ("docs/proyecto/referencias/enunciado_flujo.png", "imagen del enunciado de la entrega"),
+        ("docs/proyecto/", "contexto, entorno, decisiones técnicas y referencias (documento de contexto y problema, imagen del enunciado)"),
+        ("docs/estrategia/", "Data Thinking, stakeholders, objetivo y OKR, Canvas y MVP con criterios de aceptación"),
+        ("docs/bronze/", "investigación y verificación de fuentes, catálogo de fuentes y metadatos, y muestras de las fuentes"),
+        ("docs/silver/", "hallazgos del análisis exploratorio, reglas de limpieza, validación de la llave y revisión de códigos de barrio"),
+        ("docs/gold/", "definición de cada KPI y diccionario de columnas de Gold"),
+        ("docs/api/", "arquitectura del backend y de la API de solo lectura, con su diagrama"),
+        ("docs/seguridad/", "política de credenciales, claves y tokens"),
+        ("docs/validacion/", "verificaciones: contra el enunciado, de los servicios, en entorno limpio y del registro de ejecución"),
+        ("docs/checklist/", "estado de los 30 ítems del checklist y guía de evidencias por ítem (`docs/checklist/guia_de_evidencias.md`)"),
+        ("docs/evidencias/", "manifiesto de evidencias y salidas registradas por tema"),
+        ("docs/retroalimentacion/", "retroalimentación del profesor y cómo la atendimos"),
     ]
     for ruta, _ in arbol:
         assert (ROOT / ruta).exists(), f"ruta citada inexistente: {ruta}"
@@ -283,7 +261,7 @@ def main():
                   "test_readme_cifras.py": "las cifras de este README coinciden con los archivos de salida; recuadros de alcance, población e indicador satelital", "test_logger.py": "enmascarado de secretos y nombre de los loggers",
                   "test_empaquetado_y_revision.py": "el empaquetado excluye entornos virtuales con cualquier nombre; la revisión de códigos de barrio cubre los casos pedidos y suma las construcciones sin nombre validado",
                   "test_dist.py": "el empaquetado detecta entornos virtuales por su contenido, aunque no tengan `pyvenv.cfg`",
-                  "test_estrategia.py": "documentos de la sección 1 del checklist: existencia, términos prohibidos, cifras y avisos",
+                  "test_estrategia.py": "documentos de estrategia y estado del checklist: existencia, términos prohibidos, cifras, criterios con componente de la lista cerrada y pruebas negativas",
                   "test_api.py": "API de solo lectura: estructura, validación, coincidencia con las salidas, solo GET y sin escritura en `data/` ni en la base",
                   "test_catalogo.py": "el catálogo de fuentes coincide con el manifiesto, es determinista y `/fuentes` lo devuelve igual",
                   "test_secretos.py": "escáner de secretos (un secreto sembrado por tipo), `.env` fuera de git, enmascarado del registro y zip sin `.env`",
@@ -291,7 +269,7 @@ def main():
     tests_md = "\n".join(f"- `tests/{n}` ({k}): {desc_tests.get(n, '')}." for n, k in tests.items())
     barrio_ej = str(ej.barrio).zfill(2) if pd.notna(ej.barrio) else ""
 
-    txt = f"""# Avance 2 · ETL medallion del sismo M7.4 del 10-ago-2026
+    txt = f"""# ETL medallion del sismo M7.4 del 10 de agosto de 2026
 
 **Autores:** Diego Fernando Gordillo Londoño, Jhoan Sebastián Castellanos Mayor y Daniel Alexander Brand García.
 **Curso:** ETL · **Universidad:** Universidad Autónoma de Occidente (UAO).
@@ -519,7 +497,7 @@ jupyter nbconvert --to notebook --execute --inplace notebooks\\05_validacion_evi
 Hay **{n_tests} pruebas** automáticas, sin red:
 {tests_md}
 
-Además: (1) el **recálculo independiente de los KPI con SQL** sobre SQLite (notebook 04, diferencia máxima inferior a 1e-9), con implementaciones independientes de Wilson, Newcombe, Mantel-Haenszel y Spearman; (2) la **regresión del defecto de Mantel-Haenszel**: ese recálculo detectó que se contaban construcciones sin datos satelitales en los tamaños de grupo; se corrigió y una prueba fija el comportamiento (`docs/DECISIONES.md`); (3) las evidencias en `docs/`: `verificacion_entrega.md`, `prueba_entorno_limpio.md`, `verificacion_fuentes.md`, `verificacion_logging.md` y los hashes de antes y después del registro.
+Además: (1) el **recálculo independiente de los KPI con SQL** sobre SQLite (notebook 04, diferencia máxima inferior a 1e-9), con implementaciones independientes de Wilson, Newcombe, Mantel-Haenszel y Spearman; (2) la **regresión del defecto de Mantel-Haenszel**: ese recálculo detectó que se contaban construcciones sin datos satelitales en los tamaños de grupo; se corrigió y una prueba fija el comportamiento (`docs/DECISIONES.md`); (3) las verificaciones en `docs/validacion/` (`verificacion_entrega.md`, `verificacion_servicios.md`, `prueba_entorno_limpio.md`, `verificacion_logging.md` y los hashes de antes y después del registro) y las salidas registradas en `docs/evidencias/`.
 
 ## 15. Decisiones principales y trazabilidad
 El detalle, con alternativas, razón y riesgo de cada decisión, está en [docs/DECISIONES.md](docs/DECISIONES.md).
@@ -543,6 +521,7 @@ Decisiones de las fuentes: el plan elegido es el de las construcciones de la cap
 - **Huérfano:** fila de una tabla que no encuentra pareja en el JOIN; se conserva en un archivo aparte.
 - **Snapshot:** copia fechada (UTC) de lo descargado; no se sobrescribe.
 - **Medallion:** organización por capas (Bronze crudo, Silver limpio, Gold listo para análisis).
+- **Avance 1:** documento de contexto y problema que dio origen al proyecto (`docs/proyecto/referencias/contexto_y_problema.pdf`).
 - **API:** programa que responde consultas por HTTP; aquí entrega los resultados de Gold sin recalcularlos.
 - **Endpoint:** una dirección concreta de la API, por ejemplo `/kpis`.
 - **Solo lectura:** la API puede entregar los datos, pero no puede cambiarlos; la conexión a la base rechaza cualquier escritura.
@@ -579,6 +558,9 @@ Después se abre `http://127.0.0.1:8000/docs` (documentación automática) o `ht
 | `/llave/revision` | códigos de barrio con nombre no validado |
 
 Los errores usan siempre `{{"error": {{"codigo", "mensaje", "detalle"}}}}`. Documentación: [arquitectura del backend](docs/api/arquitectura.md), [catálogo de fuentes y metadatos](docs/bronze/catalogo_fuentes_metadatos.md) y [política de credenciales](docs/seguridad/gestion_credenciales.md). Para buscar secretos: `python scripts/escanear_secretos.py` (termina en `hallazgos: 0`).
+
+## 19. Componentes en construcción
+Quedan en construcción, y se documentarán en `docs/` cuando existan: el **almacenamiento relacional en MySQL** (carga con claves, historial y lotes), la **orquestación con Airflow**, el **panel con Streamlit** que consume solo la API, los materiales de **usuarios y UX** y el análisis de **costos y finanzas**. El índice de la documentación, con la carpeta prevista para cada uno, está en [docs/README.md](docs/README.md).
 """
     (ROOT / "README.md").write_text(txt, encoding="utf-8", newline="\n")
     print("README.md generado")

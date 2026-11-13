@@ -1,0 +1,19 @@
+# Código del proyecto (`src/`)
+
+El código está organizado por capas del ETL medallion y por la capa de servicio. Cada paquete importa solo hacia abajo: `extract` escribe Bronze, `transform` lee Bronze y escribe Silver y Gold, `load` copia Silver y Gold a la base, y `api` lee la base sin escribir nada.
+
+| módulo | qué hace | capa |
+|---|---|---|
+| `common.py` | rutas, lectura de `config/config.yaml`, sha256 y manifiesto de Bronze | transversal |
+| `logger.py` | registro de ejecución en consola y en `logs/`, con enmascarado de secretos | transversal |
+| `extract/extract_api.py` | descarga paginada de la capa ArcGIS y de los polígonos de barrios (WFS) | Bronze |
+| `extract/extract_excel.py` | descarga y lectura del archivo tabular (CSV o Excel) | Bronze |
+| `transform/clean_api.py` | limpieza de las construcciones (tipos, bandera de duplicados, llave, clase de daño) | Silver |
+| `transform/clean_excel.py` | limpieza del CSV de estrato por barrio | Silver |
+| `transform/keys.py` | construcción de la llave del JOIN y normalización de nombres | Silver |
+| `transform/integrate.py` | JOIN, huérfanos, validación de la llave, reporte de calidad y documentos generados de Silver | Silver |
+| `transform/build_gold.py` | Gold: KPI, intervalos de Wilson y Newcombe, sensibilidades | Gold |
+| `load/load_database.py` | carga de Silver y Gold a `data/gold/etl_sismo.db` (SQLite) | almacenamiento |
+| `api/` | API de solo lectura: `app.py` (rutas), `esquemas.py` (respuestas), `repositorio.py` (acceso a datos en solo lectura) y `errores.py` (errores uniformes) | servicio |
+
+Los componentes en construcción (carga relacional a MySQL, orquestación y panel) se agregarán como paquetes nuevos sin cambiar los existentes; la capa de servicio ya separa el contrato de los endpoints del almacenamiento mediante la interfaz `RepositorioGold`.
