@@ -71,8 +71,8 @@ def convertir(valor, tipo, no_nulo, contexto=""):
     raise ConversionError(f"tipo no soportado {tipo}{donde}")
 
 
-def _leer_csv(ruta):
-    with open(ROOT / ruta, encoding="utf-8", newline="") as f:
+def _leer_csv(ruta, raiz=ROOT):
+    with open(Path(raiz) / ruta, encoding="utf-8", newline="") as f:
         return list(csv.DictReader(f))
 
 
@@ -90,11 +90,11 @@ def entradas(cfg=None):
     return {"barrio_estrato": cfg["paths_silver"]["estrato_barrio"], **ENTRADAS_GOLD}, cfg["paths_silver"]["quality_report"]
 
 
-def huellas(cfg=None):
-    """[(ruta, sha256, filas)] de los archivos de entrada, ordenadas por ruta (filas es None para el JSON)."""
+def huellas(cfg=None, raiz=ROOT):
+    """[(ruta, sha256, filas)] de los archivos de entrada, ordenadas por ruta (filas es None para el JSON). `raiz` permite apuntar a una copia."""
     csvs, qr = entradas(cfg)
-    out = [(ruta, sha256_file(ROOT / ruta), len(_leer_csv(ruta))) for ruta in csvs.values()]
-    out.append((qr, sha256_file(ROOT / qr), None))
+    out = [(ruta, sha256_file(Path(raiz) / ruta), len(_leer_csv(ruta, raiz))) for ruta in csvs.values()]
+    out.append((qr, sha256_file(Path(raiz) / qr), None))
     return sorted(out)
 
 
@@ -127,16 +127,16 @@ def _filas_de_tabla(tabla, columnas, filas_csv, esquema_tablas):
 DERIVADAS = {"barrio_estrato": {"comuna"}, "construccion": {"barrio_estrato_codigo"}, "kpi": {"orden"}, "kpi_sensibilidad": {"orden"}}
 
 
-def preparar(cfg=None):
+def preparar(cfg=None, raiz=ROOT):
     """Lee y convierte TODAS las entradas antes de tocar la base: un error de conversión no deja nada a medias. Devuelve el paquete de datos de la corrida."""
     cfg = cfg or load_config()
     csvs, qr_ruta = entradas(cfg)
     et = esquema.tablas(esquema.leer("mysql"))
-    hue = huellas(cfg)
-    qr = json.loads((ROOT / qr_ruta).read_text(encoding="utf-8"))
+    hue = huellas(cfg, raiz)
+    qr = json.loads((Path(raiz) / qr_ruta).read_text(encoding="utf-8"))
     tablas, crudas = {}, {}
     for tabla, ruta in csvs.items():
-        crudas[tabla] = _leer_csv(ruta)
+        crudas[tabla] = _leer_csv(ruta, raiz)
         tablas[tabla] = _filas_de_tabla(tabla, list(crudas[tabla][0].keys()), crudas[tabla], et)
     comunas = {f"{int(r['codigo_barrio']) // 100:02d}" for r in crudas["barrio_estrato"]}
     comunas |= {r["comuna"] for r in crudas["construccion"] if r["comuna"] != ""}
@@ -164,15 +164,15 @@ def corrida_existente(conn, dialecto, clave):
         cur.close()
 
 
-def cargar(conn, dialecto, lote=None, cfg=None, gancho=None, paquete=None):
+def cargar(conn, dialecto, lote=None, cfg=None, gancho=None, paquete=None, raiz=ROOT):
     """Carga una corrida. Si la clave ya existe devuelve {'estado': 'ya_cargada'} sin escribir; si no, inserta todo en UNA transacción (o nada).
 
-    `gancho(tabla)` se llama tras insertar cada tabla (las pruebas lo usan para inyectar un error a mitad de la carga).
+    `gancho(tabla)` se llama tras insertar cada tabla (las pruebas lo usan para inyectar un error a mitad de la carga). `raiz` apunta a una copia de data/ (pruebas).
     """
     cfg = cfg or load_config()
     lote = int(lote or cfg["almacenamiento"]["lote"])
     t0 = time.perf_counter()
-    paq = paquete or preparar(cfg)
+    paq = paquete or preparar(cfg, raiz)
     c = paq["corrida"]
     esquema.aplicar(conn, dialecto)   # el DDL de MySQL confirma implícitamente: va antes de abrir la transacción
     existente = corrida_existente(conn, dialecto, c["clave"])
