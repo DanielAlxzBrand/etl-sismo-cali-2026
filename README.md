@@ -270,12 +270,12 @@ py -3 -m venv .venv
 python -m pip install -r requirements.txt
 ```
 Debe terminar sin errores (Python 3.13.0).
-2. **Variables opcionales:** `Copy-Item .env.example .env` (solo `HTTP_USER_AGENT`; no se necesitan tokens).
+2. **Variables:** el pipeline no necesita tokens; `HTTP_USER_AGENT` es opcional. Las variables `MYSQL_*` solo se usan en la carga relacional y las crea `scripts/mysql/configurar_mysql.py` (sección 19); `.env` nunca se versiona.
 3. **Pipeline completo:** `python main.py --stage all`. Con Bronze presente no necesita red. Al terminar el registro muestra, entre otras líneas, `Salida: construcciones=5.146 barrios=346 integrado=5.146 | cobertura de llave=99.8834% (pasa)` y `Salida: gold_final=5.146 filas | kpis_gold=23 filas (6 indicadores) | sensibilidades=107 filas`. Ejecutarlo dos veces seguidas deja los mismos sha256 en `data/silver` y `data/gold`:
 ```powershell
 Get-FileHash -Algorithm SHA256 data\silver\*.csv, data\silver\quality_report.json, data\gold\*.csv
 ```
-4. **Pruebas:** `pytest -q` → `107 passed`.
+4. **Pruebas:** `pytest -q` → `199 passed`.
 5. **Notebooks** (cada uno se ejecuta de arriba a abajo sin errores):
 ```powershell
 jupyter nbconvert --to notebook --execute --inplace notebooks\05_validacion_evidencias.ipynb
@@ -289,7 +289,7 @@ jupyter nbconvert --to notebook --execute --inplace notebooks\05_validacion_evid
 - `main.py`: puerta de entrada: `--stage extract|transform|gold|all` y `--refresh`
 - `requirements.txt`: dependencias con versión mínima
 - `pytest.ini`: configuración de las pruebas (carpeta de pruebas y ruta de importación)
-- `.env.example`: variables opcionales sin valores (`HTTP_USER_AGENT`)
+- `.env.example`: nombres de variables sin valores (`HTTP_USER_AGENT` y las `MYSQL_*` de la carga relacional)
 - `.gitignore`: lo que git no versiona (`.env`, entornos virtuales, `dist/`, registros)
 - `.gitattributes`: fija los bytes de `data/` y los saltos de línea
 - `config/`: parámetros en `config.yaml`: URL de las fuentes, umbrales, fechas, rutas, registro de ejecución y capa de servicio
@@ -297,9 +297,9 @@ jupyter nbconvert --to notebook --execute --inplace notebooks\05_validacion_evid
 - `data/silver/`: tablas limpias, huérfanos y `quality_report.json`
 - `data/gold/`: `gold_final.csv`, `kpis_gold.csv`, `kpis_sensibilidad.csv`, `etl_sismo.db`
 - `notebooks/`: cinco notebooks ejecutados (conexión, EDA, Silver, Gold y validación)
-- `src/`: código por capas (ver `src/README.md`): `extract/`, `transform/`, `load/`, `api/`, `common.py` y `logger.py`
-- `tests/`: 107 pruebas automáticas
-- `scripts/`: generadores y utilidades (ver `scripts/README.md`): README, catálogo de fuentes, escáner de secretos, empaquetado y `evidencias/`
+- `src/`: código por capas (ver `src/README.md`): `extract/`, `transform/`, `load/` (SQLite y carga relacional), `api/`, `common.py` y `logger.py`
+- `tests/`: 199 pruebas automáticas
+- `scripts/`: generadores y utilidades (ver `scripts/README.md`): README, catálogo de fuentes, modelo de datos, carga relacional, `mysql/` (configuración y verificación en vivo), escáner de secretos, empaquetado y `evidencias/`
 - `docs/README.md`: índice de la documentación por capas y tabla «dónde está cada cosa»
 - `docs/DECISIONES.md`: decisiones con alternativas, razón y riesgo
 - `docs/proyecto/`: contexto, entorno, decisiones técnicas y referencias (documento de contexto y problema, imagen del enunciado)
@@ -308,6 +308,7 @@ jupyter nbconvert --to notebook --execute --inplace notebooks\05_validacion_evid
 - `docs/silver/`: hallazgos del análisis exploratorio, reglas de limpieza, validación de la llave y revisión de códigos de barrio
 - `docs/gold/`: definición de cada KPI y diccionario de columnas de Gold
 - `docs/api/`: arquitectura del backend y de la API de solo lectura, con su diagrama
+- `docs/almacenamiento/`: almacenamiento relacional: modelo de datos con su diagrama, configuración de MySQL y carga y verificación
 - `docs/seguridad/`: política de credenciales, claves y tokens
 - `docs/validacion/`: verificaciones: contra el enunciado, de los servicios, en entorno limpio y del registro de ejecución
 - `docs/checklist/`: estado de los 30 ítems del checklist y guía de evidencias por ítem (`docs/checklist/guia_de_evidencias.md`)
@@ -316,10 +317,12 @@ jupyter nbconvert --to notebook --execute --inplace notebooks\05_validacion_evid
 - `logs/`: archivos de registro diarios (se crean al ejecutar; no se versionan)
 
 ## 14. Pruebas y validación
-Hay **107 pruebas** automáticas, sin red:
+Hay **199 pruebas** automáticas, sin red:
 - `tests/test_api.py` (17): API de solo lectura: estructura, validación, coincidencia con las salidas, solo GET y sin escritura en `data/` ni en la base.
+- `tests/test_carga_relacional.py` (54): esquema relacional (paridad, diccionario al día), conversión estricta, carga con conciliación al 100 %, idempotencia, historial, reversión, integridad referencial y equivalencia de la API entre SQLite y el almacén relacional (sin servidor MySQL).
 - `tests/test_catalogo.py` (5): el catálogo de fuentes coincide con el manifiesto, es determinista y `/fuentes` lo devuelve igual.
-- `tests/test_dist.py` (14): el empaquetado detecta entornos virtuales por su contenido, aunque no tengan `pyvenv.cfg`.
+- `tests/test_configurar_mysql.py` (25): configuración de MySQL con conexiones simuladas (privilegios, contraseñas que nunca llegan a `.env` ni a SQL, rotación), `.env` atómico, enmascarado del registro y comprobación canario del escáner.
+- `tests/test_dist.py` (15): el empaquetado detecta entornos virtuales por su contenido, aunque no tengan `pyvenv.cfg`.
 - `tests/test_empaquetado_y_revision.py` (5): el empaquetado excluye entornos virtuales con cualquier nombre; la revisión de códigos de barrio cubre los casos pedidos y suma las construcciones sin nombre validado.
 - `tests/test_estrategia.py` (14): documentos de estrategia y estado del checklist: existencia, términos prohibidos, cifras, criterios con componente de la lista cerrada y pruebas negativas.
 - `tests/test_evidencias.py` (4): el saneamiento de evidencias sustituye rutas, usuario y equipo, y las evidencias guardadas no llevan datos del equipo.
@@ -328,6 +331,7 @@ Hay **107 pruebas** automáticas, sin red:
 - `tests/test_logger.py` (2): enmascarado de secretos y nombre de los loggers.
 - `tests/test_quality.py` (4): campos del reporte, cobertura frente al umbral, mínimo de filas de Gold, KPI en rango.
 - `tests/test_readme_cifras.py` (13): las cifras de este README coinciden con los archivos de salida; recuadros de alcance, población e indicador satelital.
+- `tests/test_respaldo_y_medicion.py` (12): respaldo lógico con manifiesto sha256, restauración con conciliación, reglas de la medición de lotes y límites de los scripts en vivo.
 - `tests/test_secretos.py` (10): escáner de secretos (un secreto sembrado por tipo), `.env` fuera de git, enmascarado del registro y zip sin `.env`.
 - `tests/test_transform.py` (7): llaves, `normalize_key`, duplicados, tipos, zona horaria, vectores de Wilson.
 
@@ -372,6 +376,11 @@ Decisiones de las fuentes: el plan elegido es el de las construcciones de la cap
 - **Solo lectura:** la API puede entregar los datos, pero no puede cambiarlos; la conexión a la base rechaza cualquier escritura.
 - **Catálogo de metadatos:** ficha de cada fuente (publicador, URL, formato, licencia, fechas, columnas y huella del snapshot) generada desde el manifiesto.
 - **Escáner de secretos:** script que busca credenciales en el repositorio, su historial y un zip; reporta archivo, línea y patrón, nunca el valor.
+- **Corrida:** una carga completa a la base relacional; cada corrida distinta conserva todas sus filas y la historia es la suma de corridas.
+- **Idempotente:** que repetir la operación con la misma entrada no cambia nada; la carga repetida responde «ya cargada».
+- **Clave foránea:** regla de la base que impide que una fila apunte a otra que no existe.
+- **Conciliación:** comparar lo cargado con los archivos de origen (conteos, huellas y cada valor) para demostrar que son iguales.
+- **Lote (batch):** grupo de filas que se inserta en una sola operación; es más rápido que insertar fila por fila.
 
 ## 17. Trabajo futuro y atribución
 **Trabajo futuro.** Incorporar la amenaza sísmica oficial para cubrir KR2; ampliar la cobertura a la Comuna 2 y a las demás comunas ausentes; comparar el proxy satelital con las inspecciones ATC-20 de la Alcaldía; repetir el análisis con un estrato actualizado (el de 2015 puede estar desfasado).
@@ -403,5 +412,21 @@ Después se abre `http://127.0.0.1:8000/docs` (documentación automática) o `ht
 
 Los errores usan siempre `{"error": {"codigo", "mensaje", "detalle"}}`. Documentación: [arquitectura del backend](docs/api/arquitectura.md), [catálogo de fuentes y metadatos](docs/bronze/catalogo_fuentes_metadatos.md) y [política de credenciales](docs/seguridad/gestion_credenciales.md). Para buscar secretos: `python scripts/escanear_secretos.py` (termina en `hallazgos: 0`).
 
-## 19. Componentes en construcción
-Quedan en construcción, y se documentarán en `docs/` cuando existan: el **almacenamiento relacional en MySQL** (carga con claves, historial y lotes), la **orquestación con Airflow**, el **panel con Streamlit** que consume solo la API, los materiales de **usuarios y UX** y el análisis de **costos y finanzas**. El índice de la documentación, con la carpeta prevista para cada uno, está en [docs/README.md](docs/README.md).
+## 19. Almacenamiento relacional (MySQL)
+Además de `etl_sismo.db` (SQLite), los resultados se pueden cargar a **MySQL 8.0** con un esquema de siete tablas con claves primarias y foráneas, restricciones de validación e **historial**: cada carga distinta es una *corrida* completa y las anteriores no se tocan. La carga lee solo `data/` (5.146 construcciones, 346 barrios y los indicadores), es **idempotente** (la misma entrada responde «ya cargada»), se hace en **una transacción** (si algo falla no queda nada a medias) y usa **lotes** cuyo tamaño se decide por medición. Las construcciones sin cruce con el CSV de estrato se conservan con el enlace al barrio nulo. Los datos siguen siendo un proxy satelital sobre construcciones de siete comunas, sin generalizar a toda Cali.
+
+**Primera vez** (PowerShell, en la raíz, con el servicio MySQL80 activo). Quien conoce la contraseña del administrador de MySQL la escribe cuando el script la pide (no se ve); el script crea las bases `sismo_cali` y `sismo_cali_prueba`, el usuario `sismo_etl` con privilegios mínimos y guarda sus credenciales solo en `.env`:
+```powershell
+.\.venv\Scripts\python.exe scripts\mysql\configurar_mysql.py
+```
+**Cargar y verificar:**
+```powershell
+.\.venv\Scripts\python.exe scripts\cargar_mysql.py --destino mysql
+.\.venv\Scripts\python.exe scripts\mysql\verificar_mysql.py
+```
+La verificación en vivo corre solo sobre la base de prueba. Para servir la API desde MySQL se cambia `api.almacenamiento` a `mysql` en `config/config.yaml`. Las pruebas automáticas no necesitan MySQL. La contraseña no se escribe en ningún archivo del repositorio, notebook ni registro; el escáner la busca activamente (`python scripts/escanear_secretos.py --canario-env`).
+
+Documentación: [modelo de datos](docs/almacenamiento/modelo_datos.md), [configuración de MySQL](docs/almacenamiento/mysql_configuracion.md), [carga y verificación](docs/almacenamiento/carga_y_verificacion.md) y [gestión de credenciales](docs/seguridad/gestion_credenciales.md).
+
+## 20. Componentes en construcción
+Quedan en construcción, y se documentarán en `docs/` cuando existan: la **orquestación con Airflow**, el **panel con Streamlit** que consume solo la API, los materiales de **usuarios y UX** y el análisis de **costos y finanzas**. El índice de la documentación, con la carpeta prevista para cada uno, está en [docs/README.md](docs/README.md).

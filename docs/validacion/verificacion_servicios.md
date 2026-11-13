@@ -134,3 +134,102 @@
 - **Entorno nuevo:** `pip install -r requirements.txt` en un entorno virtual nuevo y `pytest --collect-only` recolectaron las 92 pruebas (`EV-020`).
 - **Evidencias saneadas:** sin rutas de usuario, nombre de usuario ni nombre del equipo (marcadores `<REPO>`, `<CLON>`, `<TEMP>`, `<VENV>`, `<USUARIO>` y `<EQUIPO>`; D36).
 - **Política de evidencias (D35):** sin video; las capturas de pantalla son opcionales (`evidencias/guia_de_evidencias.md`).
+
+---
+
+## Carga relacional (2026-11-13)
+Verificación de los ítems 4.1, 4.2 y 4.3 y revalidación del 2.3 con las variables `MYSQL_*`. Los subcriterios se cumplen por dos vías: **sin servidor** (pruebas automáticas sobre SQLite con el mismo esquema, ya ejecutadas) y **en vivo** (batería sobre MySQL 8.0, que se ejecuta cuando el equipo crea el usuario con `scripts/mysql/configurar_mysql.py`). La columna «estado» distingue ambas.
+
+### Auditoría previa
+| aspecto | hallazgo | evidencia |
+|---|---|---|
+| Almacén existente | `etl_sismo.db` (SQLite) con cuatro tablas sin claves foráneas, sin historial y sin carga por lotes; se reconstruye en cada ejecución | `src/load/load_database.py` |
+| Servidor MySQL | MySQL 8.0.45 como servicio `MySQL80` en el puerto 3306; la contraseña del administrador solo la conoce el equipo | `docs/proyecto/entorno.md` |
+| Conector | PyMySQL y `cryptography` instalados, `pip check` sin conflictos | `docs/evidencias/almacenamiento/EV-027_conector_mysql.txt` |
+| Credenciales | `.env` vacío; sin variables `MYSQL_*` en el código | `docs/seguridad/gestion_credenciales.md` (versión inicial) |
+| Brecha principal | no había esquema relacional, ni historial, ni integridad referencial, ni carga por lotes, ni forma segura de crear el usuario | — |
+
+### Ítem 4.1 · «Cargamos los datos procesados en el sistema de almacenamiento destino (PostgreSQL, MySQL, Data Warehouse o Data Lake).»
+**(a) Subcriterios**
+1. Esquema relacional (tablas, tipos, claves e índices) definido para MySQL 8.0 y documentado con diccionario de datos y diagrama entidad-relación.
+2. Carga de las construcciones de Gold, el estrato por barrio de Silver y los indicadores sin modificar el pipeline ni `data/`.
+3. Conciliación contra las entradas: conteos, huellas de los archivos y ida y vuelta de cada valor, al 100 %.
+4. Configuración segura: usuario con privilegios mínimos, dos bases (real y de prueba) y credenciales solo en `.env`.
+5. La API sirve las mismas respuestas desde el almacén relacional que desde SQLite.
+
+**(b) Evidencia existente.** `src/load/load_database.py` (SQLite), `docs/evidencias/almacenamiento/EV-027_conector_mysql.txt`.
+**(c) Brecha.** Todo lo anterior salvo el conector.
+**(d) Decisiones.** D40, D41, D42, D46, D49, D51 y D52.
+**(e) Acción realizada.** `src/load/sql/esquema_mysql.sql` y `esquema_sqlite.sql`, `src/load/esquema.py`, `src/load/relacional.py`, `src/load/conexion.py`, `src/load/conciliacion.py`, `scripts/cargar_mysql.py`, `scripts/mysql/configurar_mysql.py`, `scripts/mysql/verificar_mysql.py`, `RepositorioRelacional` en `src/api/`, `docs/almacenamiento/`.
+**(f) Evidencia producida.** `docs/almacenamiento/modelo_datos.md` y `img/modelo_er.png` (generados del esquema); `tests/test_carga_relacional.py`; la salida de `verificar_mysql.py` se registra en `docs/evidencias/almacenamiento/` al ejecutarla en vivo.
+
+| subcriterio | estado | justificación |
+|---|---|---|
+| 1 | Verificado sin servidor | siete tablas con comentario en cada columna; una prueba compara el diccionario con el esquema y otra la paridad entre los dos archivos SQL |
+| 2 | Verificado sin servidor | la carga solo lee `data/`; una prueba comprueba que los archivos de `data/` conservan su sha256 |
+| 3 | Verificado sin servidor; en vivo al ejecutar la batería | prueba de conciliación con 0 diferencias sobre las 5.146 construcciones, 346 barrios, 23 indicadores y 107 filas de sensibilidad; otra prueba demuestra que un valor alterado se detecta |
+| 4 | Verificado sin servidor; en vivo al ejecutar la batería | script con conexiones simuladas: privilegios comprobados con `SHOW GRANTS`, `.env` escrito solo tras verificar al usuario |
+| 5 | Verificado sin servidor; en vivo al ejecutar la batería | 17 rutas idénticas entre el almacén relacional y SQLite |
+
+**Cómo validar.** `pytest tests/test_carga_relacional.py` y, con MySQL, `.\.venv\Scripts\python.exe scripts\mysql\verificar_mysql.py --evidencia`.
+
+### Ítem 4.2 · «Garantizamos la persistencia histórica e integridad referencial de los datos guardados.»
+**(a) Subcriterios**
+1. Persistencia histórica: cada carga distinta es una corrida completa y las anteriores quedan intactas.
+2. Integridad referencial: claves primarias y foráneas con `ON DELETE RESTRICT`, restricciones `CHECK` y ninguna fila huérfana; las construcciones sin cruce de barrio se conservan con el enlace nulo.
+3. Idempotencia: la misma entrada no duplica datos (clave de corrida determinista).
+4. Atomicidad: una carga es una transacción; ante un fallo no queda nada a medias.
+5. Las violaciones de integridad se rechazan con su código de error y no dejan filas.
+6. Respaldo y restauración lógicos que concilian tabla por tabla.
+
+**(b) Evidencia existente.** Ninguna sobre historial ni integridad referencial.
+**(c) Brecha.** Sin historial, sin claves foráneas, sin carga transaccional, sin respaldo.
+**(d) Decisiones.** D43, D44, D45, D48 y D51.
+**(e) Acción realizada.** Esquema con claves y restricciones; `cargar` transaccional con gancho de pruebas; `scripts/mysql/respaldar_restaurar.py`.
+**(f) Evidencia producida.** `tests/test_carga_relacional.py` (historial, idempotencia, reversión, diez violaciones rechazadas) y `tests/test_respaldo_y_medicion.py`; las salidas en vivo se registran en `docs/evidencias/almacenamiento/`.
+
+| subcriterio | estado | justificación |
+|---|---|---|
+| 1 | Verificado sin servidor; en vivo al ejecutar la batería | una entrada alterada crea la corrida 2, las filas se duplican y una consulta encuentra la única construcción distinta; la corrida 1 sigue conciliada al 100 % |
+| 2 | Verificado sin servidor; en vivo al ejecutar la batería | `PRAGMA foreign_key_check` vacío y ocho relaciones sin huérfanos por `LEFT JOIN`; las construcciones sin cruce tienen enlace nulo |
+| 3 | Verificado sin servidor; en vivo al ejecutar la batería | la segunda carga responde «ya cargada» y los conteos no cambian |
+| 4 | Verificado sin servidor; en vivo al ejecutar la batería | un error inyectado tras insertar las construcciones deja todas las tablas vacías y una carga posterior funciona |
+| 5 | Verificado sin servidor; en vivo al ejecutar la batería | corrida inexistente, clave repetida, estrato 9, latitud y longitud fuera de Cali, cruce sin enlace, barrio inexistente, banderas fuera de 0 y 1, sin datos con severo y comuna inexistente; más el borrado de una corrida con datos |
+| 6 | Verificado sin servidor; en vivo al ejecutar el script | respaldo de siete tablas, manifiesto alterado rechazado antes de restaurar y huellas iguales tras restaurar |
+
+**Cómo validar.** `pytest tests/test_carga_relacional.py tests/test_respaldo_y_medicion.py`; en vivo, `verificar_mysql.py` y `respaldar_restaurar.py`.
+
+### Ítem 4.3 · «Optimizamos el rendimiento del cargue (operaciones en lote/batch o estrategias de actualización).»
+**(a) Subcriterios**
+1. Inserciones por lotes (`executemany`) con tamaño configurable.
+2. Medición de al menos tres tamaños de lote frente a la carga fila a fila, con calentamiento y repeticiones.
+3. El tamaño elegido sale de la medición y queda en `config/config.yaml`.
+4. Estrategia de actualización: la clave de corrida evita recargar lo que no cambió y un cambio genera una corrida nueva, sin actualizar fila a fila.
+5. Informe con mediana, percentil 95 y filas por segundo, con la salvedad de que los tiempos dependen del equipo.
+
+**(b) Evidencia existente.** Ninguna (`load_database.py` inserta con `to_sql`).
+**(c) Brecha.** No había medición ni parámetro de lote.
+**(d) Decisiones.** D44 y D47.
+**(e) Acción realizada.** `almacenamiento.lote` en `config/config.yaml`; `scripts/mysql/benchmark_lotes.py` con la regla de elección y sus pruebas.
+**(f) Evidencia producida.** `tests/test_respaldo_y_medicion.py` (percentil y regla de elección); la medición real se registra en `docs/evidencias/almacenamiento/benchmark_lotes.*` al ejecutarla en vivo.
+
+| subcriterio | estado | justificación |
+|---|---|---|
+| 1 | Verificado sin servidor | `_insertar` divide en lotes del tamaño configurado; las pruebas cargan con el valor por defecto |
+| 2 | Por medir en vivo | `benchmark_lotes.py`: fila a fila, 500, 1000 y 2000; 1 calentamiento y 5 repeticiones |
+| 3 | Por medir en vivo | `--fijar` escribe el lote elegido; hoy 1000 por defecto (D47) |
+| 4 | Verificado sin servidor | idempotencia e historial probados |
+| 5 | Por medir en vivo | el script imprime la tabla y la salvedad |
+
+**Cómo validar.** `.\.venv\Scripts\python.exe scripts\mysql\benchmark_lotes.py --evidencia`.
+
+### Revalidación del ítem 2.3 con las variables `MYSQL_*`
+Subcriterios nuevos, además de los seis anteriores: 7. la contraseña del usuario del proyecto se crea y se guarda sin que la vea nadie; 8. los valores de `.env` no aparecen en ningún otro lugar.
+
+| subcriterio | estado | justificación |
+|---|---|---|
+| 1 a 6 | Cumple (sin cambios) | `pytest tests/test_secretos.py`; escáner sin hallazgos en el árbol |
+| 7 | Verificado sin servidor | `tests/test_configurar_mysql.py`: la contraseña del administrador no llega a `.env`, a SQL ni al registro; la del proyecto viaja como parámetro y solo se escribe tras verificar al usuario; privilegios incorrectos se rechazan |
+| 8 | Verificado sin servidor; en vivo al ejecutar el escáner | `escanear_secretos.py --canario-env` detecta una contraseña sembrada en árbol, historial y zip sin imprimirla; la comprobación con la contraseña real se registra al crearla |
+
+**Estado del 2.3:** Cumple; la revalidación con la contraseña real y con el zip final queda registrada en las evidencias de almacenamiento y en el cierre y paquete.

@@ -87,18 +87,26 @@
 | [registro_de_cambios.md](retroalimentacion/registro_de_cambios.md) | retroalimentación del profesor y cómo la atendimos |
 
 ### Decisiones
-[DECISIONES.md](DECISIONES.md): todas las decisiones con alternativas, razón, riesgo y fecha (D1 a D36; las nuevas continúan desde D37).
+[DECISIONES.md](DECISIONES.md): todas las decisiones con alternativas, razón, riesgo y fecha (D1 a D52; las nuevas continúan desde D53).
+
+### Almacenamiento relacional (MySQL)
+| documento | contenido |
+|---|---|
+| [modelo_datos.md](almacenamiento/modelo_datos.md) | diccionario de datos y diagrama entidad-relación, generados del esquema SQL |
+| [mysql_configuracion.md](almacenamiento/mysql_configuracion.md) | qué crea `configurar_mysql.py`, privilegios, rotación, fallos y revocación |
+| [carga_y_verificacion.md](almacenamiento/carga_y_verificacion.md) | cómo cargar, verificar, medir lotes, respaldar y servir la API desde MySQL |
+| [gestion_credenciales.md](seguridad/gestion_credenciales.md) | variables `MYSQL_*`, alta segura del usuario y comprobación canario |
+| [verificacion_servicios.md](validacion/verificacion_servicios.md) | verificación de los ítems 4.1, 4.2 y 4.3 y revalidación del 2.3 (sección «Carga relacional») |
 
 ## Componentes en construcción
 | componente | estado |
 |---|---|
-| Almacenamiento relacional (MySQL) | en construcción; se documentará en `docs/almacenamiento/` |
 | Orquestación (Airflow) | en construcción; se documentará en `docs/orquestacion/` |
 | Panel (dashboard) | en construcción; se documentará en `docs/dashboard/` |
 | Usuarios y UX | en construcción; se documentará en `docs/ux/` |
 | Costos y finanzas | en construcción; se documentará en `docs/finanzas/` |
 
-Sus evidencias irán en `docs/evidencias/almacenamiento/`, `docs/evidencias/orquestacion/`, `docs/evidencias/dashboard/` y `docs/evidencias/usuarios/`, que se crean cuando haya contenido.
+Las evidencias del almacenamiento relacional están en `docs/evidencias/almacenamiento/`; las de los demás irán en `docs/evidencias/orquestacion/`, `docs/evidencias/dashboard/` y `docs/evidencias/usuarios/`, que se crean cuando haya contenido.
 
 ## Componentes del proyecto y los ítems del checklist que cierran
 | componente | ítems que cierra | estado |

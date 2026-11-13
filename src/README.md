@@ -14,6 +14,10 @@ El código está organizado por capas del ETL medallion y por la capa de servici
 | `transform/integrate.py` | JOIN, huérfanos, validación de la llave, reporte de calidad y documentos generados de Silver | Silver |
 | `transform/build_gold.py` | Gold: KPI, intervalos de Wilson y Newcombe, sensibilidades | Gold |
 | `load/load_database.py` | carga de Silver y Gold a `data/gold/etl_sismo.db` (SQLite) | almacenamiento |
-| `api/` | API de solo lectura: `app.py` (rutas), `esquemas.py` (respuestas), `repositorio.py` (acceso a datos en solo lectura) y `errores.py` (errores uniformes) | servicio |
+| `load/esquema.py` y `load/sql/` | esquema relacional en dos archivos (MySQL y SQLite), lectura, aplicación y análisis para el diccionario de datos | almacenamiento |
+| `load/relacional.py` | carga por lotes con historial: conversión estricta, clave de corrida determinista, una transacción por carga | almacenamiento |
+| `load/conexion.py` | conexiones a MySQL (la contraseña solo viene de `.env`) y a SQLite con claves foráneas | almacenamiento |
+| `load/conciliacion.py` | conciliación de una corrida contra los archivos de origen (conteos, huellas y cada valor), integridad referencial y equivalencia de endpoints | almacenamiento |
+| `api/` | API de solo lectura: `app.py` (rutas), `esquemas.py` (respuestas), `repositorio.py` (acceso a datos en solo lectura, con `RepositorioSqlite` y `RepositorioRelacional`) y `errores.py` (errores uniformes) | servicio |
 
-Los componentes en construcción (carga relacional a MySQL, orquestación y panel) se agregarán como paquetes nuevos sin cambiar los existentes; la capa de servicio ya separa el contrato de los endpoints del almacenamiento mediante la interfaz `RepositorioGold`.
+La carga relacional (`load/relacional.py`) es independiente de las etapas del pipeline: se ejecuta con `scripts/cargar_mysql.py`. Los componentes en construcción (orquestación y panel) se agregarán como paquetes nuevos sin cambiar los existentes; la capa de servicio separa el contrato de los endpoints del almacenamiento mediante la interfaz `RepositorioGold` y elige el almacén con `api.almacenamiento` de `config/config.yaml`.

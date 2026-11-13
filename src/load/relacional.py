@@ -66,8 +66,10 @@ def convertir(valor, tipo, no_nulo, contexto=""):
             if len(valor) > n:
                 raise ConversionError(f"texto de {len(valor)} caracteres en una columna de {n}{donde}")
             return valor
-    except InvalidOperation:
-        raise ConversionError(f"número no válido {valor!r}{donde}") from None
+    except ConversionError:
+        raise
+    except (InvalidOperation, ValueError):
+        raise ConversionError(f"valor no válido {valor!r}{donde}") from None
     raise ConversionError(f"tipo no soportado {tipo}{donde}")
 
 

@@ -19,7 +19,8 @@ El proyecto es un ETL con capas: **Bronze** guarda lo descargado tal cual, **Sil
 | `src/extract/` | descarga paginada y snapshots de Bronze | URL de `config.yaml`, red | respuestas crudas y `manifest.jsonl` con sha256 |
 | `src/transform/` | limpieza, llave, JOIN, Gold y KPI | Bronze | Silver, Gold y `quality_report.json` |
 | `src/load/load_database.py` | carga posterior a SQLite | CSV de Silver y Gold | `data/gold/etl_sismo.db` |
-| `src/api/repositorio.py` | acceso a datos detrás de la interfaz `RepositorioGold`; implementación `RepositorioSqlite` | ruta de la base | filas (diccionarios) |
+| `src/api/repositorio.py` | acceso a datos detrás de la interfaz `RepositorioGold`; implementaciones `RepositorioSqlite` y `RepositorioRelacional` (última corrida del almacén relacional) | ruta de la base o conexión | filas (diccionarios) |
+| `src/load/relacional.py`, `src/load/conexion.py` | carga relacional por lotes con historial a MySQL (o SQLite en pruebas) y conexiones | CSV de Silver y Gold | tablas relacionales (`docs/almacenamiento/modelo_datos.md`) |
 | `src/api/app.py` | fábrica `crear_app`, rutas GET, validación y registro de solicitudes | parámetros de la solicitud | JSON tipado |
 | `src/api/esquemas.py` | modelos de respuesta (pydantic) | filas | contratos del API |
 | `src/api/errores.py` | manejadores de error y formato uniforme | excepciones | `{"error": {...}}` |
@@ -157,15 +158,15 @@ Latencia por ruta con el **servidor real** en `127.0.0.1` (no el cliente de prue
 - **CORS abierto o `0.0.0.0`:** innecesario y riesgoso sin autenticación (D29).
 - **Calcular en la API:** duplicaría lógica de Gold y podría contradecirla; la API solo entrega.
 
-## 13. Componentes futuros (en construcción)
-- **Carga a MySQL (Carga relacional):** un segundo repositorio por configuración sin cambiar los endpoints. *En construcción.*
+## 13. Almacén relacional y componentes futuros
+- **Carga a MySQL (Carga relacional):** implementada. `api.almacenamiento` en `config/config.yaml` elige `sqlite` (por defecto) o `mysql`; los endpoints no cambian y `/health` y `/metadata` informan el almacén activo. Se abre una conexión de solo lectura por solicitud y, si MySQL no responde, la API contesta 503 con el JSON uniforme. Ver `docs/almacenamiento/carga_y_verificacion.md`.
 - **Orquestación con Airflow (Pruebas y orquestación).** *En construcción.*
 - **Dashboard con Streamlit (Panel)** que consume solo esta API. *En construcción.*
 
 ## Alcance y límites
 - **Qué afirmamos:** diseñamos e implementamos un backend con capas, una API de solo lectura con 11 endpoints GET tipados, validación, errores uniformes, registro de solicitudes y pruebas; entrega exactamente lo que está en Gold. [Evidencia en el repo: `src/api/`, `tests/test_api.py`, `docs/evidencias/api/`]
 - **Con qué evidencia:** 17 pruebas de la API (coincidencia con los CSV, paginación, inyección, solo lectura, no escritura); sha256 de `data/` y de la base idénticos antes y después de consultar (EV-015); respuestas reales de cada endpoint (EV-016) y esquema OpenAPI exportado.
-- **Qué NO afirmamos:** que la API sea apta para exponerse en red; que los datos sean una evaluación estructural; que MySQL, Airflow o el dashboard ya existan (están en construcción).
+- **Qué NO afirmamos:** que la API sea apta para exponerse en red; que los datos sean una evaluación estructural; que Airflow o el dashboard ya existan (están en construcción).
 
 ## Preguntas frecuentes
 - **«¿Cómo saben que la API no modifica los datos?»** Porque la conexión se abre en modo de solo lectura (un INSERT falla), no hay rutas de escritura y comparamos los sha256 de todo `data/` y de la base antes y después de consultar todos los endpoints.
