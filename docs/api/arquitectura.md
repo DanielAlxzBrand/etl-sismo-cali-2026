@@ -7,7 +7,7 @@
 > **Alcance de los resultados.** Los datos que la API entrega son un **proxy satelital, no una evaluación estructural**: construcciones de 7 comunas de Cali (polígonos de afectación preliminar) con estrato de **2015**. No se generaliza a Cali. Nuestro indicador es el cambio satelital severo (severo estricto, proxy de daño).
 
 ## 1. Visión general (para quien empieza)
-El proyecto es un ETL con capas: **Bronze** guarda lo descargado tal cual, **Silver** lo limpia y lo une, **Gold** calcula los indicadores. Hasta F1 los resultados eran archivos. La capa de servicio agrega una **API**: un programa que responde preguntas por HTTP, como «dame los indicadores» o «dame las construcciones de la comuna 19». Cada pregunta se hace a un **endpoint** (una dirección, por ejemplo `/kpis`). Es de **solo lectura**: puede entregar los resultados, pero no puede cambiarlos ni crear nuevos, de modo que nadie puede dañar la línea base consultándola.
+El proyecto es un ETL con capas: **Bronze** guarda lo descargado tal cual, **Silver** lo limpia y lo une, **Gold** calcula los indicadores. Hasta el componente Estrategia los resultados eran archivos. La capa de servicio agrega una **API**: un programa que responde preguntas por HTTP, como «dame los indicadores» o «dame las construcciones de la comuna 19». Cada pregunta se hace a un **endpoint** (una dirección, por ejemplo `/kpis`). Es de **solo lectura**: puede entregar los resultados, pero no puede cambiarlos ni crear nuevos, de modo que nadie puede dañar la línea base consultándola.
 
 ![Arquitectura del backend](img/arquitectura_backend.png)
 
@@ -158,9 +158,9 @@ Latencia por ruta con el **servidor real** en `127.0.0.1` (no el cliente de prue
 - **Calcular en la API:** duplicaría lógica de Gold y podría contradecirla; la API solo entrega.
 
 ## 13. Componentes futuros (en construcción)
-- **Carga a MySQL (F3):** un segundo repositorio por configuración sin cambiar los endpoints. *En construcción.*
-- **Orquestación con Airflow (F4).** *En construcción.*
-- **Dashboard con Streamlit (F5)** que consume solo esta API. *En construcción.*
+- **Carga a MySQL (Carga relacional):** un segundo repositorio por configuración sin cambiar los endpoints. *En construcción.*
+- **Orquestación con Airflow (Pruebas y orquestación).** *En construcción.*
+- **Dashboard con Streamlit (Panel)** que consume solo esta API. *En construcción.*
 
 ## Cómo lo defendemos
 - **Qué afirmamos:** diseñamos e implementamos un backend con capas, una API de solo lectura con 11 endpoints GET tipados, validación, errores uniformes, registro de solicitudes y pruebas; entrega exactamente lo que está en Gold. [Evidencia en el repo: `src/api/`, `tests/test_api.py`, `docs/evidencias/api/`]

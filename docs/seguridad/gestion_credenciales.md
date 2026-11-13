@@ -13,8 +13,8 @@
 ## 2. Variables previstas (no usadas todavía)
 | variable | fase | para qué | estado |
 |---|---|---|---|
-| `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_DATABASE` | F3 | conectar con MySQL 8.0 local | **prevista, no usada todavía** |
-| claves propias de Airflow (clave Fernet, secreto JWT y contraseña del administrador; nombres que F4 confirmará) | F4 | operar Airflow en Docker | **prevista, no usada todavía** |
+| `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_DATABASE` | Carga relacional | conectar con MySQL 8.0 local | **prevista, no usada todavía** |
+| claves propias de Airflow (clave Fernet, secreto JWT y contraseña del administrador; nombres que Pruebas y orquestación confirmará) | Pruebas y orquestación | operar Airflow en Docker | **prevista, no usada todavía** |
 
 Reglas para ellas: se agregan a `.env.example` (solo el nombre, sin valor) **en la fase en que el código las lea**; los valores los genera y guarda el equipo en su `.env`; la contraseña de MySQL nunca se pide por chat ni se escribe en un documento. No reutilizamos ninguna credencial del material de clase de Airflow. [Criterio aplicado: decisiones D19 y D21]
 
@@ -62,7 +62,7 @@ Imprime una línea por hallazgo (`archivo:línea: patrón`) y `hallazgos: N`; te
 **Límites del escáner:** puede dar falsos positivos (cadenas largas que no son secretos) y falsos negativos (un secreto con formato que no conocemos). Por eso es una red de seguridad y no sustituye la regla principal: los secretos nunca se escriben fuera de `.env`.
 
 ## 9. Estado del ítem 2.3 y qué se revalida
-Estado: **Cumple** para lo que el proyecto usa hoy (ningún secreto obligatorio, controles activos y verificados). Se **revalida en F3** con las variables `MYSQL_*` y en **F8** con el escáner sobre el zip final de entrega.
+Estado: **Cumple** para lo que el proyecto usa hoy (ningún secreto obligatorio, controles activos y verificados). Se **revalida en el componente Carga relacional** con las variables `MYSQL_*` y en **Cierre y paquete** con el escáner sobre el zip final de entrega.
 
 ## Cómo lo defendemos
 - **Qué afirmamos:** hoy el proyecto no necesita credenciales; las que vendrán (MySQL, Airflow) tienen lugar, regla y controles definidos; el repositorio, su historial, los notebooks, los logs y un zip de prueba no contienen secretos según el escáner. [Evidencia en el repo: `docs/evidencias/api/EV-019_escaner_secretos.txt`]

@@ -111,6 +111,6 @@ def test_1_5_tiene_al_menos_24_criterios_y_no_marca_cumple_sin_verificar():
     assert len(filas) >= 24
     for _id, estado, fase, fecha in filas:
         if estado.startswith("no verificado"):
-            assert fase in ("F2", "F3", "F4", "F5") and fecha.strip() == "—", _id
+            assert fase in ("API, fuentes y credenciales", "Carga relacional", "Pruebas y orquestación", "Panel") and fecha.strip() == "—", _id
         else:
             assert estado in ("cumple", "no cumple") and fecha.strip() != "—", _id

@@ -7,16 +7,16 @@
 |---|---|---|---|
 | 1.1 | Data Thinking, insights y problema central | [01_data_thinking.md](01_data_thinking.md) | Cumple con matiz: marco público adoptado a posteriori; sin investigación con usuarios |
 | 1.2 | Mapeo de stakeholders y tipología de la organización | [02_stakeholders.md](02_stakeholders.md) | Cumple con matiz: rúbrica R1 propia; sin contacto con stakeholders |
-| 1.3 | Objetivo, alcance, OKR y KPI | [03_objetivo_alcance_okr_kpi.md](03_objetivo_alcance_okr_kpi.md) | Cumple con matiz: KR2, KR3 y KR5 sin cubrir; métricas de los componentes nuevos se miden en F2 a F5 |
+| 1.3 | Objetivo, alcance, OKR y KPI | [03_objetivo_alcance_okr_kpi.md](03_objetivo_alcance_okr_kpi.md) | Cumple con matiz: KR2, KR3 y KR5 sin cubrir; métricas de los componentes nuevos se miden en API, fuentes y credenciales, Carga relacional, Pruebas y orquestación, Panel |
 | 1.4 | Canvas, Data Innovation Board y propuesta de valor | [04_canvas_data_innovation_board.md](04_canvas_data_innovation_board.md) | Cumple con matiz: ejercicio de diseño con hipótesis sin validar |
-| 1.5 | Criterios de aceptación del MVP | [05_mvp_criterios_aceptacion.md](05_mvp_criterios_aceptacion.md) | Cumple con matiz: criterios de API, MySQL, Airflow y dashboard se verifican en F2 a F5 |
+| 1.5 | Criterios de aceptación del MVP | [05_mvp_criterios_aceptacion.md](05_mvp_criterios_aceptacion.md) | Cumple con matiz: criterios de API, MySQL, Airflow y dashboard se verifican en API, fuentes y credenciales, Carga relacional, Pruebas y orquestación, Panel |
 
 **Regla de estado.** Cumple: evidencia concreta y reproducible para todos los subcriterios. Cumple con matiz: entregable central verificado; algún subcriterio depende de un hecho externo declarado o de una fase posterior. Pendiente (hecho externo). N/A justificado. No cumple (solo si no es técnicamente viable). Nunca «cumple» lo que requiera un evento que no ocurrió.
 
 ## Supuestos adoptados
 - **S1.** Usuarios objetivo (planteamiento, no un cliente real): una entidad pública territorial de gestión del riesgo (la Secretaría de Gestión del Riesgo de Cali) y la comunidad académica. El proyecto es una investigación aplicada de estudiantes. No hubo contacto con ninguna de ellas.
 - **S2.** El ítem 1.4 es un ejercicio de diseño con hipótesis sin validar y no un plan de negocio validado; **no es N/A**.
-- **S3.** El MVP de la Entrega 3 incluye pipeline reproducible, Gold con KPI e incertidumbre, API de solo lectura, almacenamiento relacional con historial, DAG de orquestación, dashboard sobre la API y verificación automática (los cuatro componentes nuevos están en construcción hasta F2 a F5).
+- **S3.** El MVP de la Entrega 3 incluye pipeline reproducible, Gold con KPI e incertidumbre, API de solo lectura, almacenamiento relacional con historial, DAG de orquestación, dashboard sobre la API y verificación automática (los cuatro componentes nuevos están en construcción hasta API, fuentes y credenciales, Carga relacional, Pruebas y orquestación y Panel).
 
 ## Leyenda de etiquetas de evidencia
 - [Evidencia en el repo: `ruta`]: existe en el repositorio y se puede abrir.
@@ -30,5 +30,5 @@ No hubo entrevistas, encuestas, pruebas con usuarios, estudios de mercado ni con
 ## Cambios respecto del encuadre anterior
 Estos documentos se escribieron como si pertenecieran al Avance 2 y recomendaban marcar el Canvas como N/A y excluir API, dashboard y orquestación. Esas recomendaciones quedaron superadas: la Entrega 3 incluye los cuatro componentes (decisiones en `docs/proyecto/decisiones_tecnicas.md`). Cada documento termina con un bloque «Cómo lo defendemos».
 
-## Evidencia de F1
+## Evidencia del componente Estrategia
 `docs/evidencias/estrategia/` y `docs/evidencias/manifiesto.md`. Imágenes en `docs/estrategia/img/`: la matriz poder-interés y el Canvas, generadas a partir de los datos de los documentos (no son capturas de pantalla).

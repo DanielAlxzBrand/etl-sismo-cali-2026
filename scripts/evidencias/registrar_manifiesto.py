@@ -1,4 +1,4 @@
-"""Agrega al manifiesto de evidencias las filas de F2 (EV-013 a EV-024) con su sha256 calculado de cada archivo.
+"""Agrega al manifiesto de evidencias las filas del componente API, fuentes y credenciales (EV-013 a EV-024) con su sha256 calculado de cada archivo.
 
 Idempotente: si un id ya está en el manifiesto, lo reemplaza. Solo escribe docs/evidencias/manifiesto.md.
 Uso: .\\.venv\\Scripts\\python.exe scripts\\evidencias\\registrar_manifiesto.py
@@ -55,7 +55,7 @@ def main():
     ultima = max(i for i, l in enumerate(lineas) if l.startswith("| EV-"))   # las filas nuevas van al final de la tabla, antes de la convención
     lineas[ultima + 1:ultima + 1] = [fila for _, fila in nuevas]
     MANIFIESTO.write_text("\n".join(lineas) + "\n", encoding="utf-8", newline="\n")
-    log.info("manifiesto: %s filas de F2 registradas", len(nuevas))
+    log.info("manifiesto: %s filas del componente API, fuentes y credenciales registradas", len(nuevas))
 
 
 if __name__ == "__main__":

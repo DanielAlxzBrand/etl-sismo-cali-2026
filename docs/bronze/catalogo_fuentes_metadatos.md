@@ -131,15 +131,15 @@ Columnas de la capa que el pipeline no usa: `OBJECTID_1`, `DEPAPRED`, `MUNIPRED`
 
 | id | fuente | motivo | evidencia |
 |---|---|---|---|
-| `sgc_eval_int` | SGC · Mapa de Intensidades Evaluadas (ArcGIS REST) | Granularidad por sitio o centro poblado, no por barrio; ningún ID_SISMO identificable como el evento (V9). | docs/bronze/investigacion_fuentes.md §2 F5; verificacion_fuentes.md V9 |
-| `sgc_municipios` | SGC · SIMMA Capas Generales, Municipios | Solo polígonos municipales para el Plan B; no es amenaza por barrio. | docs/bronze/investigacion_fuentes.md §2 F6 |
-| `area_barrios` | Área barrios de Cali 2015 (CSV, respaldo) | Solo estrato moda por barrio; respaldo del CSV principal, no se usa en el JOIN. | docs/bronze/investigacion_fuentes.md §2 F3; V5 |
-| `estrato_comunas` | Estratificación por comunas 2015 (CSV) | Solo 22 filas; sirve para una llave por comuna, no por barrio. | docs/bronze/investigacion_fuentes.md §2 F3; V5 |
-| `rud` | RUD (UNGRD) vía monitor «Datos del terremoto» | Archivo JSON estático de un monitor de un solo mantenedor, registro declarativo, sin código DIVIPOLA; Plan B municipal. | docs/bronze/investigacion_fuentes.md §2 F8; V11 |
-| `divipola` | DIVIPOLA (Socrata gdxc-w37w) | Códigos municipales; solo útiles en el Plan B municipal. | docs/bronze/investigacion_fuentes.md §2 F9; V12 |
-| `socrata_hbdu_4927` | Socrata hbdu-4927 (portal SGC) | Es un enlace federado sin filas; la API devuelve HTTP 400. | docs/bronze/investigacion_fuentes.md §2 F7 |
-| `mapageologia` | ArcGIS MAPAGEOLOGIA (fallas) | Geología a escala nacional, sin llave a barrio. | docs/bronze/investigacion_fuentes.md §2 F6 |
-| `copernicus_emsr916` | Copernicus EMSR916 / ICube-SERTIT | Solo 21 y 94 edificios en zonas parciales de Cali, sin edificios en común; uso no comercial. | docs/bronze/investigacion_fuentes.md §2 F11 |
+| `sgc_eval_int` | SGC · Mapa de Intensidades Evaluadas (ArcGIS REST) | Granularidad por sitio o centro poblado, no por barrio; ningún ID_SISMO identificable como el evento (V9). | docs/bronze/investigacion_fuentes.md §2 ficha 5; verificacion_fuentes.md V9 |
+| `sgc_municipios` | SGC · SIMMA Capas Generales, Municipios | Solo polígonos municipales para el Plan B; no es amenaza por barrio. | docs/bronze/investigacion_fuentes.md §2 ficha 6 |
+| `area_barrios` | Área barrios de Cali 2015 (CSV, respaldo) | Solo estrato moda por barrio; respaldo del CSV principal, no se usa en el JOIN. | docs/bronze/investigacion_fuentes.md §2 ficha 3; V5 |
+| `estrato_comunas` | Estratificación por comunas 2015 (CSV) | Solo 22 filas; sirve para una llave por comuna, no por barrio. | docs/bronze/investigacion_fuentes.md §2 ficha 3; V5 |
+| `rud` | RUD (UNGRD) vía monitor «Datos del terremoto» | Archivo JSON estático de un monitor de un solo mantenedor, registro declarativo, sin código DIVIPOLA; Plan B municipal. | docs/bronze/investigacion_fuentes.md §2 ficha 8; V11 |
+| `divipola` | DIVIPOLA (Socrata gdxc-w37w) | Códigos municipales; solo útiles en el Plan B municipal. | docs/bronze/investigacion_fuentes.md §2 ficha 9; V12 |
+| `socrata_hbdu_4927` | Socrata hbdu-4927 (portal SGC) | Es un enlace federado sin filas; la API devuelve HTTP 400. | docs/bronze/investigacion_fuentes.md §2 ficha 7 |
+| `mapageologia` | ArcGIS MAPAGEOLOGIA (fallas) | Geología a escala nacional, sin llave a barrio. | docs/bronze/investigacion_fuentes.md §2 ficha 6 |
+| `copernicus_emsr916` | Copernicus EMSR916 / ICube-SERTIT | Solo 21 y 94 edificios en zonas parciales de Cali, sin edificios en común; uso no comercial. | docs/bronze/investigacion_fuentes.md §2 ficha 11 |
 
 ## Diccionario de metadatos por capa
 

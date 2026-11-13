@@ -7,14 +7,14 @@
 ## 1. Objetivo y alcance
 **Objetivo del Proyecto 1 (Avance 1).** «Evidenciar, con datos reales, si la severidad del daño estructural en Cali se explica mejor por la vulnerabilidad geotécnica/constructiva de cada zona que por su nivel socioeconómico.» [Evidencia en el repo: `docs/proyecto/referencias/contexto_y_problema.pdf, p. 5`]
 
-**Objetivo general de la Entrega 3.** Entregar un servicio de análisis reproducible de impacto sísmico por zonas, con incertidumbre explícita: un pipeline ETL medallion que integra una capa satelital de construcciones con el estrato por barrio de 2015, calcula indicadores con intervalos y los expone mediante una API de solo lectura, un almacenamiento relacional con historial, una orquestación programada y un dashboard. [Evidencia en el repo: `README.md §1 y §3`; `docs/proyecto/decisiones_tecnicas.md`] Los componentes de API, almacenamiento relacional, orquestación y dashboard están **en construcción** hasta F2 a F5.
+**Objetivo general de la Entrega 3.** Entregar un servicio de análisis reproducible de impacto sísmico por zonas, con incertidumbre explícita: un pipeline ETL medallion que integra una capa satelital de construcciones con el estrato por barrio de 2015, calcula indicadores con intervalos y los expone mediante una API de solo lectura, un almacenamiento relacional con historial, una orquestación programada y un dashboard. [Evidencia en el repo: `README.md §1 y §3`; `docs/proyecto/decisiones_tecnicas.md`] Los componentes de API, almacenamiento relacional, orquestación y dashboard están **en construcción** hasta API, fuentes y credenciales, Carga relacional, Pruebas y orquestación y Panel.
 
 **Objetivos específicos** [Evidencia en el repo: `README.md §4 a §10`]
 1. Extraer la capa satelital (API ArcGIS), el CSV de estrato y los polígonos de barrios y conservar lo descargado sin modificar, con manifiesto y sha256.
 2. Limpiar, normalizar, tratar nulos y duplicados e integrar las fuentes por código de barrio, conservando los registros sin pareja.
 3. Calcular K1 a K6 con intervalos, cotas por falta de datos y seis escenarios de sensibilidad.
 4. Verificar con pruebas automáticas, recálculo independiente y documentación (hecho).
-5. Exponer los resultados por una API de solo lectura, cargarlos a un almacén relacional con historial, orquestar el flujo y mostrarlo en un dashboard (en construcción: F2 a F5).
+5. Exponer los resultados por una API de solo lectura, cargarlos a un almacén relacional con historial, orquestar el flujo y mostrarlo en un dashboard (en construcción: API, fuentes y credenciales, Carga relacional, Pruebas y orquestación y Panel).
 
 **Alcance, población analizada.** 5.146 construcciones (4.711 con datos satelitales) de 7 comunas (03, 09, 10, 17, 18, 19 y 20), en 52 códigos de barrio, dentro de los polígonos de afectación preliminar del visor de emergencia del IGAC según la descripción del dataset. [Evidencia en el repo: `docs/gold/KPIs.md «Población analizada»`; `data/gold/gold_final.csv`]
 **Alcance temporal.** Estrato de 2015 (DAPM Cali, lados de manzana) frente a imágenes del 2026-03-22 y del 2026-08-11 y capa editada el 2026-09-02: unos once años de distancia. Los resultados por estrato describen el estrato de 2015 asignado al barrio, no el vigente. [Evidencia en el repo: `docs/gold/KPIs.md «Alcance temporal»`; `config/config.yaml (fechas)`]
@@ -76,7 +76,7 @@ Son métricas de valor del proyecto como servicio de análisis; el impacto sobre
 | V1 Construcciones con dato satelital utilizable | construcciones con `sin_datos = false` / construcciones | `data/gold/gold_final.csv` | 91,5 % (4.711 de 5.146) | Mide disponibilidad, no exactitud del proxy |
 | V2 Cobertura de la llave | construcciones con llave / construcciones | `data/silver/quality_report.json` | 99,883 % | Ver P1 |
 | V3 Reproducibilidad | diferencias de sha256 entre dos corridas | clon temporal | 0 diferencias de 9 archivos | Solo Silver y Gold |
-| V4 Componentes de la Entrega 3 | latencia de la API; tiempo de carga al almacén; tasa de éxito del DAG; tiempo de carga del dashboard | pruebas de F2 a F5; `docs/evidencias/api/EV-018_latencia_api.csv` | latencia de la API en F2: mediana entre 3,2 y 11,0 ms por ruta y percentil 95 de hasta 12,2 ms (50 repeticiones tras 5 de calentamiento, servidor real en 127.0.0.1; medición local de una máquina, EV-018); el resto se mide en F3 a F5 | Medición local, no representa un despliegue; sin valor para los componentes que aún no existen |
+| V4 Componentes de la Entrega 3 | latencia de la API; tiempo de carga al almacén; tasa de éxito del DAG; tiempo de carga del dashboard | pruebas de API, fuentes y credenciales, Carga relacional, Pruebas y orquestación, Panel; `docs/evidencias/api/EV-018_latencia_api.csv` | latencia de la API en el componente API, fuentes y credenciales: mediana entre 3,2 y 11,0 ms por ruta y percentil 95 de hasta 12,2 ms (50 repeticiones tras 5 de calentamiento, servidor real en 127.0.0.1; medición local de una máquina, EV-018); el resto se mide en Carga relacional, Pruebas y orquestación, Panel | Medición local, no representa un despliegue; sin valor para los componentes que aún no existen |
 
 ## 4. Trazabilidad OKR → KPI → evidencia → verificación
 | OKR | meta del Avance 1 / qué logramos | KPI asociado | archivo de evidencia | prueba o comando |
@@ -89,7 +89,7 @@ Son métricas de valor del proyecto como servicio de análisis; el impacto sobre
 | KR5 (fuera de alcance) | Meta: Seguimiento periódico del avance de verificación mientras la Alcaldía actualiza el repositorio. Logro: No evaluado: seguimiento fuera del ETL. | ninguno | no hay | no aplica |
 | Calidad de la integración (sostiene KR1 y KR4) | P1, P2, P3 superan el umbral | K5, P1, P2, P3 | `data/silver/quality_report.json`, `docs/silver/validacion_llave.md` | `tests/test_quality.py::test_cobertura_join_supera_umbral` |
 | Reproducibilidad (sostiene todos) | P4 a P7 | P4, P5, P6, P7 | `data/bronze/manifest.jsonl`, `tests/`, `scripts/make_dist.py` | `tests/test_extract.py::test_archivos_existen_y_sha256_coincide`; `tests/test_dist.py` |
-| Componentes de la Entrega 3 | latencia de la API medida en F2 (EV-018); el resto se mide en F3 a F5 | V4 | se define en cada fase | pruebas de F2 a F5 |
+| Componentes de la Entrega 3 | latencia de la API medida en el componente API, fuentes y credenciales (EV-018); el resto se mide en Carga relacional, Pruebas y orquestación, Panel | V4 | se define en cada fase | pruebas de API, fuentes y credenciales, Carga relacional, Pruebas y orquestación, Panel |
 
 Estas filas no convierten un KR parcial en cumplido.
 

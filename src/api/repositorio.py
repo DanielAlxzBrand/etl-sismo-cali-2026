@@ -1,4 +1,4 @@
-"""Acceso a datos de Gold detrás de una interfaz; hoy SQLite en solo lectura (F3 agregará MySQL por configuración)."""
+"""Acceso a datos de Gold detrás de una interfaz; hoy SQLite en solo lectura (Carga relacional agregará MySQL por configuración)."""
 import sqlite3
 from abc import ABC, abstractmethod
 from collections import Counter, defaultdict
