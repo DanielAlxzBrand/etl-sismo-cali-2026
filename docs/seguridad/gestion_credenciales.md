@@ -11,12 +11,12 @@
 - **Sobre `SOCRATA_APP_TOKEN`:** el ejemplo anterior de `.env.example` declaraba ese nombre, pero ningún código lo lee (la capa se consulta directamente por ArcGIS, no por Socrata). Lo retiramos para que el ejemplo solo prometa lo que el código usa (decisión D34). [Evidencia en el repo: `docs/DECISIONES.md`]
 
 ## 2. Variables previstas (no usadas todavía)
-| variable | fase | para qué | estado |
+| variable | componente | para qué | estado |
 |---|---|---|---|
 | `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_DATABASE` | Carga relacional | conectar con MySQL 8.0 local | **prevista, no usada todavía** |
 | claves propias de Airflow (clave Fernet, secreto JWT y contraseña del administrador; nombres que Pruebas y orquestación confirmará) | Pruebas y orquestación | operar Airflow en Docker | **prevista, no usada todavía** |
 
-Reglas para ellas: se agregan a `.env.example` (solo el nombre, sin valor) **en la fase en que el código las lea**; los valores los genera y guarda el equipo en su `.env`; la contraseña de MySQL nunca se pide por chat ni se escribe en un documento. No reutilizamos ninguna credencial del material de clase de Airflow. [Criterio aplicado: decisiones D19 y D21]
+Reglas para ellas: se agregan a `.env.example` (solo el nombre, sin valor) **cuando el código las lea**; los valores los genera y guarda el equipo en su `.env`; la contraseña de MySQL nunca se pide por chat ni se escribe en un documento. No reutilizamos ninguna credencial del material de clase de Airflow. [Criterio aplicado: decisiones D19 y D21]
 
 ## 3. Dónde se guardan y qué nunca va al repositorio
 - **Se guardan en:** el archivo `.env` de cada integrante, fuera de git (`.gitignore` lo excluye). En el repositorio solo está `.env.example`, con **nombres** de variables y sin valores.
@@ -31,7 +31,7 @@ Reglas para ellas: se agregan a `.env.example` (solo el nombre, sin valor) **en 
 5. Ejecutar `python scripts/escanear_secretos.py` antes de guardar cambios.
 
 ## 5. Rotación y revocación
-- **Rotación:** cada credencial se cambia al terminar la Entrega 3 y cada vez que salga alguien del equipo con acceso a ella. [Hipótesis de diseño: criterio de rotación propuesto; no hay credenciales activas hoy que rotar]
+- **Rotación:** cada credencial se cambia al terminar el proyecto y cada vez que salga alguien del equipo con acceso a ella. [Hipótesis de diseño: criterio de rotación propuesto; no hay credenciales activas hoy que rotar]
 - **Revocación:** quien detecte una filtración revoca primero la credencial en el servicio que la emitió.
 
 ## 6. Si se filtra un secreto
@@ -64,8 +64,10 @@ Imprime una línea por hallazgo (`archivo:línea: patrón`) y `hallazgos: N`; te
 ## 9. Estado del ítem 2.3 y qué se revalida
 Estado: **Cumple** para lo que el proyecto usa hoy (ningún secreto obligatorio, controles activos y verificados). Se **revalida en el componente Carga relacional** con las variables `MYSQL_*` y en **Cierre y paquete** con el escáner sobre el zip final de entrega.
 
-## Cómo lo defendemos
+## Alcance y límites
 - **Qué afirmamos:** hoy el proyecto no necesita credenciales; las que vendrán (MySQL, Airflow) tienen lugar, regla y controles definidos; el repositorio, su historial, los notebooks, los logs y un zip de prueba no contienen secretos según el escáner. [Evidencia en el repo: `docs/evidencias/api/EV-019_escaner_secretos.txt`]
 - **Con qué evidencia:** `scripts/escanear_secretos.py` y sus diez pruebas (un secreto sembrado por tipo), el enmascarado del registro probado y `.env` fuera de `git ls-files`.
 - **Qué NO afirmamos:** que el escáner encuentre todos los secretos posibles ni que no exista una filtración en servicios de terceros; no revisamos las cuentas de los integrantes.
-- **Pregunta más probable:** «¿Y si filtran la contraseña de MySQL?» **Respuesta:** la revocamos primero (cambiamos la contraseña del usuario en MySQL), la guardamos nueva solo en `.env`, ejecutamos el escáner sobre árbol e historial y registramos el incidente; no reescribimos el historial sin decisión del equipo.
+
+## Preguntas frecuentes
+- **«¿Y si filtran la contraseña de MySQL?»** La revocamos primero (cambiamos la contraseña del usuario en MySQL), la guardamos nueva solo en `.env`, ejecutamos el escáner sobre árbol e historial y registramos el incidente; no reescribimos el historial sin decisión del equipo.

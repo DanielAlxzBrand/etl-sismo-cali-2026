@@ -1,4 +1,4 @@
-# KPI de Gold — Avance 2 ETL (UAO)
+# KPI de Gold — ETL medallion (UAO)
 
 **Fecha de corte:** 2026-09-02 (última edición de la capa, `America/Bogota`; `config.yaml: fechas.fecha_edicion_capa`). Imágenes: pre-evento 2026-03-22, post-evento 2026-08-11 (descripción del dataset 5vy8-gpw8). El estrato es de **2015** y se mide en lados de manzana, no por construcción.
 **Fuente:** capa ArcGIS `Impacto_Satelital_en_Edificaciones_por_Terremoto_Cali_2026` (catálogo datos.gov.co `5vy8-gpw8`, licencia CC BY 4.0 según `metadata.custom_fields.Common Core.License`; `copyrightText` del servicio vacío) + CSV de estrato por barrio 2015 (datos.cali.gov.co, DAPM).

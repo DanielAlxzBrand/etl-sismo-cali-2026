@@ -1,4 +1,4 @@
-"""Empaqueta la entrega en dist/avance2_etl_<fecha>.zip: solo código, dependencias y archivos necesarios.
+"""Empaqueta la entrega en dist/etl_sismo_<fecha>.zip: solo código, dependencias y archivos necesarios.
 
 Se excluyen los entornos virtuales (con cualquier nombre), las cachés, `.env` y `dist/`. Un entorno virtual se reconoce por el nombre
 (`.venv*`, `venv`, `env`, `site-packages`) y, sobre todo, por su contenido: toda carpeta que tenga un `pyvenv.cfg` o cualquiera de las
@@ -63,7 +63,7 @@ def empaquetar(root=ROOT, destino=None):
     root = Path(root)
     destino = Path(destino) if destino else root / "dist"
     destino.mkdir(exist_ok=True)
-    zpath = destino / f"avance2_etl_{date.today():%Y%m%d}.zip"
+    zpath = destino / f"etl_sismo_{date.today():%Y%m%d}.zip"
     with zipfile.ZipFile(zpath, "w", zipfile.ZIP_DEFLATED) as z:
         for p in listar(root):
             if p.resolve() == zpath.resolve():

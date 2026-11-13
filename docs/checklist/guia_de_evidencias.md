@@ -11,7 +11,7 @@
 **Comandos de PowerShell.** Todos se ejecutan en la raíz del repositorio con el entorno activado (`.\.venv\Scripts\Activate.ps1`) y no modifican nada. Para comprobar que no cambió nada: `git status --short` no debe imprimir nada.
 
 ## Índice
-Fichas de los ítems 1.1 a 1.5 (Estrategia) y 2.1 a 2.3 (API, fuentes y credenciales). Las de Carga relacional, Pruebas y orquestación, Panel, Usuarios, UX y finanzas, Documentación y demostración y Cierre y paquete se agregan en cada fase con esta misma estructura.
+Fichas de los ítems 1.1 a 1.5 (Estrategia) y 2.1 a 2.3 (API, fuentes y credenciales). Las de Carga relacional, Pruebas y orquestación, Panel, Usuarios, UX y finanzas, Documentación y demostración y Cierre y paquete se agregan en cada componente con esta misma estructura.
 
 ---
 
@@ -48,7 +48,7 @@ Fichas de los ítems 1.1 a 1.5 (Estrategia) y 2.1 a 2.3 (API, fuentes y credenci
 ### Ítem 1.5 · MVP y criterios de aceptación
 - **(a) Archivo principal:** `docs/estrategia/05_mvp_criterios_aceptacion.md` (Markdown). Demuestra: MVP con ocho funcionalidades (FE1 a FE8) y 29 criterios; 23 ejecutados con fecha y 6 «no verificado aún» (MySQL, Airflow y dashboard). **No demuestra:** los criterios pendientes.
 - **(b) Apoyo:** `docs/evidencias/estrategia/EV-009_determinismo_clon.txt` (dos corridas en un clon con los mismos sha256), `docs/evidencias/api/EV-014_pytest.txt`, `EV-016_respuestas_api.txt` y `EV-015_sin_escritura_hashes.txt` (criterios de la API).
-- **(c) Texto sugerido:** «MVP de la Entrega 3 y 29 criterios de aceptación (23 verificados con su evidencia; 6 se verifican en Carga relacional, Pruebas y orquestación y Panel): `docs/estrategia/05_mvp_criterios_aceptacion.md`.»
+- **(c) Texto sugerido:** «MVP del proyecto y 29 criterios de aceptación (23 verificados con su evidencia; 6 se verifican en Carga relacional, Pruebas y orquestación y Panel): `docs/estrategia/05_mvp_criterios_aceptacion.md`.»
 - **(d) Captura opcional:** la tabla de criterios con la columna de estado visible. Nombre: `captura_1.5_criterios.png`.
 - **(e) Validar:** `.\.venv\Scripts\python.exe -m pytest tests/test_estrategia.py::test_1_5_tiene_al_menos_24_criterios_y_no_marca_cumple_sin_verificar -q -p no:cacheprovider`.
 
@@ -103,4 +103,4 @@ Fichas de los ítems 1.1 a 1.5 (Estrategia) y 2.1 a 2.3 (API, fuentes y credenci
 `scripts/evidencias/evidencias_api.py` clona el commit a una carpeta temporal fuera del repositorio, ejecuta ahí las pruebas, el servicio, el navegador sin ventana, el escáner y el entorno nuevo, y guarda las salidas **saneadas** (sin rutas de usuario, usuario ni equipo: se sustituyen por `<REPO>`, `<CLON>`, `<TEMP>`, `<VENV>`, `<USUARIO>` y `<EQUIPO>`) en `docs/evidencias/api/`. `scripts/evidencias/registrar_manifiesto.py` calcula el sha256 de cada archivo y lo registra en el manifiesto. Una prueba (`tests/test_evidencias.py`) verifica que ninguna evidencia guardada lleva datos del equipo.
 
 ## Fases Carga relacional, Pruebas y orquestación, Panel, Usuarios, UX y finanzas, Documentación y demostración y Cierre y paquete
-Se agregan en cada fase con la misma estructura de fichas.
+Se agregan en cada componente con la misma estructura de fichas.

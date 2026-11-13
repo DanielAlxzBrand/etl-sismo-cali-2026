@@ -7,7 +7,7 @@
 ## 1. Objetivo y alcance
 **Objetivo del Proyecto 1 (Avance 1).** «Evidenciar, con datos reales, si la severidad del daño estructural en Cali se explica mejor por la vulnerabilidad geotécnica/constructiva de cada zona que por su nivel socioeconómico.» [Evidencia en el repo: `docs/proyecto/referencias/contexto_y_problema.pdf, p. 5`]
 
-**Objetivo general de la Entrega 3.** Entregar un servicio de análisis reproducible de impacto sísmico por zonas, con incertidumbre explícita: un pipeline ETL medallion que integra una capa satelital de construcciones con el estrato por barrio de 2015, calcula indicadores con intervalos y los expone mediante una API de solo lectura, un almacenamiento relacional con historial, una orquestación programada y un dashboard. [Evidencia en el repo: `README.md §1 y §3`; `docs/proyecto/decisiones_tecnicas.md`] Los componentes de API, almacenamiento relacional, orquestación y dashboard están **en construcción** hasta API, fuentes y credenciales, Carga relacional, Pruebas y orquestación y Panel.
+**Objetivo general del proyecto.** Entregar un servicio de análisis reproducible de impacto sísmico por zonas, con incertidumbre explícita: un pipeline ETL medallion que integra una capa satelital de construcciones con el estrato por barrio de 2015, calcula indicadores con intervalos y los expone mediante una API de solo lectura, un almacenamiento relacional con historial, una orquestación programada y un dashboard. [Evidencia en el repo: `README.md §1 y §3`; `docs/proyecto/decisiones_tecnicas.md`] Los componentes de API, almacenamiento relacional, orquestación y dashboard están **en construcción** hasta API, fuentes y credenciales, Carga relacional, Pruebas y orquestación y Panel.
 
 **Objetivos específicos** [Evidencia en el repo: `README.md §4 a §10`]
 1. Extraer la capa satelital (API ArcGIS), el CSV de estrato y los polígonos de barrios y conservar lo descargado sin modificar, con manifiesto y sha256.
@@ -76,7 +76,7 @@ Son métricas de valor del proyecto como servicio de análisis; el impacto sobre
 | V1 Construcciones con dato satelital utilizable | construcciones con `sin_datos = false` / construcciones | `data/gold/gold_final.csv` | 91,5 % (4.711 de 5.146) | Mide disponibilidad, no exactitud del proxy |
 | V2 Cobertura de la llave | construcciones con llave / construcciones | `data/silver/quality_report.json` | 99,883 % | Ver P1 |
 | V3 Reproducibilidad | diferencias de sha256 entre dos corridas | clon temporal | 0 diferencias de 9 archivos | Solo Silver y Gold |
-| V4 Componentes de la Entrega 3 | latencia de la API; tiempo de carga al almacén; tasa de éxito del DAG; tiempo de carga del dashboard | pruebas de API, fuentes y credenciales, Carga relacional, Pruebas y orquestación, Panel; `docs/evidencias/api/EV-018_latencia_api.csv` | latencia de la API en el componente API, fuentes y credenciales: mediana entre 3,2 y 11,0 ms por ruta y percentil 95 de hasta 12,2 ms (50 repeticiones tras 5 de calentamiento, servidor real en 127.0.0.1; medición local de una máquina, EV-018); el resto se mide en Carga relacional, Pruebas y orquestación, Panel | Medición local, no representa un despliegue; sin valor para los componentes que aún no existen |
+| V4 Componentes del proyecto | latencia de la API; tiempo de carga al almacén; tasa de éxito del DAG; tiempo de carga del dashboard | pruebas de cada componente; `docs/evidencias/api/EV-018_latencia_api.csv` | latencia de la API: mediana entre 3,2 y 11,0 ms por ruta y percentil 95 de hasta 12,2 ms (50 repeticiones tras 5 de calentamiento, servidor real en 127.0.0.1; medición local de una máquina, EV-018); el resto se mide cuando existan los componentes en construcción | Medición local, no representa un despliegue; sin valor para los componentes que aún no existen |
 
 ## 4. Trazabilidad OKR → KPI → evidencia → verificación
 | OKR | meta del Avance 1 / qué logramos | KPI asociado | archivo de evidencia | prueba o comando |
@@ -89,13 +89,14 @@ Son métricas de valor del proyecto como servicio de análisis; el impacto sobre
 | KR5 (fuera de alcance) | Meta: Seguimiento periódico del avance de verificación mientras la Alcaldía actualiza el repositorio. Logro: No evaluado: seguimiento fuera del ETL. | ninguno | no hay | no aplica |
 | Calidad de la integración (sostiene KR1 y KR4) | P1, P2, P3 superan el umbral | K5, P1, P2, P3 | `data/silver/quality_report.json`, `docs/silver/validacion_llave.md` | `tests/test_quality.py::test_cobertura_join_supera_umbral` |
 | Reproducibilidad (sostiene todos) | P4 a P7 | P4, P5, P6, P7 | `data/bronze/manifest.jsonl`, `tests/`, `scripts/make_dist.py` | `tests/test_extract.py::test_archivos_existen_y_sha256_coincide`; `tests/test_dist.py` |
-| Componentes de la Entrega 3 | latencia de la API medida en el componente API, fuentes y credenciales (EV-018); el resto se mide en Carga relacional, Pruebas y orquestación, Panel | V4 | se define en cada fase | pruebas de API, fuentes y credenciales, Carga relacional, Pruebas y orquestación, Panel |
+| Componentes del proyecto | latencia de la API medida (EV-018); el resto se mide cuando existan los componentes en construcción | V4 | se define en cada componente | pruebas de cada componente |
 
 Estas filas no convierten un KR parcial en cumplido.
 
-## Cómo lo defendemos
+## Alcance y límites
 - **Qué afirmamos:** definimos objetivo, alcance, OKR del Avance 1 con su estado real, KPI del fenómeno y de desempeño, métricas de valor y una trazabilidad hasta el comando de verificación.
 - **Con qué evidencia:** las tablas de este documento, `docs/gold/KPIs.md`, `data/gold/*.csv` y `data/silver/quality_report.json`.
 - **Qué NO afirmamos:** que cumplimos los KR2, KR3 y KR5, que la meta del 90 % de puntos verificados se evaluó ni que medimos impacto en usuarios.
-- **La pregunta más probable del profesor:** «¿Cumplieron los OKR del Avance 1?».
-- **Cómo respondemos:** cubrimos KR4 con el proxy, KR1 en parte y no cubrimos KR2, KR3 ni KR5; la tabla de trazabilidad dice qué logramos frente a cada meta y por qué la meta del 90 % no se pudo evaluar.
+
+## Preguntas frecuentes
+- **«¿Cumplieron los OKR del Avance 1?»** Cubrimos KR4 con el proxy, KR1 en parte y no cubrimos KR2, KR3 ni KR5; la tabla de trazabilidad dice qué logramos frente a cada meta y por qué la meta del 90 % no se pudo evaluar.

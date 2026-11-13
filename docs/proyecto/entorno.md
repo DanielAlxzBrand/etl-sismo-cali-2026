@@ -1,4 +1,4 @@
-# Entorno de la Entrega 3
+# Entorno del proyecto
 
 **Fecha de la revisión:** 2026-11-12 · Solo lectura: no se instaló nada ni se arrancó ningún servicio, y no se probó ninguna credencial. Los comandos y sus salidas están en `docs/evidencias/base/EV-006_entorno.txt`. [Evidencia en el repo: `docs/evidencias/base/EV-006_entorno.txt`]
 
@@ -25,7 +25,7 @@
 | Puertos de trabajo | 8000, 8501, 8080 y 5432 sin nada escuchando; 3306 ocupado por MySQL | Verificado con pruebas de conexión TCP a `localhost` (sin autenticación). |
 
 ## 2. Implicaciones para API, fuentes y credenciales, Carga relacional, Pruebas y orquestación, Panel, Usuarios, UX y finanzas, Documentación y demostración y Cierre y paquete
-| fase | qué falta | vía de instalación y comando exacto | administrador, reinicio o credenciales |
+| componente | qué falta | vía de instalación y comando exacto | administrador, reinicio o credenciales |
 |---|---|---|---|
 | API, fuentes y credenciales | FastAPI, Uvicorn y httpx en el `.venv` (hoy solo en el Python global; SQLAlchemy ya no se usa, ver D24) | `.\.venv\Scripts\python.exe -m pip install fastapi uvicorn httpx` y añadirlos a `requirements.txt` con versiones fijas | No necesita administrador ni credenciales. |
 | Carga relacional | Driver de MySQL; usuario y base de datos de proyecto | `.\.venv\Scripts\python.exe -m pip install pymysql cryptography`. Para crear la base: `$env:Path += ';C:\Program Files\MySQL\MySQL Server 8.0\bin'` y `mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS etl_sismo CHARACTER SET utf8mb4; CREATE USER IF NOT EXISTS 'etl'@'localhost' IDENTIFIED BY '<definir>'; GRANT ALL ON etl_sismo.* TO 'etl'@'localhost';"` | **Credenciales:** hace falta la contraseña del administrador de MySQL local (no consta); la del usuario `etl` se define y se guarda solo en una variable de entorno de sesión. No requiere administrador de Windows ni reinicio. |

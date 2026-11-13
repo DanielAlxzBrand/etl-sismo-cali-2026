@@ -1,4 +1,4 @@
-"""Evidencias del componente API, fuentes y credenciales (EV-013 a EV-024) en un clon temporal fuera del repositorio.
+"""Evidencias de la capa de servicio (EV-013 a EV-024) en un clon temporal fuera del repositorio.
 
 Uso (PowerShell, raíz del repositorio): .\\.venv\\Scripts\\python.exe scripts\\evidencias\\evidencias_api.py [--sin-venv-nuevo] [--minutos-venv 25]
 Clona el commit actual a una carpeta temporal, ejecuta ahí todo lo que escribe o arranca y guarda las salidas SANEADAS (sin rutas de usuario,
@@ -291,7 +291,7 @@ def main():
     ax.text(0.02, 0.6, ultima, fontsize=20, fontweight="bold", color="#2E7D32" if ultima == "hallazgos: 0" else "#C62828", transform=ax.transAxes)
     ax.text(0.02, 0.25, "escáner de secretos: clon, historial de git y zip de prueba; nunca se imprime un valor", fontsize=10, transform=ax.transAxes)
     img(fig, "EV-024_escaner.png", "Hallazgos del escáner de secretos")
-    log.info("evidencias del componente API, fuentes y credenciales escritas en %s; resumen: %s", SALIDA.relative_to(REPO), json.dumps(resumen, ensure_ascii=False, default=str))
+    log.info("evidencias de la capa de servicio escritas en %s; resumen: %s", SALIDA.relative_to(REPO), json.dumps(resumen, ensure_ascii=False, default=str))
 
 
 if __name__ == "__main__":

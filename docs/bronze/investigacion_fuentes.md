@@ -1,4 +1,4 @@
-# Investigación de fuentes — Avance 2 ETL (UAO) · Sismo 10-ago-2026
+# Investigación de fuentes — ETL medallion (UAO) · Sismo 10-ago-2026
 
 **Fecha de consulta:** 15-oct-2026 · **Etiquetas:** `[CONFIRMADO url]` visto en respuesta real o documentación oficial · `[INFERIDO]` razonable, no visto · `[NO VERIFICADO]` no se pudo acceder. Todo `[INFERIDO]`/`[NO VERIFICADO]` está convertido en una tarea **V#** (sección 8) que se resuelve en la verificación previa de las fuentes.
 

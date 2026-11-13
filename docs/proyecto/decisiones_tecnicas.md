@@ -1,13 +1,13 @@
-# Decisiones técnicas de la Entrega 3
+# Decisiones técnicas del proyecto
 
-**Fecha:** 2026-11-12 · **Alcance:** decisiones que condicionan las fases API, fuentes y credenciales, Carga relacional, Pruebas y orquestación, Panel, Usuarios, UX y finanzas, Documentación y demostración y Cierre y paquete del checklist de Data Thinking. Cada una tiene opción recomendada, respaldo, criterios y qué hacemos si la recomendada resulta inviable. Los registros formales están en `docs/DECISIONES.md` (D17 en adelante). La fecha límite y la rúbrica de la Entrega 3 no constan; no las suponemos.
+**Fecha:** 2026-11-12 · **Alcance:** decisiones que condicionan los componentes API, fuentes y credenciales, Carga relacional, Pruebas y orquestación, Panel, Usuarios, UX y finanzas, Documentación y demostración y Cierre y paquete del checklist de Data Thinking. Cada una tiene opción recomendada, respaldo, criterios y qué hacemos si la recomendada resulta inviable. Los registros formales están en `docs/DECISIONES.md` (D17 en adelante). La fecha límite y la rúbrica del proyecto no constan; no las suponemos.
 
 **Etiquetas de evidencia:** [Evidencia en el repo: ruta] · [Fuente externa: URL y fecha de consulta] · [Criterio aplicado: descripción] · [Hipótesis de diseño: criterio y experimento de validación propuesto, no ejecutado].
 
 **Criterios comunes:** compatibilidad con Windows y Python 3.13, dependencias mínimas, reproducibilidad en una máquina limpia, tiempo, riesgo de romper el pipeline, valor frente al checklist.
 
 ## Resumen
-| # | decisión | recomendada | respaldo | fase |
+| # | decisión | recomendada | respaldo | componente |
 |---|---|---|---|---|
 | a | API | FastAPI de solo lectura sobre Gold | servidor con la biblioteca estándar | API, fuentes y credenciales |
 | b | Almacenamiento | mantener SQLite y agregar MySQL 8.0 local (SQL explícito, PyMySQL) | almacén relacional en un archivo SQLite con matiz | Carga relacional |
@@ -16,7 +16,7 @@
 | e | MLOps y LLMOps | prácticas equivalentes de DataOps; el resto N/A justificado | — | Pruebas y orquestación |
 | f | Integración | pruebas en proceso (API, interfaz, almacén) y humo de solo lectura | pruebas contra SQLite en memoria | Panel |
 | g | Línea base | rama, etiquetas, clon temporal, pruebas de huellas, `.gitattributes` | copia de respaldo de `data/` fuera del repo | todas |
-| h | Dependencias por fase | API, fuentes y credenciales: fastapi, uvicorn, httpx · Carga relacional: pymysql, cryptography · Panel: streamlit | — | API, fuentes y credenciales, Carga relacional, Panel |
+| h | Dependencias por componente | API, fuentes y credenciales: fastapi, uvicorn, httpx · Carga relacional: pymysql, cryptography · Panel: streamlit | — | API, fuentes y credenciales, Carga relacional, Panel |
 | i | Marco de Data Thinking | las cinco etapas de d.school, adaptadas a datos | — | Estrategia |
 | j | Palabra «IA» en los documentos | permitida como concepto técnico; prohibidos los rastros de elaboración | — | todas |
 
@@ -66,7 +66,7 @@
 
 ## (e) MLOps y LLMOps
 El proyecto **no entrena modelos**: usa estadística descriptiva e inferencial sobre un proxy satelital (intervalos de Wilson y de Newcombe, razón de Mantel-Haenszel, Spearman con permutación). [Evidencia en el repo: `docs/gold/KPIs.md`]
-- **Prácticas equivalentes que sí aplicamos:** versionado de datos con manifiesto de Bronze y sha256 de Silver y Gold; versionado de código con ramas y etiquetas por fase; reproducibilidad (dependencias fijadas, clon limpio y ejecución del pipeline en un clon temporal); **métricas por corrida** (filas de entrada y salida, cobertura de llave, duración por etapa, en el registro de ejecución); **cuadro de calidad como puerta de salida** (`validate`: cobertura de llave, filas de Gold, intervalos válidos, hashes) y una ficha del análisis con propósito, datos, límites y uso previsto (Pruebas y orquestación).
+- **Prácticas equivalentes que sí aplicamos:** versionado de datos con manifiesto de Bronze y sha256 de Silver y Gold; versionado de código con ramas y etiquetas; reproducibilidad (dependencias fijadas, clon limpio y ejecución del pipeline en un clon temporal); **métricas por corrida** (filas de entrada y salida, cobertura de llave, duración por etapa, en el registro de ejecución); **cuadro de calidad como puerta de salida** (`validate`: cobertura de llave, filas de Gold, intervalos válidos, hashes) y una ficha del análisis con propósito, datos, límites y uso previsto (Pruebas y orquestación).
 - **N/A justificado:** registro de modelos y métricas de rendimiento de modelos (no hay modelos) y todo LLMOps (no hay modelos de lenguaje).
 - **Respaldo:** si el matiz no basta, se mantiene la ficha del análisis y se declara la parte de modelos como N/A. El ítem 5.4 queda «Cumple con matiz» por esta razón.
 
@@ -76,15 +76,15 @@ El proyecto **no entrena modelos**: usa estadística descriptiva e inferencial s
 - **Por qué:** rápidas, sin servicios, verificables en un clon limpio. **Si resulta inviable:** el respaldo.
 
 ## (g) Protección de la línea base durante el desarrollo
-Rama `entrega-3` desde `base-entrega-3`; una etiqueta por fase (`entrega3-f0`, `entrega3-f1`, …); `.gitattributes` que fija los bytes de `data/`; el pipeline y los notebooks se ejecutan **solo en un clon temporal** fuera del repositorio y se comparan sus sha256 con la línea base; una prueba de huellas de Bronze en las pruebas existentes. **Respaldo:** copia de `data/` fuera del repositorio con su `sha256.txt`. **Reversa:** `git restore data/` y `git switch master`. [Evidencia en el repo: `docs/DECISIONES.md` (D12, D14, D15)]
+Rama de trabajo `desarrollo` con etiquetas en los puntos seguros; `.gitattributes` que fija los bytes de `data/`; el pipeline y los notebooks se ejecutan **solo en un clon temporal** fuera del repositorio y se comparan sus sha256 con la línea base; una prueba de huellas de Bronze en las pruebas existentes. **Respaldo:** copia de `data/` fuera del repositorio con su `sha256.txt`. **Reversa:** `git restore data/`. [Evidencia en el repo: `docs/DECISIONES.md` (D12, D14, D15)]
 
-## (h) Dependencias por fase
+## (h) Dependencias por componente
 - API, fuentes y credenciales: `fastapi`, `uvicorn`, `httpx`. Carga relacional: `pymysql`, `cryptography`. Panel: `streamlit`. **Sin SQLAlchemy** (SQL explícito; esto sustituye lo que decía `entorno.md` para API, fuentes y credenciales y Carga relacional).
 - `python-docx` solo en el entorno de `guia_equipo` (no en el `.venv` del proyecto). Airflow, nunca en `requirements.txt` ni en el `.venv`.
-- Versiones: se fijan en cada fase tras instalarlas en un entorno limpio y probarlas. Disponibles el 2026-11-12 para Python 3.13: fastapi 0.162.5, uvicorn 0.54.0, httpx 0.28.1, streamlit 1.67.0, pymysql 1.2.4, cryptography 50.0.2 (instaladas hoy en el Python global: fastapi 0.116.2, uvicorn 0.35.0, httpx 0.28.1, streamlit 1.58.0). **Si una versión nueva rompe:** se fija la última que pasa las pruebas.
+- Versiones: se fijan en cada componente tras instalarlas en un entorno limpio y probarlas. Disponibles el 2026-11-12 para Python 3.13: fastapi 0.162.5, uvicorn 0.54.0, httpx 0.28.1, streamlit 1.67.0, pymysql 1.2.4, cryptography 50.0.2 (instaladas hoy en el Python global: fastapi 0.116.2, uvicorn 0.35.0, httpx 0.28.1, streamlit 1.58.0). **Si una versión nueva rompe:** se fija la última que pasa las pruebas.
 
 ## (i) Marco de Data Thinking para el ítem 1.1
 En la carpeta de material de clase no hay vocabulario de Data Thinking: contiene el laboratorio de Airflow y una exposición sobre series de tiempo, sin relación. [Criterio aplicado: lectura del material de clase] Adoptamos un marco público reconocido: **las cinco etapas de Design Thinking de la d.school de Stanford** (empatizar, definir, idear, prototipar y evaluar), adaptadas a datos. [Fuente externa: https://dschool.stanford.edu/resources/design-thinking-bootleg, consultada el 2026-11-12] El mapeo del proyecto a estas etapas se hace **a posteriori**: el proyecto no se planificó con ellas.
 
 ## (j) La palabra «IA» en los documentos
-La prohibición se refiere a menciones de herramientas o de ayuda de inteligencia artificial en la **elaboración** del proyecto. El concepto técnico (inteligencia artificial, IA, AI) sí puede aparecer en los documentos del producto: enfoques futuros, ética y la redacción literal del checklist. Las pruebas buscan los rastros de elaboración, no la sigla. Al cerrar cada fase se clasifica cada coincidencia de la sigla en concepto técnico, cita literal del checklist o rastro de elaboración, y se exige cero del último tipo.
+La prohibición se refiere a menciones de herramientas o de ayuda de inteligencia artificial en la **elaboración** del proyecto. El concepto técnico (inteligencia artificial, IA, AI) sí puede aparecer en los documentos del producto: enfoques futuros, ética y la redacción literal del checklist. Las pruebas buscan los rastros de elaboración, no la sigla. En cada revisión se clasifica cada coincidencia de la sigla en concepto técnico, cita literal del checklist o rastro de elaboración, y se exige cero del último tipo.

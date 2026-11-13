@@ -162,8 +162,10 @@ Latencia por ruta con el **servidor real** en `127.0.0.1` (no el cliente de prue
 - **Orquestación con Airflow (Pruebas y orquestación).** *En construcción.*
 - **Dashboard con Streamlit (Panel)** que consume solo esta API. *En construcción.*
 
-## Cómo lo defendemos
+## Alcance y límites
 - **Qué afirmamos:** diseñamos e implementamos un backend con capas, una API de solo lectura con 11 endpoints GET tipados, validación, errores uniformes, registro de solicitudes y pruebas; entrega exactamente lo que está en Gold. [Evidencia en el repo: `src/api/`, `tests/test_api.py`, `docs/evidencias/api/`]
 - **Con qué evidencia:** 17 pruebas de la API (coincidencia con los CSV, paginación, inyección, solo lectura, no escritura); sha256 de `data/` y de la base idénticos antes y después de consultar (EV-015); respuestas reales de cada endpoint (EV-016) y esquema OpenAPI exportado.
 - **Qué NO afirmamos:** que la API sea apta para exponerse en red; que los datos sean una evaluación estructural; que MySQL, Airflow o el dashboard ya existan (están en construcción).
-- **Pregunta más probable:** «¿Cómo saben que la API no modifica los datos?» **Respuesta:** porque la conexión se abre en modo de solo lectura (un INSERT falla), no hay rutas de escritura y comparamos los sha256 de todo `data/` y de la base antes y después de consultar todos los endpoints.
+
+## Preguntas frecuentes
+- **«¿Cómo saben que la API no modifica los datos?»** Porque la conexión se abre en modo de solo lectura (un INSERT falla), no hay rutas de escritura y comparamos los sha256 de todo `data/` y de la base antes y después de consultar todos los endpoints.

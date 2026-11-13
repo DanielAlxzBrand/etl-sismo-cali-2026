@@ -1,6 +1,6 @@
 # Verificación de la sección 2 del checklist: backend, fuentes y credenciales (ítems 2.1, 2.2 y 2.3)
 
-**Fecha:** 2026-11-12 · **Fase:** API, fuentes y credenciales · **Regla de estado:** *Cumple*: evidencia concreta y reproducible para todos los subcriterios y límites declarados. *Cumple con matiz*: entregable central verificado y algún subcriterio depende de un hecho externo o de una fase posterior. Nunca «cumple» lo que requiera un evento que no ocurrió.
+**Fecha:** 2026-11-12 · **Fase:** API, fuentes y credenciales · **Regla de estado:** *Cumple*: evidencia concreta y reproducible para todos los subcriterios y límites declarados. *Cumple con matiz*: entregable central verificado y algún subcriterio depende de un hecho externo o de una componente posterior. Nunca «cumple» lo que requiera un evento que no ocurrió.
 
 **Etiquetas de evidencia:** [Evidencia en el repo: ruta] · [Fuente externa: URL y fecha de consulta] · [Criterio aplicado: descripción] · [Hipótesis de diseño: criterio y experimento, no ejecutado].
 
@@ -17,7 +17,7 @@
 | Consumo de la API ArcGIS | paginación por `resultOffset` con orden estable por `OBJECTID` y recuento antes y después (5.146 filas en 3 páginas) | `src/extract/extract_api.py:64-81`; `docs/bronze/muestras/v2_limites_arcgis.txt` |
 | Fuentes y metadatos | manifiesto con sha256, filas y bytes; metadatos de la capa guardados en Bronze; investigación y verificación de fuentes; muestras | `data/bronze/manifest.jsonl`; `docs/bronze/investigacion_fuentes.md`; `docs/bronze/verificacion_fuentes.md`; `docs/bronze/muestras/` |
 | Secretos | `.env` ignorado por git y vacío; `.env.example` con dos nombres (uno sin uso); `make_dist.py` excluye `.env`; notebooks sin credenciales | `.gitignore`; `scripts/make_dist.py:16`; escáner sobre notebooks (0 hallazgos) |
-| Historial de git y zip entregado | sin secretos en las líneas añadidas de los 14 commits y en el zip de `guia_equipo\entregas\entrega_1\` (solo lectura) | `docs/evidencias/api/EV-019_escaner_secretos.txt` |
+| Historial de git y zip anterior | sin secretos en las líneas añadidas del historial y en el zip de un empaquetado anterior (solo lectura) | `docs/evidencias/api/EV-019_escaner_secretos.txt` |
 | Brecha principal | el proyecto consumía una API pero **no exponía servicios**; no había catálogo de fuentes unificado ni política de credenciales ni escáner | — |
 
 ---
@@ -109,7 +109,7 @@
 |---|---|---|
 | 1 | Cumple | documento con las nueve secciones; variables `MYSQL_*` y claves de Airflow como «previstas, no usadas todavía» |
 | 2 | Cumple | `.env` no está en `git ls-files`; el ejemplo solo trae `HTTP_USER_AGENT` |
-| 3 | Cumple | 0 hallazgos en árbol, historial, notebooks, logs y zip (incluido el zip entregado en `entrega_1`, solo lectura) |
+| 3 | Cumple | 0 hallazgos en árbol, historial, notebooks, logs y zip (incluido el zip de un empaquetado anterior, solo lectura) |
 | 4 | Cumple | pruebas del enmascarado y de `make_dist` |
 | 5 | Cumple | sección 5 y 6 del documento: revocar primero, no reescribir el historial sin decisión del equipo |
 | 6 | Cumple | detecta un secreto sembrado de cada uno de doce tipos; no se detecta a sí mismo ni a las pruebas |

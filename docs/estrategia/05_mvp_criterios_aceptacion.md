@@ -4,9 +4,9 @@
 
 > **Etiquetas de evidencia.** [Evidencia en el repo: `ruta`] = existe en el repositorio; [Fuente externa: URL y fecha de consulta]; [Criterio aplicado: descripción] = regla o decisión nuestra, explicada; [Hipótesis de diseño: criterio y experimento de validación propuesto, no ejecutado] = hipótesis de diseño con su experimento, sin ejecutar. Las cifras se leen de `data/silver`, `data/gold` y `config/config.yaml`.
 
-> **Cómo se formalizaron.** Los criterios de pipeline y calidad se formalizan sobre pruebas y umbrales que ya existían (`config/config.yaml`, `tests/`). Los de API, MySQL, Airflow y dashboard son criterios de diseño de la Entrega 3: los de la API se verificaron en el componente API, fuentes y credenciales; los de MySQL, Airflow y dashboard aún no se pueden ejecutar y figuran como «no verificado aún» con su fase de verificación; todos se cierran en el componente Cierre y paquete.
+> **Cómo se formalizaron.** Los criterios de pipeline y calidad se formalizan sobre pruebas y umbrales que ya existían (`config/config.yaml`, `tests/`). Los de API, MySQL, Airflow y dashboard son criterios de diseño del proyecto: los de la API se verificaron en el componente API, fuentes y credenciales; los de MySQL, Airflow y dashboard aún no se pueden ejecutar y figuran como «no verificado aún» con su componente de verificación; todos se cierran en el componente Cierre y paquete.
 
-## 1. Definición del MVP de la Entrega 3
+## 1. Definición del MVP del proyecto
 El MVP es el conjunto mínimo que permite repetir y consultar el análisis de punta a punta: **pipeline reproducible, Gold con KPI e incertidumbre, API de solo lectura, almacenamiento relacional con historial, un DAG de orquestación, un dashboard sobre la API y verificación automática.** [Criterio aplicado: definición del equipo; sustituye la anterior, que excluía API, dashboard y orquestación] [Evidencia en el repo: `docs/proyecto/decisiones_tecnicas.md`]
 
 Quedan **fuera** del MVP: pruebas con usuarios reales (hecho externo, Usuarios, UX y finanzas), modelos de aprendizaje automático (el proyecto no entrena modelos), Power BI como evidencia y cualquier despliegue en la nube.
@@ -19,16 +19,16 @@ Los roles de las historias son un diseño nuestro: no hubo usuarios. [Hipótesis
 | FE1 | Extracción y Bronze inmutable | Como integrante del equipo, quiero extraer y conservar las fuentes sin modificar, para demostrar de dónde sale cada cifra. | [Evidencia en el repo: `src/extract/`; `data/bronze/manifest.jsonl`] |
 | FE2 | Limpieza, integración y calidad (Silver) | Como analista, quiero limpiar y unir las fuentes con reglas que citen un hallazgo y conservar lo que no cruza, para no perder construcciones ni ocultar problemas. | [Evidencia en el repo: `src/transform/`; `docs/silver/reglas_silver.md`; `data/silver/`] |
 | FE3 | Gold con KPI e incertidumbre | Como lector del usuario objetivo institucional, quiero tasas con intervalo, porcentaje sin datos y límites, para no leer más certeza de la que hay. | [Evidencia en el repo: `src/transform/build_gold.py`; `data/gold/`; `docs/gold/KPIs.md`] |
-| FE4 | API de solo lectura (API, fuentes y credenciales) | Como desarrollador del dashboard, quiero consultar Gold por endpoints, para no leer la base directamente ni poder modificarla. | en construcción |
-| FE5 | Almacenamiento relacional con historial (Carga relacional) | Como analista, quiero los resultados en MySQL con claves e historial de cargas, para consultarlos con SQL y auditar cada carga. | en construcción |
-| FE6 | Orquestación programada (Pruebas y orquestación) | Como integrante del equipo, quiero un DAG de Airflow con dependencias y reintentos, para repetir el pipeline sin duplicar resultados. | en construcción |
-| FE7 | Dashboard sobre la API (Panel) | Como usuario objetivo institucional, quiero ver K1 a K6 con sus límites, para decidir dónde mirar primero. | en construcción |
+| FE4 | API de solo lectura | Como desarrollador del dashboard, quiero consultar Gold por endpoints, para no leer la base directamente ni poder modificarla. | [Evidencia en el repo: `src/api/`; `tests/test_api.py`] |
+| FE5 | Almacenamiento relacional con historial | Como analista, quiero los resultados en MySQL con claves e historial de cargas, para consultarlos con SQL y auditar cada carga. | en construcción |
+| FE6 | Orquestación programada | Como integrante del equipo, quiero un DAG de Airflow con dependencias y reintentos, para repetir el pipeline sin duplicar resultados. | en construcción |
+| FE7 | Dashboard sobre la API | Como usuario objetivo institucional, quiero ver K1 a K6 con sus límites, para decidir dónde mirar primero. | en construcción |
 | FE8 | Verificación, reproducibilidad y empaquetado | Como evaluador, quiero pruebas automáticas, ejecución en un clon limpio y un zip sin entorno virtual, para reproducir el análisis. | [Evidencia en el repo: `tests/`; `scripts/make_dist.py`; `docs/evidencias/`] |
 
 ## 3. Criterios de aceptación
 23 de 29 criterios cumplen hoy; 6 están «no verificado aún» y se verifican en Carga relacional, Pruebas y orquestación o Panel. Un criterio solo se marca «cumple» si el comando o la lectura se hizo el 2026-11-12.
 
-| ID | funcionalidad | criterio verificable | cómo se verifica | evidencia | resultado actual | estado | fase de verificación | fecha de verificación |
+| ID | funcionalidad | criterio verificable | cómo se verifica | evidencia | resultado actual | estado | componente de verificación | fecha de verificación |
 |---|---|---|---|---|---|---|---|---|
 | AC01 | FE1 | Dado el manifiesto de Bronze, cuando se recalcula el sha256 de cada archivo, entonces coincide | `python -m pytest -q -p no:cacheprovider tests/test_extract.py` y sha256 de cada ruta del manifiesto | [Evidencia en el repo: `data/bronze/manifest.jsonl`] | 8 de 8; test_extract: 6 passed | **cumple** | Estrategia | 2026-11-12 |
 | AC02 | FE1 | Dado un clon temporal, cuando se ejecuta el pipeline completo dos veces, entonces Bronze sigue coincidiendo con el manifiesto | Clon con `git clone` y `main.py --stage all` dos veces (la extracción verifica el snapshot y no descarga) | [Evidencia en el repo: `docs/evidencias/estrategia/EV-010_bronze_manifiesto.txt`] | antes 8 de 8; después 8 de 8 | **cumple** | Estrategia | 2026-11-12 |
@@ -53,12 +53,12 @@ Los roles de las historias son un diseño nuestro: no hubo usuarios. [Hipótesis
 | AC21 | FE8 | Dado un clon con `core.autocrlf` verdadero y otro con falso, cuando se verifican `data/` y las pruebas, entonces los sha256 y las pruebas coinciden | Clon a carpeta temporal y verificación (hecha en el componente Base y orden) | [Evidencia en el repo: `docs/evidencias/base/EV-003_clon_limpio.txt`] | ambos clones: Bronze 8 de 8, línea base 9 de 9 y pruebas en verde (EV-003, 2026-11-12) | **cumple** | Base y orden | 2026-11-12 |
 | AC22 | FE4 | Dado el servicio en marcha, cuando se pide `GET /health`, entonces responde 200 y publica el esquema OpenAPI | `tests/test_api.py::test_cada_endpoint_responde_200_con_la_estructura_esperada` y arranque con `uvicorn src.api.app:app --host 127.0.0.1` | [Evidencia en el repo: `docs/evidencias/api/EV-016_respuestas_api.txt`] | `/health` responde 200 con estado «ok»; `/openapi.json` publica 11 rutas, todas GET (EV-016); `test_api.py`: 17 passed (EV-014) | **cumple** | API, fuentes y credenciales | 2026-11-12 |
 | AC23 | FE4 | Dado cualquier endpoint, cuando se consulta, entonces no escribe: los sha256 de `data/` y de la base no cambian | Hashes antes y después de ejercer todos los endpoints | [Evidencia en el repo: `docs/evidencias/api/EV-015_sin_escritura_hashes.txt`] | sha256 de los 19 archivos de `data/` (incluida la base) idénticos antes y después de las pruebas y de consultar la API; un INSERT sobre la conexión falla con `OperationalError` | **cumple** | API, fuentes y credenciales | 2026-11-12 |
-| AC24 | FE5 | Cuando se carga a MySQL, entonces cada tabla tiene las mismas filas que Gold y las claves foráneas están activas | Prueba de integración con marcador `mysql` y conteos | se define en el componente Carga relacional | no verificado aún | **no verificado aún (Carga relacional)** | Carga relacional | — |
-| AC25 | FE5 | Cuando se repite la carga, entonces no se duplican filas y el historial suma una fila por carga | Prueba de idempotencia e historial | se define en el componente Carga relacional | no verificado aún | **no verificado aún (Carga relacional)** | Carga relacional | — |
-| AC26 | FE6 | Dado el DAG, cuando se importa, entonces no hay errores y tiene las cinco tareas con sus dependencias (P1) | `DagBag` y `airflow dags list-import-errors` | se define en el componente Pruebas y orquestación | no verificado aún | **no verificado aún (Pruebas y orquestación)** | Pruebas y orquestación | — |
-| AC27 | FE6 | Cuando se ejecuta de forma manual y programada y luego se repite una corrida, entonces Gold se valida y no se duplica nada (P2, P3 y P5) | `airflow dags test`, observación del programador y comparación de hashes | se define en el componente Pruebas y orquestación | no verificado aún | **no verificado aún (Pruebas y orquestación)** | Pruebas y orquestación | — |
-| AC28 | FE7 | Cuando se abre el dashboard, entonces muestra K1 a K6 con los recuadros de alcance y no lee la base directamente | prueba de la interfaz con `AppTest` (se crea en el componente Panel) | se define en el componente Panel | no verificado aún | **no verificado aún (Panel)** | Panel | — |
-| AC29 | FE7 | Cuando se recorre interfaz → API → almacén, entonces la prueba de humo de solo lectura pasa | prueba de humo de extremo a extremo de solo lectura (se crea en el componente Panel) | se define en el componente Panel | no verificado aún | **no verificado aún (Panel)** | Panel | — |
+| AC24 | FE5 | Cuando se carga a MySQL, entonces cada tabla tiene las mismas filas que Gold y las claves foráneas están activas | Prueba de integración con marcador `mysql` y conteos | se define en Carga relacional | no verificado aún | **no verificado aún: Carga relacional** | Carga relacional | — |
+| AC25 | FE5 | Cuando se repite la carga, entonces no se duplican filas y el historial suma una fila por carga | Prueba de idempotencia e historial | se define en Carga relacional | no verificado aún | **no verificado aún: Carga relacional** | Carga relacional | — |
+| AC26 | FE6 | Dado el DAG, cuando se importa, entonces no hay errores y tiene las cinco tareas con sus dependencias (P1) | `DagBag` y `airflow dags list-import-errors` | se define en Pruebas y orquestación | no verificado aún | **no verificado aún: Pruebas y orquestación** | Pruebas y orquestación | — |
+| AC27 | FE6 | Cuando se ejecuta de forma manual y programada y luego se repite una corrida, entonces Gold se valida y no se duplica nada (P2, P3 y P5) | `airflow dags test`, observación del programador y comparación de hashes | se define en Pruebas y orquestación | no verificado aún | **no verificado aún: Pruebas y orquestación** | Pruebas y orquestación | — |
+| AC28 | FE7 | Cuando se abre el dashboard, entonces muestra K1 a K6 con los recuadros de alcance y no lee la base directamente | prueba de la interfaz con `AppTest` (se crea en el componente Panel) | se define en Panel | no verificado aún | **no verificado aún: Panel** | Panel | — |
+| AC29 | FE7 | Cuando se recorre interfaz → API → almacén, entonces la prueba de humo de solo lectura pasa | prueba de humo de extremo a extremo de solo lectura (se crea en el componente Panel) | se define en Panel | no verificado aún | **no verificado aún: Panel** | Panel | — |
 
 ## 4. Criterios que no cumplimos o no aplican
 | criterio | estado | motivo |
@@ -71,9 +71,10 @@ Los roles de las historias son un diseño nuestro: no hubo usuarios. [Hipótesis
 | Meta del Avance 1 de cobertura del 90 % de los puntos verificados (KR1) | no evaluado | No tenemos la fuente por punto. |
 | Revisión visual de los códigos de barrio sobre el mapa | pendiente | Es un juicio del equipo (`docs/silver/revision_codigos_barrio.md`). |
 
-## Cómo lo defendemos
-- **Qué afirmamos:** definimos el MVP de la Entrega 3 con ocho funcionalidades y 29 criterios; 23 se ejecutaron (los dos de la API, en el componente API, fuentes y credenciales) y 6 (MySQL, Airflow y dashboard) se verifican en Carga relacional, Pruebas y orquestación y Panel.
+## Alcance y límites
+- **Qué afirmamos:** definimos el MVP del proyecto con ocho funcionalidades y 29 criterios; 23 se ejecutaron (incluidos los dos de la API) y 6 (MySQL, Airflow y dashboard) se verifican en Carga relacional, Pruebas y orquestación y Panel.
 - **Con qué evidencia:** los comandos y archivos de la tabla; el determinismo se comprobó en un clon temporal con dos ejecuciones completas.
-- **Qué NO afirmamos:** que la API, el almacén relacional, la orquestación o el dashboard funcionen: todavía no existen.
-- **La pregunta más probable del profesor:** «¿Por qué los criterios de pipeline parecen escritos después de ver los resultados?».
-- **Cómo respondemos:** porque lo son: los formalizamos sobre pruebas y umbrales que ya existían, y lo decimos al inicio; los criterios nuevos se redactaron antes de construir los componentes.
+- **Qué NO afirmamos:** que el almacén relacional, la orquestación o el dashboard funcionen: todavía no existen.
+
+## Preguntas frecuentes
+- **«¿Por qué los criterios de pipeline parecen escritos después de ver los resultados?»** Porque lo son: los formalizamos sobre pruebas y umbrales que ya existían, y lo decimos al inicio; los criterios nuevos se redactaron antes de construir los componentes.

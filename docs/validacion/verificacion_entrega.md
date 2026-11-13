@@ -1,6 +1,6 @@
 # Verificación de la entrega contra el enunciado
 
-Fuente del enunciado: `docs/proyecto/referencias/enunciado_flujo.png` ("Entrega Avance 2 Proyecto · Contexto de trabajo"). La imagen muestra cuatro cajas:
+Fuente del enunciado: `docs/proyecto/referencias/enunciado_flujo.png` ("Contexto de trabajo" del enunciado del flujo). La imagen muestra cuatro cajas:
 
 | caja | contenido literal de la imagen |
 |---|---|

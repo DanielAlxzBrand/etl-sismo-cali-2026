@@ -26,7 +26,7 @@ Casco urbano de Cali; 5 KR: KR1 concentración de daño severo (aquí, cambio sa
 - No hay fuente cuantitativa abierta de antigüedad por edificación.
 - La causalidad es multifactorial; el estrato puede ser solo un proxy.
 
-## Qué hereda este Avance 2
+## Qué hereda este proyecto
 - El flujo Bronze → Silver → Gold → Validación, con ≥1 API + ≥1 CSV/Excel unidos por JOIN.
 - La variable de control (estrato) y la dependiente (daño), medibles con datos tabulares reales.
 - Cubre KR1 y KR4 (con un proxy de daño); KR2 queda como extensión opcional; KR3 y KR5 no son ETL (cualitativo y seguimiento).

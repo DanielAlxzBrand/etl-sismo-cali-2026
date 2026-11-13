@@ -94,9 +94,10 @@ Cinco preguntas por tipo de stakeholder, para una conversación de 15 minutos co
 - **Productores de datos:** (1) ¿Cómo prefieren que se cite su dato? (2) ¿Hay una versión más reciente? (3) ¿Qué límites del dato no son evidentes? (4) ¿Existe un código de correspondencia entre 2015 y 2026? (5) ¿Qué uso consideran indebido?
 - **Comunidad académica:** (1) ¿Qué comparación faltaría? (2) ¿Qué sensibilidad adicional pediría? (3) ¿Qué entiende de «no se detecta diferencia»? (4) ¿Reproduciría el análisis con el README? (5) ¿Qué dato adicional haría falta?
 
-## Cómo lo defendemos
+## Alcance y límites
 - **Qué afirmamos:** identificamos 11 stakeholders y los ordenamos con una rúbrica de cuatro criterios que cualquiera puede recalcular; el planteamiento de usuario objetivo y su tipología son un diseño del equipo.
 - **Con qué evidencia:** la tabla de puntajes, la matriz generada a partir de ella y las fuentes de cada rol.
 - **Qué NO afirmamos:** que hablamos con alguien, que alguna entidad usa o pidió el análisis o que los puntajes son una medición.
-- **La pregunta más probable del profesor:** «¿Hablaron con la Secretaría de Gestión del Riesgo?».
-- **Cómo respondemos:** no; el campo de contactos dice «Ninguno» y dejamos un protocolo de cinco preguntas por tipo de stakeholder para cuando se haga.
+
+## Preguntas frecuentes
+- **«¿Hablaron con la Secretaría de Gestión del Riesgo?»** No; el campo de contactos dice «Ninguno» y dejamos un protocolo de cinco preguntas por tipo de stakeholder para cuando se haga.

@@ -94,9 +94,10 @@ Cada hipótesis tiene base de evidencia, nivel de confianza (alta, media o baja)
 ## 7. Nota sobre la plantilla del curso
 Si el curso entrega una plantilla propia de Data Innovation Board o de Canvas, nuestra estructura es el contenido y se adapta al formato de esa plantilla; no hay una plantilla del curso disponible en el material que revisamos.
 
-## Cómo lo defendemos
+## Alcance y límites
 - **Qué afirmamos:** estructuramos Canvas, propuesta de valor y Data Innovation Board como un ejercicio de diseño, con diez hipótesis, su base de evidencia, su nivel de confianza y un experimento propuesto para cada una.
 - **Con qué evidencia:** las capacidades reales citadas con su ruta y el Avance 1 para los trabajos y frustraciones del usuario objetivo.
 - **Qué NO afirmamos:** que haya mercado, usuarios, ingresos o validación; los ingresos y costos son «no estimado».
-- **La pregunta más probable del profesor:** «¿Cuál es el modelo de negocio y quién pagaría?».
-- **Cómo respondemos:** el documento es un ejercicio de diseño con hipótesis sin validar; no estimamos ingresos y proponemos experimentos (H1, H5) para saber si existe una vía de financiación.
+
+## Preguntas frecuentes
+- **«¿Cuál es el modelo de negocio y quién pagaría?»** El documento es un ejercicio de diseño con hipótesis sin validar; no estimamos ingresos y proponemos experimentos (H1, H5) para saber si existe una vía de financiación.

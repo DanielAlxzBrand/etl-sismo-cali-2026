@@ -1,4 +1,4 @@
-"""Sección 1 del checklist (docs/seccion_1): existencia, rastros de elaboración, cifras, rúbrica R1 y avisos de honestidad."""
+"""Sección 1 del checklist (docs/estrategia): existencia, rastros de elaboración, cifras, rúbrica R1 y avisos de honestidad."""
 import json
 import re
 from decimal import ROUND_HALF_UP, Decimal
