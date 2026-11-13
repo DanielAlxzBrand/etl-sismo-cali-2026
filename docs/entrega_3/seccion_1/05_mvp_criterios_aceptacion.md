@@ -4,7 +4,7 @@
 
 > **Etiquetas de evidencia.** [Evidencia en el repo: `ruta`] = existe en el repositorio; [Fuente externa: URL y fecha de consulta]; [Criterio aplicado: descripción] = regla o decisión nuestra, explicada; [Hipótesis de diseño: criterio y experimento de validación propuesto, no ejecutado] = hipótesis de diseño con su experimento, sin ejecutar. Las cifras se leen de `data/silver`, `data/gold` y `config/config.yaml`.
 
-> **Cómo se formalizaron.** Los criterios de pipeline y calidad se formalizan sobre pruebas y umbrales que ya existían (`config/config.yaml`, `tests/`). Los de API, MySQL, Airflow y dashboard son criterios de diseño de la Entrega 3: aún no se pueden ejecutar y figuran como «no verificado aún» con su fase de verificación; todos se cierran en F8.
+> **Cómo se formalizaron.** Los criterios de pipeline y calidad se formalizan sobre pruebas y umbrales que ya existían (`config/config.yaml`, `tests/`). Los de API, MySQL, Airflow y dashboard son criterios de diseño de la Entrega 3: los de la API se verificaron en F2; los de MySQL, Airflow y dashboard aún no se pueden ejecutar y figuran como «no verificado aún» con su fase de verificación; todos se cierran en F8.
 
 ## 1. Definición del MVP de la Entrega 3
 El MVP es el conjunto mínimo que permite repetir y consultar el análisis de punta a punta: **pipeline reproducible, Gold con KPI e incertidumbre, API de solo lectura, almacenamiento relacional con historial, un DAG de orquestación, un dashboard sobre la API y verificación automática.** [Criterio aplicado: definición del equipo; sustituye la anterior, que excluía API, dashboard y orquestación] [Evidencia en el repo: `docs/entrega_3/decisiones_tecnicas.md`]
@@ -26,7 +26,7 @@ Los roles de las historias son un diseño nuestro: no hubo usuarios. [Hipótesis
 | FE8 | Verificación, reproducibilidad y empaquetado | Como evaluador, quiero pruebas automáticas, ejecución en un clon limpio y un zip sin entorno virtual, para reproducir el análisis. | [Evidencia en el repo: `tests/`; `scripts/make_dist.py`; `docs/entrega_3/evidencias/`] |
 
 ## 3. Criterios de aceptación
-21 de 29 criterios cumplen hoy; 8 están «no verificado aún» y se verifican en F2, F3, F4 o F5. Un criterio solo se marca «cumple» si el comando o la lectura se hizo el 2026-11-12.
+23 de 29 criterios cumplen hoy; 6 están «no verificado aún» y se verifican en F3, F4 o F5. Un criterio solo se marca «cumple» si el comando o la lectura se hizo el 2026-11-12.
 
 | ID | funcionalidad | criterio verificable | cómo se verifica | evidencia | resultado actual | estado | fase de verificación | fecha de verificación |
 |---|---|---|---|---|---|---|---|---|
@@ -51,8 +51,8 @@ Los roles de las historias son un diseño nuestro: no hubo usuarios. [Hipótesis
 | AC19 | FE8 | Cuando se arma el zip, entonces no contiene entorno virtual, cachés, `.env`, `.git/` ni `dist/` | `scripts/make_dist.py` en una carpeta temporal fuera del repo y su verificación posterior | [Evidencia en el repo: `scripts/make_dist.py`] | 0 entradas prohibidas en 115; `dist/` sin cambios: ['avance2_etl_20261016.zip'] | **cumple** | F1 | 2026-11-12 |
 | AC20 | FE8 | Dado un entorno virtual sin `pyvenv.cfg` (con `bin/python` o `Scripts/python.exe`), cuando se arma el zip, entonces no entra | `python -m pytest -q -p no:cacheprovider tests/test_dist.py` | [Evidencia en el repo: `tests/test_dist.py`] | 4 passed | **cumple** | F1 | 2026-11-12 |
 | AC21 | FE8 | Dado un clon con `core.autocrlf` verdadero y otro con falso, cuando se verifican `data/` y las pruebas, entonces los sha256 y las pruebas coinciden | Clon a carpeta temporal y verificación (hecha en F0) | [Evidencia en el repo: `docs/entrega_3/evidencias/f0/EV-003_clon_limpio.txt`] | ambos clones: Bronze 8 de 8, línea base 9 de 9 y pruebas en verde (EV-003, 2026-11-12) | **cumple** | F0 | 2026-11-12 |
-| AC22 | FE4 | Dado el servicio en marcha, cuando se pide `GET /health`, entonces responde 200 y publica el esquema OpenAPI | prueba de la API con el cliente de pruebas (se crea en F2) y arranque con un comando | se define en F2 | no verificado aún | **no verificado aún (F2)** | F2 | — |
-| AC23 | FE4 | Dado cualquier endpoint, cuando se consulta, entonces no escribe: los sha256 de `data/` y de la base no cambian | Hashes antes y después de ejercer todos los endpoints | se define en F2 | no verificado aún | **no verificado aún (F2)** | F2 | — |
+| AC22 | FE4 | Dado el servicio en marcha, cuando se pide `GET /health`, entonces responde 200 y publica el esquema OpenAPI | `tests/test_api.py::test_cada_endpoint_responde_200_con_la_estructura_esperada` y arranque con `uvicorn src.api.app:app --host 127.0.0.1` | [Evidencia en el repo: `docs/entrega_3/evidencias/f2/EV-016_respuestas_api.txt`] | `/health` responde 200 con estado «ok»; `/openapi.json` publica 11 rutas, todas GET (EV-016); `test_api.py`: 17 passed (EV-014) | **cumple** | F2 | 2026-11-12 |
+| AC23 | FE4 | Dado cualquier endpoint, cuando se consulta, entonces no escribe: los sha256 de `data/` y de la base no cambian | Hashes antes y después de ejercer todos los endpoints | [Evidencia en el repo: `docs/entrega_3/evidencias/f2/EV-015_sin_escritura_hashes.txt`] | sha256 de los 19 archivos de `data/` (incluida la base) idénticos antes y después de las pruebas y de consultar la API; un INSERT sobre la conexión falla con `OperationalError` | **cumple** | F2 | 2026-11-12 |
 | AC24 | FE5 | Cuando se carga a MySQL, entonces cada tabla tiene las mismas filas que Gold y las claves foráneas están activas | Prueba de integración con marcador `mysql` y conteos | se define en F3 | no verificado aún | **no verificado aún (F3)** | F3 | — |
 | AC25 | FE5 | Cuando se repite la carga, entonces no se duplican filas y el historial suma una fila por carga | Prueba de idempotencia e historial | se define en F3 | no verificado aún | **no verificado aún (F3)** | F3 | — |
 | AC26 | FE6 | Dado el DAG, cuando se importa, entonces no hay errores y tiene las cinco tareas con sus dependencias (P1) | `DagBag` y `airflow dags list-import-errors` | se define en F4 | no verificado aún | **no verificado aún (F4)** | F4 | — |
@@ -72,7 +72,7 @@ Los roles de las historias son un diseño nuestro: no hubo usuarios. [Hipótesis
 | Revisión visual de los códigos de barrio sobre el mapa | pendiente | Es un juicio del equipo (`docs/revision_codigos_barrio.md`). |
 
 ## Cómo lo defendemos
-- **Qué afirmamos:** definimos el MVP de la Entrega 3 con ocho funcionalidades y 29 criterios; 21 se ejecutaron hoy y 8 (API, MySQL, Airflow y dashboard) se verifican en F2 a F5.
+- **Qué afirmamos:** definimos el MVP de la Entrega 3 con ocho funcionalidades y 29 criterios; 23 se ejecutaron (los dos de la API, en F2) y 6 (MySQL, Airflow y dashboard) se verifican en F3 a F5.
 - **Con qué evidencia:** los comandos y archivos de la tabla; el determinismo se comprobó en un clon temporal con dos ejecuciones completas.
 - **Qué NO afirmamos:** que la API, el almacén relacional, la orquestación o el dashboard funcionen: todavía no existen.
 - **La pregunta más probable del profesor:** «¿Por qué los criterios de pipeline parecen escritos después de ver los resultados?».

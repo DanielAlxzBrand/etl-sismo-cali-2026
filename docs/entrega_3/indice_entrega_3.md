@@ -7,7 +7,7 @@
 |---|---|---|---|---|---|
 | F0 | Línea base, orden y material de referencia | ninguno (prepara las demás) | 7.1 | Línea base protegida, saltos de línea fijados, repositorio reorganizado, entorno documentado | `docs/entrega_3/evidencias/f0/` |
 | F1 | Decisiones y sección 1 | 1.1, 1.2, 1.3, 1.4 | 1.5 | Decisiones de arquitectura (ADR) y revalidación de la sección 1 | carpeta evidencias/f1 (se crea en esa fase) |
-| F2 | Backend, API de solo lectura, fuentes y credenciales | 2.1, 2.2, 2.3 | — | API sobre Gold, catálogo de fuentes y política de credenciales | carpeta evidencias/f2 (se crea en esa fase) |
+| F2 | Backend, API de solo lectura, fuentes y credenciales | 2.1, 2.2, 2.3 | — | API sobre Gold, catálogo de fuentes y política de credenciales | `docs/entrega_3/evidencias/f2/` |
 | F3 | Carga relacional a MySQL | 4.1, 4.2, 4.3 | — | Almacén relacional con claves, historial y carga por lotes | carpeta evidencias/f3 (se crea en esa fase) |
 | F4 | Pruebas técnicas, MLOps y orquestación con Airflow en Windows | 5.1, 5.2, 5.4, 5.5, 5.6 | 2.1, 2.3, 4.1, 4.2 | Matriz de casos, informe de pruebas, DAG validado | carpeta evidencias/f4 (se crea en esa fase) |
 | F5 | Dashboard con Streamlit | 1.5, 3.1, 3.2, 5.3 | 3.3 | Dashboard sobre la API, pruebas de integración y criterios del MVP | carpeta evidencias/f5 (se crea en esa fase) |
@@ -18,7 +18,13 @@
 ## Estructura de `docs/entrega_3/`
 - `entorno.md`: estado del entorno y qué falta para cada fase.
 - `estado_checklist.md`: los 30 ítems con su estado actual y objetivo.
+- `decisiones_tecnicas.md`: decisiones técnicas de las fases F2 a F8.
 - `seccion_1/`: documentos de la sección 1 (se revalidan en F1).
+- `arquitectura.md`: arquitectura del backend y de la API de solo lectura (F2, ítem 2.1).
+- `catalogo_fuentes_metadatos.md` y `catalogo_fuentes.json`: catálogo de fuentes y metadatos generado desde el manifiesto (F2, ítem 2.2).
+- `gestion_credenciales.md`: política de credenciales, claves y tokens (F2, ítem 2.3).
+- `verificacion_seccion_2.md`: subcriterios, brechas, evidencia y estado de los ítems 2.1 a 2.3.
+- `img/`: imágenes renderizadas a partir de los documentos (matriz poder-interés, Canvas y arquitectura del backend); no son capturas de pantalla.
 - `evidencias/`: `MANIFIESTO_EVIDENCIAS.md`, `guion_capturas_y_video.md` y una carpeta por fase (`f0/` ya tiene su evidencia).
 
 ## Reglas de trabajo

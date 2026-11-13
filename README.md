@@ -275,7 +275,7 @@ Debe terminar sin errores (Python 3.13.0).
 ```powershell
 Get-FileHash -Algorithm SHA256 data\silver\*.csv, data\silver\quality_report.json, data\gold\*.csv
 ```
-4. **Pruebas:** `pytest -q` → `55 passed`.
+4. **Pruebas:** `pytest -q` → `88 passed`.
 5. **Notebooks** (cada uno se ejecuta de arriba a abajo sin errores):
 ```powershell
 jupyter nbconvert --to notebook --execute --inplace notebooks\05_validacion_evidencias.ipynb
@@ -301,12 +301,15 @@ jupyter nbconvert --to notebook --execute --inplace notebooks\05_validacion_evid
 - `src/transform/integrate.py`: JOIN, huérfanos, validación de la llave y reporte de calidad
 - `src/transform/build_gold.py`: Gold, KPI, intervalos y sensibilidades
 - `src/load/load_database.py`: carga a SQLite
+- `src/api/`: API de solo lectura (FastAPI): aplicación, esquemas, repositorio de datos y manejo de errores
 - `data/bronze/`: respuestas crudas, CSV original, polígonos y `manifest.jsonl`
 - `data/silver/`: tablas limpias, huérfanos y `quality_report.json`
 - `data/gold/`: `gold_final.csv`, `kpis_gold.csv`, `kpis_sensibilidad.csv`, `etl_sismo.db`
 - `notebooks/`: cinco notebooks ejecutados (conexión, EDA, Silver, Gold y validación)
-- `tests/`: 55 pruebas automáticas
+- `tests/`: 88 pruebas automáticas
 - `scripts/make_dist.py`: empaqueta la entrega en `dist/` sin entornos virtuales ni cachés
+- `scripts/make_catalogo_fuentes.py`: genera el catálogo de fuentes y metadatos a partir del manifiesto
+- `scripts/escanear_secretos.py`: busca secretos en el árbol, el historial, los notebooks, los logs y un zip (nunca imprime valores)
 - `docs/DECISIONES.md`: decisiones con alternativas, razón y riesgo
 - `docs/hallazgos_eda.md`: hallazgos H1-H18 del análisis exploratorio
 - `docs/reglas_silver.md`: reglas R01-R18 con su hallazgo
@@ -324,12 +327,17 @@ jupyter nbconvert --to notebook --execute --inplace notebooks\05_validacion_evid
 - `docs/entrega_3/`: documentos de la Entrega 3: sección 1 del checklist de Data Thinking
 - `docs/entrega_3/decisiones_tecnicas.md`: decisiones técnicas de la Entrega 3 (API, MySQL, dashboard, orquestación, MLOps)
 - `docs/entrega_3/seccion_1/`: sección 1 del checklist: Data Thinking, stakeholders, OKR y KPI, Canvas y MVP
+- `docs/entrega_3/arquitectura.md`: arquitectura del backend y de la API de solo lectura
+- `docs/entrega_3/catalogo_fuentes_metadatos.md`: catálogo de fuentes y metadatos (generado)
+- `docs/entrega_3/gestion_credenciales.md`: política de credenciales, claves y tokens
 - `docs/muestras/`: muestras de texto de cada fuente probada (no es Bronze)
 - `docs/enunciado_flujo.png`: imagen del enunciado de la entrega
 - `logs/`: archivos de registro diarios (se crean al ejecutar; no se versionan)
 
 ## 14. Pruebas y validación
-Hay **55 pruebas** automáticas, sin red:
+Hay **88 pruebas** automáticas, sin red:
+- `tests/test_api.py` (17): API de solo lectura: estructura, validación, coincidencia con las salidas, solo GET y sin escritura en `data/` ni en la base.
+- `tests/test_catalogo.py` (5): el catálogo de fuentes coincide con el manifiesto, es determinista y `/fuentes` lo devuelve igual.
 - `tests/test_dist.py` (4): el empaquetado detecta entornos virtuales por su contenido, aunque no tengan `pyvenv.cfg`.
 - `tests/test_empaquetado_y_revision.py` (5): el empaquetado excluye entornos virtuales con cualquier nombre; la revisión de códigos de barrio cubre los casos pedidos y suma las construcciones sin nombre validado.
 - `tests/test_entrega_3_seccion_1.py` (9): documentos de la sección 1 del checklist: existencia, términos prohibidos, cifras y avisos.
@@ -337,7 +345,8 @@ Hay **55 pruebas** automáticas, sin red:
 - `tests/test_kpis.py` (6): regresión numérica de los KPI, Newcombe, Mantel-Haenszel y regresión del defecto.
 - `tests/test_logger.py` (2): enmascarado de secretos y nombre de los loggers.
 - `tests/test_quality.py` (4): campos del reporte, cobertura frente al umbral, mínimo de filas de Gold, KPI en rango.
-- `tests/test_readme_cifras.py` (12): las cifras de este README coinciden con los archivos de salida; recuadros de alcance, población e indicador satelital.
+- `tests/test_readme_cifras.py` (13): las cifras de este README coinciden con los archivos de salida; recuadros de alcance, población e indicador satelital.
+- `tests/test_secretos.py` (10): escáner de secretos (un secreto sembrado por tipo), `.env` fuera de git, enmascarado del registro y zip sin `.env`.
 - `tests/test_transform.py` (7): llaves, `normalize_key`, duplicados, tipos, zona horaria, vectores de Wilson.
 
 Además: (1) el **recálculo independiente de los KPI con SQL** sobre SQLite (notebook 04, diferencia máxima inferior a 1e-9), con implementaciones independientes de Wilson, Newcombe, Mantel-Haenszel y Spearman; (2) la **regresión del defecto de Mantel-Haenszel**: ese recálculo detectó que se contaban construcciones sin datos satelitales en los tamaños de grupo; se corrigió y una prueba fija el comportamiento (`docs/DECISIONES.md`); (3) las evidencias en `docs/`: `verificacion_entrega.md`, `prueba_entorno_limpio.md`, `verificacion_fuentes.md`, `verificacion_logging.md` y los hashes de antes y después del registro.
@@ -375,8 +384,38 @@ Decisiones de las fuentes: el plan elegido es el de las construcciones de la cap
 - **Huérfano:** fila de una tabla que no encuentra pareja en el JOIN; se conserva en un archivo aparte.
 - **Snapshot:** copia fechada (UTC) de lo descargado; no se sobrescribe.
 - **Medallion:** organización por capas (Bronze crudo, Silver limpio, Gold listo para análisis).
+- **API:** programa que responde consultas por HTTP; aquí entrega los resultados de Gold sin recalcularlos.
+- **Endpoint:** una dirección concreta de la API, por ejemplo `/kpis`.
+- **Solo lectura:** la API puede entregar los datos, pero no puede cambiarlos; la conexión a la base rechaza cualquier escritura.
+- **Catálogo de metadatos:** ficha de cada fuente (publicador, URL, formato, licencia, fechas, columnas y huella del snapshot) generada desde el manifiesto.
+- **Escáner de secretos:** script que busca credenciales en el repositorio, su historial y un zip; reporta archivo, línea y patrón, nunca el valor.
 
 ## 17. Trabajo futuro y atribución
 **Trabajo futuro.** Incorporar la amenaza sísmica oficial para cubrir KR2; ampliar la cobertura a la Comuna 2 y a las demás comunas ausentes; comparar el proxy satelital con las inspecciones ATC-20 de la Alcaldía; repetir el análisis con un estrato actualizado (el de 2015 puede estar desfasado).
 
 **Atribución.** Capa de impacto satelital: Fondo Adaptación, catálogo datos.gov.co `5vy8-gpw8` (CC BY 4.0 según el catálogo; consulta del 15-oct-2026). Estratificación por barrio 2015: DAPM Cali, datos.cali.gov.co (consulta del 15-oct-2026). Polígonos de barrios: IDESC / DAPM Cali (consulta del 15-oct-2026). Evento: USGS `us6000tjl2` (consulta del 15-oct-2026). Contexto externo: El País Cali, 11-oct-2026.
+
+## 18. Capa de servicio (API de solo lectura)
+Además de los archivos, el repositorio expone los resultados de Gold por una API local de **solo lectura** (`src/api/`). No escribe en `data/` ni en la base, no recalcula indicadores y entrega un proxy satelital, no una evaluación estructural. Tiene **11 rutas GET**: `/calidad`, `/composicion`, `/comunas`, `/construcciones`, `/fuentes`, `/health`, `/kpis`, `/kpis/sensibilidad`, `/kpis/{kpi_id}`, `/llave/revision`, `/metadata`.
+
+**Ejecución** (PowerShell, en la raíz del repositorio, con el entorno activado):
+```powershell
+python -m pip install -r requirements.txt
+python -m uvicorn src.api.app:app --host 127.0.0.1 --port 8000
+```
+Después se abre `http://127.0.0.1:8000/docs` (documentación automática) o `http://127.0.0.1:8000/health`. El servicio queda enlazado a `127.0.0.1`: no es accesible desde otros equipos.
+
+| endpoint | qué entrega |
+|---|---|
+| `/health` | estado del servicio, fecha de corte y filas por tabla |
+| `/metadata` | fuentes, fechas, población analizada (7 comunas), alcance temporal (estrato 2015) y licencias |
+| `/fuentes` | catálogo de fuentes y metadatos |
+| `/kpis`, `/kpis/{kpi_id}` | filas de `kpis_gold.csv` tal como están (filtros `kpi_id` y `grupo`) |
+| `/kpis/sensibilidad` | filas de `kpis_sensibilidad.csv` (filtro `escenario`, S0 a S5) |
+| `/comunas` | K6 por comuna |
+| `/composicion` | construcciones con datos y severos por comuna y grupo de estrato |
+| `/construcciones` | construcciones paginadas (`limit` por defecto 50 y máximo 200) con filtros por comuna, estrato y severo estricto |
+| `/calidad` | coberturas y confianza de la llave |
+| `/llave/revision` | códigos de barrio con nombre no validado |
+
+Los errores usan siempre `{"error": {"codigo", "mensaje", "detalle"}}`. Documentación: [arquitectura del backend](docs/entrega_3/arquitectura.md), [catálogo de fuentes y metadatos](docs/entrega_3/catalogo_fuentes_metadatos.md) y [política de credenciales](docs/entrega_3/gestion_credenciales.md). Para buscar secretos: `python scripts/escanear_secretos.py` (termina en `hallazgos: 0`).

@@ -16,8 +16,25 @@
 - Cada captura se rotula «captura tomada por el equipo» con la fecha.
 
 ## F2 · Backend, API de solo lectura, fuentes y credenciales
-- Ítems: 2.1, 2.2, 2.3
-- Capturas y videos previstos: se definen al diseñar la fase.
+- Ítems: 2.1, 2.2, 2.3. Las capturas las toma el equipo; la captura de `/docs` incluida como EV-017 es una **captura automatizada del navegador** y no sustituye a las manuales. Las cuatro imágenes `EV-021` a `EV-024` son renders generados a partir de salidas reales, no capturas.
+- **Antes de grabar:** PowerShell en la raíz del repositorio, con el entorno activado (`.\.venv\Scripts\Activate.ps1`) y sin cambios sin guardar (`git status --short` no imprime nada).
+- **2.1 · respuesta de `GET /health`.** Ventana: PowerShell. Comando: primero `python -m uvicorn src.api.app:app --host 127.0.0.1 --port 8000` en una terminal y, en otra, `Invoke-RestMethod http://127.0.0.1:8000/health | ConvertTo-Json -Depth 5`. Debe verse: `estado` «ok», `base_disponible` verdadero y las filas por tabla (5146, 5146, 23 y 107). Nombre: `captura_2.1_health.png`.
+- **2.1 · documentación automática.** Ventana: navegador en `http://127.0.0.1:8000/docs` con las rutas desplegadas (todas con la etiqueta GET). Nombre: `captura_2.1_docs.png`.
+- **2.1 · consulta a `/kpis`.** Ventana: PowerShell. Comando: `(Invoke-RestMethod "http://127.0.0.1:8000/kpis?kpi_id=K1") | Select-Object kpi_id, grupo, valor, numerador, denominador | Format-Table` (los paréntesis hacen que PowerShell recorra la lista). Debe verse K1 por estrato con numerador y denominador. Nombre: `captura_2.1_kpis.png`.
+- **2.1 · resultado de pytest.** Ventana: PowerShell. Comando: `python -m pytest -q -p no:cacheprovider`. Debe verse la línea final «passed» sin fallos. Nombre: `captura_2.1_pytest.png`.
+- **2.3 · salida del escáner.** Ventana: PowerShell. Comando: `python scripts\escanear_secretos.py`. Debe verse la línea final `hallazgos: 0` (y ningún valor secreto). Nombre: `captura_2.3_escaner.png`.
+- **2.2 · catálogo de fuentes.** Ventana: editor con `docs/entrega_3/catalogo_fuentes_metadatos.md` en la ficha de `edificaciones` (snapshot con sha256 visible). Nombre: `captura_2.2_catalogo.png`.
+- Cada captura se rotula «captura tomada por el equipo» con la fecha.
+- **Guion de video del tramo de API (aprox. 3 minutos; pasos ejecutables tal como están escritos).**
+  1. Terminal 1: `python -m uvicorn src.api.app:app --host 127.0.0.1 --port 8000` (esperar «Application startup complete»).
+  2. Terminal 2: `Invoke-RestMethod http://127.0.0.1:8000/health` y decir «la API está viva y lee la base en solo lectura».
+  3. `Invoke-RestMethod "http://127.0.0.1:8000/metadata"` y señalar el aviso «proxy satelital, no evaluación estructural», las 7 comunas y el estrato 2015.
+  4. `Invoke-RestMethod "http://127.0.0.1:8000/kpis?kpi_id=K1"` y comparar con `data\gold\kpis_gold.csv`.
+  5. `Invoke-RestMethod "http://127.0.0.1:8000/construcciones?limit=2&comuna=19"` y mostrar `total`, `limit` y `offset`.
+  6. Demostrar el error uniforme: `Invoke-RestMethod "http://127.0.0.1:8000/kpis/K99"` (devuelve 404 con `error.codigo` = `no_encontrado`).
+  7. Demostrar que no escribe: `Invoke-WebRequest -Method Post http://127.0.0.1:8000/kpis` devuelve 405.
+  8. Abrir `/docs` en el navegador y mostrar las rutas.
+  9. Ctrl+C en la terminal 1 (cierre ordenado) y `python scripts\escanear_secretos.py` para cerrar con `hallazgos: 0`.
 
 ## F3 · Carga relacional a MySQL
 - Ítems: 4.1, 4.2, 4.3

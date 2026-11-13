@@ -156,6 +156,12 @@ def main():
     tests = pruebas_recolectadas()
     n_tests = sum(tests.values())
 
+    # --- endpoints de la API (leídos de la aplicación; se excluyen la documentación automática y el esquema)
+    from src.api.app import app as api_app
+    rutas_api = sorted({r.path for r in api_app.routes if getattr(r, "methods", None) and r.path not in ("/openapi.json", "/docs", "/docs/oauth2-redirect", "/redoc")})
+    n_endpoints = len(rutas_api)
+    lista_endpoints = ", ".join(f"`{r}`" for r in rutas_api)
+
     # --- ejemplo SQL ejecutado de verdad sobre la base
     consulta = ("SELECT estrato, SUM(severo_estricto) AS severos, COUNT(severo_estricto) AS con_datos\n"
                 "FROM gold_final WHERE estrato IS NOT NULL GROUP BY estrato ORDER BY estrato;")
@@ -234,12 +240,15 @@ def main():
         ("src/transform/integrate.py", "JOIN, huérfanos, validación de la llave y reporte de calidad"),
         ("src/transform/build_gold.py", "Gold, KPI, intervalos y sensibilidades"),
         ("src/load/load_database.py", "carga a SQLite"),
+        ("src/api/", "API de solo lectura (FastAPI): aplicación, esquemas, repositorio de datos y manejo de errores"),
         ("data/bronze/", "respuestas crudas, CSV original, polígonos y `manifest.jsonl`"),
         ("data/silver/", "tablas limpias, huérfanos y `quality_report.json`"),
         ("data/gold/", "`gold_final.csv`, `kpis_gold.csv`, `kpis_sensibilidad.csv`, `etl_sismo.db`"),
         ("notebooks/", "cinco notebooks ejecutados (conexión, EDA, Silver, Gold y validación)"),
         ("tests/", f"{n_tests} pruebas automáticas"),
         ("scripts/make_dist.py", "empaqueta la entrega en `dist/` sin entornos virtuales ni cachés"),
+        ("scripts/make_catalogo_fuentes.py", "genera el catálogo de fuentes y metadatos a partir del manifiesto"),
+        ("scripts/escanear_secretos.py", "busca secretos en el árbol, el historial, los notebooks, los logs y un zip (nunca imprime valores)"),
         ("docs/DECISIONES.md", "decisiones con alternativas, razón y riesgo"),
         ("docs/hallazgos_eda.md", "hallazgos H1-H18 del análisis exploratorio"),
         ("docs/reglas_silver.md", "reglas R01-R18 con su hallazgo"),
@@ -257,6 +266,9 @@ def main():
         ("docs/entrega_3/", "documentos de la Entrega 3: sección 1 del checklist de Data Thinking"),
         ("docs/entrega_3/decisiones_tecnicas.md", "decisiones técnicas de la Entrega 3 (API, MySQL, dashboard, orquestación, MLOps)"),
         ("docs/entrega_3/seccion_1/", "sección 1 del checklist: Data Thinking, stakeholders, OKR y KPI, Canvas y MVP"),
+        ("docs/entrega_3/arquitectura.md", "arquitectura del backend y de la API de solo lectura"),
+        ("docs/entrega_3/catalogo_fuentes_metadatos.md", "catálogo de fuentes y metadatos (generado)"),
+        ("docs/entrega_3/gestion_credenciales.md", "política de credenciales, claves y tokens"),
         ("docs/muestras/", "muestras de texto de cada fuente probada (no es Bronze)"),
         ("docs/enunciado_flujo.png", "imagen del enunciado de la entrega"),
     ]
@@ -268,7 +280,10 @@ def main():
                   "test_readme_cifras.py": "las cifras de este README coinciden con los archivos de salida; recuadros de alcance, población e indicador satelital", "test_logger.py": "enmascarado de secretos y nombre de los loggers",
                   "test_empaquetado_y_revision.py": "el empaquetado excluye entornos virtuales con cualquier nombre; la revisión de códigos de barrio cubre los casos pedidos y suma las construcciones sin nombre validado",
                   "test_dist.py": "el empaquetado detecta entornos virtuales por su contenido, aunque no tengan `pyvenv.cfg`",
-                  "test_entrega_3_seccion_1.py": "documentos de la sección 1 del checklist: existencia, términos prohibidos, cifras y avisos"}
+                  "test_entrega_3_seccion_1.py": "documentos de la sección 1 del checklist: existencia, términos prohibidos, cifras y avisos",
+                  "test_api.py": "API de solo lectura: estructura, validación, coincidencia con las salidas, solo GET y sin escritura en `data/` ni en la base",
+                  "test_catalogo.py": "el catálogo de fuentes coincide con el manifiesto, es determinista y `/fuentes` lo devuelve igual",
+                  "test_secretos.py": "escáner de secretos (un secreto sembrado por tipo), `.env` fuera de git, enmascarado del registro y zip sin `.env`"}
     tests_md = "\n".join(f"- `tests/{n}` ({k}): {desc_tests.get(n, '')}." for n, k in tests.items())
     barrio_ej = str(ej.barrio).zfill(2) if pd.notna(ej.barrio) else ""
 
@@ -524,11 +539,42 @@ Decisiones de las fuentes: el plan elegido es el de las construcciones de la cap
 - **Huérfano:** fila de una tabla que no encuentra pareja en el JOIN; se conserva en un archivo aparte.
 - **Snapshot:** copia fechada (UTC) de lo descargado; no se sobrescribe.
 - **Medallion:** organización por capas (Bronze crudo, Silver limpio, Gold listo para análisis).
+- **API:** programa que responde consultas por HTTP; aquí entrega los resultados de Gold sin recalcularlos.
+- **Endpoint:** una dirección concreta de la API, por ejemplo `/kpis`.
+- **Solo lectura:** la API puede entregar los datos, pero no puede cambiarlos; la conexión a la base rechaza cualquier escritura.
+- **Catálogo de metadatos:** ficha de cada fuente (publicador, URL, formato, licencia, fechas, columnas y huella del snapshot) generada desde el manifiesto.
+- **Escáner de secretos:** script que busca credenciales en el repositorio, su historial y un zip; reporta archivo, línea y patrón, nunca el valor.
 
 ## 17. Trabajo futuro y atribución
 **Trabajo futuro.** Incorporar la amenaza sísmica oficial para cubrir KR2; ampliar la cobertura a la Comuna 2 y a las demás comunas ausentes; comparar el proxy satelital con las inspecciones ATC-20 de la Alcaldía; repetir el análisis con un estrato actualizado (el de 2015 puede estar desfasado).
 
 **Atribución.** Capa de impacto satelital: Fondo Adaptación, catálogo datos.gov.co `5vy8-gpw8` (CC BY 4.0 según el catálogo; consulta del 15-oct-2026). Estratificación por barrio 2015: DAPM Cali, datos.cali.gov.co (consulta del 15-oct-2026). Polígonos de barrios: IDESC / DAPM Cali (consulta del 15-oct-2026). Evento: USGS `{ev.id}` (consulta del 15-oct-2026). Contexto externo: El País Cali, 11-oct-2026.
+"""
+    txt = txt.rstrip("\n") + "\n" + f"""
+## 18. Capa de servicio (API de solo lectura)
+Además de los archivos, el repositorio expone los resultados de Gold por una API local de **solo lectura** (`src/api/`). No escribe en `data/` ni en la base, no recalcula indicadores y entrega un proxy satelital, no una evaluación estructural. Tiene **{n_endpoints} rutas GET**: {lista_endpoints}.
+
+**Ejecución** (PowerShell, en la raíz del repositorio, con el entorno activado):
+```powershell
+python -m pip install -r requirements.txt
+python -m uvicorn src.api.app:app --host 127.0.0.1 --port 8000
+```
+Después se abre `http://127.0.0.1:8000/docs` (documentación automática) o `http://127.0.0.1:8000/health`. El servicio queda enlazado a `127.0.0.1`: no es accesible desde otros equipos.
+
+| endpoint | qué entrega |
+|---|---|
+| `/health` | estado del servicio, fecha de corte y filas por tabla |
+| `/metadata` | fuentes, fechas, población analizada (7 comunas), alcance temporal (estrato 2015) y licencias |
+| `/fuentes` | catálogo de fuentes y metadatos |
+| `/kpis`, `/kpis/{{kpi_id}}` | filas de `kpis_gold.csv` tal como están (filtros `kpi_id` y `grupo`) |
+| `/kpis/sensibilidad` | filas de `kpis_sensibilidad.csv` (filtro `escenario`, S0 a S5) |
+| `/comunas` | K6 por comuna |
+| `/composicion` | construcciones con datos y severos por comuna y grupo de estrato |
+| `/construcciones` | construcciones paginadas (`limit` por defecto 50 y máximo 200) con filtros por comuna, estrato y severo estricto |
+| `/calidad` | coberturas y confianza de la llave |
+| `/llave/revision` | códigos de barrio con nombre no validado |
+
+Los errores usan siempre `{{"error": {{"codigo", "mensaje", "detalle"}}}}`. Documentación: [arquitectura del backend](docs/entrega_3/arquitectura.md), [catálogo de fuentes y metadatos](docs/entrega_3/catalogo_fuentes_metadatos.md) y [política de credenciales](docs/entrega_3/gestion_credenciales.md). Para buscar secretos: `python scripts/escanear_secretos.py` (termina en `hallazgos: 0`).
 """
     (ROOT / "README.md").write_text(txt, encoding="utf-8", newline="\n")
     print("README.md generado")

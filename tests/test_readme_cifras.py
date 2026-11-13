@@ -159,3 +159,18 @@ def test_cobertura_de_estrato_valido_igual_en_todo_el_readme_y_en_el_reporte():
     esperado = _pc(REP["cobertura_estrato_valido"]["pct"])
     assert len(apariciones) >= 2 and set(apariciones) == {esperado}, (apariciones, esperado)
     assert esperado == "99,845 %"
+
+
+# --- capa de servicio: la sección de la API coincide con la aplicación ---
+def test_seccion_de_la_api_en_readme_coincide_con_la_aplicacion():
+    from src.api.app import app
+
+    assert "## 18. Capa de servicio (API de solo lectura)" in README
+    rutas = sorted({r.path for r in app.routes if getattr(r, "methods", None) and r.path not in ("/openapi.json", "/docs", "/docs/oauth2-redirect", "/redoc")})
+    assert f"Tiene **{len(rutas)} rutas GET**" in README
+    for ruta in rutas:
+        assert f"`{ruta}`" in README, ruta
+    for frase in ("127.0.0.1", "python -m uvicorn src.api.app:app", "hallazgos: 0", "solo lectura"):
+        assert frase in README, frase
+    for termino in ("API", "Endpoint", "Solo lectura", "Catálogo de metadatos", "Escáner de secretos"):
+        assert f"- **{termino}:**" in README, termino
