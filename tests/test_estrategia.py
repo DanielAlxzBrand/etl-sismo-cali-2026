@@ -250,3 +250,22 @@ def test_ningun_documento_conserva_etiquetas_de_fase_como_fase_de_trabajo():
         if ETIQUETA_DE_FASE.search(p.read_text(encoding="utf-8", errors="ignore")):
             hallazgos.append(rel.as_posix())
     assert hallazgos == []
+
+
+# Términos de proceso y rutas antiguas (partidos para que este archivo no se detecte a sí mismo)
+TERMINOS_DE_PROCESO = [r"Entre" + r"ga 3", r"entre" + r"ga_3", r"Avan" + r"ce 2", r"avan" + r"ce_2", r"segunda entre" + r"ga", r"entre" + r"ga3-f", r"base-entre" + r"ga-3", r"D-E" + r"3", r"guion de vi" + r"deo",
+                       r"seccion" + r"_1", r"verificacion_seccion" + r"_2", r"MANIFIESTO" + r"_EVIDENCIAS", r"test_entrega_3" + r"_seccion_1", r"Cómo lo defen" + r"demos"]
+
+
+def test_ningun_documento_conserva_terminos_de_proceso_ni_rutas_antiguas():
+    """Excluye lo protegido (evidencias crudas, imágenes, PDF, retroalimentación original, declaración de uso y datos) y las listas de cadenas de las pruebas."""
+    saltar = {".venv", ".git", "data", "dist", "logs", "__pycache__", ".pytest_cache", ".ipynb_checkpoints"}
+    hallazgos = []
+    for p in ROOT.rglob("*"):
+        rel = p.relative_to(ROOT)
+        if (not p.is_file() or any(x in saltar for x in rel.parts) or p.suffix not in SUFIJOS or p.name == "DECLARACION_USO_IA.md"
+                or rel.as_posix().startswith(("docs/evidencias/base/", "docs/evidencias/estrategia/", "docs/evidencias/api/", "docs/retroalimentacion/retroalimentacion_del_profesor.txt", "tests/test_estrategia.py"))):
+            continue
+        t = p.read_text(encoding="utf-8", errors="ignore")
+        hallazgos += [(rel.as_posix(), x) for x in TERMINOS_DE_PROCESO if re.search(x, t)]
+    assert hallazgos == []

@@ -336,9 +336,12 @@ Tablas finales para análisis y servicio; diccionario de gold_final leído de do
 | `nota` | texto | descripción del escenario |
 
 
-## Cómo lo defendemos
+## Alcance y límites
 
 - **Qué afirmamos:** cada fuente usada tiene su publicador, URL, formato, autenticación, límites, columnas, cobertura, fechas, licencia, snapshot con sha256 y riesgos. [Evidencia en el repo: `docs/bronze/catalogo_fuentes.json`]
 - **Con qué evidencia:** el catálogo se genera del manifiesto y la prueba `tests/test_catalogo.py` compara sha256, filas y bytes; `GET /fuentes` devuelve el mismo JSON.
 - **Qué NO afirmamos:** que las licencias estén verificadas jurídicamente (las tomamos de los catálogos y la fecha de consulta está indicada); que las cifras de prensa sean oficiales.
-- **Pregunta probable:** «¿cómo saben que el catálogo coincide con lo descargado?» **Respuesta:** porque se genera desde el manifiesto de Bronze y una prueba compara huellas, filas y bytes.
+
+## Preguntas frecuentes
+
+- **«¿Cómo saben que el catálogo coincide con lo descargado?»** Porque se genera desde el manifiesto de Bronze y una prueba compara huellas, filas y bytes.

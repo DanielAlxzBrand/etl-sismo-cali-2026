@@ -222,11 +222,12 @@ def _md(c):
             L.append(f"- `{a['ruta']}` · {a['filas'] if a['filas'] is not None else '—'} filas · {a['bytes']} bytes · sha256 `{a['sha256']}`")
             if a.get("columnas"):
                 L += ["", "| columna | tipo | descripción |", "|---|---|---|"] + [f"| `{x['nombre']}` | {x['tipo']} | {x['descripcion']} |" for x in a["columnas"]] + [""]
-    L += ["", "## Cómo lo defendemos", "",
+    L += ["", "## Alcance y límites", "",
           "- **Qué afirmamos:** cada fuente usada tiene su publicador, URL, formato, autenticación, límites, columnas, cobertura, fechas, licencia, snapshot con sha256 y riesgos. [Evidencia en el repo: `docs/bronze/catalogo_fuentes.json`]",
           "- **Con qué evidencia:** el catálogo se genera del manifiesto y la prueba `tests/test_catalogo.py` compara sha256, filas y bytes; `GET /fuentes` devuelve el mismo JSON.",
           "- **Qué NO afirmamos:** que las licencias estén verificadas jurídicamente (las tomamos de los catálogos y la fecha de consulta está indicada); que las cifras de prensa sean oficiales.",
-          "- **Pregunta probable:** «¿cómo saben que el catálogo coincide con lo descargado?» **Respuesta:** porque se genera desde el manifiesto de Bronze y una prueba compara huellas, filas y bytes.", ""]
+          "", "## Preguntas frecuentes", "",
+          "- **«¿Cómo saben que el catálogo coincide con lo descargado?»** Porque se genera desde el manifiesto de Bronze y una prueba compara huellas, filas y bytes.", ""]
     return "\n".join(L)
 
 
