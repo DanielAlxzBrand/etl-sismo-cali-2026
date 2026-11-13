@@ -34,6 +34,7 @@ PATRONES = {
     "parametro_url_sensible": re.compile(r"[?&](?:" + PARAMS + r")=[^&\s'\"]{6,}", re.I),
     "cabecera_autorizacion": re.compile(r"authorization[\"']?\s*[:=]\s*[\"']?(?:bearer|basic|token)\s+[A-Za-z0-9._~+/=-]{8,}", re.I),
     "cabecera_token_app": re.compile(r"x-app-" + r"token[\"']?\s*[:=]\s*[\"']?[A-Za-z0-9]{8,}", re.I),
+    "asignacion_mysql_password": re.compile("MYSQL" + r"_PASS" + r"WORD\s*[:=]\s*[\"']?(?![<$\s\"'`])[^\s\"'`]{4,}"),
     "asignacion_literal_sensible": re.compile(r"(?:pass" + r"word|passwd|secret|api[_-]?key|app[_-]?token|access[_-]?token)[\"']?\s*[:=]\s*[\"'][A-Za-z0-9_+/=.!@#$%^&*-]{8,}[\"']", re.I),
 }
 CANDIDATO = re.compile(r"[A-Za-z0-9+/_=-]{32,128}")
@@ -156,14 +157,100 @@ def escanear_zip(ruta):
     return hallazgos
 
 
+SENSIBLE = re.compile(r"PASSWORD|TOKEN|SECRET|KEY", re.I)
+
+
+def canarios(raiz):
+    """{nombre: valor} de las variables sensibles de `.env`, leídas EN MEMORIA (los valores nunca se imprimen ni se guardan)."""
+    from dotenv import dotenv_values
+    ruta = Path(raiz) / ".env"
+    if not ruta.exists():
+        return {}
+    return {k: v for k, v in dotenv_values(ruta).items() if v and len(v) >= 6 and SENSIBLE.search(k)}
+
+
+def _buscar_en(nombre, datos, can):
+    """(archivo, línea, 'canario:NOMBRE') por cada variable cuyo valor aparece en los bytes; la línea es 0 si el archivo no es texto."""
+    out = []
+    for var, valor in can.items():
+        b = valor.encode("utf-8")
+        if b not in datos:
+            continue
+        if _es_texto(datos):
+            out += [(nombre, n, f"canario:{var}") for n, l in enumerate(datos.split(bytes([10])), 1) if b in l]
+        else:
+            out.append((nombre, 0, f"canario:{var}"))
+    return out
+
+
+def canario_arbol(raiz, can):
+    """Árbol de trabajo completo (también data/bronze, logs, evidencias y binarios), salvo `.env`, `.git`, entornos y cachés."""
+    out = []
+    for p in sorted(Path(raiz).rglob("*")):
+        rel = p.relative_to(raiz)
+        if not p.is_file() or rel.as_posix() == ".env" or any(x in EXCLUIR_DIRS or x.startswith(EXCLUIR_PREFIJOS) for x in rel.parts[:-1]) or p.stat().st_size > 64_000_000:
+            continue
+        out += _buscar_en(rel.as_posix(), p.read_bytes(), can)
+    return out
+
+
+def canario_historial(raiz, can):
+    """Historial de git completo (mensajes y cambios, líneas añadidas y quitadas)."""
+    if not (Path(raiz) / ".git").exists() or not can:
+        return []
+    proc = subprocess.Popen(["git", "log", "--all", "-p", "--no-color", "--no-ext-diff"], cwd=raiz, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+    out, commit, archivo, n = [], "?", "?", 0
+    claves = {v.encode("utf-8"): k for k, v in can.items()}
+    try:
+        for crudo in proc.stdout:
+            if crudo.startswith(b"commit ") and re.fullmatch(rb"commit [0-9a-f]{40}.*\s*", crudo):
+                commit = crudo[7:15].decode()
+            elif crudo.startswith(b"diff --git "):
+                archivo, n = crudo.decode("utf-8", "replace").split(" b/", 1)[-1].strip(), 0
+            n += 1
+            out += [(f"historial:{commit}:{archivo}", n, f"canario:{v}") for b, v in claves.items() if b in crudo]
+    finally:
+        proc.stdout.close()
+        proc.wait()
+    return out
+
+
+def canario_zip(ruta, can):
+    out = []
+    with zipfile.ZipFile(ruta) as z:
+        for info in z.infolist():
+            if not info.is_dir():
+                out += _buscar_en(f"zip:{info.filename}", z.read(info), can)
+    return out
+
+
+def estado_de_env(raiz):
+    """`.env` debe estar ignorado por git y no versionado; devuelve los hallazgos (vacío si todo está bien)."""
+    raiz = Path(raiz)
+    if not (raiz / ".git").exists():
+        return []
+    ign = subprocess.run(["git", "check-ignore", "-q", ".env"], cwd=raiz, capture_output=True).returncode == 0
+    ver = subprocess.run(["git", "ls-files", "--error-unmatch", ".env"], cwd=raiz, capture_output=True).returncode == 0
+    return ([(".env", 0, "env_no_ignorado")] if not ign else []) + ([(".env", 0, "env_versionado")] if ver else [])
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--raiz", default=str(ROOT))
     ap.add_argument("--zip", default=None)
     ap.add_argument("--sin-historial", action="store_true")
+    ap.add_argument("--canario-env", action="store_true", help="comprueba que los valores sensibles de .env no aparecen en ningún otro lugar")
     a = ap.parse_args(argv)
     raiz = Path(a.raiz).resolve()
-    hallazgos = escanear_arbol(raiz)
+    hallazgos = escanear_arbol(raiz) + estado_de_env(raiz)
+    if a.canario_env:
+        can = canarios(raiz)
+        print(f"canarios leídos de .env (variables): {', '.join(sorted(can)) or 'ninguna'}")
+        hallazgos += canario_arbol(raiz, can)
+        if not a.sin_historial:
+            hallazgos += canario_historial(raiz, can)
+        if a.zip:
+            hallazgos += canario_zip(a.zip, can)
     if not a.sin_historial:
         hallazgos += escanear_historial(raiz)
     if a.zip:
