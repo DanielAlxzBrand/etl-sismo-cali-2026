@@ -4,7 +4,7 @@
 
 **Regla de estado.** *Cumple*: evidencia concreta y reproducible para todos los subcriterios. *Cumple con matiz*: el entregable central está verificado y algún subcriterio depende de un hecho externo declarado. *N/A justificado*: fuera de la naturaleza del proyecto aun con interpretación adaptada. *No cumple*: solo si no es técnicamente viable. Nunca se marca «cumple» una afirmación que requiera un evento externo inexistente; mientras ese evento no ocurra, el estado es «Pendiente (hecho externo)».
 
-**Estado actual** = clasificación de la matriz: *Cumple con documentación* (existe material por reubicar y revalidar), *Requiere desarrollo* (falta construirlo) o *Requiere hecho externo* (depende de un hecho que el trabajo técnico no produce). Al cierre de F0 ningún ítem está cerrado.
+**Estado actual** = clasificación de la matriz: *Cumple con documentación* (existe material por reubicar y revalidar), *Requiere desarrollo* (falta construirlo) o *Requiere hecho externo* (depende de un hecho que el trabajo técnico no produce). Cuando una fase cierra un ítem, la columna muestra su estado final y la fase entre paréntesis. Al cierre de F2 están cerrados los ítems 1.1 a 1.5 (con matiz en la sección 1) y 2.1 a 2.3 (Cumple).
 
 | id | texto literal | estado actual | fase de cierre | fase(s) de evidencia | estado objetivo | cómo validar |
 |---|---|---|---|---|---|---|
