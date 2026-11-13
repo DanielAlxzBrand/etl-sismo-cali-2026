@@ -249,6 +249,7 @@ def main():
         ("scripts/make_dist.py", "empaqueta la entrega en `dist/` sin entornos virtuales ni cachés"),
         ("scripts/make_catalogo_fuentes.py", "genera el catálogo de fuentes y metadatos a partir del manifiesto"),
         ("scripts/escanear_secretos.py", "busca secretos en el árbol, el historial, los notebooks, los logs y un zip (nunca imprime valores)"),
+        ("scripts/evidencias/", "scripts que producen las evidencias de cada etapa en un clon temporal, saneadas y con manifiesto"),
         ("docs/DECISIONES.md", "decisiones con alternativas, razón y riesgo"),
         ("docs/hallazgos_eda.md", "hallazgos H1-H18 del análisis exploratorio"),
         ("docs/reglas_silver.md", "reglas R01-R18 con su hallazgo"),
@@ -283,7 +284,8 @@ def main():
                   "test_entrega_3_seccion_1.py": "documentos de la sección 1 del checklist: existencia, términos prohibidos, cifras y avisos",
                   "test_api.py": "API de solo lectura: estructura, validación, coincidencia con las salidas, solo GET y sin escritura en `data/` ni en la base",
                   "test_catalogo.py": "el catálogo de fuentes coincide con el manifiesto, es determinista y `/fuentes` lo devuelve igual",
-                  "test_secretos.py": "escáner de secretos (un secreto sembrado por tipo), `.env` fuera de git, enmascarado del registro y zip sin `.env`"}
+                  "test_secretos.py": "escáner de secretos (un secreto sembrado por tipo), `.env` fuera de git, enmascarado del registro y zip sin `.env`",
+                  "test_evidencias.py": "el saneamiento de evidencias sustituye rutas, usuario y equipo, y las evidencias guardadas no llevan datos del equipo"}
     tests_md = "\n".join(f"- `tests/{n}` ({k}): {desc_tests.get(n, '')}." for n, k in tests.items())
     barrio_ej = str(ej.barrio).zfill(2) if pd.notna(ej.barrio) else ""
 
