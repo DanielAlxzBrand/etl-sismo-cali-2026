@@ -1,4 +1,4 @@
-"""Dibuja docs/entrega_3/img/arquitectura_backend.png con matplotlib (solo escribe el PNG). Ejecutar con el .venv del proyecto."""
+"""Dibuja docs/api/img/arquitectura_backend.png con matplotlib (solo escribe el PNG). Ejecutar con el .venv del proyecto."""
 import sys
 from pathlib import Path
 
@@ -58,6 +58,6 @@ flecha((50, 15), (12, 12.6), "HTTP GET", color="#5B4B8A")
 flecha((35, 15), (35, 12.6), "", color="#999999", ls="--")
 flecha((75, 15), (75, 12.6), "", color="#999999", ls="--")
 ax.text(85.5, 6.5, "Borde y flecha punteados:" + chr(10) + "componentes futuros", ha="left", va="center", fontsize=7.5, color="#666666")
-fig.text(0.01, 0.006, "Diagrama generado a partir del documento docs/entrega_3/arquitectura.md; no es una captura de pantalla.", fontsize=8, style="italic", color="#444444")
+fig.text(0.01, 0.006, "Diagrama generado a partir del documento docs/api/arquitectura.md; no es una captura de pantalla.", fontsize=8, style="italic", color="#444444")
 fig.savefig(SALIDA, dpi=200, bbox_inches="tight")
 print("escrito", SALIDA)

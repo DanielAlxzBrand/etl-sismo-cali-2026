@@ -8,7 +8,7 @@ from fastapi.testclient import TestClient
 from src.api.app import crear_app
 from src.common import ROOT, read_manifest
 
-JSON = ROOT / "docs" / "entrega_3" / "catalogo_fuentes.json"
+JSON = ROOT / "docs" / "bronze" / "catalogo_fuentes.json"
 
 
 def _generador():

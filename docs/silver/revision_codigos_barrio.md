@@ -2,7 +2,7 @@
 
 **Fecha:** 11-nov-2026 · **Origen:** observación de la retroalimentación del avance 2 (profundizar la revisión de los códigos con diferencias) · **Alcance:** revisión documental. No modificamos `nombre_validado` ni ninguna otra columna o salida; las cifras de la validación (44 de 51 códigos; 93,52 % de las construcciones con nombre validado) se conservan tal cual.
 
-Revisamos los 7 códigos con veredicto «NO coincide» en `docs/validacion_llave.md` (1011, 1802, 1898, 1905, 1922, 1999 y 2098; suman 333 construcciones), el código 1920 (4 construcciones sin pareja en el CSV 2015) y las 2 construcciones sin comuna ni barrio. Leemos `data/silver/silver_integrated.csv`, `data/silver/silver_estrato_barrio.csv` y los polígonos de `data/bronze/geo/` solo en modo lectura. Esta revisión se apoya en los hallazgos H13 y H18.
+Revisamos los 7 códigos con veredicto «NO coincide» en `docs/silver/validacion_llave.md` (1011, 1802, 1898, 1905, 1922, 1999 y 2098; suman 333 construcciones), el código 1920 (4 construcciones sin pareja en el CSV 2015) y las 2 construcciones sin comuna ni barrio. Leemos `data/silver/silver_integrated.csv`, `data/silver/silver_estrato_barrio.csv` y los polígonos de `data/bronze/geo/` solo en modo lectura. Esta revisión se apoya en los hallazgos H13 y H18.
 
 ## Método
 - **Similitud original:** la de `validacion_llave.md` (difflib sobre `normalize_key`). La reproducimos y coincide en los siete códigos.
@@ -221,7 +221,7 @@ Aparte, 6 construcciones sin pareja, categoría (d): 4 del código 1920 y 2 sin 
 
 ## Efecto ya medido en los indicadores
 
-La sensibilidad **S1** excluye las construcciones sin nombre validado, es decir, exactamente estos siete códigos. Según `docs/KPIs.md`, la diferencia entre los estratos 3-5 y 1-2 pasa de +0,49 [−2,36; +2,55] pp en el escenario base (S0, RR_MH 1,970) a +0,17 [−2,81; +2,32] pp en S1 (RR_MH 2,315). En ambos escenarios el intervalo incluye 0. No recalculamos nada aquí.
+La sensibilidad **S1** excluye las construcciones sin nombre validado, es decir, exactamente estos siete códigos. Según `docs/gold/KPIs.md`, la diferencia entre los estratos 3-5 y 1-2 pasa de +0,49 [−2,36; +2,55] pp en el escenario base (S0, RR_MH 1,970) a +0,17 [−2,81; +2,32] pp en S1 (RR_MH 2,315). En ambos escenarios el intervalo incluye 0. No recalculamos nada aquí.
 
 ## Qué NO demuestra
 

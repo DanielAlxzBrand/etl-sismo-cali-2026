@@ -1,7 +1,7 @@
-"""Genera el catálogo de fuentes y metadatos (docs/entrega_3/catalogo_fuentes_metadatos.md y catalogo_fuentes.json).
+"""Genera el catálogo de fuentes y metadatos (docs/bronze/catalogo_fuentes_metadatos.md y catalogo_fuentes.json).
 
-Lee el manifiesto de Bronze, config/config.yaml, la capa de metadatos guardada en Bronze, quality_report.json, docs/KPIs.md y
-docs/muestras/. No usa la fecha de ejecución: dos corridas dan archivos idénticos. Solo lee; escribe únicamente los dos archivos de salida.
+Lee el manifiesto de Bronze, config/config.yaml, la capa de metadatos guardada en Bronze, quality_report.json, docs/gold/KPIs.md y
+docs/bronze/muestras/. No usa la fecha de ejecución: dos corridas dan archivos idénticos. Solo lee; escribe únicamente los dos archivos de salida.
 """
 import csv
 import json
@@ -15,8 +15,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from src.common import load_config, read_manifest, sha256_file  # noqa: E402
 
-SALIDA_JSON = "docs/entrega_3/catalogo_fuentes.json"
-SALIDA_MD = "docs/entrega_3/catalogo_fuentes_metadatos.md"
+SALIDA_JSON = "docs/bronze/catalogo_fuentes.json"
+SALIDA_MD = "docs/bronze/catalogo_fuentes_metadatos.md"
 TIPOS_ARCGIS = {"esriFieldTypeOID": "entero (identificador)", "esriFieldTypeInteger": "entero", "esriFieldTypeString": "texto", "esriFieldTypeDouble": "decimal"}
 USADAS_EDIF = {
     "OBJECTID": "identificador de la construcción (se conserva como objectid)",
@@ -72,8 +72,8 @@ def _leer(ruta, **kw):
 
 
 def _desc_gold():
-    """Diccionario de gold_final.csv leído de la tabla de docs/KPIs.md (sin duplicarlo a mano)."""
-    texto = (ROOT / "docs/KPIs.md").read_text(encoding="utf-8")
+    """Diccionario de gold_final.csv leído de la tabla de docs/gold/KPIs.md (sin duplicarlo a mano)."""
+    texto = (ROOT / "docs/gold/KPIs.md").read_text(encoding="utf-8")
     bloque = texto.split("## Diccionario de columnas de `gold_final.csv`")[1]
     d = {}
     for fila in re.findall(r"^\| ((?:`[^`]+`(?:, )?)+) \| (.+?) \|$", bloque, re.M):
@@ -115,13 +115,13 @@ def construir():
     campos = {f["name"]: TIPOS_ARCGIS.get(f["type"], f["type"]) for f in meta["fields"]}
     cols_edif = [{"nombre": n, "tipo": campos[n], "significado": s} for n, s in USADAS_EDIF.items()]
     no_usadas = [n for n in campos if n not in USADAS_EDIF]
-    lic_ckan = re.search(r'texto de licencia: "([^"]+)"', (ROOT / "docs/muestras/v4_ckan_licencia.txt").read_text(encoding="utf-8")).group(1)
+    lic_ckan = re.search(r'texto de licencia: "([^"]+)"', (ROOT / "docs/bronze/muestras/v4_ckan_licencia.txt").read_text(encoding="utf-8")).group(1)
     csv_est = por_id["estrato_barrio"][0]
     enc = pd.read_csv(ROOT / csv_est["path"], nrows=0).columns.tolist()
     geo = por_id["poligonos_barrios"][0]
-    usgs = pd.read_csv(ROOT / "docs/muestras/v10_usgs_11.csv")
+    usgs = pd.read_csv(ROOT / "docs/bronze/muestras/v10_usgs_11.csv")
     ev = usgs.sort_values("mag", ascending=False).iloc[0]
-    kpis_md = (ROOT / "docs/KPIs.md").read_text(encoding="utf-8")
+    kpis_md = (ROOT / "docs/gold/KPIs.md").read_text(encoding="utf-8")
     url_prensa = re.search(r"https://www\.elpais\.com\.co/cali/alcaldia[^ )`]+", kpis_md).group(0)
     atc = re.search(r"3\.403 predios: [^.;|]+", kpis_md).group(0)
     f = cfg["fechas"]
@@ -151,7 +151,7 @@ def construir():
          "uso_en_pipeline": "Bronze → Silver (silver_estrato_barrio) → estrato moda por barrio",
          "calidad": {"filas_entrada": q["fuentes"]["estrato_barrio"]["filas_entrada"], "filas_resumen_separadas": q["fuentes"]["estrato_barrio"]["filas_resumen_separadas"], "filas_salida": q["fuentes"]["estrato_barrio"]["filas_salida"],
                      "cobertura_estrato_valido": q["cobertura_estrato_valido"]["pct"]},
-         "riesgos_limitaciones": ["Estrato de 2015: desfase temporal frente a las imágenes de 2026.", "Estrato asignado por barrio (moda), no por predio: falacia ecológica.", "Los códigos de barrio de 2026 están renumerados respecto de 2015 (ver docs/revision_codigos_barrio.md)."]},
+         "riesgos_limitaciones": ["Estrato de 2015: desfase temporal frente a las imágenes de 2026.", "Estrato asignado por barrio (moda), no por predio: falacia ecológica.", "Los códigos de barrio de 2026 están renumerados respecto de 2015 (ver docs/silver/revision_codigos_barrio.md)."]},
         {"id": "poligonos_barrios", "rol": "auxiliar (validación de la llave)", "nombre": "Polígonos de barrios y sectores (WFS dapm:pdt_dpa_barrios_sectores)", "publicador": "DAPM Cali (IDESC, GeoServer)",
          "url": cfg["sources"]["poligonos_barrios"]["url"], "protocolo": "OGC WFS 1.0.0 GetFeature", "formato": "GeoJSON (EPSG:4326)", "autenticacion": "ninguna",
          "limites_paginacion": "una sola respuesta", "columnas_usadas": [{"nombre": "barcodigo", "tipo": "texto", "significado": "código del polígono 2026"}, {"nombre": "barnombre", "tipo": "texto", "significado": "nombre del barrio o sector"},
@@ -163,7 +163,7 @@ def construir():
         {"id": "usgs", "rol": "contexto", "nombre": "USGS FDSN Event (catálogo de sismos)", "publicador": "U.S. Geological Survey", "url": cfg["sources"]["usgs"]["url"], "protocolo": "HTTP GET (FDSN)", "formato": "CSV",
          "autenticacion": "ninguna", "limites_paginacion": "limit 1 a 20.000", "columnas_usadas": [], "cobertura_temporal": "evento del 2026-08-10", "cobertura_espacial": "ventana de consulta cercana a Cali",
          "granularidad": "un evento por fila", "fechas": {"consulta": "2026-10-15"}, "licencia": "no declarada en esta verificación", "snapshot": None,
-         "llave_union": "ninguna", "uso_en_pipeline": f"solo contexto del evento (id {ev['id']}, magnitud {ev['mag']}); no entra al pipeline ni a Bronze (muestra en docs/muestras/v10_usgs_11.csv)",
+         "llave_union": "ninguna", "uso_en_pipeline": f"solo contexto del evento (id {ev['id']}, magnitud {ev['mag']}); no entra al pipeline ni a Bronze (muestra en docs/bronze/muestras/v10_usgs_11.csv)",
          "calidad": {"eventos_en_la_muestra": int(len(usgs))}, "riesgos_limitaciones": ["Sin llave a barrio o municipio: descartada como fuente del JOIN."]},
         {"id": "atc20_prensa", "rol": "contexto", "nombre": "Evaluación estructural ATC-20 de la Alcaldía (cifras de prensa)", "publicador": "El País Cali (reportando a la Alcaldía)", "url": url_prensa, "protocolo": "página web",
          "formato": "artículo", "autenticacion": "ninguna", "limites_paginacion": "no aplica", "columnas_usadas": [], "cobertura_temporal": "publicado el 23-sep-2026", "cobertura_espacial": "Cali (distribución por comuna desconocida)",
@@ -176,25 +176,25 @@ def construir():
     capas = {
         "bronze": {"descripcion": "Bytes crudos de cada fuente con manifiesto de sha256; nunca se sobrescriben.", "archivos": [
             {"ruta": e["path"], "filas": e["rows"], "bytes": e["bytes"], "sha256": e["sha256"], "source_id": e["source_id"]} for e in man]},
-        "silver": {"descripcion": "Datos limpios, tipificados e integrados; cada regla de limpieza está en docs/reglas_silver.md.", "archivos": [
-            _archivo(cfg["paths_silver"]["construcciones"], {c: gold_desc.get(c, "campo de la construcción; ver docs/reglas_silver.md") for c in _leer(cfg["paths_silver"]["construcciones"], dtype=st).columns}, st),
+        "silver": {"descripcion": "Datos limpios, tipificados e integrados; cada regla de limpieza está en docs/silver/reglas_silver.md.", "archivos": [
+            _archivo(cfg["paths_silver"]["construcciones"], {c: gold_desc.get(c, "campo de la construcción; ver docs/silver/reglas_silver.md") for c in _leer(cfg["paths_silver"]["construcciones"], dtype=st).columns}, st),
             _archivo(cfg["paths_silver"]["estrato_barrio"], DESC_SILVER_ESTRATO),
             _archivo(cfg["paths_silver"]["integrated"], {c: gold_desc[c] for c in _leer(cfg["paths_silver"]["integrated"], dtype=st).columns}, st),
             _archivo(cfg["paths_silver"]["orphans_left"], DESC_HUERFANAS), _archivo(cfg["paths_silver"]["orphans_right"], DESC_SILVER_ESTRATO),
             {"ruta": cfg["paths_silver"]["quality_report"], "filas": None, "bytes": (ROOT / cfg["paths_silver"]["quality_report"]).stat().st_size, "sha256": sha256_file(ROOT / cfg["paths_silver"]["quality_report"]),
              "columnas": None}]},
-        "gold": {"descripcion": "Tablas finales para análisis y servicio; diccionario de gold_final leído de docs/KPIs.md.", "archivos": [
+        "gold": {"descripcion": "Tablas finales para análisis y servicio; diccionario de gold_final leído de docs/gold/KPIs.md.", "archivos": [
             _archivo("data/gold/gold_final.csv", {c: gold_desc[c] for c in _leer("data/gold/gold_final.csv", dtype=st).columns}, st),
             _archivo("data/gold/kpis_gold.csv", DESC_KPIS), _archivo("data/gold/kpis_sensibilidad.csv", DESC_SENS)]},
     }
     return {"version_catalogo": 1, "aviso": "Proxy satelital, no evaluación estructural. Alcance: 7 comunas con polígonos de afectación preliminar; estrato 2015.",
-            "fuentes": fuentes, "descartadas": [{"id": i, "nombre": n, "motivo": m, "evidencia": f"docs/investigacion_fuentes.md {e}"} for i, n, m, e in DESCARTADAS], "diccionario": capas}
+            "fuentes": fuentes, "descartadas": [{"id": i, "nombre": n, "motivo": m, "evidencia": f"docs/bronze/investigacion_fuentes.md {e}"} for i, n, m, e in DESCARTADAS], "diccionario": capas}
 
 
 def _md(c):
     L = ["# Catálogo de fuentes y metadatos", "",
-         "**Archivo generado** por `scripts/make_catalogo_fuentes.py` a partir de `data/bronze/manifest.jsonl`, `config/config.yaml`, la capa de metadatos guardada en Bronze, `data/silver/quality_report.json`, `docs/KPIs.md` y `docs/muestras/`. "
-         "No contiene fechas de ejecución: dos corridas dan el mismo archivo. Se sirve en `GET /fuentes` como `docs/entrega_3/catalogo_fuentes.json`.", "",
+         "**Archivo generado** por `scripts/make_catalogo_fuentes.py` a partir de `data/bronze/manifest.jsonl`, `config/config.yaml`, la capa de metadatos guardada en Bronze, `data/silver/quality_report.json`, `docs/gold/KPIs.md` y `docs/bronze/muestras/`. "
+         "No contiene fechas de ejecución: dos corridas dan el mismo archivo. Se sirve en `GET /fuentes` como `docs/bronze/catalogo_fuentes.json`.", "",
          f"> {c['aviso']}", "", "## Fuentes", "", "| id | rol | publicador | formato | licencia | filas (snapshot) |", "|---|---|---|---|---|---|"]
     for s in c["fuentes"]:
         filas = s["snapshot"].get("filas_de_datos", s["snapshot"]["archivos"][0]["filas"]) if s["snapshot"] else "—"
@@ -223,7 +223,7 @@ def _md(c):
             if a.get("columnas"):
                 L += ["", "| columna | tipo | descripción |", "|---|---|---|"] + [f"| `{x['nombre']}` | {x['tipo']} | {x['descripcion']} |" for x in a["columnas"]] + [""]
     L += ["", "## Cómo lo defendemos", "",
-          "- **Qué afirmamos:** cada fuente usada tiene su publicador, URL, formato, autenticación, límites, columnas, cobertura, fechas, licencia, snapshot con sha256 y riesgos. [Evidencia en el repo: `docs/entrega_3/catalogo_fuentes.json`]",
+          "- **Qué afirmamos:** cada fuente usada tiene su publicador, URL, formato, autenticación, límites, columnas, cobertura, fechas, licencia, snapshot con sha256 y riesgos. [Evidencia en el repo: `docs/bronze/catalogo_fuentes.json`]",
           "- **Con qué evidencia:** el catálogo se genera del manifiesto y la prueba `tests/test_catalogo.py` compara sha256, filas y bytes; `GET /fuentes` devuelve el mismo JSON.",
           "- **Qué NO afirmamos:** que las licencias estén verificadas jurídicamente (las tomamos de los catálogos y la fecha de consulta está indicada); que las cifras de prensa sean oficiales.",
           "- **Pregunta probable:** «¿cómo saben que el catálogo coincide con lo descargado?» **Respuesta:** porque se genera desde el manifiesto de Bronze y una prueba compara huellas, filas y bytes.", ""]

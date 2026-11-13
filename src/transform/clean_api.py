@@ -113,7 +113,7 @@ def limpiar_construcciones(raw, geoms, poligonos, reglas):
     out = df.rename(columns={"OBJECTID": "objectid", "COMUNA": "comuna", "BARRIO": "barrio", "Indice_Escombros": "indice_escombros",
                              "Estado_Estructural": "estado_estructural"})
     registrar_regla(reglas, "R10", "H3, H4", "OBJECTID_1, Shape__Area, Shape__Length, ID_PREDIO y demás columnas catastrales", n_in,
-                    "Se descartan columnas vacías, en grados o sin uso en Gold; ver docs/hallazgos_eda.md.")
+                    "Se descartan columnas vacías, en grados o sin uso en Gold; ver docs/silver/hallazgos_eda.md.")
     cols = ["objectid", "comuna", "barrio", "codigo_barrio", "npisos", "npisos_cero", "indice_escombros", "estado_estructural", "clase_dano",
             "sin_datos", "severo_estricto", "dano_visible", "geom_duplicada", "lon", "lat", "codigo_poligono", "nombre_poligono",
             "coincide_poligono"]

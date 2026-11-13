@@ -1,6 +1,6 @@
 """Agrega al manifiesto de evidencias las filas de F2 (EV-013 a EV-024) con su sha256 calculado de cada archivo.
 
-Idempotente: si un id ya está en el manifiesto, lo reemplaza. Solo escribe docs/entrega_3/evidencias/MANIFIESTO_EVIDENCIAS.md.
+Idempotente: si un id ya está en el manifiesto, lo reemplaza. Solo escribe docs/evidencias/manifiesto.md.
 Uso: .\\.venv\\Scripts\\python.exe scripts\\evidencias\\registrar_manifiesto.py
 """
 import hashlib
@@ -12,15 +12,15 @@ sys.path.insert(0, str(REPO))
 from src.logger import get_logger  # noqa: E402
 
 log = get_logger(__name__)
-MANIFIESTO = REPO / "docs" / "entrega_3" / "evidencias" / "MANIFIESTO_EVIDENCIAS.md"
-CARPETA = "docs/entrega_3/evidencias/f2"
+MANIFIESTO = REPO / "docs" / "evidencias" / "manifiesto.md"
+CARPETA = "docs/evidencias/api"
 FECHA = "2026-11-12"
 FILAS = {
     "EV-013": ("2.1", "fastapi, uvicorn y httpx instalados en el .venv, `pip check` sin conflictos y rueda de pydantic-core para Python 3.13", "archivo",
                "`<VENV>\\Scripts\\python.exe -c \"import fastapi, uvicorn, httpx\"`; `pip check`", "EV-013_instalacion_paquetes.txt"),
     "EV-014": ("2.1, 2.2, 2.3", "Todas las pruebas (incluidas test_api, test_catalogo, test_secretos y test_evidencias) pasan en un clon temporal", "archivo",
-               "`<VENV>\\Scripts\\python.exe -m pytest -q -p no:cacheprovider --junitxml` en un clon temporal", "EV-014_pytest_f2.txt"),
-    "EV-025": ("2.1, 2.2, 2.3", "Informe JUnit de las pruebas de EV-014 (sin el atributo hostname)", "archivo", "mismo comando que EV-014", "junit_f2.xml"),
+               "`<VENV>\\Scripts\\python.exe -m pytest -q -p no:cacheprovider --junitxml` en un clon temporal", "EV-014_pytest.txt"),
+    "EV-025": ("2.1, 2.2, 2.3", "Informe JUnit de las pruebas de EV-014 (sin el atributo hostname)", "archivo", "mismo comando que EV-014", "junit_api.xml"),
     "EV-015": ("2.1", "Los sha256 de todo data/ y de la base son idénticos tras clonar, tras las pruebas y tras consultar el servidor real", "archivo",
                "sha256 de cada archivo de `data/` en el clon en tres momentos", "EV-015_sin_escritura_hashes.txt"),
     "EV-016": ("2.1, 2.2", "El servicio arranca en 127.0.0.1, cada ruta responde, se cierra de forma ordenada y se exporta /openapi.json", "archivo",

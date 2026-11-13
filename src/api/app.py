@@ -139,7 +139,7 @@ def crear_app(ruta_db=None):
     def llave_revision(r=Depends(repo)):
         """Códigos de barrio con nombre no validado entre el CSV 2015 y el polígono."""
         items = r.revision_llave()
-        return {"documento": "docs/revision_codigos_barrio.md", "total_codigos": len(items), "items": items}
+        return {"documento": "docs/silver/revision_codigos_barrio.md", "total_codigos": len(items), "items": items}
 
     return app
 

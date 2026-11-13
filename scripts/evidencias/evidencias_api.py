@@ -1,8 +1,8 @@
 """Evidencias de F2 (EV-013 a EV-024) en un clon temporal fuera del repositorio.
 
-Uso (PowerShell, raíz del repositorio): .\\.venv\\Scripts\\python.exe scripts\\evidencias\\evidencias_f2.py [--sin-venv-nuevo] [--minutos-venv 25]
+Uso (PowerShell, raíz del repositorio): .\\.venv\\Scripts\\python.exe scripts\\evidencias\\evidencias_api.py [--sin-venv-nuevo] [--minutos-venv 25]
 Clona el commit actual a una carpeta temporal, ejecuta ahí todo lo que escribe o arranca y guarda las salidas SANEADAS (sin rutas de usuario,
-usuario ni equipo) solo en docs/entrega_3/evidencias/f2/. No escribe en data/ ni en ningún otro lugar del repositorio y borra la carpeta temporal.
+usuario ni equipo) solo en docs/evidencias/api/. No escribe en data/ ni en ningún otro lugar del repositorio y borra la carpeta temporal.
 """
 import argparse
 import csv
@@ -32,7 +32,7 @@ from src.logger import get_logger  # noqa: E402
 log = get_logger(__name__)
 TZ = ZoneInfo("America/Bogota")
 PY = sys.executable
-SALIDA = REPO / "docs" / "entrega_3" / "evidencias" / "f2"
+SALIDA = REPO / "docs" / "evidencias" / "api"
 ENDPOINTS = [("health", "/health"), ("metadata", "/metadata"), ("fuentes", "/fuentes"), ("kpis", "/kpis"), ("kpis_K1", "/kpis/K1"), ("kpis_sensibilidad", "/kpis/sensibilidad"),
              ("comunas", "/comunas"), ("composicion", "/composicion"), ("construcciones", "/construcciones?limit=5"), ("calidad", "/calidad"), ("llave_revision", "/llave/revision")]
 LIMITE_RESPUESTA = 50 * 1024
@@ -72,7 +72,7 @@ def main():
     a = ap.parse_args()
     SALIDA.mkdir(parents=True, exist_ok=True)
     (SALIDA / "respuestas_api").mkdir(exist_ok=True)
-    raiz_tmp = Path(tempfile.mkdtemp(prefix="evidencias_f2_"))
+    raiz_tmp = Path(tempfile.mkdtemp(prefix="evidencias_api_"))
     clon = raiz_tmp / "clon"
     san = Saneador(REPO, clon, raiz_tmp)
     resumen = {}
@@ -104,10 +104,10 @@ def main():
                 "(nunca en el Python global); httpx 0.28.1 ya estaba como dependencia de Jupyter.\n")
 
         # EV-014: pytest con junit (en el clon)
-        xml = SALIDA / "junit_f2.xml"
+        xml = SALIDA / "junit_api.xml"
         c, t, d = sh([PY, "-m", "pytest", "-q", "-p", "no:cacheprovider", f"--junitxml={xml}"], clon)
         xml.write_text(san(quitar_hostname_junit(xml.read_text(encoding="utf-8"))), encoding="utf-8", newline="\n")
-        guardar("EV-014_pytest_f2.txt", "EV-014 · Pruebas en un clon temporal", "<VENV>\\Scripts\\python.exe -m pytest -q -p no:cacheprovider --junitxml=junit_f2.xml (cwd: <CLON>)", c, d, commit, t)
+        guardar("EV-014_pytest.txt", "EV-014 · Pruebas en un clon temporal", "<VENV>\\Scripts\\python.exe -m pytest -q -p no:cacheprovider --junitxml=junit_api.xml (cwd: <CLON>)", c, d, commit, t)
         resumen["pytest"] = (c, [l for l in t.splitlines() if " passed" in l or " failed" in l][-1].strip("= "))
         tras_pytest = huellas(clon / "data")
 

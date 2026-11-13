@@ -243,7 +243,7 @@
       "riesgos_limitaciones": [
         "Estrato de 2015: desfase temporal frente a las imágenes de 2026.",
         "Estrato asignado por barrio (moda), no por predio: falacia ecológica.",
-        "Los códigos de barrio de 2026 están renumerados respecto de 2015 (ver docs/revision_codigos_barrio.md)."
+        "Los códigos de barrio de 2026 están renumerados respecto de 2015 (ver docs/silver/revision_codigos_barrio.md)."
       ]
     },
     {
@@ -324,7 +324,7 @@
       "licencia": "no declarada en esta verificación",
       "snapshot": null,
       "llave_union": "ninguna",
-      "uso_en_pipeline": "solo contexto del evento (id us6000tjl2, magnitud 7.4); no entra al pipeline ni a Bronze (muestra en docs/muestras/v10_usgs_11.csv)",
+      "uso_en_pipeline": "solo contexto del evento (id us6000tjl2, magnitud 7.4); no entra al pipeline ni a Bronze (muestra en docs/bronze/muestras/v10_usgs_11.csv)",
       "calidad": {
         "eventos_en_la_muestra": 11
       },
@@ -367,55 +367,55 @@
       "id": "sgc_eval_int",
       "nombre": "SGC · Mapa de Intensidades Evaluadas (ArcGIS REST)",
       "motivo": "Granularidad por sitio o centro poblado, no por barrio; ningún ID_SISMO identificable como el evento (V9).",
-      "evidencia": "docs/investigacion_fuentes.md §2 F5; verificacion_fuentes.md V9"
+      "evidencia": "docs/bronze/investigacion_fuentes.md §2 F5; verificacion_fuentes.md V9"
     },
     {
       "id": "sgc_municipios",
       "nombre": "SGC · SIMMA Capas Generales, Municipios",
       "motivo": "Solo polígonos municipales para el Plan B; no es amenaza por barrio.",
-      "evidencia": "docs/investigacion_fuentes.md §2 F6"
+      "evidencia": "docs/bronze/investigacion_fuentes.md §2 F6"
     },
     {
       "id": "area_barrios",
       "nombre": "Área barrios de Cali 2015 (CSV, respaldo)",
       "motivo": "Solo estrato moda por barrio; respaldo del CSV principal, no se usa en el JOIN.",
-      "evidencia": "docs/investigacion_fuentes.md §2 F3; V5"
+      "evidencia": "docs/bronze/investigacion_fuentes.md §2 F3; V5"
     },
     {
       "id": "estrato_comunas",
       "nombre": "Estratificación por comunas 2015 (CSV)",
       "motivo": "Solo 22 filas; sirve para una llave por comuna, no por barrio.",
-      "evidencia": "docs/investigacion_fuentes.md §2 F3; V5"
+      "evidencia": "docs/bronze/investigacion_fuentes.md §2 F3; V5"
     },
     {
       "id": "rud",
       "nombre": "RUD (UNGRD) vía monitor «Datos del terremoto»",
       "motivo": "Archivo JSON estático de un monitor de un solo mantenedor, registro declarativo, sin código DIVIPOLA; Plan B municipal.",
-      "evidencia": "docs/investigacion_fuentes.md §2 F8; V11"
+      "evidencia": "docs/bronze/investigacion_fuentes.md §2 F8; V11"
     },
     {
       "id": "divipola",
       "nombre": "DIVIPOLA (Socrata gdxc-w37w)",
       "motivo": "Códigos municipales; solo útiles en el Plan B municipal.",
-      "evidencia": "docs/investigacion_fuentes.md §2 F9; V12"
+      "evidencia": "docs/bronze/investigacion_fuentes.md §2 F9; V12"
     },
     {
       "id": "socrata_hbdu_4927",
       "nombre": "Socrata hbdu-4927 (portal SGC)",
       "motivo": "Es un enlace federado sin filas; la API devuelve HTTP 400.",
-      "evidencia": "docs/investigacion_fuentes.md §2 F7"
+      "evidencia": "docs/bronze/investigacion_fuentes.md §2 F7"
     },
     {
       "id": "mapageologia",
       "nombre": "ArcGIS MAPAGEOLOGIA (fallas)",
       "motivo": "Geología a escala nacional, sin llave a barrio.",
-      "evidencia": "docs/investigacion_fuentes.md §2 F6"
+      "evidencia": "docs/bronze/investigacion_fuentes.md §2 F6"
     },
     {
       "id": "copernicus_emsr916",
       "nombre": "Copernicus EMSR916 / ICube-SERTIT",
       "motivo": "Solo 21 y 94 edificios en zonas parciales de Cali, sin edificios en común; uso no comercial.",
-      "evidencia": "docs/investigacion_fuentes.md §2 F11"
+      "evidencia": "docs/bronze/investigacion_fuentes.md §2 F11"
     }
   ],
   "diccionario": {
@@ -481,7 +481,7 @@
       ]
     },
     "silver": {
-      "descripcion": "Datos limpios, tipificados e integrados; cada regla de limpieza está en docs/reglas_silver.md.",
+      "descripcion": "Datos limpios, tipificados e integrados; cada regla de limpieza está en docs/silver/reglas_silver.md.",
       "archivos": [
         {
           "ruta": "data/silver/silver_construcciones.csv",
@@ -923,7 +923,7 @@
       ]
     },
     "gold": {
-      "descripcion": "Tablas finales para análisis y servicio; diccionario de gold_final leído de docs/KPIs.md.",
+      "descripcion": "Tablas finales para análisis y servicio; diccionario de gold_final leído de docs/gold/KPIs.md.",
       "archivos": [
         {
           "ruta": "data/gold/gold_final.csv",

@@ -13,7 +13,7 @@ sys.path.insert(0, str(CARPETA))
 _spec = importlib.util.spec_from_file_location("saneamiento", CARPETA / "saneamiento.py")
 san = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(san)
-EVIDENCIAS = ROOT / "docs" / "entrega_3" / "evidencias"
+EVIDENCIAS = ROOT / "docs" / "evidencias"
 
 
 def test_el_saneador_sustituye_rutas_usuario_y_equipo():

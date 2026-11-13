@@ -12,12 +12,12 @@
 | Pipeline por etapas | `main.py --stage extract\|transform\|gold\|all`; módulos con una responsabilidad cada uno (`extract`, `transform`, `load`) | `main.py:24-26`; `src/` |
 | Configuración | URL, umbrales, fechas, rutas y registro en un solo archivo; sin secretos | `config/config.yaml` |
 | Manejo de errores y reintentos | `http_get` reintenta con espera creciente (`retries`, `request_delay_s`); `load_database` registra y relanza los errores | `src/extract/extract_api.py:20-32`; `src/load/load_database.py` |
-| Idempotencia | Bronze se escribe en modo `xb` (nunca sobrescribe) y un refresco crea otro snapshot; el determinismo se comprobó en un clon (9 de 9 archivos iguales en dos corridas) | `src/common.py` (`save_bronze`); `docs/entrega_3/evidencias/f1/EV-009_determinismo_clon.txt` |
+| Idempotencia | Bronze se escribe en modo `xb` (nunca sobrescribe) y un refresco crea otro snapshot; el determinismo se comprobó en un clon (9 de 9 archivos iguales en dos corridas) | `src/common.py` (`save_bronze`); `docs/evidencias/estrategia/EV-009_determinismo_clon.txt` |
 | Registro de ejecución | `logs/etl_AAAAMMDD.log` con enmascarado de secretos | `src/logger.py:13-29` |
-| Consumo de la API ArcGIS | paginación por `resultOffset` con orden estable por `OBJECTID` y recuento antes y después (5.146 filas en 3 páginas) | `src/extract/extract_api.py:64-81`; `docs/muestras/v2_limites_arcgis.txt` |
-| Fuentes y metadatos | manifiesto con sha256, filas y bytes; metadatos de la capa guardados en Bronze; investigación y verificación de fuentes; muestras | `data/bronze/manifest.jsonl`; `docs/investigacion_fuentes.md`; `docs/verificacion_fuentes.md`; `docs/muestras/` |
+| Consumo de la API ArcGIS | paginación por `resultOffset` con orden estable por `OBJECTID` y recuento antes y después (5.146 filas en 3 páginas) | `src/extract/extract_api.py:64-81`; `docs/bronze/muestras/v2_limites_arcgis.txt` |
+| Fuentes y metadatos | manifiesto con sha256, filas y bytes; metadatos de la capa guardados en Bronze; investigación y verificación de fuentes; muestras | `data/bronze/manifest.jsonl`; `docs/bronze/investigacion_fuentes.md`; `docs/bronze/verificacion_fuentes.md`; `docs/bronze/muestras/` |
 | Secretos | `.env` ignorado por git y vacío; `.env.example` con dos nombres (uno sin uso); `make_dist.py` excluye `.env`; notebooks sin credenciales | `.gitignore`; `scripts/make_dist.py:16`; escáner sobre notebooks (0 hallazgos) |
-| Historial de git y zip entregado | sin secretos en las líneas añadidas de los 14 commits y en el zip de `guia_equipo\entregas\entrega_1\` (solo lectura) | `docs/entrega_3/evidencias/f2/EV-019_escaner_secretos.txt` |
+| Historial de git y zip entregado | sin secretos en las líneas añadidas de los 14 commits y en el zip de `guia_equipo\entregas\entrega_1\` (solo lectura) | `docs/evidencias/api/EV-019_escaner_secretos.txt` |
 | Brecha principal | el proyecto consumía una API pero **no exponía servicios**; no había catálogo de fuentes unificado ni política de credenciales ni escáner | — |
 
 ---
@@ -35,9 +35,9 @@
 
 **(b) Evidencia existente.** Pipeline y módulos (`main.py`, `src/`); registro (`src/logger.py`); determinismo (EV-009).
 **(c) Brecha.** Sin capa de servicio, sin API, sin documento de arquitectura.
-**(d) Decisiones.** D-E3-08, D-E3-16, D-E3-17, D-E3-18, D-E3-19, D-E3-20 y D-E3-23.
-**(e) Acción realizada.** `src/api/` (`app.py`, `esquemas.py`, `repositorio.py`, `errores.py`), parámetros bajo `api` en `config/config.yaml`, 17 pruebas en `tests/test_api.py`, `docs/entrega_3/arquitectura.md` y su diagrama, e instalación de `fastapi`, `uvicorn` y `httpx` en el `.venv`.
-**(f) Evidencia producida.** EV-013 (instalación y versiones), EV-014 (pytest y junit), EV-015 (sin escritura), EV-016 (respuestas reales y OpenAPI), EV-017 (captura automatizada de `/docs`), EV-018 (latencia), EV-020 (entorno nuevo con `requirements.txt`) y el diagrama `docs/entrega_3/img/arquitectura_backend.png`.
+**(d) Decisiones.** D18, D26, D27, D28, D29, D30 y D33.
+**(e) Acción realizada.** `src/api/` (`app.py`, `esquemas.py`, `repositorio.py`, `errores.py`), parámetros bajo `api` en `config/config.yaml`, 17 pruebas en `tests/test_api.py`, `docs/api/arquitectura.md` y su diagrama, e instalación de `fastapi`, `uvicorn` y `httpx` en el `.venv`.
+**(f) Evidencia producida.** EV-013 (instalación y versiones), EV-014 (pytest y junit), EV-015 (sin escritura), EV-016 (respuestas reales y OpenAPI), EV-017 (captura automatizada de `/docs`), EV-018 (latencia), EV-020 (entorno nuevo con `requirements.txt`) y el diagrama `docs/api/img/arquitectura_backend.png`.
 
 **(g) Estado final: Cumple.**
 | subcriterio | estado | justificación |
@@ -66,9 +66,9 @@
 6. Diccionario de metadatos por capa (Bronze, Silver, Gold).
 7. Catálogo determinista y servido por la API.
 
-**(b) Evidencia existente.** `manifest.jsonl`, metadatos de la capa en Bronze, `docs/investigacion_fuentes.md`, `docs/verificacion_fuentes.md`, `docs/muestras/`, `docs/KPIs.md` (diccionario de Gold).
+**(b) Evidencia existente.** `manifest.jsonl`, metadatos de la capa en Bronze, `docs/bronze/investigacion_fuentes.md`, `docs/bronze/verificacion_fuentes.md`, `docs/bronze/muestras/`, `docs/gold/KPIs.md` (diccionario de Gold).
 **(c) Brecha.** La información estaba dispersa en cuatro documentos; no había un catálogo único ni verificable contra el manifiesto.
-**(d) Decisiones.** D-E3-16 (`/fuentes`) y D-E3-21.
+**(d) Decisiones.** D26 (`/fuentes`) y D31.
 **(e) Acción realizada.** `scripts/make_catalogo_fuentes.py` genera `catalogo_fuentes_metadatos.md` y `catalogo_fuentes.json`; endpoints `/fuentes` y `/metadata`; `tests/test_catalogo.py`.
 **(f) Evidencia producida.** El catálogo, EV-016 (respuesta de `/fuentes` y `/metadata`) y EV-014 (pruebas).
 
@@ -79,8 +79,8 @@
 | 2 | Cumple | columnas de la capa con el tipo que reporta el servicio; las del CSV desde su encabezado |
 | 3 | Cumple | licencia de la capa tomada del catálogo (el servicio trae `copyrightText` vacío); la de los polígonos se declara «no declarada en el servicio» |
 | 4 | Cumple | la prueba compara sha256, filas y bytes de los 8 registros del manifiesto |
-| 5 | Cumple | nueve fuentes descartadas con motivo y sección de `docs/investigacion_fuentes.md`; ATC-20 como «cifras de prensa, no recotejadas» |
-| 6 | Cumple | el diccionario de `gold_final` se lee de `docs/KPIs.md`; las demás columnas tienen descripción propia |
+| 5 | Cumple | nueve fuentes descartadas con motivo y sección de `docs/bronze/investigacion_fuentes.md`; ATC-20 como «cifras de prensa, no recotejadas» |
+| 6 | Cumple | el diccionario de `gold_final` se lee de `docs/gold/KPIs.md`; las demás columnas tienen descripción propia |
 | 7 | Cumple | dos generaciones son idénticas y `/fuentes` devuelve el mismo JSON |
 
 **Límites declarados:** las licencias son las de los catálogos consultados (no es una revisión jurídica); no volvimos a consultar los servicios en F2 (la fecha de consulta es la del snapshot, 2026-10-16); las cifras de la evaluación ATC-20 vienen de prensa y no las recotejamos.
@@ -100,8 +100,8 @@
 
 **(b) Evidencia existente.** `.gitignore`, `src/logger.py`, `scripts/make_dist.py`, `.env.example` (con un nombre sin uso).
 **(c) Brecha.** Sin política escrita ni escáner; `.env.example` listaba una variable que el código no lee.
-**(d) Decisiones.** D-E3-22 y D-E3-24.
-**(e) Acción realizada.** `docs/entrega_3/gestion_credenciales.md`, `scripts/escanear_secretos.py`, `tests/test_secretos.py` (10 pruebas) y `.env.example` con solo `HTTP_USER_AGENT`.
+**(d) Decisiones.** D32 y D34.
+**(e) Acción realizada.** `docs/seguridad/gestion_credenciales.md`, `scripts/escanear_secretos.py`, `tests/test_secretos.py` (10 pruebas) y `.env.example` con solo `HTTP_USER_AGENT`.
 **(f) Evidencia producida.** EV-019 (escáner sobre el clon, su historial y un zip armado con `make_dist.py` en carpeta temporal: 0 hallazgos) y EV-014.
 
 **(g) Estado final: Cumple.** *Nota:* se revalida en F3 con las variables `MYSQL_*` y en F8 con el escáner sobre el zip final.
@@ -120,7 +120,7 @@
 ---
 
 ## Qué falta del lado del equipo (hechos externos)
-- Las capturas de pantalla de F2 son **opcionales** y complementarias (D-E3-25); la evidencia suficiente son las salidas registradas, y la captura de `/docs` incluida como EV-017 es **automatizada del navegador**. La guía por ítem está en `docs/entrega_3/evidencias/guia_de_evidencias.md`.
+- Las capturas de pantalla de F2 son **opcionales** y complementarias (D35); la evidencia suficiente son las salidas registradas, y la captura de `/docs` incluida como EV-017 es **automatizada del navegador**. La guía por ítem está en `docs/checklist/guia_de_evidencias.md`.
 - Antes de F3, una cuenta de MySQL local (el script SQL lo entrega F3).
 
 ---
@@ -132,5 +132,5 @@
 - **Latencia:** medida con el servidor real en 127.0.0.1 (`EV-018`, `EV-021`); son mediciones locales de una máquina.
 - **Escáner:** sin hallazgos en el clon, su historial y un zip de prueba (`EV-019`, `EV-024`).
 - **Entorno nuevo:** `pip install -r requirements.txt` en un entorno virtual nuevo y `pytest --collect-only` recolectaron las 92 pruebas (`EV-020`).
-- **Evidencias saneadas:** sin rutas de usuario, nombre de usuario ni nombre del equipo (marcadores `<REPO>`, `<CLON>`, `<TEMP>`, `<VENV>`, `<USUARIO>` y `<EQUIPO>`; D-E3-26).
-- **Política de evidencias (D-E3-25):** sin video; las capturas de pantalla son opcionales (`evidencias/guia_de_evidencias.md`).
+- **Evidencias saneadas:** sin rutas de usuario, nombre de usuario ni nombre del equipo (marcadores `<REPO>`, `<CLON>`, `<TEMP>`, `<VENV>`, `<USUARIO>` y `<EQUIPO>`; D36).
+- **Política de evidencias (D35):** sin video; las capturas de pantalla son opcionales (`evidencias/guia_de_evidencias.md`).

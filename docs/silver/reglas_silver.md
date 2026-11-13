@@ -1,6 +1,6 @@
 # Reglas de Silver
 
-Cada regla cita el hallazgo de `docs/hallazgos_eda.md` que la justifica. La unidad de análisis son las **construcciones** (huellas catastrales).
+Cada regla cita el hallazgo de `docs/silver/hallazgos_eda.md` que la justifica. La unidad de análisis son las **construcciones** (huellas catastrales).
 
 | regla | hallazgo | columnas | filas afectadas | justificación |
 |---|---|---|---|---|
@@ -13,7 +13,7 @@ Cada regla cita el hallazgo de `docs/hallazgos_eda.md` que la justifica. La unid
 | R07 | H16 | npisos, npisos_cero | 1234 | NPISOS a entero nullable sin imputar; bandera para 0 pisos; no se usa como filtro. |
 | R08 | H5 | codigo_barrio | 5144 | Llave del JOIN = int(COMUNA)*100 + int(BARRIO) como texto; nula si falta COMUNA o BARRIO. |
 | R09 | H13, H18 | lon, lat, codigo_poligono, nombre_poligono, coincide_poligono | 5146 | Centroide de la huella (7 decimales) ubicado en los polígonos WFS 2026; solo valida la llave, no entra al JOIN. |
-| R10 | H3, H4 | OBJECTID_1, Shape__Area, Shape__Length, ID_PREDIO y demás columnas catastrales | 5146 | Se descartan columnas vacías, en grados o sin uso en Gold; ver docs/hallazgos_eda.md. |
+| R10 | H3, H4 | OBJECTID_1, Shape__Area, Shape__Length, ID_PREDIO y demás columnas catastrales | 5146 | Se descartan columnas vacías, en grados o sin uso en Gold; ver docs/silver/hallazgos_eda.md. |
 | R11 | H6 | cod | 23 | Filas 'Comuna N' y 'Otros' (código '-') se separan; no entran al JOIN. |
 | R12 | H7 | lados_e1, lados_e2, lados_e3, lados_e4, lados_e5, lados_e6, sin_vivienda | 342 | Guion y vacío = 0 lados, coma de miles eliminada, columnas a entero. |
 | R13 | H7 | barrio | 26 | strip y espacios internos colapsados; el archivo se lee como UTF-8. |

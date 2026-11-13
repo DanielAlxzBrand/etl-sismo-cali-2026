@@ -23,7 +23,7 @@ El proyecto es un ETL con capas: **Bronze** guarda lo descargado tal cual, **Sil
 | `src/api/app.py` | fábrica `crear_app`, rutas GET, validación y registro de solicitudes | parámetros de la solicitud | JSON tipado |
 | `src/api/esquemas.py` | modelos de respuesta (pydantic) | filas | contratos del API |
 | `src/api/errores.py` | manejadores de error y formato uniforme | excepciones | `{"error": {...}}` |
-| `scripts/make_catalogo_fuentes.py` | catálogo de fuentes y metadatos | manifiesto, config, metadatos de Bronze, `quality_report.json`, `docs/KPIs.md` | `catalogo_fuentes.json` y `.md` |
+| `scripts/make_catalogo_fuentes.py` | catálogo de fuentes y metadatos | manifiesto, config, metadatos de Bronze, `quality_report.json`, `docs/gold/KPIs.md` | `catalogo_fuentes.json` y `.md` |
 | `scripts/escanear_secretos.py` | búsqueda de secretos | árbol, historial, notebooks, logs, zip | hallazgos (archivo, línea, patrón) |
 
 La API **no calcula estadística**: entrega lo que Gold ya contiene. Los únicos cálculos son conteos y sumas (`COUNT`, `SUM`) en `/composicion`, y agrupaciones de códigos en `/llave/revision`.
@@ -54,7 +54,7 @@ Todos los endpoints son `GET`. Los errores usan siempre el formato de la secció
 `/kpis/sensibilidad` se declara **antes** de `/kpis/{kpi_id}`; si no, «sensibilidad» se leería como un identificador de indicador. Una prueba verifica el orden.
 
 ### Ejemplos reales de respuesta
-Capturados en un clon temporal con el servicio en `127.0.0.1` y guardados en `docs/entrega_3/evidencias/f2/respuestas_api/`. [Evidencia en el repo: `docs/entrega_3/evidencias/f2/EV-016_respuestas_api.txt`]
+Capturados en un clon temporal con el servicio en `127.0.0.1` y guardados en `docs/evidencias/api/respuestas_api/`. [Evidencia en el repo: `docs/evidencias/api/EV-016_respuestas_api.txt`]
 
 `GET /health`
 ```json
@@ -88,7 +88,7 @@ Capturados en un clon temporal con el servicio en `127.0.0.1` y guardados en `do
 ```
 
 ## 5. Configuración
-Los parámetros de la API están en `config/config.yaml`, clave `api`: `version`, `host` (127.0.0.1), `puerto` (8000), `limite_defecto` (50), `limite_maximo` (200), `base_datos` (`data/gold/etl_sismo.db`), `catalogo_fuentes` y `aviso`. No hay secretos: la API no usa credenciales (ver `docs/entrega_3/gestion_credenciales.md`).
+Los parámetros de la API están en `config/config.yaml`, clave `api`: `version`, `host` (127.0.0.1), `puerto` (8000), `limite_defecto` (50), `limite_maximo` (200), `base_datos` (`data/gold/etl_sismo.db`), `catalogo_fuentes` y `aviso`. No hay secretos: la API no usa credenciales (ver `docs/seguridad/gestion_credenciales.md`).
 
 ## 6. Manejo de errores
 Toda respuesta de error tiene la forma `{"error": {"codigo", "mensaje", "detalle"}}`.
@@ -111,7 +111,7 @@ Cada solicitud se registra con `src/logger.py` (método, ruta, estado y duració
 
 <!-- latencias:inicio -->
 ### Rendimiento (medición local)
-Latencia por ruta con el **servidor real** en `127.0.0.1` (no el cliente de pruebas): 50 solicitudes de medición tras 5 de calentamiento, en una sola máquina; el percentil 95 es por rango más cercano. Son mediciones locales y no representan un despliegue. [Evidencia en el repo: `docs/entrega_3/evidencias/f2/EV-018_latencia_api.csv`]
+Latencia por ruta con el **servidor real** en `127.0.0.1` (no el cliente de pruebas): 50 solicitudes de medición tras 5 de calentamiento, en una sola máquina; el percentil 95 es por rango más cercano. Son mediciones locales y no representan un despliegue. [Evidencia en el repo: `docs/evidencias/api/EV-018_latencia_api.csv`]
 
 | ruta | mediana (ms) | percentil 95 (ms) | máximo (ms) |
 |---|---|---|---|
@@ -149,12 +149,12 @@ Latencia por ruta con el **servidor real** en `127.0.0.1` (no el cliente de prue
 - Los resultados de Gold son un proxy satelital; la API no los interpreta ni los valida.
 - `/construcciones` no ofrece búsqueda de texto ni ordenamientos distintos de `objectid`.
 - La base de SQLite es una copia de los CSV: si se regeneran, hay que volver a cargarla (`main.py --stage all`).
-- Con el cliente de pruebas de Starlette hay un aviso que recomienda `httpx2`; no instalamos paquetes no aprobados (D-E3-23).
+- Con el cliente de pruebas de Starlette hay un aviso que recomienda `httpx2`; no instalamos paquetes no aprobados (D33).
 
 ## 12. Alternativas descartadas
 - **Servidor con `http.server`:** quedó como respaldo (decisión a de `decisiones_tecnicas.md`); sin OpenAPI.
-- **ORM (SQLAlchemy):** más dependencias para consultas simples; descartado en D-E3-14.
-- **CORS abierto o `0.0.0.0`:** innecesario y riesgoso sin autenticación (D-E3-19).
+- **ORM (SQLAlchemy):** más dependencias para consultas simples; descartado en D24.
+- **CORS abierto o `0.0.0.0`:** innecesario y riesgoso sin autenticación (D29).
 - **Calcular en la API:** duplicaría lógica de Gold y podría contradecirla; la API solo entrega.
 
 ## 13. Componentes futuros (en construcción)
@@ -163,7 +163,7 @@ Latencia por ruta con el **servidor real** en `127.0.0.1` (no el cliente de prue
 - **Dashboard con Streamlit (F5)** que consume solo esta API. *En construcción.*
 
 ## Cómo lo defendemos
-- **Qué afirmamos:** diseñamos e implementamos un backend con capas, una API de solo lectura con 11 endpoints GET tipados, validación, errores uniformes, registro de solicitudes y pruebas; entrega exactamente lo que está en Gold. [Evidencia en el repo: `src/api/`, `tests/test_api.py`, `docs/entrega_3/evidencias/f2/`]
+- **Qué afirmamos:** diseñamos e implementamos un backend con capas, una API de solo lectura con 11 endpoints GET tipados, validación, errores uniformes, registro de solicitudes y pruebas; entrega exactamente lo que está en Gold. [Evidencia en el repo: `src/api/`, `tests/test_api.py`, `docs/evidencias/api/`]
 - **Con qué evidencia:** 17 pruebas de la API (coincidencia con los CSV, paginación, inyección, solo lectura, no escritura); sha256 de `data/` y de la base idénticos antes y después de consultar (EV-015); respuestas reales de cada endpoint (EV-016) y esquema OpenAPI exportado.
 - **Qué NO afirmamos:** que la API sea apta para exponerse en red; que los datos sean una evaluación estructural; que MySQL, Airflow o el dashboard ya existan (están en construcción).
 - **Pregunta más probable:** «¿Cómo saben que la API no modifica los datos?» **Respuesta:** porque la conexión se abre en modo de solo lectura (un INSERT falla), no hay rutas de escritura y comparamos los sha256 de todo `data/` y de la base antes y después de consultar todos los endpoints.

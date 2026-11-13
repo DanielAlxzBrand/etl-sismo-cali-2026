@@ -1,6 +1,6 @@
 # Catálogo de fuentes y metadatos
 
-**Archivo generado** por `scripts/make_catalogo_fuentes.py` a partir de `data/bronze/manifest.jsonl`, `config/config.yaml`, la capa de metadatos guardada en Bronze, `data/silver/quality_report.json`, `docs/KPIs.md` y `docs/muestras/`. No contiene fechas de ejecución: dos corridas dan el mismo archivo. Se sirve en `GET /fuentes` como `docs/entrega_3/catalogo_fuentes.json`.
+**Archivo generado** por `scripts/make_catalogo_fuentes.py` a partir de `data/bronze/manifest.jsonl`, `config/config.yaml`, la capa de metadatos guardada en Bronze, `data/silver/quality_report.json`, `docs/gold/KPIs.md` y `docs/bronze/muestras/`. No contiene fechas de ejecución: dos corridas dan el mismo archivo. Se sirve en `GET /fuentes` como `docs/bronze/catalogo_fuentes.json`.
 
 > Proxy satelital, no evaluación estructural. Alcance: 7 comunas con polígonos de afectación preliminar; estrato 2015.
 
@@ -76,7 +76,7 @@ Columnas de la capa que el pipeline no usa: `OBJECTID_1`, `DEPAPRED`, `MUNIPRED`
 - **Riesgos y limitaciones:**
   - Estrato de 2015: desfase temporal frente a las imágenes de 2026.
   - Estrato asignado por barrio (moda), no por predio: falacia ecológica.
-  - Los códigos de barrio de 2026 están renumerados respecto de 2015 (ver docs/revision_codigos_barrio.md).
+  - Los códigos de barrio de 2026 están renumerados respecto de 2015 (ver docs/silver/revision_codigos_barrio.md).
 
 ### `poligonos_barrios` · Polígonos de barrios y sectores (WFS dapm:pdt_dpa_barrios_sectores)
 
@@ -102,7 +102,7 @@ Columnas de la capa que el pipeline no usa: `OBJECTID_1`, `DEPAPRED`, `MUNIPRED`
 
 ### `usgs` · USGS FDSN Event (catálogo de sismos)
 
-- **Rol:** contexto. **Uso en el pipeline:** solo contexto del evento (id us6000tjl2, magnitud 7.4); no entra al pipeline ni a Bronze (muestra en docs/muestras/v10_usgs_11.csv).
+- **Rol:** contexto. **Uso en el pipeline:** solo contexto del evento (id us6000tjl2, magnitud 7.4); no entra al pipeline ni a Bronze (muestra en docs/bronze/muestras/v10_usgs_11.csv).
 - **URL:** https://earthquake.usgs.gov/fdsnws/event/1/query
 - **Protocolo:** HTTP GET (FDSN). **Autenticación:** ninguna. **Límites y paginación:** limit 1 a 20.000.
 - **Cobertura temporal:** evento del 2026-08-10. **Cobertura espacial:** ventana de consulta cercana a Cali. **Granularidad:** un evento por fila.
@@ -131,15 +131,15 @@ Columnas de la capa que el pipeline no usa: `OBJECTID_1`, `DEPAPRED`, `MUNIPRED`
 
 | id | fuente | motivo | evidencia |
 |---|---|---|---|
-| `sgc_eval_int` | SGC · Mapa de Intensidades Evaluadas (ArcGIS REST) | Granularidad por sitio o centro poblado, no por barrio; ningún ID_SISMO identificable como el evento (V9). | docs/investigacion_fuentes.md §2 F5; verificacion_fuentes.md V9 |
-| `sgc_municipios` | SGC · SIMMA Capas Generales, Municipios | Solo polígonos municipales para el Plan B; no es amenaza por barrio. | docs/investigacion_fuentes.md §2 F6 |
-| `area_barrios` | Área barrios de Cali 2015 (CSV, respaldo) | Solo estrato moda por barrio; respaldo del CSV principal, no se usa en el JOIN. | docs/investigacion_fuentes.md §2 F3; V5 |
-| `estrato_comunas` | Estratificación por comunas 2015 (CSV) | Solo 22 filas; sirve para una llave por comuna, no por barrio. | docs/investigacion_fuentes.md §2 F3; V5 |
-| `rud` | RUD (UNGRD) vía monitor «Datos del terremoto» | Archivo JSON estático de un monitor de un solo mantenedor, registro declarativo, sin código DIVIPOLA; Plan B municipal. | docs/investigacion_fuentes.md §2 F8; V11 |
-| `divipola` | DIVIPOLA (Socrata gdxc-w37w) | Códigos municipales; solo útiles en el Plan B municipal. | docs/investigacion_fuentes.md §2 F9; V12 |
-| `socrata_hbdu_4927` | Socrata hbdu-4927 (portal SGC) | Es un enlace federado sin filas; la API devuelve HTTP 400. | docs/investigacion_fuentes.md §2 F7 |
-| `mapageologia` | ArcGIS MAPAGEOLOGIA (fallas) | Geología a escala nacional, sin llave a barrio. | docs/investigacion_fuentes.md §2 F6 |
-| `copernicus_emsr916` | Copernicus EMSR916 / ICube-SERTIT | Solo 21 y 94 edificios en zonas parciales de Cali, sin edificios en común; uso no comercial. | docs/investigacion_fuentes.md §2 F11 |
+| `sgc_eval_int` | SGC · Mapa de Intensidades Evaluadas (ArcGIS REST) | Granularidad por sitio o centro poblado, no por barrio; ningún ID_SISMO identificable como el evento (V9). | docs/bronze/investigacion_fuentes.md §2 F5; verificacion_fuentes.md V9 |
+| `sgc_municipios` | SGC · SIMMA Capas Generales, Municipios | Solo polígonos municipales para el Plan B; no es amenaza por barrio. | docs/bronze/investigacion_fuentes.md §2 F6 |
+| `area_barrios` | Área barrios de Cali 2015 (CSV, respaldo) | Solo estrato moda por barrio; respaldo del CSV principal, no se usa en el JOIN. | docs/bronze/investigacion_fuentes.md §2 F3; V5 |
+| `estrato_comunas` | Estratificación por comunas 2015 (CSV) | Solo 22 filas; sirve para una llave por comuna, no por barrio. | docs/bronze/investigacion_fuentes.md §2 F3; V5 |
+| `rud` | RUD (UNGRD) vía monitor «Datos del terremoto» | Archivo JSON estático de un monitor de un solo mantenedor, registro declarativo, sin código DIVIPOLA; Plan B municipal. | docs/bronze/investigacion_fuentes.md §2 F8; V11 |
+| `divipola` | DIVIPOLA (Socrata gdxc-w37w) | Códigos municipales; solo útiles en el Plan B municipal. | docs/bronze/investigacion_fuentes.md §2 F9; V12 |
+| `socrata_hbdu_4927` | Socrata hbdu-4927 (portal SGC) | Es un enlace federado sin filas; la API devuelve HTTP 400. | docs/bronze/investigacion_fuentes.md §2 F7 |
+| `mapageologia` | ArcGIS MAPAGEOLOGIA (fallas) | Geología a escala nacional, sin llave a barrio. | docs/bronze/investigacion_fuentes.md §2 F6 |
+| `copernicus_emsr916` | Copernicus EMSR916 / ICube-SERTIT | Solo 21 y 94 edificios en zonas parciales de Cali, sin edificios en común; uso no comercial. | docs/bronze/investigacion_fuentes.md §2 F11 |
 
 ## Diccionario de metadatos por capa
 
@@ -158,7 +158,7 @@ Bytes crudos de cada fuente con manifiesto de sha256; nunca se sobrescriben.
 
 ### Silver
 
-Datos limpios, tipificados e integrados; cada regla de limpieza está en docs/reglas_silver.md.
+Datos limpios, tipificados e integrados; cada regla de limpieza está en docs/silver/reglas_silver.md.
 
 - `data/silver/silver_construcciones.csv` · 5146 filas · 794579 bytes · sha256 `85ea33ebe99c9fb6087bb7eaf88fee42f6ba55b9a254348f7e9d9fee571d5c9b`
 
@@ -267,7 +267,7 @@ Datos limpios, tipificados e integrados; cada regla de limpieza está en docs/re
 
 ### Gold
 
-Tablas finales para análisis y servicio; diccionario de gold_final leído de docs/KPIs.md.
+Tablas finales para análisis y servicio; diccionario de gold_final leído de docs/gold/KPIs.md.
 
 - `data/gold/gold_final.csv` · 5146 filas · 1074233 bytes · sha256 `496ab49eb76ada329df916266befd327febfd8f6333636e9e37fbed234cbc7a9`
 
@@ -338,7 +338,7 @@ Tablas finales para análisis y servicio; diccionario de gold_final leído de do
 
 ## Cómo lo defendemos
 
-- **Qué afirmamos:** cada fuente usada tiene su publicador, URL, formato, autenticación, límites, columnas, cobertura, fechas, licencia, snapshot con sha256 y riesgos. [Evidencia en el repo: `docs/entrega_3/catalogo_fuentes.json`]
+- **Qué afirmamos:** cada fuente usada tiene su publicador, URL, formato, autenticación, límites, columnas, cobertura, fechas, licencia, snapshot con sha256 y riesgos. [Evidencia en el repo: `docs/bronze/catalogo_fuentes.json`]
 - **Con qué evidencia:** el catálogo se genera del manifiesto y la prueba `tests/test_catalogo.py` compara sha256, filas y bytes; `GET /fuentes` devuelve el mismo JSON.
 - **Qué NO afirmamos:** que las licencias estén verificadas jurídicamente (las tomamos de los catálogos y la fecha de consulta está indicada); que las cifras de prensa sean oficiales.
 - **Pregunta probable:** «¿cómo saben que el catálogo coincide con lo descargado?» **Respuesta:** porque se genera desde el manifiesto de Bronze y una prueba compara huellas, filas y bytes.

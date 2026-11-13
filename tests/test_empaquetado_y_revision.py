@@ -37,7 +37,7 @@ def test_make_dist_sobre_el_repo_no_incluye_entorno():
 
 
 def test_revision_de_codigos_cubre_los_casos_pedidos():
-    txt = (ROOT / "docs" / "revision_codigos_barrio.md").read_text(encoding="utf-8")
+    txt = (ROOT / "docs" / "silver" / "revision_codigos_barrio.md").read_text(encoding="utf-8")
     for c in (1011, 1802, 1898, 1905, 1922, 1999, 2098, 1920):
         assert f"### Código {c}" in txt, c
     assert txt.count("| revisión visual del equipo | pendiente |") == 8
@@ -45,14 +45,14 @@ def test_revision_de_codigos_cubre_los_casos_pedidos():
 
 
 def test_categorias_de_la_revision_suman_las_construcciones_sin_nombre_validado():
-    """a + b + c de docs/revision_codigos_barrio.md = construcciones sin nombre validado calculadas desde Silver; y el README las cita."""
+    """a + b + c de docs/silver/revision_codigos_barrio.md = construcciones sin nombre validado calculadas desde Silver; y el README las cita."""
     import re
 
     import pandas as pd
 
     silver = pd.read_csv(ROOT / "data" / "silver" / "silver_integrated.csv", usecols=["nombre_validado"])
     n = int((silver.nombre_validado == False).sum())  # noqa: E712
-    resumen = (ROOT / "docs" / "revision_codigos_barrio.md").read_text(encoding="utf-8").split("## Resumen")[1].split("\n## ")[0]
+    resumen = (ROOT / "docs" / "silver" / "revision_codigos_barrio.md").read_text(encoding="utf-8").split("## Resumen")[1].split("\n## ")[0]
     cats = {m[0]: int(m[1]) for m in re.findall(r"^\| \((\w)\) \| \d+ \| [^|]+ \| (\d+) \|", resumen, re.M)}
     assert sorted(cats) == ["a", "b", "c"] and sum(cats.values()) == n
     readme = (ROOT / "README.md").read_text(encoding="utf-8")

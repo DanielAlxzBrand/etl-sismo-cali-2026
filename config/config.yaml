@@ -39,7 +39,7 @@ sources:
     url: https://datosdelterremoto.org/data/public/rud.json
   divipola:
     url: https://www.datos.gov.co/resource/gdxc-w37w.json
-fechas:   # fuente = lastEditDate de la capa y descripcion del dataset 5vy8-gpw8 (docs/investigacion_fuentes.md F1)
+fechas:   # fuente = lastEditDate de la capa y descripcion del dataset 5vy8-gpw8 (docs/bronze/investigacion_fuentes.md F1)
   fecha_edicion_capa: "2026-09-02"   # America/Bogota (lastEditDate 2026-09-03 00:24 UTC)
   fecha_imagen_post: "2026-08-11"
   fecha_imagen_pre: "2026-03-22"
@@ -70,5 +70,5 @@ api:   # capa de servicio de solo lectura (F2)
   limite_defecto: 50
   limite_maximo: 200
   base_datos: data/gold/etl_sismo.db
-  catalogo_fuentes: docs/entrega_3/catalogo_fuentes.json
+  catalogo_fuentes: docs/bronze/catalogo_fuentes.json
   aviso: "Proxy satelital, no evaluación estructural."

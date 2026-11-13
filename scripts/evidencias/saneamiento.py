@@ -1,6 +1,6 @@
 """Saneamiento de evidencias: sustituye rutas, usuario y equipo por marcadores antes de guardar una salida.
 
-Marcadores: <REPO>, <CLON>, <TEMP>, <VENV>, <USUARIO>, <EQUIPO>. Se usa en todas las corridas de evidencias (D-E3-25).
+Marcadores: <REPO>, <CLON>, <TEMP>, <VENV>, <USUARIO>, <EQUIPO>. Se usa en todas las corridas de evidencias (D35).
 """
 import getpass
 import os

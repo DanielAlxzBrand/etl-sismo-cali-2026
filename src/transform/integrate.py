@@ -55,7 +55,7 @@ def validar_llave(m, sim_min):
 
 
 def escribir_validacion_llave(t, resumen, sim_min, sin_csv):
-    """Genera docs/validacion_llave.md (determinista)."""
+    """Genera docs/silver/validacion_llave.md (determinista)."""
     def fila(r):
         v = "coincide" if r.nombre_validado else "NO coincide"
         pc = "—" if pd.isna(r.pct_coincide_poligono) else f"{r.pct_coincide_poligono * 100:.1f} %"
@@ -73,25 +73,25 @@ def escribir_validacion_llave(t, resumen, sim_min, sin_csv):
          f"## Códigos de H13 destacados: 0 % de coincidencia con el polígono ({len(cero) + len(sin_csv)})", "",
          f"{len(cero)} están en la tabla; los otros {len(sin_csv)} ({', '.join(f'{c} con {n} construcciones' for c, n in sin_csv)}) no existen en el CSV 2015 y por eso son huérfanos, no aparecen en la tabla.", "", cab] + [fila(r) for r in cero.itertuples()]
     L += ["", f"## Todos los códigos ({len(t)})", "", cab] + [fila(r) for r in t.itertuples()]
-    (ROOT / "docs" / "validacion_llave.md").write_text("\n".join(L) + "\n", encoding="utf-8", newline="\n")
+    (ROOT / "docs" / "silver" / "validacion_llave.md").write_text("\n".join(L) + "\n", encoding="utf-8", newline="\n")
 
 
 def escribir_reglas(reglas):
-    """Genera docs/reglas_silver.md a partir del registro de reglas (determinista)."""
+    """Genera docs/silver/reglas_silver.md a partir del registro de reglas (determinista)."""
     L = ["# Reglas de Silver", "",
-         "Cada regla cita el hallazgo de `docs/hallazgos_eda.md` que la justifica. La unidad de análisis son las **construcciones** (huellas catastrales).", "",
+         "Cada regla cita el hallazgo de `docs/silver/hallazgos_eda.md` que la justifica. La unidad de análisis son las **construcciones** (huellas catastrales).", "",
          "| regla | hallazgo | columnas | filas afectadas | justificación |", "|---|---|---|---|---|"]
     for r in sorted(reglas, key=lambda r: r["id"]):
         L.append(f"| {r['id']} | {r['hallazgo']} | {r['columnas']} | {r['filas_afectadas']} | {r['justificacion']} |")
     L += ["", "**Cómo leer \"filas afectadas\":** cuenta filas (no celdas) salvo donde se indica. R01 = 0 porque solo fija el identificador y no modifica filas; "
           "R02 = 2 filas (4 celdas: COMUNA y BARRIO en blanco en 2 construcciones); R03 = 9 pares (18 filas con geometría idéntica); "
           "R10 = 5146 porque descarta columnas y afecta a todas las filas."]
-    (ROOT / "docs" / "reglas_silver.md").write_text("\n".join(L) + "\n", encoding="utf-8", newline="\n")
+    (ROOT / "docs" / "silver" / "reglas_silver.md").write_text("\n".join(L) + "\n", encoding="utf-8", newline="\n")
 
 
 def hallazgos_faltantes(reglas):
-    """Devuelve los H# citados por las reglas que no existen en docs/hallazgos_eda.md."""
-    txt = (ROOT / "docs" / "hallazgos_eda.md").read_text(encoding="utf-8")
+    """Devuelve los H# citados por las reglas que no existen en docs/silver/hallazgos_eda.md."""
+    txt = (ROOT / "docs" / "silver" / "hallazgos_eda.md").read_text(encoding="utf-8")
     existentes = set(re.findall(r"\| (H\d+) \|", txt))
     citados = {h for r in reglas for h in re.findall(r"H\d+", r["hallazgo"])}
     return sorted(citados - existentes)

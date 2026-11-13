@@ -39,7 +39,7 @@ def test_repo_real_sigue_sin_entorno_en_la_lista():
 
 
 def test_lista_incluye_referencias_y_documentos_de_la_entrega_3():
-    """`make_dist` no excluye por extensión: los PDF de `docs/referencias/` y los documentos de `docs/entrega_3/` entran al zip."""
+    """`make_dist` no excluye por extensión: los PDF de `docs/proyecto/referencias/` y los documentos de `docs/` entran al zip."""
     nombres = [p.relative_to(ROOT).as_posix() for p in make_dist.listar(ROOT)]
-    assert any(n.startswith("docs/referencias/") and n.endswith(".pdf") for n in nombres)
-    assert any(n.startswith("docs/entrega_3/") for n in nombres)
+    assert any(n.startswith("docs/proyecto/referencias/") and n.endswith(".pdf") for n in nombres)
+    assert any(n.startswith("docs/") for n in nombres)

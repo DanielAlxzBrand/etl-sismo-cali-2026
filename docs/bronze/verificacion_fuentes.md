@@ -1,6 +1,6 @@
 # Verificación previa de las fuentes — V1 a V14 (fecha de consulta: 2026-10-15)
 
-Muestras en `docs/muestras/` (texto, no es Bronze). Etiqueta final: [CONFIRMADO] = el hecho de la investigación se cumplió; [REFUTADO] = no se cumplió como estaba escrito.
+Muestras en `docs/bronze/muestras/` (texto, no es Bronze). Etiqueta final: [CONFIRMADO] = el hecho de la investigación se cumplió; [REFUTADO] = no se cumplió como estaba escrito.
 
 | ID | URL probada | Status | Content-type | Filas | Hallazgo | Etiqueta | Muestra |
 |---|---|---|---|---|---|---|---|

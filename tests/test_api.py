@@ -149,7 +149,7 @@ def test_revision_de_llave_coincide_con_silver(cliente):
     mal = s[s.nombre_validado.astype(str).eq("False")]
     r = cliente.get("/llave/revision").json()
     assert r["total_codigos"] == mal.codigo_barrio.nunique() and sum(x["n_construcciones"] for x in r["items"]) == len(mal)
-    assert r["documento"] == "docs/revision_codigos_barrio.md"
+    assert r["documento"] == "docs/silver/revision_codigos_barrio.md"
 
 
 def test_solo_existen_rutas_get_y_los_demas_metodos_dan_405(cliente):

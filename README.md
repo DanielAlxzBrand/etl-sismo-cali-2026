@@ -10,11 +10,11 @@ Este repositorio contiene un pipeline ETL con arquitectura medallion (Bronze →
 Ver el encabezado. Todo el código usa `pathlib` para las rutas y se probó en Windows con PowerShell; los comandos de este documento están escritos para PowerShell.
 
 ## 2. Contexto del problema
-**El evento.** El 10-08-2026 a las 12:34:28 UTC (07:34:28 hora de Colombia) ocurrió un sismo de magnitud Mww 7,4 (identificador USGS `us6000tjl2`), con epicentro "4 km SSW of San José del Palmar" (Chocó), en 4,8601° N y 76,2558° O. La profundidad vigente en el catálogo USGS al 15-oct-2026 es de 116,13 km (registro actualizado el 2026-10-12); esta cifra ha tenido revisiones. Fuente: USGS FDSN Event, `https://earthquake.usgs.gov/fdsnws/event/1/` (muestra en `docs/muestras/v10_usgs_11.csv`, consulta del 15-oct-2026).
+**El evento.** El 10-08-2026 a las 12:34:28 UTC (07:34:28 hora de Colombia) ocurrió un sismo de magnitud Mww 7,4 (identificador USGS `us6000tjl2`), con epicentro "4 km SSW of San José del Palmar" (Chocó), en 4,8601° N y 76,2558° O. La profundidad vigente en el catálogo USGS al 15-oct-2026 es de 116,13 km (registro actualizado el 2026-10-12); esta cifra ha tenido revisiones. Fuente: USGS FDSN Event, `https://earthquake.usgs.gov/fdsnws/event/1/` (muestra en `docs/bronze/muestras/v10_usgs_11.csv`, consulta del 15-oct-2026).
 
 **Por qué importa Cali.** Cali fue una de las ciudades con mayor nivel de afectación. Las cifras oficiales cambian con el tiempo: el Avance 1 usó el corte del 18 de agosto de la Alcaldía (878 edificaciones verificadas de 5.545 reportes ciudadanos; 24 colapsos totales, 127 parciales y 192 con daño estructural), y reportes posteriores hablan de miles de predios evaluados. Por eso en este proyecto cada cifra lleva su fecha de corte. Según la Alcaldía (El País Cali, 11-oct-2026), las zonas más golpeadas fueron Cuarto de Legua, La Flora, comunas 19, 17 y 2.
 
-**Lo que decía el Avance 1.** Había un patrón visible a simple vista: barrios como Capri, Guadalupe, Pampalinda, Tequendama, San Fernando y Cuarto de Legua, de estratos 3 a 5 y con construcciones antiguas, aparecían muy afectados. La hipótesis era que el daño lo explican mejor los factores geotécnicos y constructivos de cada zona que el estrato socioeconómico, pero **no estaba comprobada** (`docs/comprension_proyecto1.md`).
+**Lo que decía el Avance 1.** Había un patrón visible a simple vista: barrios como Capri, Guadalupe, Pampalinda, Tequendama, San Fernando y Cuarto de Legua, de estratos 3 a 5 y con construcciones antiguas, aparecían muy afectados. La hipótesis era que el daño lo explican mejor los factores geotécnicos y constructivos de cada zona que el estrato socioeconómico, pero **no estaba comprobada** (`docs/proyecto/comprension_proyecto1.md`).
 
 ## 3. Pregunta de negocio y alcance
 > **En las construcciones evaluadas por satélite en 7 comunas de Cali tras el sismo, ¿la proporción con cambio satelital severo (severo estricto, proxy de daño) cambia entre los estratos 1-6 de su barrio, o se concentra por zona?**
@@ -77,7 +77,7 @@ Todas se consultaron el 15-oct-2026 (hora de Bogotá). El snapshot de Bronze del
 - **Quién la publica y cómo se accede:** Departamento Administrativo de Planeación Municipal (DAPM) de Cali; publicada 2018-10-30, última actualización 2019-07-08. El catálogo de datos.gov.co enlaza al portal datos.cali.gov.co, de donde descargamos el CSV con un `User-Agent` (la descarga directa `rows.csv` de datos.gov.co falla porque es un enlace federado).
 - **Columnas:** `Código único` (llave), `Barrio`, `Lados de manzana por estrato 1…6`, `Sin vivienda`, `Estrato moda`. Tiene 369 filas: 346 barrios y 23 filas resumen (22 comunas y "Otros").
 - **Por qué CSV y no Excel:** el requisito del curso admite CSV o Excel y esta tabla solo se publica como CSV. El módulo se llama `extract_excel.py` porque su lector (`leer_tabular_raw`) soporta los dos formatos (CSV y `.xlsx` vía `openpyxl`).
-- **Licencia:** el CSV figura como Creative Commons Attribution Share-Alike en datos.cali.gov.co y como CC0 en datos.gov.co (`docs/muestras/v4_ckan_licencia.txt`); atribuimos a DAPM Cali. Gold contiene datos derivados de este CSV (por ejemplo el estrato de cada construcción); los datos derivados se comparten con atribución a DAPM Cali y bajo la misma licencia.
+- **Licencia:** el CSV figura como Creative Commons Attribution Share-Alike en datos.cali.gov.co y como CC0 en datos.gov.co (`docs/bronze/muestras/v4_ckan_licencia.txt`); atribuimos a DAPM Cali. Gold contiene datos derivados de este CSV (por ejemplo el estrato de cada construcción); los datos derivados se comparten con atribución a DAPM Cali y bajo la misma licencia.
 
 ### 5.3 Polígonos de barrios (solo validación)
 Servicio WFS del IDESC / DAPM Cali (`https://ws-idesc.cali.gov.co/geoserver/dapm/ows`, capa `dapm:pdt_dpa_barrios_sectores`), pedido en EPSG:4326: 342 polígonos (324 barrios y 18 sectores). Los usamos para comprobar la llave, no para el JOIN. Licencia no verificada.
@@ -97,14 +97,14 @@ Get-Content data\bronze\manifest.jsonl | ForEach-Object { $m = $_ | ConvertFrom-
 **Repetir sin duplicar.** Si Bronze ya existe, `python main.py --stage extract` verifica los sha256 y escribe "ya existe, sha256 coincide": no crea archivos ni agrega líneas al manifiesto. **Refresco.** `python main.py --stage extract --refresh` (necesita red) crea un snapshot nuevo `snap_<fecha UTC>` sin tocar el anterior. Una extracción se considera completa solo si existe el conteo posterior; las páginas se leen con `resultOffset` y orden estable por `OBJECTID`.
 
 ## 7. Capa Silver
-Silver solo lee Bronze y escribe tablas limpias. Cada regla cita el hallazgo del análisis exploratorio (`docs/hallazgos_eda.md`, H1-H18) que la justifica; sin hallazgo no hay regla. Las 18 reglas (R01-R18, `docs/reglas_silver.md`), agrupadas por tema, con su hallazgo y las filas que afectan:
+Silver solo lee Bronze y escribe tablas limpias. Cada regla cita el hallazgo del análisis exploratorio (`docs/silver/hallazgos_eda.md`, H1-H18) que la justifica; sin hallazgo no hay regla. Las 18 reglas (R01-R18, `docs/silver/reglas_silver.md`), agrupadas por tema, con su hallazgo y las filas que afectan:
 
 - **Identificadores y duplicados.** (R01, H1, 0 filas) Identificador = OBJECTID (único); la llave catastral se repite por predio con varias construcciones y no se deduplica. (R03, H2, 18 filas) Bandera para las construcciones con geometría idéntica a otra; se conservan las filas. (R11, H6, 23 filas) Filas 'Comuna N' y 'Otros' (código '-') se separan; no entran al JOIN.
 - **Nulos.** (R02, H4, 4 filas) Texto vacío o solo espacios pasa a nulo; no se imputa. (R05, H9, H12, 435 filas) 'Sin datos satelitales' queda como clase propia (no es 'sin daño'); sale del denominador. (R06, H10, 4.711 filas) Banderas D7; nulas (no falsas) cuando no hay datos satelitales. (R14, H8, 6 filas) estrato = moda solo si es 1-6; 'NR' queda nulo y no se convierte en estrato.
 - **Tipos y formatos.** (R04, H9, 5.146 filas) Etiqueta de Estado_Estructural a 4 clases estables; Indice_Escombros no se imputa. (R07, H16, 1.234 filas) NPISOS a entero nullable sin imputar; bandera para 0 pisos; no se usa como filtro. (R12, H7, 342 filas) Guion y vacío = 0 lados, coma de miles eliminada, columnas a entero. (R13, H7, 26 filas) strip y espacios internos colapsados; el archivo se lee como UTF-8. (R15, H14, 343 filas) max(lados 1..6)/suma(lados 1..6) sin 'Sin vivienda'; nula si el total es 0.
 - **Llave y ubicación espacial.** (R08, H5, 5.144 filas) Llave del JOIN = int(COMUNA)*100 + int(BARRIO) como texto; nula si falta COMUNA o BARRIO. (R09, H13, H18, 5.146 filas) Centroide de la huella (7 decimales) ubicado en los polígonos WFS 2026; solo valida la llave, no entra al JOIN.
 - **JOIN y validación.** (R16, H5, H6, 5.140 filas) LEFT JOIN construcciones <- estrato por barrio; huérfanos guardados, no descartados. (R17, H11, 5.138 filas) Conteos por estrato sobre construcciones con datos satelitales y bandera de muestra baja (< 30 severos). (R18, H18, 5.140 filas) Validación semántica de la llave (nombre CSV vs nombre de polígono); no cambia la llave.
-- **Columnas descartadas.** (R10, H3, H4, 5.146 filas) Se descartan columnas vacías, en grados o sin uso en Gold; ver docs/hallazgos_eda.md.
+- **Columnas descartadas.** (R10, H3, H4, 5.146 filas) Se descartan columnas vacías, en grados o sin uso en Gold; ver docs/silver/hallazgos_eda.md.
 
 ### Duplicados: qué encontramos y qué decidimos
 - `OBJECTID` es único: **0 duplicados eliminados** por esa llave (se aplica `duplicated(keep="first")` de forma explícita). La llave catastral (comuna, barrio, manzana, terreno, condición, edificio, predio) sí se repite en 3.719 filas porque un predio tiene varias construcciones; **no** se deduplica por ella (0 eliminadas). En el CSV, el código de barrio es único (0 eliminados).
@@ -119,7 +119,7 @@ Las construcciones no traen el nombre del barrio, solo `COMUNA` y `BARRIO` (dos 
 ### Las tres coberturas
 1. **Cobertura de llave: 99,883 %** (5.140 de 5.146): construcciones cuya llave existe en el CSV. Es la que se compara con el umbral (0,80): pasa.
 2. **Cobertura de estrato válido: 99,845 %** (5.138): además de existir la llave, el barrio tiene un estrato moda entre 1 y 6 (se excluyen los barrios `NR`).
-3. **Nombre validado: 93,521 %** (4.807 de 5.140): el nombre del barrio en el CSV de 2015 coincide (similitud ≥ 0,85) con el del polígono 2026 donde cae la construcción. Es un control de la llave, no un filtro; `llave_confianza` = **alta** (`docs/validacion_llave.md`).
+3. **Nombre validado: 93,521 %** (4.807 de 5.140): el nombre del barrio en el CSV de 2015 coincide (similitud ≥ 0,85) con el del polígono 2026 donde cae la construcción. Es un control de la llave, no un filtro; `llave_confianza` = **alta** (`docs/silver/validacion_llave.md`).
 
 ### Huérfanos
 Se guardan, no se descartan. A la izquierda (`silver_orphans_left.csv`): 6 construcciones sin llave en el CSV (COMUNA o BARRIO en blanco: 2; código ausente del CSV 2015: 4). A la derecha (`silver_orphans_right.csv`): 295 barrios del CSV sin ninguna construcción, esperable porque la capa solo cubre 7 comunas.
@@ -129,7 +129,7 @@ El código derivado coincide con el código del polígono 2026 en 91,43 % de las
 
 **Lectura de las construcciones sin nombre validado.** De las 333 construcciones sin nombre validado, 244 (73,3 %) corresponden a diferencias de escritura (prefijos como «Barrio» o «Sector», abreviaturas), 73 (21,9 %) a nombres ampliados o cambiados y 16 (4,8 %) a un posible cambio de límites (código 2098). Si se aceptaran las de la primera categoría, el porcentaje de nombre validado sería 98,27 %; conservamos 93,52 % porque el umbral de similitud se fijó antes de ver los resultados y no se ajusta a posteriori. La revisión visual de estos códigos sobre el mapa sigue pendiente.
 
-**Revisión de los códigos con diferencias.** Revisamos uno por uno los 7 códigos sin nombre validado, el código 1920 y las 2 construcciones sin comuna ni barrio, sin cambiar ninguna columna ni cifra: [docs/revision_codigos_barrio.md](docs/revision_codigos_barrio.md). La revisión visual en el mapa sigue pendiente.
+**Revisión de los códigos con diferencias.** Revisamos uno por uno los 7 códigos sin nombre validado, el código 1920 y las 2 construcciones sin comuna ni barrio, sin cambiar ninguna columna ni cifra: [docs/silver/revision_codigos_barrio.md](docs/silver/revision_codigos_barrio.md). La revisión visual en el mapa sigue pendiente.
 
 ## 8. Capa Gold
 **`gold_final.csv`** tiene **5.146 filas**, una por construcción (`objectid` único), sin duplicados. **`kpis_gold.csv`** tiene 23 filas con los indicadores K1-K6 (valor, numerador, denominador, grupo, fecha de corte, intervalo de Wilson, cotas por "sin datos", bandera de muestra baja y una nota). **`kpis_sensibilidad.csv`** repite K1, K2 y K6 en seis escenarios (S0-S5, 107 filas). **`etl_sismo.db`** (SQLite) tiene las tablas `gold_final`, `kpis_gold`, `kpis_sensibilidad`, `silver_integrated`.
@@ -312,29 +312,29 @@ jupyter nbconvert --to notebook --execute --inplace notebooks\05_validacion_evid
 - `scripts/escanear_secretos.py`: busca secretos en el árbol, el historial, los notebooks, los logs y un zip (nunca imprime valores)
 - `scripts/evidencias/`: scripts que producen las evidencias de cada etapa en un clon temporal, saneadas y con manifiesto
 - `docs/DECISIONES.md`: decisiones con alternativas, razón y riesgo
-- `docs/hallazgos_eda.md`: hallazgos H1-H18 del análisis exploratorio
-- `docs/reglas_silver.md`: reglas R01-R18 con su hallazgo
-- `docs/validacion_llave.md`: validación semántica de la llave por código
-- `docs/KPIs.md`: definición de cada KPI y diccionario de columnas de Gold
-- `docs/verificacion_fuentes.md`: verificación previa de las fuentes (V1-V14)
-- `docs/verificacion_entrega.md`: verificación de la entrega contra el enunciado
-- `docs/prueba_entorno_limpio.md`: ejecución en una copia limpia
-- `docs/verificacion_logging.md`: verificación del registro de ejecución
-- `docs/investigacion_fuentes.md`: investigación y selección de fuentes
-- `docs/comprension_proyecto1.md`: comprensión del Proyecto 1
-- `docs/revision_codigos_barrio.md`: revisión de los códigos de barrio con diferencias en la validación semántica
-- `docs/referencias/`: documento de contexto del Avance 1
-- `docs/avance_2/`: retroalimentación recibida y registro de cambios del Avance 2
-- `docs/entrega_3/`: documentos de la Entrega 3: sección 1 del checklist de Data Thinking
-- `docs/entrega_3/decisiones_tecnicas.md`: decisiones técnicas de la Entrega 3 (API, MySQL, dashboard, orquestación, MLOps)
-- `docs/entrega_3/seccion_1/`: sección 1 del checklist: Data Thinking, stakeholders, OKR y KPI, Canvas y MVP
-- `docs/entrega_3/arquitectura.md`: arquitectura del backend y de la API de solo lectura
-- `docs/entrega_3/catalogo_fuentes_metadatos.md`: catálogo de fuentes y metadatos (generado)
-- `docs/entrega_3/gestion_credenciales.md`: política de credenciales, claves y tokens
-- `docs/entrega_3/verificacion_seccion_2.md`: verificación de los ítems 2.1 a 2.3: subcriterios, evidencia y estado
-- `docs/entrega_3/evidencias/guia_de_evidencias.md`: guía de evidencias por ítem del checklist (archivos adjuntables y capturas opcionales)
-- `docs/muestras/`: muestras de texto de cada fuente probada (no es Bronze)
-- `docs/enunciado_flujo.png`: imagen del enunciado de la entrega
+- `docs/silver/hallazgos_eda.md`: hallazgos H1-H18 del análisis exploratorio
+- `docs/silver/reglas_silver.md`: reglas R01-R18 con su hallazgo
+- `docs/silver/validacion_llave.md`: validación semántica de la llave por código
+- `docs/gold/KPIs.md`: definición de cada KPI y diccionario de columnas de Gold
+- `docs/bronze/verificacion_fuentes.md`: verificación previa de las fuentes (V1-V14)
+- `docs/validacion/verificacion_entrega.md`: verificación de la entrega contra el enunciado
+- `docs/validacion/prueba_entorno_limpio.md`: ejecución en una copia limpia
+- `docs/validacion/verificacion_logging.md`: verificación del registro de ejecución
+- `docs/bronze/investigacion_fuentes.md`: investigación y selección de fuentes
+- `docs/proyecto/comprension_proyecto1.md`: comprensión del Proyecto 1
+- `docs/silver/revision_codigos_barrio.md`: revisión de los códigos de barrio con diferencias en la validación semántica
+- `docs/proyecto/referencias/`: documento de contexto del Avance 1
+- `docs/retroalimentacion/`: retroalimentación recibida y registro de cambios del Avance 2
+- `docs/`: documentos de la Entrega 3: sección 1 del checklist de Data Thinking
+- `docs/proyecto/decisiones_tecnicas.md`: decisiones técnicas de la Entrega 3 (API, MySQL, dashboard, orquestación, MLOps)
+- `docs/estrategia/`: sección 1 del checklist: Data Thinking, stakeholders, OKR y KPI, Canvas y MVP
+- `docs/api/arquitectura.md`: arquitectura del backend y de la API de solo lectura
+- `docs/bronze/catalogo_fuentes_metadatos.md`: catálogo de fuentes y metadatos (generado)
+- `docs/seguridad/gestion_credenciales.md`: política de credenciales, claves y tokens
+- `docs/validacion/verificacion_servicios.md`: verificación de los ítems 2.1 a 2.3: subcriterios, evidencia y estado
+- `docs/checklist/guia_de_evidencias.md`: guía de evidencias por ítem del checklist (archivos adjuntables y capturas opcionales)
+- `docs/bronze/muestras/`: muestras de texto de cada fuente probada (no es Bronze)
+- `docs/proyecto/referencias/enunciado_flujo.png`: imagen del enunciado de la entrega
 - `logs/`: archivos de registro diarios (se crean al ejecutar; no se versionan)
 
 ## 14. Pruebas y validación
@@ -343,7 +343,7 @@ Hay **92 pruebas** automáticas, sin red:
 - `tests/test_catalogo.py` (5): el catálogo de fuentes coincide con el manifiesto, es determinista y `/fuentes` lo devuelve igual.
 - `tests/test_dist.py` (4): el empaquetado detecta entornos virtuales por su contenido, aunque no tengan `pyvenv.cfg`.
 - `tests/test_empaquetado_y_revision.py` (5): el empaquetado excluye entornos virtuales con cualquier nombre; la revisión de códigos de barrio cubre los casos pedidos y suma las construcciones sin nombre validado.
-- `tests/test_entrega_3_seccion_1.py` (9): documentos de la sección 1 del checklist: existencia, términos prohibidos, cifras y avisos.
+- `tests/test_estrategia.py` (9): documentos de la sección 1 del checklist: existencia, términos prohibidos, cifras y avisos.
 - `tests/test_evidencias.py` (4): el saneamiento de evidencias sustituye rutas, usuario y equipo, y las evidencias guardadas no llevan datos del equipo.
 - `tests/test_extract.py` (6): manifiesto, sha256, filas y páginas de Bronze (sin red).
 - `tests/test_kpis.py` (6): regresión numérica de los KPI, Newcombe, Mantel-Haenszel y regresión del defecto.
@@ -373,7 +373,7 @@ El detalle, con alternativas, razón y riesgo de cada decisión, está en [docs/
 
 Decisiones de las fuentes: el plan elegido es el de las construcciones de la capa satelital, en 7 comunas de Cali (la verificación previa de las fuentes cumplió los criterios de acceso, columnas, cobertura y volumen); el endpoint Socrata no es tabular y se usa el FeatureServer enlazado; la llave es el código catastral y no un nombre; el indicador principal es `severo_estricto` y `dano_visible` queda como sensibilidad de baja confianza.
 
-**Cómo leer los identificadores:** `H#` = hallazgo del análisis exploratorio (`docs/hallazgos_eda.md`); `R##` = regla de Silver (`docs/reglas_silver.md`); `K#` = indicador de Gold (`docs/KPIs.md`); `S#` = escenario de sensibilidad; `V#` = verificación de una fuente (`docs/verificacion_fuentes.md`); `D#` = decisión (`docs/DECISIONES.md`).
+**Cómo leer los identificadores:** `H#` = hallazgo del análisis exploratorio (`docs/silver/hallazgos_eda.md`); `R##` = regla de Silver (`docs/silver/reglas_silver.md`); `K#` = indicador de Gold (`docs/gold/KPIs.md`); `S#` = escenario de sensibilidad; `V#` = verificación de una fuente (`docs/bronze/verificacion_fuentes.md`); `D#` = decisión (`docs/DECISIONES.md`).
 
 ## 16. Glosario
 - **Construcción:** huella catastral de una edificación (una fila de la capa); no es un edificio completo ni un predio.
@@ -422,4 +422,4 @@ Después se abre `http://127.0.0.1:8000/docs` (documentación automática) o `ht
 | `/calidad` | coberturas y confianza de la llave |
 | `/llave/revision` | códigos de barrio con nombre no validado |
 
-Los errores usan siempre `{"error": {"codigo", "mensaje", "detalle"}}`. Documentación: [arquitectura del backend](docs/entrega_3/arquitectura.md), [catálogo de fuentes y metadatos](docs/entrega_3/catalogo_fuentes_metadatos.md) y [política de credenciales](docs/entrega_3/gestion_credenciales.md). Para buscar secretos: `python scripts/escanear_secretos.py` (termina en `hallazgos: 0`).
+Los errores usan siempre `{"error": {"codigo", "mensaje", "detalle"}}`. Documentación: [arquitectura del backend](docs/api/arquitectura.md), [catálogo de fuentes y metadatos](docs/bronze/catalogo_fuentes_metadatos.md) y [política de credenciales](docs/seguridad/gestion_credenciales.md). Para buscar secretos: `python scripts/escanear_secretos.py` (termina en `hallazgos: 0`).

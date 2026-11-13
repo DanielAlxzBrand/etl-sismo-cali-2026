@@ -25,10 +25,10 @@
 - [Hipótesis de diseño: criterio y experimento de validación propuesto, no ejecutado].
 
 ## Reglas de honestidad
-No hubo entrevistas, encuestas, pruebas con usuarios, estudios de mercado ni contacto con ningún stakeholder. Ningún documento afirma lo contrario. Los números de personas de los experimentos son tamaños de muestra propuestos, no cifras de mercado. Hablamos de «cambio satelital severo (severo estricto, proxy de daño)» y las tasas describen 7 comunas, no la ciudad. El concepto de inteligencia artificial aparece solo como enfoque futuro; el proyecto no entrena modelos (decisión D-E3-07 en `docs/DECISIONES.md`).
+No hubo entrevistas, encuestas, pruebas con usuarios, estudios de mercado ni contacto con ningún stakeholder. Ningún documento afirma lo contrario. Los números de personas de los experimentos son tamaños de muestra propuestos, no cifras de mercado. Hablamos de «cambio satelital severo (severo estricto, proxy de daño)» y las tasas describen 7 comunas, no la ciudad. El concepto de inteligencia artificial aparece solo como enfoque futuro; el proyecto no entrena modelos (decisión D17 en `docs/DECISIONES.md`).
 
 ## Cambios respecto del encuadre anterior
-Estos documentos se escribieron como si pertenecieran al Avance 2 y recomendaban marcar el Canvas como N/A y excluir API, dashboard y orquestación. Esas recomendaciones quedaron superadas: la Entrega 3 incluye los cuatro componentes (decisiones en `docs/entrega_3/decisiones_tecnicas.md`). Cada documento termina con un bloque «Cómo lo defendemos».
+Estos documentos se escribieron como si pertenecieran al Avance 2 y recomendaban marcar el Canvas como N/A y excluir API, dashboard y orquestación. Esas recomendaciones quedaron superadas: la Entrega 3 incluye los cuatro componentes (decisiones en `docs/proyecto/decisiones_tecnicas.md`). Cada documento termina con un bloque «Cómo lo defendemos».
 
 ## Evidencia de F1
-`docs/entrega_3/evidencias/f1/` y `docs/entrega_3/evidencias/MANIFIESTO_EVIDENCIAS.md`. Imágenes en `docs/entrega_3/img/`: la matriz poder-interés y el Canvas, generadas a partir de los datos de los documentos (no son capturas de pantalla).
+`docs/evidencias/estrategia/` y `docs/evidencias/manifiesto.md`. Imágenes en `docs/estrategia/img/`: la matriz poder-interés y el Canvas, generadas a partir de los datos de los documentos (no son capturas de pantalla).

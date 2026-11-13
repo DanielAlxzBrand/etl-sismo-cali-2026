@@ -1,4 +1,4 @@
-"""Sección 1 del checklist (docs/entrega_3/seccion_1): existencia, rastros de elaboración, cifras, rúbrica R1 y avisos de honestidad."""
+"""Sección 1 del checklist (docs/seccion_1): existencia, rastros de elaboración, cifras, rúbrica R1 y avisos de honestidad."""
 import json
 import re
 from decimal import ROUND_HALF_UP, Decimal
@@ -7,11 +7,11 @@ import pandas as pd
 
 from src.common import ROOT
 
-E3 = ROOT / "docs" / "entrega_3"
-CARPETA = E3 / "seccion_1"
+E3 = ROOT / "docs"
+CARPETA = E3 / "estrategia"
 DOCS = ["01_data_thinking.md", "02_stakeholders.md", "03_objetivo_alcance_okr_kpi.md", "04_canvas_data_innovation_board.md", "05_mvp_criterios_aceptacion.md"]
 ARCHIVOS = ["indice.md"] + DOCS
-IMAGENES = [E3 / "img" / "matriz_poder_interes.png", E3 / "img" / "canvas_modelo_negocio.png"]
+IMAGENES = [CARPETA / "img" / "matriz_poder_interes.png", CARPETA / "img" / "canvas_modelo_negocio.png"]
 # Rastros de elaboración (las cadenas se parten para que este archivo no se detecte a sí mismo). La sigla de IA como concepto técnico está permitida.
 RASTROS = ["Cla" + "ude", "Anthro" + "pic", "Chat" + "GPT", "Co" + "pilot", "Gem" + "ini", "Open" + "AI", "pro" + "mpt",
            "con ayuda de " + "IA", "asistente de " + "IA", "generado con " + "IA", "herramienta de " + "IA", "elaborado con " + "IA"]

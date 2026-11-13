@@ -13,9 +13,9 @@ sys.path.insert(0, str(REPO))
 from src.logger import get_logger  # noqa: E402
 
 log = get_logger(__name__)
-CSV = REPO / "docs/entrega_3/evidencias/f2/EV-018_latencia_api.csv"
-DOC03 = REPO / "docs/entrega_3/seccion_1/03_objetivo_alcance_okr_kpi.md"
-ARQ = REPO / "docs/entrega_3/arquitectura.md"
+CSV = REPO / "docs/evidencias/api/EV-018_latencia_api.csv"
+DOC03 = REPO / "docs/estrategia/03_objetivo_alcance_okr_kpi.md"
+ARQ = REPO / "docs/api/arquitectura.md"
 INI, FIN = "<!-- latencias:inicio -->", "<!-- latencias:fin -->"
 
 
@@ -37,7 +37,7 @@ def main():
              "servidor real en 127.0.0.1; medición local de una máquina, EV-018)")
     s = DOC03.read_text(encoding="utf-8")
     s, n1 = re.subn(r"^\| V4 Componentes de la Entrega 3 \|.*$",
-                    "| V4 Componentes de la Entrega 3 | latencia de la API; tiempo de carga al almacén; tasa de éxito del DAG; tiempo de carga del dashboard | pruebas de F2 a F5; `docs/entrega_3/evidencias/f2/EV-018_latencia_api.csv` | "
+                    "| V4 Componentes de la Entrega 3 | latencia de la API; tiempo de carga al almacén; tasa de éxito del DAG; tiempo de carga del dashboard | pruebas de F2 a F5; `docs/evidencias/api/EV-018_latencia_api.csv` | "
                     + f"{texto}; el resto se mide en F3 a F5 | Medición local, no representa un despliegue; sin valor para los componentes que aún no existen |", s, flags=re.M)
     s, n2 = re.subn(r"^\| Componentes de la Entrega 3 \|.*$",
                     "| Componentes de la Entrega 3 | latencia de la API medida en F2 (EV-018); el resto se mide en F3 a F5 | V4 | se define en cada fase | pruebas de F2 a F5 |", s, flags=re.M)
@@ -45,7 +45,7 @@ def main():
     DOC03.write_text(s, encoding="utf-8", newline="\n")
     tabla = ["| ruta | mediana (ms) | percentil 95 (ms) | máximo (ms) |", "|---|---|---|---|"] + [f"| `{f['endpoint']}` | {c(float(f['mediana_ms']))} | {c(float(f['p95_ms']))} | {c(float(f['maximo_ms']))} |" for f in filas]
     bloque = (f"{INI}\n### Rendimiento (medición local)\nLatencia por ruta con el **servidor real** en `127.0.0.1` (no el cliente de pruebas): {rep} solicitudes de medición tras {cal} de calentamiento, "
-              "en una sola máquina; el percentil 95 es por rango más cercano. Son mediciones locales y no representan un despliegue. [Evidencia en el repo: `docs/entrega_3/evidencias/f2/EV-018_latencia_api.csv`]\n\n"
+              "en una sola máquina; el percentil 95 es por rango más cercano. Son mediciones locales y no representan un despliegue. [Evidencia en el repo: `docs/evidencias/api/EV-018_latencia_api.csv`]\n\n"
               + "\n".join(tabla) + f"\n{FIN}")
     a = ARQ.read_text(encoding="utf-8")
     if INI in a:
