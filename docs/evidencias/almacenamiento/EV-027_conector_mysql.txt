@@ -1,0 +1,20 @@
+# EV-027 · Conector MySQL instalado en el .venv
+- comando: `<VENV>\Scripts\python.exe -m pip check; importación; lectura de las ruedas`
+- fecha: 2026-11-13T14:55:31-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 1.6 s
+- Python: 3.13.0
+- commit del repositorio: aa7ab0b
+
+paquetes instalados en el .venv (solo estos dos y sus dependencias):
+- PyMySQL 1.2.4; Tag: py3-none-any
+- cryptography 50.0.2; Tag: cp311-abi3-win_amd64
+- cffi 2.1.1; Tag: cp313-cp313-win_amd64
+- pycparser 3.12; Tag: py3-none-any
+
+pip check:
+No broken requirements found.
+
+importación: pymysql y cryptography 50.0.2 importan sin errores
+Las ruedas son `py3-none-any` (PyMySQL) y `cp311-abi3-win_amd64` (cryptography, compatible con Python 3.13).
+Instalación: `<VENV>\Scripts\python.exe -m pip install pymysql cryptography` (nunca en el Python global).
