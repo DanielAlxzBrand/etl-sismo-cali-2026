@@ -51,7 +51,7 @@
 | 7 | Cumple | cada solicitud se registra (método, ruta, estado y duración) |
 
 **Límites declarados:** sin autenticación (uso local en 127.0.0.1); proxy satelital, no evaluación estructural.
-**(h) Cómo validar.** `.\.venv\Scripts\python.exe -m pytest tests/test_api.py -q -p no:cacheprovider`; `.\.venv\Scripts\python.exe -m uvicorn src.api.app:app --host 127.0.0.1 --port 8000` y abrir `http://127.0.0.1:8000/health` y `/docs` (captura que debe tomar el equipo; ver `evidencias/guion_capturas_y_video.md`).
+**(h) Cómo validar.** `.\.venv\Scripts\python.exe -m pytest tests/test_api.py -q -p no:cacheprovider`; `.\.venv\Scripts\python.exe -m uvicorn src.api.app:app --host 127.0.0.1 --port 8000` y abrir `http://127.0.0.1:8000/health` y `/docs` (captura opcional; ver `evidencias/guia_de_evidencias.md`).
 
 ---
 
@@ -120,5 +120,17 @@
 ---
 
 ## Qué falta del lado del equipo (hechos externos)
-- Las **capturas manuales** de F2 (respuesta de `GET /health`, documentación en `/docs`, una consulta a `/kpis`, resultado de pytest y salida del escáner) las toma el equipo; el guion está en `docs/entrega_3/evidencias/guion_capturas_y_video.md`. La captura de `/docs` incluida como EV-017 es **automatizada del navegador**, no una captura manual.
+- Las capturas de pantalla de F2 son **opcionales** y complementarias (D-E3-25); la evidencia suficiente son las salidas registradas, y la captura de `/docs` incluida como EV-017 es **automatizada del navegador**. La guía por ítem está en `docs/entrega_3/evidencias/guia_de_evidencias.md`.
 - Antes de F3, una cuenta de MySQL local (el script SQL lo entrega F3).
+
+---
+
+## Cierre de F2 (2026-11-12)
+- **Estados:** 2.1 Cumple, 2.2 Cumple y 2.3 Cumple (se revalida en F3 con las variables `MYSQL_*` y en F8 con el escáner sobre el zip).
+- **Pruebas:** 92 en el clon temporal (`EV-014`, `EV-025`); el desglose por archivo está en `README.md` §14.
+- **Sin escritura:** sha256 de los 19 archivos de `data/` (incluida la base) idénticos tras clonar, tras las pruebas y tras consultar el servidor real (`EV-015`).
+- **Latencia:** medida con el servidor real en 127.0.0.1 (`EV-018`, `EV-021`); son mediciones locales de una máquina.
+- **Escáner:** sin hallazgos en el clon, su historial y un zip de prueba (`EV-019`, `EV-024`).
+- **Entorno nuevo:** `pip install -r requirements.txt` en un entorno virtual nuevo y `pytest --collect-only` recolectaron las 92 pruebas (`EV-020`).
+- **Evidencias saneadas:** sin rutas de usuario, nombre de usuario ni nombre del equipo (marcadores `<REPO>`, `<CLON>`, `<TEMP>`, `<VENV>`, `<USUARIO>` y `<EQUIPO>`; D-E3-26).
+- **Política de evidencias (D-E3-25):** sin video; las capturas de pantalla son opcionales (`evidencias/guia_de_evidencias.md`).

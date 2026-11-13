@@ -25,9 +25,9 @@
 - `gestion_credenciales.md`: política de credenciales, claves y tokens (F2, ítem 2.3).
 - `verificacion_seccion_2.md`: subcriterios, brechas, evidencia y estado de los ítems 2.1 a 2.3.
 - `img/`: imágenes renderizadas a partir de los documentos (matriz poder-interés, Canvas y arquitectura del backend); no son capturas de pantalla.
-- `evidencias/`: `MANIFIESTO_EVIDENCIAS.md`, `guion_capturas_y_video.md` y una carpeta por fase (`f0/` ya tiene su evidencia).
+- `evidencias/`: `MANIFIESTO_EVIDENCIAS.md`, `guia_de_evidencias.md` y una carpeta por fase (`f0/` ya tiene su evidencia).
 
 ## Reglas de trabajo
 - Rama `entrega-3`; etiqueta de partida `base-entrega-3`; una etiqueta por fase (`entrega3-f0`, `entrega3-f1`, …). Detalle en `docs/DECISIONES.md` (D-E3-04).
 - La línea base de sha256 de Silver, Gold y del manifiesto de Bronze no cambia; el pipeline se ejecuta solo en un clon temporal (D-E3-05).
-- Las capturas de pantalla y los videos los toma el equipo con un guion; nada de lo que requiera un hecho externo (sesiones con usuarios, retroalimentación, respuesta del profesor) se fabrica.
+- Política de evidencias (D-E3-25): sin video. Cada ítem se respalda con archivos adjuntables (salidas registradas, JSON, XML de pruebas, documentos e imágenes renderizadas) y, de forma opcional, capturas de pantalla; la guía por ítem es `evidencias/guia_de_evidencias.md`. Nada de lo que requiera un hecho externo (sesiones con usuarios, retroalimentación, respuesta del profesor) se fabrica.

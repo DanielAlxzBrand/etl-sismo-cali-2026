@@ -18,7 +18,7 @@
 | MySQL | servidor **instalado y en ejecución** | Servicio `MySQL80` (inicio automático), MySQL Server 8.0.45, puerto 3306 según `my.ini`; una conexión TCP a `localhost:3306` se acepta (sin autenticación). Cliente `mysql.exe` 8.0.45 presente en `C:\Program Files\MySQL\MySQL Server 8.0\bin`, **fuera de la variable PATH** (`where mysql` no lo encuentra). MySQL Workbench 8.0 instalado. **Usuario, contraseña y base: no verificados.** |
 | Node / npm | instalados | 24.14.0 / 11.9.0 (no se necesitan) |
 | Navegadores | Chrome 157.0.8103.52 y Edge 157.0.4341.46 | Para las capturas del dashboard. |
-| Grabación | OBS Studio 32.2.2 | Para el video de la demostración; ffmpeg no está instalado. |
+| Grabación | OBS Studio 32.2.2 | Instalado, pero el equipo no grabará video (D-E3-25); ffmpeg no está instalado. |
 | Documentos | Word (Office 16) instalado; LibreOffice no | Word sirve para revisar y renderizar el .docx. |
 | PowerShell | Windows PowerShell 5.1 | `pwsh` 7 no está instalado; los scripts se escriben para 5.1. |
 | Variables en `.env` | ninguna | El archivo existe y está vacío (0 bytes). `.env.example` declara los nombres `SOCRATA_APP_TOKEN` y `HTTP_USER_AGENT`. |

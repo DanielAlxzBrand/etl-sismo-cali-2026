@@ -76,7 +76,7 @@ Son métricas de valor del proyecto como servicio de análisis; el impacto sobre
 | V1 Construcciones con dato satelital utilizable | construcciones con `sin_datos = false` / construcciones | `data/gold/gold_final.csv` | 91,5 % (4.711 de 5.146) | Mide disponibilidad, no exactitud del proxy |
 | V2 Cobertura de la llave | construcciones con llave / construcciones | `data/silver/quality_report.json` | 99,883 % | Ver P1 |
 | V3 Reproducibilidad | diferencias de sha256 entre dos corridas | clon temporal | 0 diferencias de 9 archivos | Solo Silver y Gold |
-| V4 Componentes de la Entrega 3 | latencia de la API; tiempo de carga al almacén; tasa de éxito del DAG; tiempo de carga del dashboard | pruebas de F2 a F5 | se mide en F2 a F5 | Sin valor hasta que existan los componentes |
+| V4 Componentes de la Entrega 3 | latencia de la API; tiempo de carga al almacén; tasa de éxito del DAG; tiempo de carga del dashboard | pruebas de F2 a F5; `docs/entrega_3/evidencias/f2/EV-018_latencia_api.csv` | latencia de la API en F2: mediana entre 4,4 y 11,7 ms por ruta y percentil 95 de hasta 17,2 ms (50 repeticiones tras 5 de calentamiento, servidor real en 127.0.0.1; medición local de una máquina, EV-018); el resto se mide en F3 a F5 | Medición local, no representa un despliegue; sin valor para los componentes que aún no existen |
 
 ## 4. Trazabilidad OKR → KPI → evidencia → verificación
 | OKR | meta del Avance 1 / qué logramos | KPI asociado | archivo de evidencia | prueba o comando |
@@ -89,7 +89,7 @@ Son métricas de valor del proyecto como servicio de análisis; el impacto sobre
 | KR5 (fuera de alcance) | Meta: Seguimiento periódico del avance de verificación mientras la Alcaldía actualiza el repositorio. Logro: No evaluado: seguimiento fuera del ETL. | ninguno | no hay | no aplica |
 | Calidad de la integración (sostiene KR1 y KR4) | P1, P2, P3 superan el umbral | K5, P1, P2, P3 | `data/silver/quality_report.json`, `docs/validacion_llave.md` | `tests/test_quality.py::test_cobertura_join_supera_umbral` |
 | Reproducibilidad (sostiene todos) | P4 a P7 | P4, P5, P6, P7 | `data/bronze/manifest.jsonl`, `tests/`, `scripts/make_dist.py` | `tests/test_extract.py::test_archivos_existen_y_sha256_coincide`; `tests/test_dist.py` |
-| Componentes de la Entrega 3 | se mide en F2 a F5 | V4 | se define en cada fase | pruebas de F2 a F5 |
+| Componentes de la Entrega 3 | latencia de la API medida en F2 (EV-018); el resto se mide en F3 a F5 | V4 | se define en cada fase | pruebas de F2 a F5 |
 
 Estas filas no convierten un KR parcial en cumplido.
 

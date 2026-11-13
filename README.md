@@ -331,6 +331,8 @@ jupyter nbconvert --to notebook --execute --inplace notebooks\05_validacion_evid
 - `docs/entrega_3/arquitectura.md`: arquitectura del backend y de la API de solo lectura
 - `docs/entrega_3/catalogo_fuentes_metadatos.md`: catálogo de fuentes y metadatos (generado)
 - `docs/entrega_3/gestion_credenciales.md`: política de credenciales, claves y tokens
+- `docs/entrega_3/verificacion_seccion_2.md`: verificación de los ítems 2.1 a 2.3: subcriterios, evidencia y estado
+- `docs/entrega_3/evidencias/guia_de_evidencias.md`: guía de evidencias por ítem del checklist (archivos adjuntables y capturas opcionales)
 - `docs/muestras/`: muestras de texto de cada fuente probada (no es Bronze)
 - `docs/enunciado_flujo.png`: imagen del enunciado de la entrega
 - `logs/`: archivos de registro diarios (se crean al ejecutar; no se versionan)

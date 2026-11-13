@@ -109,6 +109,25 @@ Las consultas no cambian estado: la misma solicitud devuelve la misma respuesta 
 ## 8. Observabilidad
 Cada solicitud se registra con `src/logger.py` (método, ruta, estado y duración en ms), en consola y en `logs/etl_AAAAMMDD.log`, con enmascarado de secretos. Ejemplo real: `GET /llave/revision -> 200 en 5.1 ms`. No se registran cuerpos ni parámetros sensibles.
 
+<!-- latencias:inicio -->
+### Rendimiento (medición local)
+Latencia por ruta con el **servidor real** en `127.0.0.1` (no el cliente de pruebas): 50 solicitudes de medición tras 5 de calentamiento, en una sola máquina; el percentil 95 es por rango más cercano. Son mediciones locales y no representan un despliegue. [Evidencia en el repo: `docs/entrega_3/evidencias/f2/EV-018_latencia_api.csv`]
+
+| ruta | mediana (ms) | percentil 95 (ms) | máximo (ms) |
+|---|---|---|---|
+| `/health` | 6,0 | 8,1 | 11,5 |
+| `/metadata` | 11,7 | 17,2 | 18,7 |
+| `/fuentes` | 4,4 | 8,1 | 9,0 |
+| `/kpis` | 5,9 | 10,8 | 12,5 |
+| `/kpis/K1` | 5,1 | 5,8 | 6,6 |
+| `/kpis/sensibilidad` | 6,0 | 9,7 | 10,0 |
+| `/comunas` | 5,1 | 6,0 | 6,1 |
+| `/composicion` | 11,3 | 14,7 | 16,1 |
+| `/construcciones?limit=5` | 7,2 | 9,6 | 11,9 |
+| `/calidad` | 11,7 | 15,8 | 16,6 |
+| `/llave/revision` | 8,1 | 10,0 | 12,0 |
+<!-- latencias:fin -->
+
 ## 9. Seguridad y amenazas
 | amenaza | superficie | qué se bloquea y cómo | cómo se prueba |
 |---|---|---|---|
