@@ -15,7 +15,7 @@ Fichas de los ítems 1.1 a 1.5 (Estrategia) y 2.1 a 2.3 (API, fuentes y credenci
 
 ---
 
-## Estrategia · Sección 1: diseño estratégico
+## Estrategia · Problema, diseño estratégico y stakeholders (sección 1 del checklist)
 
 ### Ítem 1.1 · Data Thinking, insights y problema central
 - **(a) Archivo principal:** `docs/estrategia/01_data_thinking.md` (Markdown). Demuestra: marco de cinco etapas con tabla de equivalencia, 11 insights con dato y fuente, problema central y pregunta vigente. **No demuestra:** investigación con usuarios ni que el marco sea el del curso (se adoptó a posteriori).
@@ -54,7 +54,7 @@ Fichas de los ítems 1.1 a 1.5 (Estrategia) y 2.1 a 2.3 (API, fuentes y credenci
 
 ---
 
-## API, fuentes y credenciales · Backend, API de solo lectura, fuentes y credenciales
+## API, fuentes y credenciales · Backend y captura de datos (sección 2 del checklist)
 
 ### Ítem 2.1 · Arquitectura de backend, APIs y servicios
 - **(a) Archivo principal:** `docs/api/arquitectura.md` (Markdown) con su diagrama `docs/api/img/arquitectura_backend.png`. Demuestra: capas, módulos, contratos, errores, seguridad y límites de una API de solo lectura con 11 rutas GET. **No demuestra:** que la API sea apta para exponerse en red (no tiene autenticación; uso local en 127.0.0.1) ni que MySQL, Airflow o el dashboard existan (están en construcción).
@@ -99,8 +99,8 @@ Fichas de los ítems 1.1 a 1.5 (Estrategia) y 2.1 a 2.3 (API, fuentes y credenci
 
 ---
 
-## Cómo se produjeron las evidencias del componente API, fuentes y credenciales
+## Cómo se produjeron las evidencias de la capa de servicio
 `scripts/evidencias/evidencias_api.py` clona el commit a una carpeta temporal fuera del repositorio, ejecuta ahí las pruebas, el servicio, el navegador sin ventana, el escáner y el entorno nuevo, y guarda las salidas **saneadas** (sin rutas de usuario, usuario ni equipo: se sustituyen por `<REPO>`, `<CLON>`, `<TEMP>`, `<VENV>`, `<USUARIO>` y `<EQUIPO>`) en `docs/evidencias/api/`. `scripts/evidencias/registrar_manifiesto.py` calcula el sha256 de cada archivo y lo registra en el manifiesto. Una prueba (`tests/test_evidencias.py`) verifica que ninguna evidencia guardada lleva datos del equipo.
 
-## Fases Carga relacional, Pruebas y orquestación, Panel, Usuarios, UX y finanzas, Documentación y demostración y Cierre y paquete
+## Componentes en construcción
 Se agregan en cada componente con la misma estructura de fichas.

@@ -1,6 +1,6 @@
 # Estado del checklist del proyecto
 
-**Fecha:** 2026-11-12 · **Fuente:** [Criterio aplicado: matriz de 30 ítems del análisis previo, leída de `matriz_items_checklist.csv`, que se conserva fuera del repositorio] · Lista de verificación: `Checklist_Proyecto_DataThinking_plantilla.docx` (lectura literal: 30 verificaciones en 7 secciones y 5 categorías de evidencia mínima).
+**Fecha:** 2026-11-12 · **Fuente:** [Criterio aplicado: lectura literal de la plantilla del checklist] · Lista de verificación: `Checklist_Proyecto_DataThinking_plantilla.docx` (lectura literal: 30 verificaciones en 7 secciones y 5 categorías de evidencia mínima).
 
 **Regla de estado.** *Cumple*: evidencia concreta y reproducible para todos los subcriterios. *Cumple con matiz*: el entregable central está verificado y algún subcriterio depende de un hecho externo declarado. *N/A justificado*: fuera de la naturaleza del proyecto aun con interpretación adaptada. *No cumple*: solo si no es técnicamente viable. Nunca se marca «cumple» una afirmación que requiera un evento externo inexistente; mientras ese evento no ocurra, el estado es «Pendiente (hecho externo)».
 
