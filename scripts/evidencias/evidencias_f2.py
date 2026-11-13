@@ -53,6 +53,12 @@ def huellas(carpeta):
     return {p.relative_to(carpeta).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(carpeta.rglob("*")) if p.is_file()}
 
 
+def resumen_pip(salida):
+    """Resumen de la instalación: cuántos paquetes quedaron instalados (la lista completa son dependencias de Jupyter, pandas y similares)."""
+    linea = next((l for l in salida.splitlines() if l.startswith("Successfully installed")), "")
+    return f"{len(linea.split()) - 2} paquetes instalados (lista completa omitida)" if linea else "no se encontró el resumen de instalación"
+
+
 def puerto_libre():
     with socket.socket() as s:
         s.bind(("127.0.0.1", 0))
@@ -222,7 +228,7 @@ def main():
                 _, t6, _ = sh([py2, "-m", "pip", "freeze"], clon)
                 claves = [l for l in t6.splitlines() if l.split("==")[0].lower() in ("fastapi", "uvicorn", "httpx", "pydantic", "starlette", "pydantic_core")]
                 cuerpo = (f"crear entorno: código {c3}\ninstalar requirements.txt: código {c4}\nrecolección de pruebas con el entorno nuevo: código {c5}; pruebas recolectadas: {n_col}\n\n"
-                          "paquetes de la capa de servicio instalados:\n" + "\n".join(claves) + "\n\nfin de la instalación (últimas líneas):\n" + "\n".join(t4.splitlines()[-3:])
+                          "paquetes de la capa de servicio instalados:\n" + "\n".join(claves) + "\n\nresumen de la instalación:\n" + resumen_pip(t4)
                           + "\n\nfin de la recolección (últimas líneas):\n" + "\n".join(t5.splitlines()[-3:]) + "\n")
                 guardar("EV-020_requirements_entorno_nuevo.txt", "EV-020 · Entorno virtual nuevo con requirements.txt y recolección de pruebas",
                         "python -m venv <TEMP>\\venv_nuevo; <TEMP>\\venv_nuevo\\Scripts\\python.exe -m pip install -r requirements.txt; ... -m pytest --collect-only -q (cwd: <CLON>)",
