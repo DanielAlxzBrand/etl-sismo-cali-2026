@@ -170,7 +170,7 @@ def test_seccion_de_la_api_en_readme_coincide_con_la_aplicacion():
     assert f"Tiene **{len(rutas)} rutas GET**" in README
     for ruta in rutas:
         assert f"`{ruta}`" in README, ruta
-    for frase in ("127.0.0.1", "python -m uvicorn src.api.app:app", "hallazgos: 0", "solo lectura"):
+    for frase in ("127.0.0.1", "python -m uvicorn src.api.app:app", "hallazgos: 0", "solo lectura", "docs/entrega_3/evidencias/guia_de_evidencias.md"):
         assert frase in README, frase
     for termino in ("API", "Endpoint", "Solo lectura", "Catálogo de metadatos", "Escáner de secretos"):
         assert f"- **{termino}:**" in README, termino
