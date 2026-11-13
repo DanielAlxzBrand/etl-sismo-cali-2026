@@ -10,7 +10,8 @@ from typing import Optional
 from fastapi import Depends, FastAPI, HTTPException, Path as RutaParam, Query, Request
 
 from src.api import errores, esquemas
-from src.api.repositorio import RepositorioSqlite
+from src.api.repositorio import RepositorioRelacional, RepositorioSqlite
+from src.load import conexion
 from src.common import ROOT, load_config, read_manifest
 from src.logger import get_logger
 
@@ -29,13 +30,30 @@ def _salida(modelo, filas):
     return [modelo(**f) for f in filas]
 
 
-def crear_app(ruta_db=None):
-    """Crea la aplicación; ruta_db permite probar con otra base sin tocar la configuración."""
+def crear_app(ruta_db=None, almacenamiento=None, abrir_repositorio=None):
+    """Crea la aplicación. `ruta_db` permite probar con otra base SQLite; `almacenamiento` ('sqlite' o 'mysql') sustituye a `api.almacenamiento` de config.yaml;
+    `abrir_repositorio` (solo para pruebas) reemplaza la fábrica de repositorios."""
     cfg = load_config()
     api = cfg["api"]
     ruta_base = Path(ruta_db) if ruta_db else ROOT / api["base_datos"]
     ruta_catalogo = ROOT / api["catalogo_fuentes"]
     lim_def, lim_max = api["limite_defecto"], api["limite_maximo"]
+    almacenamiento = almacenamiento or api.get("almacenamiento", "sqlite")
+    if almacenamiento not in ("sqlite", "mysql"):
+        raise ValueError("api.almacenamiento debe ser 'sqlite' o 'mysql'")
+
+    def abrir():
+        """Abre el repositorio del almacenamiento activo; si no se puede, la API responde 503 con el JSON de error uniforme (sin credenciales ni rutas)."""
+        if abrir_repositorio is not None:
+            return abrir_repositorio()
+        if almacenamiento == "mysql":
+            try:
+                conn = conexion.conectar_mysql(solo_lectura=True)
+            except conexion.ConexionError as e:
+                log.error("almacenamiento mysql no disponible: %s", e)
+                raise errores.BaseNoDisponible("mysql") from e
+            return RepositorioRelacional(conn, "mysql")
+        return RepositorioSqlite(ruta_base)
 
     app = FastAPI(title="API de solo lectura · Gold del sismo de Cali", version=api["version"],
                   description="Entrega los resultados ya calculados (Gold). No escribe, no recalcula. " + api["aviso"])
@@ -43,7 +61,7 @@ def crear_app(ruta_db=None):
 
     def repo():
         """Una conexión por solicitud; se cierra siempre al terminar."""
-        r = RepositorioSqlite(ruta_base)
+        r = abrir()
         try:
             yield r
         finally:
@@ -63,10 +81,10 @@ def crear_app(ruta_db=None):
     @app.get("/health", response_model=esquemas.Salud, tags=["servicio"])
     def health():
         """Estado del servicio, fecha de corte y filas por tabla."""
-        base = {"estado": "ok", "version_api": api["version"], "fecha_corte": None, "base_disponible": False, "filas_por_tabla": {}}
+        base = {"estado": "ok", "version_api": api["version"], "fecha_corte": None, "base_disponible": False, "almacenamiento": almacenamiento, "filas_por_tabla": {}}
         r = None
         try:
-            r = RepositorioSqlite(ruta_base)
+            r = abrir()
             base.update(fecha_corte=r.fecha_corte(), base_disponible=True, filas_por_tabla=r.filas_por_tabla())
         except errores.BaseNoDisponible:
             base["estado"] = "degradado"
@@ -84,7 +102,7 @@ def crear_app(ruta_db=None):
                    for m in read_manifest()]
         return {"aviso": api["aviso"], "fecha_edicion_capa": fechas["fecha_edicion_capa"], "fecha_imagen_pre": fechas["fecha_imagen_pre"],
                 "fecha_imagen_post": fechas["fecha_imagen_post"], "fecha_corte": r.fecha_corte(), "poblacion": r.poblacion(), "alcance_temporal": ALCANCE,
-                "licencias": {f["id"]: f["licencia"] for f in cat["fuentes"]}, "fuentes": fuentes}
+                "licencias": {f["id"]: f["licencia"] for f in cat["fuentes"]}, "fuentes": fuentes, "almacenamiento": almacenamiento}
 
     @app.get("/fuentes", responses=ERRORES, tags=["servicio"])
     def fuentes():

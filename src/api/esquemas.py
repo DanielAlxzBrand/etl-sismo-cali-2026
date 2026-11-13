@@ -19,6 +19,7 @@ class Salud(BaseModel):
     version_api: str
     fecha_corte: Optional[str]
     base_disponible: bool
+    almacenamiento: str = "sqlite"
     filas_por_tabla: dict[str, int]
 
 
@@ -134,3 +135,4 @@ class Metadata(BaseModel):
     alcance_temporal: str
     licencias: dict[str, str]
     fuentes: list[dict[str, Any]]
+    almacenamiento: str = "sqlite"

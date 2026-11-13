@@ -72,3 +72,13 @@ api:   # capa de servicio de solo lectura (API, fuentes y credenciales)
   base_datos: data/gold/etl_sismo.db
   catalogo_fuentes: docs/bronze/catalogo_fuentes.json
   aviso: "Proxy satelital, no evaluación estructural."
+  almacenamiento: sqlite   # sqlite (etl_sismo.db) o mysql (última corrida de la base relacional)
+almacenamiento:   # carga relacional (MySQL; SQLite para pruebas). La contraseña NUNCA va aquí: solo en .env (MYSQL_PASSWORD)
+  destino: mysql
+  host: 127.0.0.1
+  puerto: 3306
+  usuario: sismo_etl
+  base: sismo_cali
+  base_prueba: sismo_cali_prueba
+  lote: 1000
+  tiempo_espera_s: 10
