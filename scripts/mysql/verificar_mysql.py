@@ -196,12 +196,12 @@ def verificar(res, solo_conexion=False):
             res.anotar("fallo a mitad de carga: reversión completa", fallo and _conteos(conn) == antes_fallo, f"conteos antes y después iguales ({antes_fallo['corrida']} corridas)")
         # --- integridad: violaciones rechazadas
         cid = r1["corrida_id"]
-        casos = [("corrida inexistente (clave foránea)", {"corrida_id": 999999, "objectid": 900000001}, {1452}),
+        casos = [("corrida inexistente (clave foránea)", {"corrida_id": 999999, "objectid": 900000001}, {1452, 1216}),
                  ("clave primaria repetida", {}, {1062}),
                  ("estrato fuera de 1 a 6 (CHECK)", {"objectid": 900000002, "estrato": 9}, {3819}),
                  ("latitud fuera de Cali (CHECK)", {"objectid": 900000003, "lat": "9.0000000"}, {3819}),
                  ("cruza_llave con enlace nulo (CHECK)", {"objectid": 900000004, "cruza_llave": 1, "barrio_estrato_codigo": None}, {3819}),
-                 ("barrio inexistente en la corrida (clave foránea compuesta)", {"objectid": 900000005, "cruza_llave": 1, "barrio_estrato_codigo": "999999"}, {1452})]
+                 ("barrio inexistente en la corrida (clave foránea compuesta)", {"objectid": 900000005, "cruza_llave": 1, "barrio_estrato_codigo": "999999"}, {1452, 1216})]
         base_n = _conteos(conn)
         for nombre, cambios, codigos in casos:
             codigo = None
@@ -222,7 +222,7 @@ def verificar(res, solo_conexion=False):
             codigo = e.args[0]
         finally:
             cur.close()
-        res.anotar("violación rechazada: borrar una corrida que tiene datos (RESTRICT)", codigo == 1451, f"código de error {codigo}")
+        res.anotar("violación rechazada: borrar una corrida que tiene datos (RESTRICT)", codigo in (1451, 1217), f"código de error {codigo}")
         res.anotar("las pruebas de rechazo no dejaron filas", _conteos(conn) == base_n)
     finally:
         conn.close()

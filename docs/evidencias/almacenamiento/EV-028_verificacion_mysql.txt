@@ -1,0 +1,36 @@
+# Verificación en vivo de la carga relacional (base de prueba)
+- comando: `python scripts/mysql/verificar_mysql.py --evidencia`
+- fecha: 2026-11-13T16:25:54-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 9.1 s
+- Python: 3.13.0
+- commit del repositorio: afd4c96
+
+- OK   conexión con el usuario del proyecto: MySQL 8.0.45, base sismo_cali_prueba
+- OK   la verificación corre sobre la base de prueba: sismo_cali_prueba
+- OK   privilegios: solo las dos bases, sin globales ni GRANT OPTION: sismo_cali: SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, REFERENCES, INDEX, ALTER; sismo_cali_prueba: SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, REFERENCES, INDEX, ALTER
+- OK   esquema creado desde cero: tablas y columnas iguales al archivo SQL: 7 tablas, 92 columnas
+- OK   motor InnoDB y cotejamiento utf8mb4_0900_ai_ci en todas las tablas: (('InnoDB', 'utf8mb4_0900_ai_ci'),)
+- OK   claves foráneas y restricciones CHECK creadas: 8 claves foráneas, 14 restricciones CHECK
+- OK   primera carga: corrida 1, filas {'barrio_estrato': 346, 'construccion': 5146, 'kpi': 23, 'kpi_sensibilidad': 107}, 0.64 s
+- OK   conciliación al 100 % (conteos, huellas e ida y vuelta de cada valor): 145247 valores comparados, 0 diferencias; barrio_estrato 346/346, construccion 5146/5146, kpi 23/23, kpi_sensibilidad 107/107
+- OK   integridad referencial: 0 filas huérfanas en cada relación: 8 relaciones revisadas
+- OK   huérfanos de estrato: las construcciones sin cruce conservan el enlace nulo
+- OK   idempotencia: la misma entrada responde «ya cargada» y no escribe: corridas: 1
+- OK   la API sirve lo mismo desde MySQL que desde SQLite: 17 de 17 rutas idénticas (se ignora el campo que nombra el motor)
+- OK   entrada alterada: se crea una corrida nueva y la anterior queda intacta: corridas 2, construcciones 10292
+- OK   la historia permite comparar corridas con una consulta: 1 construcción con npisos distinto entre las dos corridas
+- OK   la corrida original sigue conciliada al 100 %
+- OK   fallo a mitad de carga: reversión completa: conteos antes y después iguales (2 corridas)
+- OK   violación rechazada: corrida inexistente (clave foránea): código de error 1216
+- OK   violación rechazada: clave primaria repetida: código de error 1062
+- OK   violación rechazada: estrato fuera de 1 a 6 (CHECK): código de error 3819
+- OK   violación rechazada: latitud fuera de Cali (CHECK): código de error 3819
+- OK   violación rechazada: cruza_llave con enlace nulo (CHECK): código de error 3819
+- OK   violación rechazada: barrio inexistente en la corrida (clave foránea compuesta): código de error 1216
+- OK   violación rechazada: borrar una corrida que tiene datos (RESTRICT): código de error 1217
+- OK   las pruebas de rechazo no dejaron filas
+- OK   la conexión de solo lectura rechaza escrituras: código de error 1792
+- OK   si el almacén no responde la API contesta 503 con el JSON uniforme: estado 503
+
+Resultado: 26 de 26 comprobaciones correctas.

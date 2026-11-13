@@ -1,0 +1,5 @@
+estrategia,lote,repeticiones,mediana_s,p95_s,minimo_s,filas_por_s,filas_cargadas
+fila a fila,1,5,2.415,3.006,2.320,2328,5622
+lote 500,500,5,0.787,0.878,0.756,7147,5622
+lote 1000,1000,5,0.788,0.812,0.723,7130,5622
+lote 2000,2000,5,0.715,0.833,0.625,7859,5622

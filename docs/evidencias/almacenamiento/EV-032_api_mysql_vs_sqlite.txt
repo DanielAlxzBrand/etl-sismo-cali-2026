@@ -1,0 +1,62 @@
+# API sobre MySQL frente a SQLite: equivalencia y latencias
+- comando: `python scripts/evidencias/evidencia_api_mysql.py`
+- fecha: 2026-11-13T16:49:14-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 115.8 s
+- Python: 3.13.0
+- commit del repositorio: afd4c96
+
+Servidores locales (127.0.0.1) con el mismo código y distinto almacén:
+- sqlite: /health : estado ok, almacenamiento «sqlite», filas por tabla {'silver_integrated': 5146, 'gold_final': 5146, 'kpis_gold': 23, 'kpis_sensibilidad': 107}
+- mysql: /health : estado ok, almacenamiento «mysql», filas por tabla {'silver_integrated': 5146, 'gold_final': 5146, 'kpis_gold': 23, 'kpis_sensibilidad': 107}
+
+Equivalencia de respuestas (cuerpo y código de estado; se ignora solo el campo que nombra el motor):
+| Ruta | Código SQLite | Código MySQL | Respuesta |
+|---|---|---|---|
+| `/health` | 200 | 200 | idéntica |
+| `/metadata` | 200 | 200 | idéntica |
+| `/fuentes` | 200 | 200 | idéntica |
+| `/kpis` | 200 | 200 | idéntica |
+| `/kpis/K1` | 200 | 200 | idéntica |
+| `/kpis?kpi_id=K2&grupo=global` | 200 | 200 | idéntica |
+| `/kpis/sensibilidad` | 200 | 200 | idéntica |
+| `/kpis/sensibilidad?escenario=S1` | 200 | 200 | idéntica |
+| `/comunas` | 200 | 200 | idéntica |
+| `/composicion` | 200 | 200 | idéntica |
+| `/construcciones` | 200 | 200 | idéntica |
+| `/construcciones?limit=100&offset=1000` | 200 | 200 | idéntica |
+| `/construcciones?comuna=02&limit=100` | 200 | 200 | idéntica |
+| `/construcciones?estrato=3&limit=100` | 200 | 200 | idéntica |
+| `/construcciones?comuna=02&estrato=3` | 200 | 200 | idéntica |
+| `/calidad` | 200 | 200 | idéntica |
+| `/llave/revision` | 200 | 200 | idéntica |
+
+Rutas idénticas: 17 de 17.
+Escritura: POST /kpis responde 405 (SQLite) y 405 (MySQL): el servicio solo ofrece GET.
+
+Latencia (50 repeticiones tras 5 de calentamiento; mediana y percentil 95 en ms, cliente httpx en el mismo equipo):
+| Ruta | SQLite mediana | SQLite p95 | MySQL mediana | MySQL p95 |
+|---|---|---|---|---|
+| `/health` | 8.7 | 10.4 | 81.1 | 93.6 |
+| `/metadata` | 19.5 | 23.4 | 101.9 | 123.5 |
+| `/fuentes` | 5.9 | 7.2 | 4.0 | 5.7 |
+| `/kpis` | 4.2 | 5.8 | 93.7 | 110.7 |
+| `/kpis/K1` | 6.0 | 7.0 | 95.9 | 114.9 |
+| `/kpis?kpi_id=K2&grupo=global` | 5.7 | 8.3 | 92.7 | 118.7 |
+| `/kpis/sensibilidad` | 3.4 | 4.5 | 84.1 | 112.1 |
+| `/kpis/sensibilidad?escenario=S1` | 3.5 | 4.6 | 84.9 | 103.5 |
+| `/comunas` | 2.9 | 4.0 | 74.9 | 101.0 |
+| `/composicion` | 7.1 | 11.2 | 88.2 | 109.2 |
+| `/construcciones` | 6.1 | 7.6 | 90.8 | 115.8 |
+| `/construcciones?comuna=02&limit=100` | 8.3 | 10.2 | 102.7 | 124.1 |
+| `/construcciones?estrato=3&limit=100` | 10.7 | 15.2 | 91.3 | 109.9 |
+| `/construcciones?comuna=02&estrato=3` | 8.9 | 12.7 | 91.9 | 119.8 |
+| `/calidad` | 9.0 | 12.2 | 7.5 | 10.3 |
+| `/llave/revision` | 7.9 | 9.5 | 88.0 | 110.3 |
+| `/construcciones?limit=100&offset=1000` | 6.1 | 9.8 | 88.2 | 108.2 |
+
+Mediana de las medianas: SQLite 6.1 ms y MySQL 88.2 ms. Son mediciones locales de una máquina.
+Lectura: las rutas que no consultan el almacén (`/fuentes` y `/calidad`) responden en pocos milisegundos con ambos motores, así que la diferencia de las demás se debe a que la API abre una conexión nueva a MySQL en cada solicitud (decisión D52: conexión de solo lectura por solicitud, cerrada al terminar). No hay un conjunto de conexiones reutilizables; para el uso local de este proyecto no se justifica.
+Sin escritura: los sha256 de los 19 archivos de `data/` son idénticos antes y después de consultar ambos servidores: sí.
+
+Resultado: todo correcto.

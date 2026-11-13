@@ -80,5 +80,5 @@ almacenamiento:   # carga relacional (MySQL; SQLite para pruebas). La contraseñ
   usuario: sismo_etl
   base: sismo_cali
   base_prueba: sismo_cali_prueba
-  lote: 1000
+  lote: 2000
   tiempo_espera_s: 10

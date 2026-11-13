@@ -1,0 +1,40 @@
+# Carga real a la base principal, conciliación e idempotencia
+- comando: `python scripts/evidencias/evidencia_carga_real.py`
+- fecha: 2026-11-13T16:26:15-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 2.0 s
+- Python: 3.13.0
+- commit del repositorio: afd4c96
+
+Base: sismo_cali (MySQL 8.0.45); usuario del proyecto con privilegios mínimos.
+
+1. Carga: estado cargada, corrida 1, clave 05cb1d9f5b2caac7…, 1.17 s, filas {'barrio_estrato': 346, 'construccion': 5146, 'kpi': 23, 'kpi_sensibilidad': 107}
+2. Idempotencia: la segunda carga responde «ya_cargada» (corrida 1); corridas en la base: 1.
+
+3. Conciliación contra los archivos de origen (corrida 1): 100 %
+| Tabla | Filas esperadas | Filas cargadas | Valores comparados | Diferencias |
+|---|---|---|---|---|
+| barrio_estrato | 346 | 346 | 4844 | 0 |
+| construccion | 5146 | 5146 | 138942 | 0 |
+| kpi | 23 | 23 | 391 | 0 |
+| kpi_sensibilidad | 107 | 107 | 1070 | 0 |
+Huellas sha256 de los 5 archivos de entrada guardadas en la corrida: todas iguales.
+
+4. Integridad referencial (filas huérfanas por relación):
+- construccion sin corrida: 0
+- barrio_estrato sin corrida: 0
+- kpi sin corrida: 0
+- kpi_sensibilidad sin corrida: 0
+- corrida_archivo sin corrida: 0
+- construccion con barrio inexistente: 0
+- construccion con comuna inexistente: 0
+- barrio_estrato con comuna inexistente: 0
+
+5. Coherencia de cifras (MySQL frente a gold_final.csv):
+- construcciones: 5146 frente a 5146
+- severas (cambio satelital severo, severo estricto): 296 frente a 296
+- sin datos satelitales: 435 frente a 435
+- sin cruce con el CSV de estrato 2015 (enlace de barrio nulo): 6 frente a 6
+- cobertura de llave 0.998834, estrato válido 0.998445, nombre validado 0.935214, confianza de la llave «alta», fecha de corte 2026-09-02
+
+Resultado: todo correcto.

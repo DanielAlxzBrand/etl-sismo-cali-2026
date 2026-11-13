@@ -1,0 +1,19 @@
+# Comprobación canario de las credenciales de MySQL
+- comando: `python scripts/evidencias/evidencia_canario.py`
+- fecha: 2026-11-13T16:49:54-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 18.9 s
+- Python: 3.13.0
+- commit del repositorio: afd4c96
+
+Variables sensibles de `.env` usadas como canarios (solo nombres): MYSQL_PASSWORD
+Cantidad de canarios: 1
+
+1. `.env` ignorado por git y no versionado: sí
+2. Árbol de trabajo (incluye `data/`, `docs/`, notebooks y evidencias; excluye `.env`, `.git`, entornos y cachés): 0 hallazgos
+3. Registros de ejecución (`logs/*.log`): 0 hallazgos en 5 archivos
+4. Historial de git completo (todas las ramas y etiquetas, 54 commits, mensajes y cambios): 0 hallazgos
+5. Zip de prueba armado con `scripts/make_dist.py` en una carpeta temporal (194 entradas; trae `.env`: no): 0 hallazgos
+6. Escáner de patrones de secretos (árbol e historial): 0 hallazgos
+
+Resultado: 0 hallazgos: la contraseña de MySQL no aparece fuera de `.env`.

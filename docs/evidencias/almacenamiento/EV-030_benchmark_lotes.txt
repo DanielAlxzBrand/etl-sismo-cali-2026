@@ -1,0 +1,19 @@
+# Medición de tamaños de lote de la carga relacional
+- comando: `python scripts/mysql/benchmark_lotes.py --evidencia`
+- fecha: 2026-11-13T16:27:17-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 45.9 s
+- Python: 3.13.0
+- commit del repositorio: afd4c96
+
+Cada estrategia: 1 carga de calentamiento y 5 repeticiones medidas, desde las tablas vacías, con 5622 filas por carga (todas las tablas).
+
+| Estrategia | Lote | Mediana (s) | p95 (s) | Filas/s |
+|---|---|---|---|---|
+| fila a fila | 1 | 2.415 | 3.006 | 2328 |
+| lote 500 | 500 | 0.787 | 0.878 | 7147 |
+| lote 1000 | 1000 | 0.788 | 0.812 | 7130 |
+| lote 2000 | 2000 | 0.715 | 0.833 | 7859 |
+
+Lote elegido: 2000 (criterio: menor mediana; con diferencia menor de 5% se prefiere el lote más pequeño). Frente a la carga fila a fila es 3.4 veces más rápido.
+Los tiempos dependen de este equipo y de la fecha de la medición.

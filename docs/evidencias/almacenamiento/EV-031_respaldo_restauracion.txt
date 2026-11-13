@@ -1,0 +1,23 @@
+# Respaldo lógico y restauración con conciliación
+- comando: `python scripts/mysql/respaldar_restaurar.py --evidencia`
+- fecha: 2026-11-13T16:27:27-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 2.7 s
+- Python: 3.13.0
+- commit del repositorio: afd4c96
+
+Respaldo lógico de la base real en CSV (una carpeta fuera del repositorio) y restauración en la base de prueba reconstruida desde cero.
+
+| Tabla | Filas respaldadas | Filas restauradas | Huella de filas | sha256 del CSV (12 primeros) |
+|---|---|---|---|---|
+| comuna | 27 | 27 | igual | 71b6da3172ee |
+| corrida | 1 | 1 | igual | 12c940e4d507 |
+| corrida_archivo | 5 | 5 | igual | 32f044af52e0 |
+| barrio_estrato | 346 | 346 | igual | 6d33ba9f21e3 |
+| construccion | 5146 | 5146 | igual | 0ff13aab443c |
+| kpi | 23 | 23 | igual | 3fc064768ce4 |
+| kpi_sensibilidad | 107 | 107 | igual | b83f1537b3a0 |
+
+Filas totales: 5655. Respaldo: 0.43 s. Restauración: 1.59 s. Conciliación: correcta en todas las tablas.
+El manifiesto del respaldo (sha256 de cada CSV) se verificó antes de restaurar.
+Alternativa con herramientas del servidor, no ejecutada: mysqldump con --single-transaction; la contraseña se escribe cuando la herramienta la pide.
