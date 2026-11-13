@@ -128,3 +128,6 @@ El detalle de cada ítem (estado, evidencia y cómo validarlo) está en `docs/ch
 | qué archivo adjuntar como evidencia de un ítem | `docs/checklist/guia_de_evidencias.md` |
 | por qué se decidió algo | `docs/DECISIONES.md` |
 | qué pidió el profesor y cómo respondimos | `docs/retroalimentacion/registro_de_cambios.md` |
+
+## Notas
+- `data/silver/quality_report.json` conserva en el texto de la regla R10 la ruta anterior del documento de hallazgos (`docs/hallazgos_eda.md`): es una salida protegida (su sha256 es parte de la línea base) y el código que la genera conserva ese texto para que regenerar el pipeline dé exactamente los mismos bytes. El documento está hoy en `docs/silver/hallazgos_eda.md`.

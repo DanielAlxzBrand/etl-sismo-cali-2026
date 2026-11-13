@@ -41,7 +41,7 @@
 | 10 | Comunidad académica y estudiantil | 1 | 0 | 1 | 3 | 1 | 4 | Mantener informados |
 | 11 | Equipo del proyecto | 3 | 3 | 3 | 3 | 6 | 6 | Gestionar de cerca |
 
-![Matriz poder-interés](../img/matriz_poder_interes.png)
+![Matriz poder-interés](img/matriz_poder_interes.png)
 *Diagrama generado a partir de la tabla de puntajes; criterio del equipo.* [Criterio aplicado: rúbrica R1]
 
 | | **interés bajo** (menor que 4) | **interés alto** (4 o más) |

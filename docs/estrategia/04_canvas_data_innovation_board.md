@@ -24,7 +24,7 @@ Lo que existe hoy es el pipeline, sus indicadores y su documentación para 5.146
 | 8. Socios clave | Productores de las fuentes (Fondo Adaptación, DAPM Cali, IDESC): hoy proveedores de datos; como socios, hipótesis. | repo + hipótesis |
 | 9. Estructura de costos | No estimado. Categorías sin cifras: tiempo del equipo, cómputo y almacenamiento, mantenimiento ante cambios de fuentes. | no estimado |
 
-![Canvas del modelo de negocio](../img/canvas_modelo_negocio.png)
+![Canvas del modelo de negocio](img/canvas_modelo_negocio.png)
 *Diagrama generado a partir del documento; hipótesis sin validar.*
 
 ## 3. Propuesta de valor
