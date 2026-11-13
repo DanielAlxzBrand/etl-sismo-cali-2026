@@ -42,4 +42,4 @@ def test_lista_incluye_referencias_y_documentos_del_proyecto():
     """`make_dist` no excluye por extensión: los PDF de `docs/proyecto/referencias/` y los documentos de `docs/` entran al zip."""
     nombres = [p.relative_to(ROOT).as_posix() for p in make_dist.listar(ROOT)]
     assert any(n.startswith("docs/proyecto/referencias/") and n.endswith(".pdf") for n in nombres)
-    assert any(n.startswith("docs/") for n in nombres)
+    assert "docs/README.md" in nombres and any(n.startswith("docs/retroalimentacion/") for n in nombres)
