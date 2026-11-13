@@ -1,0 +1,13 @@
+# EV-017 · Captura automatizada del navegador (no es una captura manual)
+- comando: `msedge.exe --headless=new --disable-gpu --user-data-dir=<TEMP>\perfil --screenshot=EV-017_docs_navegador.png --window-size=1280,1600 --virtual-time-budget=15000 http://127.0.0.1:<puerto>/docs`
+- fecha: 2026-11-12T23:14:59-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 3.1 s
+- Python: 3.13.0
+- commit del clon: 8aa6ca4
+
+navegador: msedge.exe; la imagen muestra la interfaz Swagger de /docs del servicio local.
+salida del navegador (recortada):
+primary task provider. If a "Renderer" fallback task is shown, it is a bug. If you have repro steps, please file a new bug and tag it as a dependency of crbug.com/40528867.
+85963 bytes written to file <REPO>\docs\entrega_3\evidencias\f2\EV-017_docs_navegador.png
+

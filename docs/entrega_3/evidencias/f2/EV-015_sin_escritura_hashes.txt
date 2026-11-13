@@ -1,0 +1,32 @@
+# EV-015 · Sin escritura: sha256 de data/ antes y después de las pruebas y de consultar el servidor real
+- comando: `sha256 de cada archivo de data/ y de etl_sismo.db en <CLON>`
+- fecha: 2026-11-12T23:14:59-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 0.0 s
+- Python: 3.13.0
+- commit del clon: 8aa6ca4
+
+archivos de data/: tras clonar 19; tras las pruebas 19; tras consultar con el servidor real 19
+idénticos en los tres momentos: True
+base de datos (sha256 en los tres momentos): ['bda7b933a9c24e66650e2357938ac974c7080b72ad50351f7b67380e202f0d49', 'bda7b933a9c24e66650e2357938ac974c7080b72ad50351f7b67380e202f0d49', 'bda7b933a9c24e66650e2357938ac974c7080b72ad50351f7b67380e202f0d49']
+
+sha256 de cada archivo (idéntico antes y después):
+bronze/api/edificaciones/snap_20261016T001024Z/capa_meta.json | c5e4f42587756d609a8f143d5b49bfc6a4fd051fef1f5d35e22f72cd34ee52df
+bronze/api/edificaciones/snap_20261016T001024Z/count_antes.json | c20dec67463cb2026f1f47b9949fe1272a30e944e2958a1538f59138effb8f59
+bronze/api/edificaciones/snap_20261016T001024Z/count_despues.json | c20dec67463cb2026f1f47b9949fe1272a30e944e2958a1538f59138effb8f59
+bronze/api/edificaciones/snap_20261016T001024Z/page_0001.json | 92dfda868878fed44148bbeeb446b13f6bcf88a62dcc33aaab8afd45f717e4af
+bronze/api/edificaciones/snap_20261016T001024Z/page_0002.json | 6b2a4849e95d8da1f04f7641cbc90b98aa4372cad9cbab02230bab8babe25729
+bronze/api/edificaciones/snap_20261016T001024Z/page_0003.json | ac23590d1a6713e37f711473d999a9fd10eec024076b58bb63fa48f2e7524f51
+bronze/geo/poligonos_barrios/snap_20261016T001031Z/barrios.geojson | 8e74f06308568e2ccbe90f54c5bef0611c15072765a255fa6bd5bc12babe6ad1
+bronze/manifest.jsonl | 38bcbce16a0cd592cea546a348001e52c9762fa8e9a2f51a436de2f816470283
+bronze/tabular/estrato_barrio/snap_20261016T001028Z/estratificaci_n_socioecon_mica_seg_n_estrato__por_barrio_en_cali_2015.csv | c16b209e4f20bd0983e0c44c6ad109f151e41c30c23f7708143094746136a089
+gold/etl_sismo.db | bda7b933a9c24e66650e2357938ac974c7080b72ad50351f7b67380e202f0d49
+gold/gold_final.csv | 496ab49eb76ada329df916266befd327febfd8f6333636e9e37fbed234cbc7a9
+gold/kpis_gold.csv | 6db3dbeeeffbbf5c087c9b71fd5b8c51f280d0a4c8c14b37e084418f9fbf2e4c
+gold/kpis_sensibilidad.csv | 0cf75f2d2fabcb56f1b6bded38a4afb02d7ede0bf0c6e550b55dd3b8c6aca40e
+silver/quality_report.json | fa66f7f26ff6b6da5255dd364228afab650a540f9cd60e1f509d8c93e84c1120
+silver/silver_construcciones.csv | 85ea33ebe99c9fb6087bb7eaf88fee42f6ba55b9a254348f7e9d9fee571d5c9b
+silver/silver_estrato_barrio.csv | 0815be18476695f160b3002f40c84b29afd7a69ccddc6cba5a6b99bad87a346b
+silver/silver_integrated.csv | bc1d1c6bd4bb3f6278a423751e63323b69ebc583f82a3f5f2b1b0d491d09ae4d
+silver/silver_orphans_left.csv | 04bc074bf0332eae832bff81a8be4cc3dc60857bd5398851989444a5aa00b126
+silver/silver_orphans_right.csv | da95c33f59f5112afb1952ab9a1824a0a791726292d7a164350ad78aa9c4c05a

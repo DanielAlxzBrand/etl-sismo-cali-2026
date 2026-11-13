@@ -1,0 +1,1658 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "API de solo lectura · Gold del sismo de Cali",
+    "description": "Entrega los resultados ya calculados (Gold). No escribe, no recalcula. Proxy satelital, no evaluación estructural.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "servicio"
+        ],
+        "summary": "Health",
+        "description": "Estado del servicio, fecha de corte y filas por tabla.",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Salud"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metadata": {
+      "get": {
+        "tags": [
+          "servicio"
+        ],
+        "summary": "Metadata",
+        "description": "Fuentes, fechas, población analizada, alcance temporal y licencias.",
+        "operationId": "metadata_metadata_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Metadata"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorRespuesta"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorRespuesta"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorRespuesta"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fuentes": {
+      "get": {
+        "tags": [
+          "servicio"
+        ],
+        "summary": "Fuentes",
+        "description": "Catálogo de fuentes y metadatos (generado desde el manifiesto).",
+        "operationId": "fuentes_fuentes_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorRespuesta"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorRespuesta"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorRespuesta"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/kpis/sensibilidad": {
+      "get": {
+        "tags": [
+          "indicadores"
+        ],
+        "summary": "Kpis Sensibilidad",
+        "description": "Filas de kpis_sensibilidad (escenarios S0 a S5).",
+        "operationId": "kpis_sensibilidad_kpis_sensibilidad_get",
+        "parameters": [
+          {
+            "name": "escenario",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^S[0-5]$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Escenario"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FilaSensibilidad"
+                  },
+                  "title": "Response Kpis Sensibilidad Kpis Sensibilidad Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorRespuesta"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorRespuesta"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorRespuesta"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        }
+      }
+    },
+    "/kpis": {
+      "get": {
+        "tags": [
+          "indicadores"
+        ],
+        "summary": "Kpis",
+        "description": "Filas de kpis_gold tal como están.",
+        "operationId": "kpis_kpis_get",
+        "parameters": [
+          {
+            "name": "kpi_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^K\\d{1,2}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Kpi Id"
+            }
+          },
+          {
+            "name": "grupo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 60
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Grupo"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FilaKpi"
+                  },
+                  "title": "Response Kpis Kpis Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorRespuesta"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorRespuesta"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorRespuesta"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        }
+      }
+    },
+    "/kpis/{kpi_id}": {
+      "get": {
+        "tags": [
+          "indicadores"
+        ],
+        "summary": "Kpi",
+        "description": "Todas las filas de un indicador.",
+        "operationId": "kpi_kpis__kpi_id__get",
+        "parameters": [
+          {
+            "name": "kpi_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^K\\d{1,2}$",
+              "title": "Kpi Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FilaKpi"
+                  },
+                  "title": "Response Kpi Kpis  Kpi Id  Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorRespuesta"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorRespuesta"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorRespuesta"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        }
+      }
+    },
+    "/comunas": {
+      "get": {
+        "tags": [
+          "indicadores"
+        ],
+        "summary": "Comunas",
+        "description": "K6 por comuna, tal como está en kpis_gold.",
+        "operationId": "comunas_comunas_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/FilaComuna"
+                  },
+                  "type": "array",
+                  "title": "Response Comunas Comunas Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorRespuesta"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorRespuesta"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorRespuesta"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/composicion": {
+      "get": {
+        "tags": [
+          "indicadores"
+        ],
+        "summary": "Composicion",
+        "description": "Construcciones con datos y severos por comuna y grupo de estrato (1-2, 3-5, 6).",
+        "operationId": "composicion_composicion_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/FilaComposicion"
+                  },
+                  "type": "array",
+                  "title": "Response Composicion Composicion Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorRespuesta"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorRespuesta"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorRespuesta"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/construcciones": {
+      "get": {
+        "tags": [
+          "datos"
+        ],
+        "summary": "Construcciones",
+        "description": "Construcciones paginadas y ordenadas por objectid.",
+        "operationId": "construcciones_construcciones_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 10000000,
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "comuna",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^\\d{2}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Comuna"
+            }
+          },
+          {
+            "name": "estrato",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "maximum": 6,
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Estrato"
+            }
+          },
+          {
+            "name": "severo_estricto",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Severo Estricto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginaConstrucciones"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorRespuesta"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorRespuesta"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorRespuesta"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        }
+      }
+    },
+    "/calidad": {
+      "get": {
+        "tags": [
+          "calidad"
+        ],
+        "summary": "Calidad",
+        "description": "Coberturas y confianza de la llave, leídas de quality_report.json.",
+        "operationId": "calidad_calidad_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calidad"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorRespuesta"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorRespuesta"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorRespuesta"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/llave/revision": {
+      "get": {
+        "tags": [
+          "calidad"
+        ],
+        "summary": "Llave Revision",
+        "description": "Códigos de barrio con nombre no validado entre el CSV 2015 y el polígono.",
+        "operationId": "llave_revision_llave_revision_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevisionLlave"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorRespuesta"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorRespuesta"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorRespuesta"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Calidad": {
+        "properties": {
+          "cobertura_llave": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Cobertura Llave"
+          },
+          "cobertura_estrato_valido": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Cobertura Estrato Valido"
+          },
+          "pct_nombre_validado": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Pct Nombre Validado"
+          },
+          "llave_confianza": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Llave Confianza"
+          }
+        },
+        "type": "object",
+        "required": [
+          "cobertura_llave",
+          "cobertura_estrato_valido",
+          "pct_nombre_validado",
+          "llave_confianza"
+        ],
+        "title": "Calidad"
+      },
+      "CodigoRevision": {
+        "properties": {
+          "codigo_barrio": {
+            "type": "string",
+            "title": "Codigo Barrio"
+          },
+          "n_construcciones": {
+            "type": "integer",
+            "title": "N Construcciones"
+          },
+          "nombre_csv_2015": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nombre Csv 2015"
+          },
+          "nombre_poligono_dominante": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nombre Poligono Dominante"
+          },
+          "pct_coincide_poligono": {
+            "type": "number",
+            "title": "Pct Coincide Poligono"
+          }
+        },
+        "type": "object",
+        "required": [
+          "codigo_barrio",
+          "n_construcciones",
+          "nombre_csv_2015",
+          "nombre_poligono_dominante",
+          "pct_coincide_poligono"
+        ],
+        "title": "CodigoRevision"
+      },
+      "Construccion": {
+        "properties": {
+          "objectid": {
+            "type": "integer",
+            "title": "Objectid"
+          },
+          "comuna": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comuna"
+          },
+          "barrio": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Barrio"
+          },
+          "codigo_barrio": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Codigo Barrio"
+          },
+          "nombre_barrio_csv": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nombre Barrio Csv"
+          },
+          "estrato": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Estrato"
+          },
+          "sin_datos": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sin Datos"
+          },
+          "severo_estricto": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Severo Estricto"
+          },
+          "estado_estructural": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Estado Estructural"
+          },
+          "clase_dano": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clase Dano"
+          },
+          "lon": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lon"
+          },
+          "lat": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lat"
+          },
+          "coincide_poligono": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Coincide Poligono"
+          },
+          "nombre_validado": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nombre Validado"
+          }
+        },
+        "type": "object",
+        "required": [
+          "objectid",
+          "comuna",
+          "barrio",
+          "codigo_barrio",
+          "nombre_barrio_csv",
+          "estrato",
+          "sin_datos",
+          "severo_estricto",
+          "estado_estructural",
+          "clase_dano",
+          "lon",
+          "lat",
+          "coincide_poligono",
+          "nombre_validado"
+        ],
+        "title": "Construccion"
+      },
+      "ErrorDetalle": {
+        "properties": {
+          "codigo": {
+            "type": "string",
+            "title": "Codigo"
+          },
+          "mensaje": {
+            "type": "string",
+            "title": "Mensaje"
+          },
+          "detalle": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detalle"
+          }
+        },
+        "type": "object",
+        "required": [
+          "codigo",
+          "mensaje"
+        ],
+        "title": "ErrorDetalle"
+      },
+      "ErrorRespuesta": {
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ErrorDetalle"
+          }
+        },
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "title": "ErrorRespuesta"
+      },
+      "FilaComposicion": {
+        "properties": {
+          "comuna": {
+            "type": "string",
+            "title": "Comuna"
+          },
+          "grupo_estrato": {
+            "type": "string",
+            "title": "Grupo Estrato"
+          },
+          "n_con_datos": {
+            "type": "integer",
+            "title": "N Con Datos"
+          },
+          "severos": {
+            "type": "integer",
+            "title": "Severos"
+          }
+        },
+        "type": "object",
+        "required": [
+          "comuna",
+          "grupo_estrato",
+          "n_con_datos",
+          "severos"
+        ],
+        "title": "FilaComposicion"
+      },
+      "FilaComuna": {
+        "properties": {
+          "comuna": {
+            "type": "string",
+            "title": "Comuna"
+          },
+          "n_con_datos": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "N Con Datos"
+          },
+          "severos": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Severos"
+          },
+          "tasa": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tasa"
+          },
+          "ic95_inf": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ic95 Inf"
+          },
+          "ic95_sup": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ic95 Sup"
+          },
+          "n_sin_datos": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "N Sin Datos"
+          },
+          "pct_sin_datos": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pct Sin Datos"
+          },
+          "muestra_baja": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Muestra Baja"
+          }
+        },
+        "type": "object",
+        "required": [
+          "comuna",
+          "n_con_datos",
+          "severos",
+          "tasa",
+          "ic95_inf",
+          "ic95_sup",
+          "n_sin_datos",
+          "pct_sin_datos",
+          "muestra_baja"
+        ],
+        "title": "FilaComuna"
+      },
+      "FilaKpi": {
+        "properties": {
+          "kpi_id": {
+            "type": "string",
+            "title": "Kpi Id"
+          },
+          "nombre": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nombre"
+          },
+          "valor": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Valor"
+          },
+          "numerador": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Numerador"
+          },
+          "denominador": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Denominador"
+          },
+          "grupo": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Grupo"
+          },
+          "fecha_corte": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fecha Corte"
+          },
+          "fuente": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fuente"
+          },
+          "ic95_inf": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ic95 Inf"
+          },
+          "ic95_sup": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ic95 Sup"
+          },
+          "n_sin_datos": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "N Sin Datos"
+          },
+          "pct_sin_datos": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pct Sin Datos"
+          },
+          "muestra_baja": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Muestra Baja"
+          },
+          "cota_inf": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cota Inf"
+          },
+          "cota_sup": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cota Sup"
+          },
+          "nota": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nota"
+          }
+        },
+        "type": "object",
+        "required": [
+          "kpi_id",
+          "nombre",
+          "valor",
+          "numerador",
+          "denominador",
+          "grupo",
+          "fecha_corte",
+          "fuente",
+          "ic95_inf",
+          "ic95_sup",
+          "n_sin_datos",
+          "pct_sin_datos",
+          "muestra_baja",
+          "cota_inf",
+          "cota_sup",
+          "nota"
+        ],
+        "title": "FilaKpi"
+      },
+      "FilaSensibilidad": {
+        "properties": {
+          "escenario": {
+            "type": "string",
+            "title": "Escenario"
+          },
+          "kpi_id": {
+            "type": "string",
+            "title": "Kpi Id"
+          },
+          "grupo": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Grupo"
+          },
+          "k": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "K"
+          },
+          "n": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "N"
+          },
+          "tasa": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tasa"
+          },
+          "ic95_inf": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ic95 Inf"
+          },
+          "ic95_sup": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ic95 Sup"
+          },
+          "nota": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nota"
+          }
+        },
+        "type": "object",
+        "required": [
+          "escenario",
+          "kpi_id",
+          "grupo",
+          "k",
+          "n",
+          "tasa",
+          "ic95_inf",
+          "ic95_sup",
+          "nota"
+        ],
+        "title": "FilaSensibilidad"
+      },
+      "Metadata": {
+        "properties": {
+          "aviso": {
+            "type": "string",
+            "title": "Aviso"
+          },
+          "fecha_edicion_capa": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fecha Edicion Capa"
+          },
+          "fecha_imagen_pre": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fecha Imagen Pre"
+          },
+          "fecha_imagen_post": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fecha Imagen Post"
+          },
+          "fecha_corte": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fecha Corte"
+          },
+          "poblacion": {
+            "$ref": "#/components/schemas/Poblacion"
+          },
+          "alcance_temporal": {
+            "type": "string",
+            "title": "Alcance Temporal"
+          },
+          "licencias": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Licencias"
+          },
+          "fuentes": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Fuentes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "aviso",
+          "fecha_edicion_capa",
+          "fecha_imagen_pre",
+          "fecha_imagen_post",
+          "fecha_corte",
+          "poblacion",
+          "alcance_temporal",
+          "licencias",
+          "fuentes"
+        ],
+        "title": "Metadata"
+      },
+      "PaginaConstrucciones": {
+        "properties": {
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Construccion"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total",
+          "limit",
+          "offset",
+          "items"
+        ],
+        "title": "PaginaConstrucciones"
+      },
+      "Poblacion": {
+        "properties": {
+          "construcciones": {
+            "type": "integer",
+            "title": "Construcciones"
+          },
+          "con_datos_satelitales": {
+            "type": "integer",
+            "title": "Con Datos Satelitales"
+          },
+          "comunas": {
+            "type": "integer",
+            "title": "Comunas"
+          },
+          "codigos_barrio": {
+            "type": "integer",
+            "title": "Codigos Barrio"
+          }
+        },
+        "type": "object",
+        "required": [
+          "construcciones",
+          "con_datos_satelitales",
+          "comunas",
+          "codigos_barrio"
+        ],
+        "title": "Poblacion"
+      },
+      "RevisionLlave": {
+        "properties": {
+          "documento": {
+            "type": "string",
+            "title": "Documento"
+          },
+          "total_codigos": {
+            "type": "integer",
+            "title": "Total Codigos"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/CodigoRevision"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "documento",
+          "total_codigos",
+          "items"
+        ],
+        "title": "RevisionLlave"
+      },
+      "Salud": {
+        "properties": {
+          "estado": {
+            "type": "string",
+            "title": "Estado"
+          },
+          "version_api": {
+            "type": "string",
+            "title": "Version Api"
+          },
+          "fecha_corte": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fecha Corte"
+          },
+          "base_disponible": {
+            "type": "boolean",
+            "title": "Base Disponible"
+          },
+          "filas_por_tabla": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Filas Por Tabla"
+          }
+        },
+        "type": "object",
+        "required": [
+          "estado",
+          "version_api",
+          "fecha_corte",
+          "base_disponible",
+          "filas_por_tabla"
+        ],
+        "title": "Salud"
+      }
+    }
+  }
+}

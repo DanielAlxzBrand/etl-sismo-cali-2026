@@ -1,0 +1,41 @@
+# EV-016 · Servicio en 127.0.0.1 y una llamada a cada endpoint
+- comando: `<VENV>\Scripts\python.exe -m uvicorn src.api.app:app --host 127.0.0.1 --port <libre>; GET a cada ruta`
+- fecha: 2026-11-12T23:14:59-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 8.4 s
+- Python: 3.13.0
+- commit del clon: 8aa6ca4
+
+servicio: uvicorn src.api.app:app --host 127.0.0.1 --port <puerto libre>
+
+GET /health -> 200, 189 bytes; archivo respuestas_api/health.json
+GET /metadata -> 200, 2246 bytes; archivo respuestas_api/metadata.json
+GET /fuentes -> 200, 30747 bytes; archivo respuestas_api/fuentes.json
+GET /kpis -> 200, 13111 bytes; archivo respuestas_api/kpis.json
+GET /kpis/K1 -> 200, 3037 bytes; archivo respuestas_api/kpis_K1.json
+GET /kpis/sensibilidad -> 200, 21991 bytes; archivo respuestas_api/kpis_sensibilidad.json
+GET /comunas -> 200, 1366 bytes; archivo respuestas_api/comunas.json
+GET /composicion -> 200, 613 bytes; archivo respuestas_api/composicion.json
+GET /construcciones?limit=5 -> 200, 1697 bytes; archivo respuestas_api/construcciones.json
+GET /calidad -> 200, 348 bytes; archivo respuestas_api/calidad.json
+GET /llave/revision -> 200, 1265 bytes; archivo respuestas_api/llave_revision.json
+error 404: GET /kpis/K99 -> 404 {"error":{"codigo":"no_encontrado","mensaje":"no existe el indicador K99","detalle":null}}
+error 422: GET /construcciones?limit=999 -> 422 {"error":{"codigo":"parametros_invalidos","mensaje":"Algún parámetro no es válido.","detalle":[{"campo":"query.limit","mensaje":"Input should be less than or equal to 200"}]}}
+método no permitido: POST /kpis -> 405 {"error":{"codigo":"metodo_no_permitido","mensaje":"Method Not Allowed","detalle":null}}
+GET /openapi.json -> 200; 11 rutas; métodos: GET
+cierre ordenado con CTRL+BREAK: código de salida 3 (en Windows uvicorn vuelve a emitir la señal tras cerrar; 3 es el código esperado)
+
+registro del servicio (inicio y cierre):
+INFO:     Started server process [24608]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:57847 (Press CTRL+C to quit)
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [24608]
+...
+últimas solicitudes registradas:
+2026-11-12 23:14:56 INFO etl.app GET /llave/revision -> 200 en 3.7 ms
+2026-11-12 23:14:57 INFO etl.app GET /docs -> 200 en 1.9 ms
+2026-11-12 23:14:58 INFO etl.app GET /openapi.json -> 200 en 1.1 ms

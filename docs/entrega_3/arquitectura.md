@@ -107,7 +107,7 @@ Ejemplo real: `GET /kpis/K99` → `{"error":{"codigo":"no_encontrado","mensaje":
 Las consultas no cambian estado: la misma solicitud devuelve la misma respuesta mientras Gold no cambie. La conexión es de solo lectura y una prueba compara los sha256 de `data/` y de la base antes y después de consultar todos los endpoints (`tests/test_api.py`, EV-015). El catálogo se genera sin fecha de ejecución, así que dos generaciones son idénticas.
 
 ## 8. Observabilidad
-Cada solicitud se registra con `src/logger.py` (método, ruta, estado y duración en ms), en consola y en `logs/etl_AAAAMMDD.log`, con enmascarado de secretos. Ejemplo real: `GET /llave/revision -> 200 en 5.1 ms`. No se registran cuerpos ni parámetros sensibles.
+Cada solicitud se registra con `src/logger.py` (método, ruta, estado y duración en ms), en consola y en `logs/etl_AAAAMMDD.log`, con enmascarado de secretos. Ejemplo real: `GET /llave/revision -> 200 en 3.7 ms`. No se registran cuerpos ni parámetros sensibles.
 
 <!-- latencias:inicio -->
 ### Rendimiento (medición local)
@@ -115,17 +115,17 @@ Latencia por ruta con el **servidor real** en `127.0.0.1` (no el cliente de prue
 
 | ruta | mediana (ms) | percentil 95 (ms) | máximo (ms) |
 |---|---|---|---|
-| `/health` | 6,0 | 8,1 | 11,5 |
-| `/metadata` | 11,7 | 17,2 | 18,7 |
-| `/fuentes` | 4,4 | 8,1 | 9,0 |
-| `/kpis` | 5,9 | 10,8 | 12,5 |
-| `/kpis/K1` | 5,1 | 5,8 | 6,6 |
-| `/kpis/sensibilidad` | 6,0 | 9,7 | 10,0 |
-| `/comunas` | 5,1 | 6,0 | 6,1 |
-| `/composicion` | 11,3 | 14,7 | 16,1 |
-| `/construcciones?limit=5` | 7,2 | 9,6 | 11,9 |
-| `/calidad` | 11,7 | 15,8 | 16,6 |
-| `/llave/revision` | 8,1 | 10,0 | 12,0 |
+| `/health` | 5,2 | 6,5 | 6,7 |
+| `/metadata` | 11,0 | 12,2 | 13,9 |
+| `/fuentes` | 3,9 | 4,7 | 5,7 |
+| `/kpis` | 3,2 | 4,3 | 4,8 |
+| `/kpis/K1` | 4,2 | 5,9 | 6,2 |
+| `/kpis/sensibilidad` | 6,3 | 7,9 | 8,2 |
+| `/comunas` | 4,7 | 6,6 | 7,0 |
+| `/composicion` | 7,0 | 8,1 | 10,6 |
+| `/construcciones?limit=5` | 4,4 | 5,8 | 6,6 |
+| `/calidad` | 7,5 | 9,9 | 10,1 |
+| `/llave/revision` | 5,1 | 6,7 | 7,0 |
 <!-- latencias:fin -->
 
 ## 9. Seguridad y amenazas

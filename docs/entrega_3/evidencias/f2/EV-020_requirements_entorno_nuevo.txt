@@ -1,0 +1,27 @@
+# EV-020 · Entorno virtual nuevo con requirements.txt y recolección de pruebas
+- comando: `python -m venv <TEMP>\venv_nuevo; <TEMP>\venv_nuevo\Scripts\python.exe -m pip install -r requirements.txt; ... -m pytest --collect-only -q (cwd: <CLON>)`
+- fecha: 2026-11-12T23:18:44-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 221.9 s
+- Python: 3.13.0
+- commit del clon: 8aa6ca4
+
+crear entorno: código 0
+instalar requirements.txt: código 0
+recolección de pruebas con el entorno nuevo: código 0; pruebas recolectadas: 92
+
+paquetes de la capa de servicio instalados:
+fastapi==0.162.5
+httpx==0.28.1
+pydantic==2.14.3
+pydantic_core==2.50.4
+starlette==1.10.0
+uvicorn==0.54.0
+
+resumen de la instalación:
+122 paquetes instalados (lista completa omitida)
+
+fin de la recolección (últimas líneas):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+92 tests collected in 6.02s

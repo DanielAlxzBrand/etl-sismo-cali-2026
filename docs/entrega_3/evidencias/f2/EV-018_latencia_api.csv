@@ -1,0 +1,12 @@
+endpoint,repeticiones,calentamiento,mediana_ms,p95_ms,maximo_ms,alcance
+/health,50,5,5.15,6.46,6.67,"medición local en una máquina, servidor real en 127.0.0.1"
+/metadata,50,5,11.0,12.23,13.9,"medición local en una máquina, servidor real en 127.0.0.1"
+/fuentes,50,5,3.94,4.74,5.69,"medición local en una máquina, servidor real en 127.0.0.1"
+/kpis,50,5,3.2,4.34,4.75,"medición local en una máquina, servidor real en 127.0.0.1"
+/kpis/K1,50,5,4.2,5.88,6.24,"medición local en una máquina, servidor real en 127.0.0.1"
+/kpis/sensibilidad,50,5,6.26,7.88,8.25,"medición local en una máquina, servidor real en 127.0.0.1"
+/comunas,50,5,4.73,6.58,7.01,"medición local en una máquina, servidor real en 127.0.0.1"
+/composicion,50,5,6.98,8.07,10.57,"medición local en una máquina, servidor real en 127.0.0.1"
+/construcciones?limit=5,50,5,4.42,5.85,6.64,"medición local en una máquina, servidor real en 127.0.0.1"
+/calidad,50,5,7.48,9.88,10.05,"medición local en una máquina, servidor real en 127.0.0.1"
+/llave/revision,50,5,5.08,6.71,6.95,"medición local en una máquina, servidor real en 127.0.0.1"

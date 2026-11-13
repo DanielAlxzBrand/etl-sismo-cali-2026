@@ -1,0 +1,24 @@
+# EV-013 · Paquetes instalados en el .venv del proyecto (fastapi, uvicorn, httpx)
+- comando: `<VENV>\Scripts\python.exe -c "import fastapi, uvicorn, httpx, ..."; <VENV>\Scripts\python.exe -m pip check; lectura del WHEEL de pydantic-core`
+- fecha: 2026-11-12T23:14:39-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 2.3 s
+- Python: 3.13.0
+- commit del clon: 8aa6ca4
+
+importación y versiones:
+Python 3.13.0
+fastapi 0.162.5
+uvicorn 0.54.0
+httpx 0.28.1
+pydantic 2.14.3
+pydantic_core 2.50.4
+starlette 1.10.0
+
+pip check:
+No broken requirements found.
+
+etiqueta de la rueda de pydantic-core (dependencia de fastapi): Tag: cp313-cp313-win_amd64
+(cp313 = Python 3.13: la dependencia binaria tiene rueda para esta versión)
+
+La instalación se hizo con `<VENV>\Scripts\python.exe -m pip install fastapi uvicorn httpx` (nunca en el Python global); httpx 0.28.1 ya estaba como dependencia de Jupyter.
