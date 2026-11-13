@@ -23,7 +23,7 @@ Códigos de salida: 0 (cargó o ya estaba cargada), 1 (la carga falló y se revi
 | SQL explícito | sentencias con parámetros; sin ORM y sin `LOAD DATA LOCAL` | D41 |
 | Integridad | claves primarias y foráneas (`ON DELETE RESTRICT`), restricciones `CHECK` (estrato, pureza, coordenadas de Cali, banderas, coherencia entre cruce y enlace y entre sin datos y severo) | D42, D51 |
 
-Los 4 casos de construcciones cuyo código de barrio no está en el CSV de estrato se cargan con `barrio_estrato_codigo` nulo: se conservan las 5.146 construcciones y no se inventa ningún barrio.
+Las 6 construcciones que no cruzan con el CSV de estrato (4 con un código de barrio ausente del CSV y 2 sin código) se cargan con `barrio_estrato_codigo` nulo: se conservan las 5.146 construcciones y no se inventa ningún barrio.
 
 ## 3. Verificación sin servidor (pytest)
 Las pruebas automáticas no necesitan MySQL (D49). Con el mismo esquema sobre SQLite y claves foráneas activas comprueban:
@@ -51,6 +51,18 @@ Cada comprobación imprime «OK» o «FALLA» con su detalle; el código de sali
 ```
 Compara fila a fila con lotes de 500, 1000 y 2000 (1 carga de calentamiento y 5 repeticiones por estrategia, desde tablas vacías), informa mediana, p95 y filas por segundo y propone el lote. Criterio: menor mediana; si otro lote queda a menos de 5 % se prefiere el más pequeño. Con `--fijar` escribe el valor en `almacenamiento.lote`.
 
+### Resultados medidos (2026-11-13, MySQL 8.0.45 local)
+| Qué | Resultado | Evidencia |
+|---|---|---|
+| Batería en vivo sobre la base de prueba | 26 de 26 comprobaciones correctas; 145.247 valores conciliados sin diferencias | EV-028 |
+| Carga real a `sismo_cali` | 5.622 filas en 1,17 s; conciliación al 100 %; segunda carga «ya cargada»; 0 filas huérfanas; 296 severas, 435 sin datos satelitales y 6 sin cruce, iguales a `gold_final.csv` | EV-029 |
+| Tamaño de lote (mediana de 5 repeticiones) | fila a fila 2,415 s; lote de 500, 0,787 s; de 1000, 0,788 s; de 2000, 0,715 s: se fijó 2000 (3,4 veces más rápido que fila a fila) | EV-030, D53 |
+| Respaldo y restauración | 5.655 filas en 7 tablas; huellas iguales tras restaurar | EV-031 |
+| API sobre MySQL frente a SQLite | 17 de 17 rutas idénticas; mediana de las medianas de 88 ms con MySQL y 6 ms con SQLite (la API abre una conexión por solicitud, D54) | EV-032 |
+| Credenciales | la contraseña real no aparece en el árbol, los registros, los 54 commits ni un zip de prueba | EV-033 |
+
+Los tiempos son mediciones locales de un equipo y no representan un despliegue.
+
 ## 5. Respaldo y restauración
 ```powershell
 .\.venv\Scripts\python.exe scripts\mysql\respaldar_restaurar.py --evidencia
@@ -67,6 +79,6 @@ Exporta cada tabla de la base real a CSV con un manifiesto de sha256 en una carp
 En `config/config.yaml`, `api.almacenamiento: mysql` (por defecto `sqlite`). La API abre una conexión de solo lectura por solicitud y responde con la **última corrida**; `/health` y `/metadata` informan el almacén activo. Si MySQL no responde, todas las rutas devuelven 503 con el JSON de error uniforme, sin datos de conexión (D52).
 
 ## 8. Alcance y límites
-- **Qué afirmamos:** el esquema, la carga, la conciliación y la integridad están implementados y se prueban sin servidor; la batería en vivo los repite contra MySQL 8.0 en la base de prueba y deja evidencia saneada.
-- **Con qué evidencia:** las pruebas de `tests/test_carga_relacional.py`, `tests/test_configurar_mysql.py` y `tests/test_respaldo_y_medicion.py`, y los archivos de `docs/evidencias/almacenamiento/`.
+- **Qué afirmamos:** el esquema, la carga, la conciliación y la integridad están implementados, se prueban sin servidor y se repitieron contra MySQL 8.0.45 (base de prueba y base real) con evidencia saneada.
+- **Con qué evidencia:** las pruebas de `tests/test_carga_relacional.py`, `tests/test_configurar_mysql.py` y `tests/test_respaldo_y_medicion.py`, y las evidencias EV-027 a EV-034 de `docs/evidencias/almacenamiento/` (listadas en el manifiesto).
 - **Qué NO afirmamos:** que el almacén relacional sea apto para varios usuarios simultáneos, que las medidas de tiempo valgan para otro equipo ni que los datos sean una evaluación estructural: es un proxy satelital sobre construcciones de siete comunas, sin generalizar a toda Cali.

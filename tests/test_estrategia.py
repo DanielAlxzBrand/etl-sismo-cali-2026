@@ -211,7 +211,7 @@ def test_negativas_de_los_criterios_del_mvp(tmp_path):
         "componente por definir": [(f"**no verificado aún: {comp}** | {comp} | —", "**no verificado aún: por definir** | por definir | —")],
         "criterio pendiente con guion": [(f"**no verificado aún: {comp}** | {comp} | —", "**no verificado aún: —** | — | —")],
         "criterio cumple sin fecha": [(cumple.group(0), cumple.group(0).replace(cumple.group(1), "—"))],
-        "conteo que no coincide": [("23 de 29 criterios cumplen hoy", "24 de 29 criterios cumplen hoy")],
+        "conteo que no coincide": [("25 de 29 criterios cumplen hoy", "26 de 29 criterios cumplen hoy")],
     }
     for nombre, cambios in alteraciones.items():
         assert revisar_criterios(_copia(tmp_path, t, cambios)), nombre

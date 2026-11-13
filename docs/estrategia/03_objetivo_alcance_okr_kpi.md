@@ -76,7 +76,7 @@ Son métricas de valor del proyecto como servicio de análisis; el impacto sobre
 | V1 Construcciones con dato satelital utilizable | construcciones con `sin_datos = false` / construcciones | `data/gold/gold_final.csv` | 91,5 % (4.711 de 5.146) | Mide disponibilidad, no exactitud del proxy |
 | V2 Cobertura de la llave | construcciones con llave / construcciones | `data/silver/quality_report.json` | 99,883 % | Ver P1 |
 | V3 Reproducibilidad | diferencias de sha256 entre dos corridas | clon temporal | 0 diferencias de 9 archivos | Solo Silver y Gold |
-| V4 Componentes del proyecto | latencia de la API; tiempo de carga al almacén; tasa de éxito del DAG; tiempo de carga del dashboard | pruebas de cada componente; `docs/evidencias/api/EV-018_latencia_api.csv` | latencia de la API: mediana entre 3,2 y 11,0 ms por ruta y percentil 95 de hasta 12,2 ms (50 repeticiones tras 5 de calentamiento, servidor real en 127.0.0.1; medición local de una máquina, EV-018); el resto se mide cuando existan los componentes en construcción | Medición local, no representa un despliegue; sin valor para los componentes que aún no existen |
+| V4 Componentes del proyecto | latencia de la API; tiempo de carga al almacén; tasa de éxito del DAG; tiempo de carga del dashboard | pruebas de cada componente; `docs/evidencias/api/EV-018_latencia_api.csv`, `docs/evidencias/almacenamiento/EV-030_benchmark_lotes.csv`, `docs/evidencias/almacenamiento/EV-032_latencia_api_mysql_vs_sqlite.csv` | latencia de la API: mediana entre 3,2 y 11,0 ms por ruta y percentil 95 de hasta 12,2 ms (50 repeticiones tras 5 de calentamiento, servidor real en 127.0.0.1; medición local de una máquina, EV-018); tiempo de carga al almacén: mediana de 715,0 ms para 5622 filas con lote de 2000 frente a 2415,0 ms fila a fila (5 repeticiones tras 1 de calentamiento, EV-030); API sobre MySQL: mediana de las medianas de 88,2 ms frente a 6,1 ms con SQLite (EV-032); el resto se mide cuando existan los componentes en construcción | Medición local, no representa un despliegue; sin valor para los componentes que aún no existen |
 
 ## 4. Trazabilidad OKR → KPI → evidencia → verificación
 | OKR | meta del Avance 1 / qué logramos | KPI asociado | archivo de evidencia | prueba o comando |
@@ -89,7 +89,7 @@ Son métricas de valor del proyecto como servicio de análisis; el impacto sobre
 | KR5 (fuera de alcance) | Meta: Seguimiento periódico del avance de verificación mientras la Alcaldía actualiza el repositorio. Logro: No evaluado: seguimiento fuera del ETL. | ninguno | no hay | no aplica |
 | Calidad de la integración (sostiene KR1 y KR4) | P1, P2, P3 superan el umbral | K5, P1, P2, P3 | `data/silver/quality_report.json`, `docs/silver/validacion_llave.md` | `tests/test_quality.py::test_cobertura_join_supera_umbral` |
 | Reproducibilidad (sostiene todos) | P4 a P7 | P4, P5, P6, P7 | `data/bronze/manifest.jsonl`, `tests/`, `scripts/make_dist.py` | `tests/test_extract.py::test_archivos_existen_y_sha256_coincide`; `tests/test_dist.py` |
-| Componentes del proyecto | latencia de la API medida (EV-018); el resto se mide cuando existan los componentes en construcción | V4 | se define en cada componente | pruebas de cada componente |
+| Componentes del proyecto | latencia de la API y tiempo de carga al almacén medidos (EV-018, EV-030 y EV-032); el resto se mide cuando existan los componentes en construcción | V4 | se define en cada componente | pruebas de cada componente |
 
 Estas filas no convierten un KR parcial en cumplido.
 

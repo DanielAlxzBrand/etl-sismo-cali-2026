@@ -11,7 +11,7 @@
 **Comandos de PowerShell.** Todos se ejecutan en la raíz del repositorio con el entorno activado (`.\.venv\Scripts\Activate.ps1`) y no modifican nada. Para comprobar que no cambió nada: `git status --short` no debe imprimir nada.
 
 ## Índice
-Fichas de los ítems 1.1 a 1.5 (Estrategia) y 2.1 a 2.3 (API, fuentes y credenciales). Las de Carga relacional, Pruebas y orquestación, Panel, Usuarios, UX y finanzas, Documentación y demostración y Cierre y paquete se agregan en cada componente con esta misma estructura.
+Fichas de los ítems 1.1 a 1.5 (Estrategia), 2.1 a 2.3 (API, fuentes y credenciales) y 4.1 a 4.3 (Carga relacional). Las de Pruebas y orquestación, Panel, Usuarios, UX y finanzas, Documentación y demostración y Cierre y paquete se agregan en cada componente con esta misma estructura.
 
 ---
 
@@ -46,7 +46,7 @@ Fichas de los ítems 1.1 a 1.5 (Estrategia) y 2.1 a 2.3 (API, fuentes y credenci
 - **(e) Validar:** `.\.venv\Scripts\python.exe -m pytest tests/test_estrategia.py::test_1_4_declara_hipotesis_sin_validar_y_no_estimado -q -p no:cacheprovider`.
 
 ### Ítem 1.5 · MVP y criterios de aceptación
-- **(a) Archivo principal:** `docs/estrategia/05_mvp_criterios_aceptacion.md` (Markdown). Demuestra: MVP con ocho funcionalidades (FE1 a FE8) y 29 criterios; 23 ejecutados con fecha y 6 «no verificado aún» (MySQL, Airflow y dashboard). **No demuestra:** los criterios pendientes.
+- **(a) Archivo principal:** `docs/estrategia/05_mvp_criterios_aceptacion.md` (Markdown). Demuestra: MVP con ocho funcionalidades (FE1 a FE8) y 29 criterios; 25 ejecutados con fecha y 4 «no verificado aún» (Airflow y dashboard). **No demuestra:** los criterios pendientes.
 - **(b) Apoyo:** `docs/evidencias/estrategia/EV-009_determinismo_clon.txt` (dos corridas en un clon con los mismos sha256), `docs/evidencias/api/EV-014_pytest.txt`, `EV-016_respuestas_api.txt` y `EV-015_sin_escritura_hashes.txt` (criterios de la API).
 - **(c) Texto sugerido:** «MVP del proyecto y 29 criterios de aceptación (23 verificados con su evidencia; 6 se verifican en Carga relacional, Pruebas y orquestación y Panel): `docs/estrategia/05_mvp_criterios_aceptacion.md`.»
 - **(d) Captura opcional:** la tabla de criterios con la columna de estado visible. Nombre: `captura_1.5_criterios.png`.
@@ -96,6 +96,44 @@ Fichas de los ítems 1.1 a 1.5 (Estrategia) y 2.1 a 2.3 (API, fuentes y credenci
 - **(c) Texto sugerido:** «Política de credenciales y escáner de secretos sobre árbol, historial, notebooks, logs y zip, sin hallazgos; `.env` fuera de git y `.env.example` sin valores: `docs/seguridad/gestion_credenciales.md`.»
 - **(d) Captura opcional:** PowerShell con `.\.venv\Scripts\python.exe scripts\escanear_secretos.py`, que debe terminar en `hallazgos: 0` sin mostrar ningún valor. Nombre: `captura_2.3_escaner.png`.
 - **(e) Validar:** `.\.venv\Scripts\python.exe scripts\escanear_secretos.py` (termina en `hallazgos: 0`) y `.\.venv\Scripts\python.exe -m pytest tests/test_secretos.py -q -p no:cacheprovider` (debe terminar en `10 passed`).
+
+---
+
+## Carga relacional · Almacenamiento y carga (sección 4 del checklist)
+
+### Ítem 4.1 · Carga al almacenamiento destino (MySQL)
+- **(a) Archivo principal:** `docs/almacenamiento/carga_y_verificacion.md` (Markdown), con `docs/almacenamiento/modelo_datos.md` y su diagrama `docs/almacenamiento/img/modelo_er.png`. Demuestra: esquema de siete tablas con claves y restricciones, carga por lotes con historial desde los CSV de Silver y Gold y conciliación al 100 %. **No demuestra:** uso con varios usuarios a la vez ni rendimiento en otro equipo.
+- **(b) Apoyo:**
+  - `docs/evidencias/almacenamiento/EV-028_verificacion_mysql.txt` (batería en vivo sobre la base de prueba: 26 de 26 comprobaciones).
+  - `docs/evidencias/almacenamiento/EV-029_carga_real_mysql.txt` (carga real a `sismo_cali`: conciliación, idempotencia, integridad y cifras iguales a Gold).
+  - `docs/evidencias/almacenamiento/EV-032_api_mysql_vs_sqlite.txt`, `EV-032_latencia_api_mysql_vs_sqlite.csv` y `EV-032_latencia_api_mysql_vs_sqlite.png` (la API sirve lo mismo desde MySQL que desde SQLite, con sus latencias).
+  - `docs/evidencias/almacenamiento/EV-027_conector_mysql.txt` (versiones de PyMySQL y `cryptography`).
+  - `tests/test_carga_relacional.py` (54 pruebas sin servidor MySQL).
+  - `docs/almacenamiento/mysql_configuracion.md` (cómo se crean las bases y el usuario).
+- **(c) Texto sugerido:** «Almacén relacional en MySQL 8.0 con siete tablas, claves primarias y foráneas, restricciones de validación y carga por lotes; la carga real concilia al 100 % con Gold y la API sirve las mismas respuestas desde MySQL y SQLite: `docs/almacenamiento/carga_y_verificacion.md` y `docs/evidencias/almacenamiento/EV-029_carga_real_mysql.txt`.»
+- **(d) Captura opcional** (la toma el equipo; se rotula «captura tomada por el equipo»): PowerShell con `.\.venv\Scripts\python.exe scripts\mysql\verificar_mysql.py`, que debe terminar en «26 de 26 comprobaciones correctas» y no mostrar ninguna contraseña. Nombre: `captura_4.1_verificacion.png`.
+- **(e) Validar:** `.\.venv\Scripts\python.exe scripts\mysql\verificar_mysql.py` (código de salida 0) y `.\.venv\Scripts\python.exe -m pytest tests/test_carga_relacional.py -q -p no:cacheprovider` (debe terminar en `54 passed`).
+
+### Ítem 4.2 · Persistencia histórica e integridad referencial
+- **(a) Archivo principal:** `docs/almacenamiento/modelo_datos.md` (Markdown). Demuestra: claves primarias y foráneas con `ON DELETE RESTRICT`, restricciones `CHECK`, historial por corrida e idempotencia por clave determinista. **No demuestra:** que no exista corrupción por fallos del servidor (el motor InnoDB es transaccional, pero no lo probamos).
+- **(b) Apoyo:**
+  - `docs/evidencias/almacenamiento/EV-028_verificacion_mysql.txt` (historial con corrida nueva, reversión ante un fallo inyectado y violaciones de integridad rechazadas con su código de error).
+  - `docs/evidencias/almacenamiento/EV-029_carga_real_mysql.txt` (idempotencia y 0 filas huérfanas en la base real).
+  - `docs/evidencias/almacenamiento/EV-031_respaldo_restauracion.txt` (respaldo en CSV con sha256, restauración y conciliación por huella de filas).
+  - `tests/test_carga_relacional.py` y `tests/test_respaldo_y_medicion.py`.
+- **(c) Texto sugerido:** «Cada carga distinta es una corrida completa con todas sus filas; la misma entrada no duplica nada, un fallo revierte todo y la base rechaza las filas que violan claves o restricciones: `docs/almacenamiento/modelo_datos.md` y `docs/evidencias/almacenamiento/EV-028_verificacion_mysql.txt`.»
+- **(d) Captura opcional:** el resultado de `.\.venv\Scripts\python.exe scripts\mysql\respaldar_restaurar.py`, con la tabla de huellas «igual» en las siete tablas. Nombre: `captura_4.2_respaldo.png`.
+- **(e) Validar:** `.\.venv\Scripts\python.exe -m pytest tests/test_carga_relacional.py tests/test_respaldo_y_medicion.py -q -p no:cacheprovider` y, con MySQL, `scripts\mysql\verificar_mysql.py` y `scripts\mysql\respaldar_restaurar.py`.
+
+### Ítem 4.3 · Rendimiento del cargue
+- **(a) Archivo principal:** `docs/evidencias/almacenamiento/EV-030_benchmark_lotes.txt` (informe con la tabla de medianas, p95 y filas por segundo). Demuestra: la carga fila a fila frente a lotes de 500, 1000 y 2000 (1 calentamiento y 5 repeticiones), la elección del lote 2000 (D53) y que la carga repetida no recarga nada. **No demuestra:** los mismos tiempos en otro equipo; son mediciones locales.
+- **(b) Apoyo:**
+  - `docs/evidencias/almacenamiento/EV-030_benchmark_lotes.csv` y `EV-030_benchmark_lotes.png` (datos y gráfico).
+  - `config/config.yaml` (`almacenamiento.lote`).
+  - `docs/DECISIONES.md` (D47 y D53).
+- **(c) Texto sugerido:** «Carga por lotes medida con tres tamaños frente a fila a fila (3,4 veces más rápido con el lote elegido), con mediana, p95 y filas por segundo: `docs/evidencias/almacenamiento/EV-030_benchmark_lotes.txt`.»
+- **(d) Captura opcional:** la tabla impresa por `.\.venv\Scripts\python.exe scripts\mysql\benchmark_lotes.py`. Nombre: `captura_4.3_lotes.png`.
+- **(e) Validar:** `.\.venv\Scripts\python.exe scripts\mysql\benchmark_lotes.py` (imprime la tabla y el lote propuesto; sin `--fijar` no cambia `config.yaml`).
 
 ---
 

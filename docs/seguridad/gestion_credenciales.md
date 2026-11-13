@@ -73,7 +73,7 @@ Imprime una línea por hallazgo (`archivo:línea: patrón`) y `hallazgos: N`; te
 **Límites del escáner:** puede dar falsos positivos (cadenas largas que no son secretos) y falsos negativos (un secreto con formato que no conocemos). Por eso es una red de seguridad y no sustituye la regla principal: los secretos nunca se escriben fuera de `.env`.
 
 ## 9. Estado del ítem 2.3 y qué se revalida
-Estado: **Cumple**. Con las variables `MYSQL_*` quedan implementados y probados el alta segura del usuario, el enmascarado del registro y la comprobación canario; la comprobación sobre la contraseña real se ejecuta tras crear el usuario y su resultado se registra en `docs/evidencias/almacenamiento/`. Se **revalida con el escáner sobre el zip final** (Cierre y paquete).
+Estado: **Cumple**. Con las variables `MYSQL_*` quedan implementados y probados el alta segura del usuario, el enmascarado del registro y la comprobación canario; la comprobación con la contraseña real dio 0 hallazgos en el árbol, los registros, los 54 commits del historial y un zip de prueba (`docs/evidencias/almacenamiento/EV-033_canario_credenciales.txt`). Se **revalida con el escáner sobre el zip final** (Cierre y paquete).
 
 ## Alcance y límites
 - **Qué afirmamos:** las fuentes no necesitan credenciales; la de MySQL se crea y se guarda con controles que probamos y las que vendrán (Airflow) tienen lugar, regla y controles definidos; el repositorio, su historial, los notebooks, los logs y un zip de prueba no contienen secretos según el escáner. [Evidencia en el repo: `docs/evidencias/api/EV-019_escaner_secretos.txt`]

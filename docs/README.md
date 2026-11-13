@@ -87,7 +87,7 @@
 | [registro_de_cambios.md](retroalimentacion/registro_de_cambios.md) | retroalimentación del profesor y cómo la atendimos |
 
 ### Decisiones
-[DECISIONES.md](DECISIONES.md): todas las decisiones con alternativas, razón, riesgo y fecha (D1 a D52; las nuevas continúan desde D53).
+[DECISIONES.md](DECISIONES.md): todas las decisiones con alternativas, razón, riesgo y fecha (D1 a D55; las nuevas continúan desde D56).
 
 ### Almacenamiento relacional (MySQL)
 | documento | contenido |

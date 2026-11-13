@@ -571,6 +571,8 @@ Los errores usan siempre `{{"error": {{"codigo", "mensaje", "detalle"}}}}`. Docu
 ## 19. Almacenamiento relacional (MySQL)
 Además de `etl_sismo.db` (SQLite), los resultados se pueden cargar a **MySQL 8.0** con un esquema de siete tablas con claves primarias y foráneas, restricciones de validación e **historial**: cada carga distinta es una *corrida* completa y las anteriores no se tocan. La carga lee solo `data/` ({miles(len(g))} construcciones, 346 barrios y los indicadores), es **idempotente** (la misma entrada responde «ya cargada»), se hace en **una transacción** (si algo falla no queda nada a medias) y usa **lotes** cuyo tamaño se decide por medición. Las construcciones sin cruce con el CSV de estrato se conservan con el enlace al barrio nulo. Los datos siguen siendo un proxy satelital sobre construcciones de siete comunas, sin generalizar a toda Cali.
 
+**Verificación en vivo** (MySQL 8.0.45, 2026-11-13): la batería de la base de prueba pasa 26 de 26 comprobaciones, la carga real concilia al 100 % con Gold, la API sirve lo mismo desde MySQL y SQLite y el lote de 2000 filas es 3,4 veces más rápido que insertar fila a fila (tiempos de un equipo, no de un despliegue). Las evidencias están en `docs/evidencias/almacenamiento/`.
+
 **Primera vez** (PowerShell, en la raíz, con el servicio MySQL80 activo). Quien conoce la contraseña del administrador de MySQL la escribe cuando el script la pide (no se ve); el script crea las bases `sismo_cali` y `sismo_cali_prueba`, el usuario `sismo_etl` con privilegios mínimos y guarda sus credenciales solo en `.env`:
 ```powershell
 .\\.venv\\Scripts\\python.exe scripts\\mysql\\configurar_mysql.py
