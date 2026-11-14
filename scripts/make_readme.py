@@ -226,7 +226,7 @@ def main():
     reglas_txt = [f"**{tema}.** " + " ".join(f"({i}, {R[i][1]}, {miles(R[i][3])} filas) {R[i][4]}" for i in ids) for tema, ids in reglas_tema]
     arbol = [
         ("main.py", "puerta de entrada: `--stage extract|transform|gold|all` y `--refresh`"),
-        ("requirements.txt", "dependencias con versión mínima"),
+        ("requirements.txt", "dependencias con versión exacta (Python 3.13)"),
         ("pytest.ini", "configuración de las pruebas (carpeta de pruebas y ruta de importación)"),
         (".env.example", "nombres de variables sin valores (`HTTP_USER_AGENT` y las `MYSQL_*` de la carga relacional)"),
         (".gitignore", "lo que git no versiona (`.env`, entornos virtuales, `dist/`, registros)"),

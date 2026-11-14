@@ -1,21 +1,28 @@
+# Python soportado: 3.13 (con el que se generaron los resultados de la linea base y se pasan las pruebas).
+# Con otra version pip puede no encontrar numpy 2.5.4 (exige Python 3.12 o mas) y las pruebas lo anuncian.
 pandas==3.0.6
-requests>=2.31
-openpyxl>=3.1
-pyyaml>=6.0
-matplotlib>=3.8
-pytest>=8.0
-python-dotenv>=1.0
-tzdata>=2024.1
-jupyter>=1.0
-nbconvert>=7.16
-ipykernel>=6.29
-shapely>=2.0
-fastapi>=0.162.5
-uvicorn>=0.54.0
-httpx>=0.28.1
-pymysql>=1.2.4
-cryptography>=50.0.2
-coverage>=7.17.3
+numpy==2.5.4
+requests==2.34.2
+openpyxl==3.1.5
+pyyaml==6.0.3
+matplotlib==3.11.2
+pytest==9.2.0
+python-dotenv==1.2.4
+tzdata==2026.6
+jupyter==1.1.1
+nbconvert==7.17.2
+ipykernel==7.4.0
+shapely==2.2.0
+fastapi==0.162.7
+starlette==1.10.0
+pydantic==2.14.3
+uvicorn==0.54.0
+httpx==0.28.1
+pymysql==1.2.4
+cryptography==50.0.2
+coverage==7.17.3
 # Panel (Streamlit sobre la API; D24, D68). Altair llega con Streamlit y el panel lo importa directamente
 streamlit==1.67.0
 altair==6.3.0
+# Capturas del panel (scripts/evidencias): protocolo DevTools por websocket
+websockets==17.4

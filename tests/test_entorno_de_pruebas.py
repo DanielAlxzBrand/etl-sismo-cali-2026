@@ -17,7 +17,7 @@ def test_todos_los_archivos_de_pruebas_terminan_en_py():
 
 
 def test_coverage_esta_en_los_requisitos_del_proyecto():
-    assert re.search(r"(?m)^coverage>=\d", (ROOT / "requirements.txt").read_text(encoding="utf-8"))
+    assert re.search(r"(?m)^coverage==\d", (ROOT / "requirements.txt").read_text(encoding="utf-8"))
 
 
 def test_requirements_fija_pandas_en_la_version_de_la_linea_base():
