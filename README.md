@@ -275,7 +275,7 @@ Debe terminar sin errores (Python 3.13.0).
 ```powershell
 Get-FileHash -Algorithm SHA256 data\silver\*.csv, data\silver\quality_report.json, data\gold\*.csv
 ```
-4. **Pruebas:** `pytest -q` → `614 passed`.
+4. **Pruebas:** `pytest -q` → `616 passed`.
 5. **Notebooks** (cada uno se ejecuta de arriba a abajo sin errores):
 ```powershell
 jupyter nbconvert --to notebook --execute --inplace notebooks\05_validacion_evidencias.ipynb
@@ -299,8 +299,8 @@ jupyter nbconvert --to notebook --execute --inplace notebooks\05_validacion_evid
 - `notebooks/`: cinco notebooks ejecutados (conexión, EDA, Silver, Gold y validación)
 - `dags/`: DAG de Airflow `medallon_etl_dag.py` (copia versionada del DAG vivo de `airflow-medallon`)
 - `orquestacion/`: Dockerfile, requisitos de la imagen de Airflow y hash del DAG
-- `src/`: código por capas (ver `src/README.md`): `extract/`, `transform/`, `load/` (SQLite y carga relacional), `api/`, `common.py` y `logger.py`
-- `tests/`: 614 pruebas automáticas
+- `src/`: código por capas (ver `src/README.md`): `extract/`, `transform/`, `load/` (SQLite y carga relacional), `api/`, `panel/` (interfaz Streamlit de solo lectura), `common.py` y `logger.py`
+- `tests/`: 616 pruebas automáticas
 - `scripts/`: generadores y utilidades (ver `scripts/README.md`): README, catálogo de fuentes, modelo de datos, carga relacional, `mysql/` (configuración y verificación en vivo), matriz de casos de prueba e informe de pruebas, orquestación (`orquestacion/`), escáner de secretos, empaquetado y `evidencias/`
 - `docs/README.md`: índice de la documentación por capas y tabla «dónde está cada cosa»
 - `docs/DECISIONES.md`: decisiones con alternativas, razón y riesgo
@@ -311,6 +311,7 @@ jupyter nbconvert --to notebook --execute --inplace notebooks\05_validacion_evid
 - `docs/gold/`: definición de cada KPI y diccionario de columnas de Gold
 - `docs/api/`: arquitectura del backend y de la API de solo lectura, con su diagrama
 - `docs/orquestacion/`: pruebas y orquestación: diferencias con la guía de Airflow, guía de implementación, prácticas de producción y operación
+- `docs/panel/`: panel: guía de uso, arquitectura con su diagrama, trazabilidad de la interfaz, pruebas y accesibilidad
 - `docs/almacenamiento/`: almacenamiento relacional: modelo de datos con su diagrama, configuración de MySQL y carga y verificación
 - `docs/seguridad/`: política de credenciales, claves y tokens
 - `docs/validacion/`: verificaciones: contra el enunciado, de los servicios, en entorno limpio y del registro de ejecución
@@ -320,7 +321,7 @@ jupyter nbconvert --to notebook --execute --inplace notebooks\05_validacion_evid
 - `logs/`: archivos de registro diarios (se crean al ejecutar; no se versionan)
 
 ## 14. Pruebas y validación
-Hay **614 pruebas** automáticas, sin red:
+Hay **616 pruebas** automáticas, sin red:
 - `tests/test_api.py` (17): API de solo lectura: estructura, validación, coincidencia con las salidas, solo GET y sin escritura en `data/` ni en la base.
 - `tests/test_canario_extra.py` (5): comprobación canario con archivos `.env` extra: detecta contraseñas de otra carpeta sin imprimirlas.
 - `tests/test_carga_relacional.py` (54): esquema relacional (paridad, diccionario al día), conversión estricta, carga con conciliación al 100 %, idempotencia, historial, reversión, integridad referencial y equivalencia de la API entre SQLite y el almacén relacional (sin servidor MySQL).
@@ -329,7 +330,7 @@ Hay **614 pruebas** automáticas, sin red:
 - `tests/test_catalogo.py` (5): el catálogo de fuentes coincide con el manifiesto, es determinista y `/fuentes` lo devuelve igual.
 - `tests/test_configurar_mysql.py` (25): configuración de MySQL con conexiones simuladas (privilegios, contraseñas que nunca llegan a `.env` ni a SQL, rotación), `.env` atómico, enmascarado del registro y comprobación canario del escáner.
 - `tests/test_dag_estatico.py` (24): DAG y imagen de Airflow analizados con `ast`: tareas, dependencias, repositorio de solo lectura, fallo inducido, secretos, requisitos y hash.
-- `tests/test_decisiones.py` (4): .
+- `tests/test_decisiones.py` (4): la cabecera de las decisiones y el índice de la documentación coinciden con la última decisión registrada.
 - `tests/test_dist.py` (19): el empaquetado detecta entornos virtuales por su contenido, aunque no tengan `pyvenv.cfg`.
 - `tests/test_empaquetado_y_revision.py` (5): el empaquetado excluye entornos virtuales con cualquier nombre; la revisión de códigos de barrio cubre los casos pedidos y suma las construcciones sin nombre validado.
 - `tests/test_entorno_de_pruebas.py` (4): configuración de pytest, extensiones de las pruebas y versión de pandas de la línea base.
@@ -340,14 +341,14 @@ Hay **614 pruebas** automáticas, sin red:
 - `tests/test_kpis.py` (6): regresión numérica de los KPI, Newcombe, Mantel-Haenszel y regresión del defecto.
 - `tests/test_logger.py` (2): enmascarado de secretos y nombre de los loggers.
 - `tests/test_matriz_casos.py` (7): la matriz de casos de prueba apunta a pruebas existentes y está al día con su definición.
-- `tests/test_panel_cliente.py` (29): .
-- `tests/test_panel_formato_redaccion.py` (47): .
-- `tests/test_panel_humo_extremo_a_extremo.py` (5): .
-- `tests/test_panel_integracion.py` (11): .
-- `tests/test_panel_lanzador.py` (18): .
-- `tests/test_panel_paginas.py` (134): .
-- `tests/test_panel_registro_y_aislamiento.py` (38): .
-- `tests/test_panel_tema.py` (10): .
+- `tests/test_panel_cliente.py` (29): cliente HTTP del panel: solo GET, errores traducidos al español, un reintento de conexión y caché que no guarda fallos.
+- `tests/test_panel_formato_redaccion.py` (47): formato de cifras del panel (miles, coma decimal, signo menos y half-up) y regla de redacción de conclusiones con valores sintéticos.
+- `tests/test_panel_humo_extremo_a_extremo.py` (5): humo de solo lectura: API real en un subproceso, cliente HTTP real y las ocho páginas.
+- `tests/test_panel_integracion.py` (11): los valores que muestra el panel coinciden con las salidas del pipeline, leídas y recalculadas en la prueba.
+- `tests/test_panel_lanzador.py` (19): lanzador del panel con subprocesos simulados: comandos, entorno, puertos, códigos de salida y cierre garantizado.
+- `tests/test_panel_paginas.py` (134): las ocho páginas con `AppTest` sobre la API real en memoria, alcance visible y resiliencia ante cada fallo de la API.
+- `tests/test_panel_registro_y_aislamiento.py` (39): registro de componentes (rutas, campos y KPI existen) y aislamiento del panel por análisis estático: solo la API, solo GET y sin cifras escritas a mano.
+- `tests/test_panel_tema.py` (10): relación de contraste WCAG de la paleta del panel.
 - `tests/test_pipeline_reproducible.py` (4): el pipeline regenerado en una copia reproduce byte a byte los nueve archivos de la línea base.
 - `tests/test_quality.py` (4): campos del reporte, cobertura frente al umbral, mínimo de filas de Gold, KPI en rango.
 - `tests/test_readme_cifras.py` (13): las cifras de este README coinciden con los archivos de salida; recuadros de alcance, población e indicador satelital.
@@ -404,6 +405,9 @@ Decisiones de las fuentes: el plan elegido es el de las construcciones de la cap
 - **DAG:** grafo de tareas de Airflow que se ejecutan en un orden y sin ciclos; el nuestro tiene cuatro (`validar_bronze`, `transformar_a_silver`, `integrar_a_gold` y `cargar_datawarehouse`).
 - **Orquestación:** programar, ejecutar y vigilar las tareas del pipeline con una herramienta (aquí Airflow en Docker) en lugar de lanzarlas a mano.
 - **Copia de trabajo:** carpeta temporal dentro del contenedor donde el DAG produce sus salidas para compararlas con las versionadas sin escribir nunca en el repositorio.
+- **Panel:** interfaz de usuario del proyecto; consume la API y nunca toca los datos directamente.
+- **Streamlit:** biblioteca de Python con la que se escribe el panel como una aplicación web local.
+- **AppTest:** herramienta de Streamlit para ejecutar una página en las pruebas, sin navegador, y revisar lo que muestra.
 - **Lote (batch):** grupo de filas que se inserta en una sola operación; es más rápido que insertar fila por fila.
 
 ## 17. Trabajo futuro y atribución
@@ -457,12 +461,23 @@ Documentación: [modelo de datos](docs/almacenamiento/modelo_datos.md), [configu
 ## 20. Pruebas y orquestación
 El pipeline se orquesta con **Apache Airflow en Docker**, siguiendo la guía de Airflow de la asignatura (artículo de Juan Manuel Núñez Velasco) con unas pocas diferencias documentadas. El DAG `medallon_etl_sismo` (`dags/medallon_etl_dag.py`) tiene cuatro tareas, `validar_bronze → transformar_a_silver → integrar_a_gold → cargar_datawarehouse`, y trabaja sobre una **copia de trabajo** dentro del contenedor: el repositorio se monta en solo lectura y cada tarea compara lo que produce con los archivos versionados (CSV y JSON byte a byte, `etl_sismo.db` tabla a tabla), así que ni los datos ni las salidas pueden alterarse. La carga a MySQL usa un usuario propio de Docker con permisos mínimos sobre la base real. Para reproducir los archivos de la línea base hay que usar **pandas 3.0.6** (con otra versión cambian celdas del decimal 12; ver D56).
 
-Hay 614 pruebas automáticas, una **matriz de casos** por función crítica generada desde una única definición (`python scripts/make_matriz_casos.py`), un **informe de pruebas** con resultado esperado y obtenido por caso y cobertura por módulo (`python scripts/informe_pruebas.py`) y un **registro de defectos** cuyas pruebas de regresión fallan sin su corrección.
+Hay 616 pruebas automáticas, una **matriz de casos** por función crítica generada desde una única definición (`python scripts/make_matriz_casos.py`), un **informe de pruebas** con resultado esperado y obtenido por caso y cobertura por módulo (`python scripts/informe_pruebas.py`) y un **registro de defectos** cuyas pruebas de regresión fallan sin su corrección.
 ```powershell
 .\.venv\Scripts\python.exe scripts\informe_pruebas.py
 .\.venv\Scripts\python.exe scripts\orquestacion\sincronizar_dag.py --verificar
 ```
 Documentación: [orquestación](docs/orquestacion/README.md), [diferencias con la guía](docs/orquestacion/diferencias_con_la_guia.md), [matriz de casos](docs/validacion/matriz_casos_prueba.md), [informe de pruebas](docs/validacion/informe_pruebas.md) y [registro de defectos](docs/validacion/registro_defectos.md).
 
-## 21. Componentes en construcción
-Quedan en construcción, y se documentarán en `docs/` cuando existan: el **panel con Streamlit** que consume solo la API, los materiales de **usuarios y UX** y el análisis de **costos y finanzas**. El índice de la documentación, con la carpeta prevista para cada uno, está en [docs/README.md](docs/README.md).
+## 21. Panel (interfaz de solo lectura)
+El **panel** (`src/panel/`) es una interfaz Streamlit que muestra los resultados de Gold hablando **solo con la API** por HTTP (solo GET): no abre bases ni archivos de datos, no lee `.env` ni maneja credenciales. Tiene ocho páginas (Respuesta, Estratos, Comunas, Sensibilidades, Concentración, Calidad de la llave, Construcciones y Fuentes y sistema); todas muestran el recuadro de alcance (cambio satelital severo como proxy de daño, tasas condicionales a la muestra, estrato de 2015 por lados de manzana) y las conclusiones se redactan con la regla de `docs/gold/KPIs.md`.
+
+Se ejecuta con un solo comando (arranca la API y el panel en 127.0.0.1 y cierra los dos con Ctrl+C):
+```powershell
+.\.venv\Scripts\python.exe scripts\panel\ejecutar_panel.py
+```
+Por separado: `python -m uvicorn src.api.app:app --host 127.0.0.1 --port 8000` y `python -m streamlit run src/panel/app.py`. Con `--almacenamiento mysql` la API sirve desde MySQL. El panel no está desplegado: se ejecuta en local.
+
+Documentación: [guía de uso](docs/panel/guia_de_uso.md), [arquitectura](docs/panel/arquitectura_panel.md), [trazabilidad de la interfaz](docs/panel/trazabilidad_ui.md), [pruebas](docs/panel/pruebas_panel.md) y [accesibilidad y respuesta](docs/panel/accesibilidad_y_respuesta.md).
+
+## 22. Componentes en construcción
+Quedan en construcción, y se documentarán en `docs/` cuando existan: los materiales de **usuarios y UX** y el análisis de **costos y finanzas**. El índice de la documentación, con la carpeta prevista para cada uno, está en [docs/README.md](docs/README.md).

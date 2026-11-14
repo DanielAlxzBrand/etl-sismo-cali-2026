@@ -56,7 +56,7 @@ def render(api):
             "Código": i["codigo_barrio"], "Construcciones": formato.numero(i["n_construcciones"]), "Nombre en el CSV de estrato": i["nombre_csv_2015"],
             "Nombre del polígono": i["nombre_poligono_dominante"], "Coincidencia con el polígono": formato.porcentaje(i["pct_coincide_poligono"], 0),
             "Clasificación": clasificar(i),
-        } for i in items]))
+        } for i in items]), texto_largo=True)
         st.info("Qué NO demuestra: que el estrato asignado al barrio refleje el de cada construcción hoy, ni que el nombre validado garantice que el código sea el correcto; "
                 "la renumeración de códigos entre fuentes es una explicación documentada de estas diferencias, no una mala asignación comprobada.")
 

@@ -26,7 +26,7 @@ def filas_tasa(filas, etiquetas, clave_tasa="valor"):
         tasa, inf, sup = fila.get(clave_tasa), fila.get("ic95_inf"), fila.get("ic95_sup")
         baja = bool(fila.get("muestra_baja"))
         registros.append({
-            "grupo": etiqueta + (f" ({ETIQUETA_BAJA})" if baja else ""),
+            "grupo": etiqueta + (f" · {ETIQUETA_BAJA}" if baja else ""),
             "tasa_pct": None if tasa is None else tasa * 100,
             "inf_pct": None if inf is None else inf * 100,
             "sup_pct": None if sup is None else sup * 100,

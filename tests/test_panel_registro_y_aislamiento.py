@@ -202,3 +202,14 @@ def test_pyproject_de_dependencias_fija_streamlit_y_altair_y_no_aparecen_en_los_
 
 def test_el_catalogo_json_de_la_api_se_puede_leer():
     json.loads((RAIZ / registro.CATALOGO).read_text(encoding="utf-8"))
+
+
+def test_la_trazabilidad_generada_coincide_con_el_registro():
+    import importlib.util
+    espec = importlib.util.spec_from_file_location("generar_trazabilidad", RAIZ / "scripts" / "panel" / "generar_trazabilidad.py")
+    m = importlib.util.module_from_spec(espec)
+    espec.loader.exec_module(m)
+    assert m.main(["--verificar"]) == 0
+    assert (RAIZ / "docs" / "panel" / "trazabilidad_ui.md").read_text(encoding="utf-8") == m.texto()
+    for c in registro.COMPONENTES:
+        assert c.id in m.texto()

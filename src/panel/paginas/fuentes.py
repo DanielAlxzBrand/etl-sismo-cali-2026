@@ -49,7 +49,7 @@ def render(api):
                 fechas = f.get("fechas") or {}
                 filas.append({"Fuente": f["nombre"], "Rol": f["rol"], "Publicador": f["publicador"], "Licencia": f["licencia"],
                               "Fechas": "; ".join(f"{k}: {v}" for k, v in fechas.items())})
-            componentes.tabla(pd.DataFrame(filas))
+            componentes.tabla(pd.DataFrame(filas), texto_largo=True)
             st.caption(fuentes.datos["aviso"])
         st.subheader("Estado del sistema")
         if not componentes.fallo(salud):

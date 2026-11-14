@@ -129,7 +129,7 @@ def test_concentracion_lista_los_barrios_y_aclara_que_concentracion_no_es_riesgo
 
 
 def test_calidad_lista_los_codigos_con_su_clasificacion(renderizadas):
-    tabla = renderizadas["calidad"].dataframe[1].value
+    tabla = renderizadas["calidad"].table[0].value
     assert len(tabla) == 7 and set(tabla["Clasificación"]) >= {"el código no coincide con el polígono (renumeración de códigos)"}
     assert "Qué NO demuestra" in pa.textos(renderizadas["calidad"])
 

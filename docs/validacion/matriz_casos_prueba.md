@@ -2,8 +2,8 @@
 
 Este documento se genera con `scripts/make_matriz_casos.py` desde una única definición; no se edita a mano. Cada caso lleva un identificador **CP-nnn**, su tipo (correcto, incorrecto o límite), el resultado esperado y la prueba de `pytest` que lo ejecuta. El resultado obtenido de cada prueba está en [informe_pruebas.md](informe_pruebas.md).
 
-- **Funciones críticas:** 27. **Casos:** 178 (78 correctos, 61 incorrectos y 39 límite).
-- **Pruebas de primer nivel en `tests/`:** 379; 176 de ellas están vinculadas a un caso (otras pruebas parametrizadas o de apoyo cubren variantes de los mismos casos).
+- **Funciones críticas:** 27. **Casos:** 179 (78 correctos, 61 incorrectos y 40 límite).
+- **Pruebas de primer nivel en `tests/`:** 381; 177 de ellas están vinculadas a un caso (otras pruebas parametrizadas o de apoyo cubren variantes de los mismos casos).
 - **Regla:** cada función crítica tiene al menos un caso correcto y uno incorrecto o límite; una prueba lo comprueba y comprueba que cada prueba citada exista.
 
 ## FC-01 · Extracción y verificación de Bronze (manifiesto con sha256)
@@ -343,6 +343,7 @@ Módulos: `scripts/panel/ejecutar_panel.py`
 | CP-161 | El panel no arranca | incorrecto | código de salida 2 y la API se cierra | `tests/test_panel_lanzador.py::test_si_el_panel_no_responde_sale_con_2_y_cierra_la_api` |
 | CP-162 | Ctrl+C | límite | cierra los dos procesos | `tests/test_panel_lanzador.py::test_ctrl_c_cierra_los_dos_procesos_y_sale_con_0` |
 | CP-163 | Excepción al arrancar | incorrecto | el cierre ocurre en finally | `tests/test_panel_lanzador.py::test_el_cierre_ocurre_aunque_el_arranque_lance_una_excepcion` |
+| CP-164 | Duración acotada | límite | los procesos se cierran solos y sale con 0 | `tests/test_panel_lanzador.py::test_con_duracion_los_procesos_se_cierran_solos_y_sale_con_0` |
 
 ## FC-26 · Aislamiento y solo lectura del panel
 
@@ -350,17 +351,17 @@ Módulos: `src/panel/`
 
 | CP | Caso | Tipo | Resultado esperado | Prueba |
 |---|---|---|---|---|
-| CP-164 | Imports permitidos | correcto | solo logger y el propio panel | `tests/test_panel_registro_y_aislamiento.py::test_los_unicos_imports_de_src_son_logger_y_el_propio_panel` |
-| CP-165 | Sin almacenes ni credenciales | incorrecto | no importa sqlite3, pymysql ni capas del pipeline | `tests/test_panel_registro_y_aislamiento.py::test_el_panel_no_importa_almacenes_ni_capas_del_pipeline_ni_credenciales` |
-| CP-166 | Solo GET | incorrecto | ningún método de escritura | `tests/test_panel_registro_y_aislamiento.py::test_solo_hay_consultas_get_y_ninguna_llamada_peligrosa` |
-| CP-167 | Sin HTML inseguro ni recursos externos | incorrecto | ninguno | `tests/test_panel_registro_y_aislamiento.py::test_sin_html_inseguro_javascript_recursos_externos_ni_credenciales` |
-| CP-168 | Ninguna cifra escrita a mano | límite | los textos no llevan dígitos propios | `tests/test_panel_registro_y_aislamiento.py::test_ninguna_cifra_escrita_a_mano_en_los_textos_del_panel` |
-| CP-169 | Rutas del registro en el OpenAPI | correcto | cada ruta existe | `tests/test_panel_registro_y_aislamiento.py::test_cada_ruta_de_los_componentes_y_las_paginas_existe_en_el_openapi_de_la_api` |
-| CP-170 | Campos del registro en las salidas | correcto | cada campo existe en su archivo | `tests/test_panel_registro_y_aislamiento.py::test_cada_campo_de_los_componentes_existe_en_el_archivo_de_salida_que_declaran` |
-| CP-171 | Sin carpetas ocultas de Streamlit | incorrecto | no existen | `tests/test_panel_registro_y_aislamiento.py::test_no_hay_carpetas_ocultas_ni_pages_ni_streamlit_en_el_repositorio` |
-| CP-172 | Contraste del texto sobre el fondo | correcto | al menos 7 a 1 | `tests/test_panel_tema.py::test_el_texto_sobre_el_fondo_tiene_al_menos_7_a_1_y_sobre_el_fondo_secundario_tambien` |
-| CP-173 | Contraste de los colores de los gráficos | límite | al menos 3 a 1 sobre el fondo | `tests/test_panel_tema.py::test_los_colores_de_los_graficos_tienen_al_menos_3_a_1_sobre_el_fondo` |
-| CP-174 | Un par de bajo contraste | incorrecto | se detecta | `tests/test_panel_tema.py::test_un_par_de_bajo_contraste_se_detecta` |
+| CP-165 | Imports permitidos | correcto | solo logger y el propio panel | `tests/test_panel_registro_y_aislamiento.py::test_los_unicos_imports_de_src_son_logger_y_el_propio_panel` |
+| CP-166 | Sin almacenes ni credenciales | incorrecto | no importa sqlite3, pymysql ni capas del pipeline | `tests/test_panel_registro_y_aislamiento.py::test_el_panel_no_importa_almacenes_ni_capas_del_pipeline_ni_credenciales` |
+| CP-167 | Solo GET | incorrecto | ningún método de escritura | `tests/test_panel_registro_y_aislamiento.py::test_solo_hay_consultas_get_y_ninguna_llamada_peligrosa` |
+| CP-168 | Sin HTML inseguro ni recursos externos | incorrecto | ninguno | `tests/test_panel_registro_y_aislamiento.py::test_sin_html_inseguro_javascript_recursos_externos_ni_credenciales` |
+| CP-169 | Ninguna cifra escrita a mano | límite | los textos no llevan dígitos propios | `tests/test_panel_registro_y_aislamiento.py::test_ninguna_cifra_escrita_a_mano_en_los_textos_del_panel` |
+| CP-170 | Rutas del registro en el OpenAPI | correcto | cada ruta existe | `tests/test_panel_registro_y_aislamiento.py::test_cada_ruta_de_los_componentes_y_las_paginas_existe_en_el_openapi_de_la_api` |
+| CP-171 | Campos del registro en las salidas | correcto | cada campo existe en su archivo | `tests/test_panel_registro_y_aislamiento.py::test_cada_campo_de_los_componentes_existe_en_el_archivo_de_salida_que_declaran` |
+| CP-172 | Sin carpetas ocultas de Streamlit | incorrecto | no existen | `tests/test_panel_registro_y_aislamiento.py::test_no_hay_carpetas_ocultas_ni_pages_ni_streamlit_en_el_repositorio` |
+| CP-173 | Contraste del texto sobre el fondo | correcto | al menos 7 a 1 | `tests/test_panel_tema.py::test_el_texto_sobre_el_fondo_tiene_al_menos_7_a_1_y_sobre_el_fondo_secundario_tambien` |
+| CP-174 | Contraste de los colores de los gráficos | límite | al menos 3 a 1 sobre el fondo | `tests/test_panel_tema.py::test_los_colores_de_los_graficos_tienen_al_menos_3_a_1_sobre_el_fondo` |
+| CP-175 | Un par de bajo contraste | incorrecto | se detecta | `tests/test_panel_tema.py::test_un_par_de_bajo_contraste_se_detecta` |
 
 ## FC-27 · Decisiones y empaquetado del panel
 
@@ -368,7 +369,7 @@ Módulos: `docs/DECISIONES.md, scripts/make_dist.py`
 
 | CP | Caso | Tipo | Resultado esperado | Prueba |
 |---|---|---|---|---|
-| CP-175 | La cabecera nombra la siguiente decisión | correcto | la última más uno | `tests/test_decisiones.py::test_la_cabecera_nombra_la_siguiente_decision_a_la_ultima_registrada` |
-| CP-176 | Un desajuste de la cabecera | incorrecto | se detecta | `tests/test_decisiones.py::test_la_cabecera_detecta_un_desajuste` |
-| CP-177 | El zip incluye el panel y su lanzador | correcto | sin carpetas ocultas ni .env | `tests/test_dist.py::test_el_repo_real_empaqueta_el_panel_y_su_lanzador_sin_carpetas_ocultas_ni_credenciales` |
-| CP-178 | Carpeta de configuración de Streamlit | incorrecto | no entra al zip | `tests/test_dist.py::test_una_carpeta_de_configuracion_de_streamlit_o_sus_credenciales_no_entran_al_zip` |
+| CP-176 | La cabecera nombra la siguiente decisión | correcto | la última más uno | `tests/test_decisiones.py::test_la_cabecera_nombra_la_siguiente_decision_a_la_ultima_registrada` |
+| CP-177 | Un desajuste de la cabecera | incorrecto | se detecta | `tests/test_decisiones.py::test_la_cabecera_detecta_un_desajuste` |
+| CP-178 | El zip incluye el panel y su lanzador | correcto | sin carpetas ocultas ni .env | `tests/test_dist.py::test_el_repo_real_empaqueta_el_panel_y_su_lanzador_sin_carpetas_ocultas_ni_credenciales` |
+| CP-179 | Carpeta de configuración de Streamlit | incorrecto | no entra al zip | `tests/test_dist.py::test_una_carpeta_de_configuracion_de_streamlit_o_sus_credenciales_no_entran_al_zip` |

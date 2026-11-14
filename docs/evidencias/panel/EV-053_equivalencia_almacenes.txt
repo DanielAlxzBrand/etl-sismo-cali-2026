@@ -1,0 +1,45 @@
+# Equivalencia de los datos del panel entre SQLite y MySQL
+- comando: `python scripts/evidencias/evidencia_panel_almacenes.py`
+- fecha: 2026-11-14T10:43:30-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 156.3 s
+- Python: 3.13.0
+- commit del repositorio: ddd5e24
+
+Equivalencia de los datos que consume el panel entre los dos almacenes (APIs reales en 127.0.0.1; el panel solo habla con la API):
+
+- sqlite: estado «ok», almacenamiento «sqlite», filas por tabla {'silver_integrated': 5146, 'gold_final': 5146, 'kpis_gold': 23, 'kpis_sensibilidad': 107}
+- mysql: estado «ok», almacenamiento «mysql», filas por tabla {'silver_integrated': 5146, 'gold_final': 5146, 'kpis_gold': 23, 'kpis_sensibilidad': 107}
+
+Respuestas que consume el panel (comparación del cuerpo normalizado: se ignora solo el campo `almacenamiento`):
+| Ruta | Parámetros | Código SQLite | Código MySQL | Respuesta |
+|---|---|---|---|---|
+| `/health` | — | 200 | 200 | idéntica |
+| `/metadata` | — | 200 | 200 | idéntica |
+| `/fuentes` | — | 200 | 200 | idéntica |
+| `/kpis` | — | 200 | 200 | idéntica |
+| `/kpis/K1` | — | 200 | 200 | idéntica |
+| `/kpis/sensibilidad` | — | 200 | 200 | idéntica |
+| `/comunas` | — | 200 | 200 | idéntica |
+| `/composicion` | — | 200 | 200 | idéntica |
+| `/construcciones` | {'limit': 50, 'offset': 0} | 200 | 200 | idéntica |
+| `/construcciones` | {'limit': 50, 'offset': 0, 'comuna': '20', 'severo_estricto': True} | 200 | 200 | idéntica |
+| `/calidad` | — | 200 | 200 | idéntica |
+| `/llave/revision` | — | 200 | 200 | idéntica |
+
+Respuestas idénticas: 12 de 12.
+
+Contenido de cada página renderizada con AppTest contra cada API (texto, métricas y tablas; se normaliza la línea del almacenamiento activo):
+| Página | Caracteres SQLite | Caracteres MySQL | Contenido |
+|---|---|---|---|
+| Respuesta | 1795 | 1795 | idéntico |
+| Estratos (K1) | 2344 | 2344 | idéntico |
+| Comunas (K6) | 2372 | 2372 | idéntico |
+| Sensibilidades (S0 a S5) | 5271 | 5271 | idéntico |
+| Concentración (K3 y K4) | 2227 | 2227 | idéntico |
+| Calidad de la llave | 2638 | 2638 | idéntico |
+| Construcciones | 2755 | 2755 | idéntico |
+| Fuentes y sistema | 3932 | 3932 | idéntico |
+
+Sin escritura: los sha256 de los 19 archivos de `data/` son idénticos antes y después: sí.
+Resultado: todo correcto.

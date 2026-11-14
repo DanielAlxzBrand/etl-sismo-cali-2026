@@ -1,7 +1,7 @@
 """Lanzador del panel: arranca la API de solo lectura y el panel (Streamlit) en 127.0.0.1 y los cierra a los dos al terminar.
 
-Uso:  python scripts/panel/ejecutar_panel.py [--almacenamiento sqlite|mysql] [--puerto-api N] [--puerto-panel N] [--verificar]
-Sin opciones espera hasta Ctrl+C. Con --verificar arranca, comprueba que ambos responden, imprime las URL y cierra (útil para pruebas y evidencias).
+Uso:  python scripts/panel/ejecutar_panel.py [--almacenamiento sqlite|mysql] [--puerto-api N] [--puerto-panel N] [--verificar] [--duracion S]
+Sin opciones espera hasta Ctrl+C. Con --verificar arranca, comprueba que ambos responden, imprime las URL y cierra; con --duracion N los mantiene N segundos y los cierra solos (útil para pruebas y evidencias).
 Si un puerto está ocupado elige uno libre. La configuración de Streamlit viaja por variables de entorno: no crea `.streamlit/` ni archivos en el repo ni en el HOME.
 `--almacenamiento mysql` solo cambia la fuente de la API (la lee de `.env` por su cuenta; el lanzador no la ve ni la imprime).
 Códigos de salida: 0 correcto; 1 la API no arrancó; 2 el panel no arrancó; 3 un proceso terminó antes de tiempo.
@@ -103,6 +103,7 @@ def main(argv=None, abrir=subprocess.Popen):
     ap.add_argument("--puerto-api", type=int)
     ap.add_argument("--puerto-panel", type=int)
     ap.add_argument("--verificar", action="store_true", help="arranca, comprueba la salud de ambos, imprime las URL y cierra")
+    ap.add_argument("--duracion", type=float, help="segundos que se mantienen los procesos antes de cerrarlos solos (para evidencias y pruebas)")
     a = ap.parse_args(argv)
     cfg = cargar_panel()
     p_api = puerto_libre(a.puerto_api or cfg["puerto_api"])
@@ -120,17 +121,19 @@ def main(argv=None, abrir=subprocess.Popen):
         if not esperar(url_panel + "/_stcore/health", lambda r: r.status_code == 200 and r.text.strip() == "ok", panel, cfg["espera_arranque_s"]):
             print("El panel no arrancó o no respondió a tiempo.")
             return 2
-        print(f"API:   {url_api}  (documentación en {url_api}/docs)")
-        print(f"Panel: {url_panel}")
-        print(f"Almacenamiento de la API: {a.almacenamiento}")
+        print(f"API:   {url_api}  (documentación en {url_api}/docs)", flush=True)
+        print(f"Panel: {url_panel}", flush=True)
+        print(f"Almacenamiento de la API: {a.almacenamiento}", flush=True)
         if a.verificar:
             return 0
-        print("Ctrl+C para cerrar los dos procesos.")
-        while True:
+        print("Ctrl+C para cerrar los dos procesos." if a.duracion is None else f"Se cerrarán solos en {a.duracion:g} s.", flush=True)
+        fin = None if a.duracion is None else time.monotonic() + a.duracion
+        while fin is None or time.monotonic() < fin:
             if api.poll() is not None or panel.poll() is not None:
                 print("Un proceso terminó antes de tiempo; se cierra el otro.")
                 return 3
             time.sleep(1)
+        return 0
     except KeyboardInterrupt:
         print("Cerrando…")
         return 0

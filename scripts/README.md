@@ -17,6 +17,10 @@ Utilidades que generan documentos, empaquetan o comprueban el repositorio. Ningu
 | `informe_pruebas.py` | ejecuta pytest con `coverage` y escribe `docs/validacion/informe_pruebas.md` y `.csv` (resultado esperado, obtenido, duración, métricas del análisis y cobertura por módulo) |
 | `validacion/verificar_regresiones.py` | reintroduce cada defecto corregido en una copia temporal y comprueba que su prueba de regresión falla sin la corrección |
 | `orquestacion/sincronizar_dag.py` | copia `dags/medallon_etl_dag.py` a `airflow-medallon/dags`, compara los sha256 de ambos (`--verificar`) y registra el hash (`--registrar`) |
+| `panel/ejecutar_panel.py` | lanzador del panel: arranca la API y Streamlit en 127.0.0.1 (puertos libres si hace falta), espera su salud y los cierra a los dos; `--almacenamiento sqlite` o `mysql`, `--verificar` y `--duracion` |
+| `panel/contraste.py` | calcula la relación de contraste WCAG de la paleta del panel (`--evidencia` guarda EV-057) |
+| `panel/generar_trazabilidad.py` | genera `docs/panel/trazabilidad_ui.md` desde el registro de componentes; con `--verificar` comprueba que esté al día |
+| `panel/make_arquitectura_panel.py` | dibuja `docs/panel/img/arquitectura_panel.png` con matplotlib |
 | `make_dist.py` | empaqueta el proyecto en `dist/etl_sismo_<fecha>.zip` por **lista de inclusión** (ver abajo) y verifica el zip |
 | `evidencias/` | produce las evidencias en un clon temporal con saneamiento de rutas y datos del equipo: `evidencia.py` (guardado saneado de las salidas), `evidencia_estabilidad.py` (reproducibilidad del pipeline antes de orquestarlo), `evidencia_conector.py` (instalación del conector MySQL), `evidencias_api.py` (corrida completa), `registrar_manifiesto.py` (sha256 en el manifiesto), `integrar_latencias.py` (latencias en los documentos), `make_diagrama_arquitectura.py` (diagrama) y `saneamiento.py` |
 

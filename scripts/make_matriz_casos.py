@@ -206,7 +206,8 @@ FUNCIONES = [
         ("La API no arranca", I, "código de salida 1", "test_panel_lanzador.py::test_si_la_api_no_responde_sale_con_1_y_no_arranca_el_panel"),
         ("El panel no arranca", I, "código de salida 2 y la API se cierra", "test_panel_lanzador.py::test_si_el_panel_no_responde_sale_con_2_y_cierra_la_api"),
         ("Ctrl+C", L, "cierra los dos procesos", "test_panel_lanzador.py::test_ctrl_c_cierra_los_dos_procesos_y_sale_con_0"),
-        ("Excepción al arrancar", I, "el cierre ocurre en finally", "test_panel_lanzador.py::test_el_cierre_ocurre_aunque_el_arranque_lance_una_excepcion")]),
+        ("Excepción al arrancar", I, "el cierre ocurre en finally", "test_panel_lanzador.py::test_el_cierre_ocurre_aunque_el_arranque_lance_una_excepcion"),
+        ("Duración acotada", L, "los procesos se cierran solos y sale con 0", "test_panel_lanzador.py::test_con_duracion_los_procesos_se_cierran_solos_y_sale_con_0")]),
     ("FC-26", "Aislamiento y solo lectura del panel", "src/panel/", [
         ("Imports permitidos", C, "solo logger y el propio panel", "test_panel_registro_y_aislamiento.py::test_los_unicos_imports_de_src_son_logger_y_el_propio_panel"),
         ("Sin almacenes ni credenciales", I, "no importa sqlite3, pymysql ni capas del pipeline", "test_panel_registro_y_aislamiento.py::test_el_panel_no_importa_almacenes_ni_capas_del_pipeline_ni_credenciales"),

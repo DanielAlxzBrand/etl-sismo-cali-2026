@@ -238,7 +238,7 @@ def main():
         ("notebooks/", "cinco notebooks ejecutados (conexión, EDA, Silver, Gold y validación)"),
         ("dags/", "DAG de Airflow `medallon_etl_dag.py` (copia versionada del DAG vivo de `airflow-medallon`)"),
         ("orquestacion/", "Dockerfile, requisitos de la imagen de Airflow y hash del DAG"),
-        ("src/", "código por capas (ver `src/README.md`): `extract/`, `transform/`, `load/` (SQLite y carga relacional), `api/`, `common.py` y `logger.py`"),
+        ("src/", "código por capas (ver `src/README.md`): `extract/`, `transform/`, `load/` (SQLite y carga relacional), `api/`, `panel/` (interfaz Streamlit de solo lectura), `common.py` y `logger.py`"),
         ("tests/", f"{n_tests} pruebas automáticas"),
         ("scripts/", "generadores y utilidades (ver `scripts/README.md`): README, catálogo de fuentes, modelo de datos, carga relacional, `mysql/` (configuración y verificación en vivo), matriz de casos de prueba e informe de pruebas, orquestación (`orquestacion/`), escáner de secretos, empaquetado y `evidencias/`"),
         ("docs/README.md", "índice de la documentación por capas y tabla «dónde está cada cosa»"),
@@ -250,6 +250,7 @@ def main():
         ("docs/gold/", "definición de cada KPI y diccionario de columnas de Gold"),
         ("docs/api/", "arquitectura del backend y de la API de solo lectura, con su diagrama"),
         ("docs/orquestacion/", "pruebas y orquestación: diferencias con la guía de Airflow, guía de implementación, prácticas de producción y operación"),
+        ("docs/panel/", "panel: guía de uso, arquitectura con su diagrama, trazabilidad de la interfaz, pruebas y accesibilidad"),
         ("docs/almacenamiento/", "almacenamiento relacional: modelo de datos con su diagrama, configuración de MySQL y carga y verificación"),
         ("docs/seguridad/", "política de credenciales, claves y tokens"),
         ("docs/validacion/", "verificaciones: contra el enunciado, de los servicios, en entorno limpio y del registro de ejecución"),
@@ -281,6 +282,15 @@ def main():
                   "test_pipeline_reproducible.py": "el pipeline regenerado en una copia reproduce byte a byte los nueve archivos de la línea base",
                   "test_informe_pruebas.py": "lectura de JUnit, resultado por caso y recálculo independiente de K1 para el informe de pruebas",
                   "test_entorno_de_pruebas.py": "configuración de pytest, extensiones de las pruebas y versión de pandas de la línea base",
+                  "test_decisiones.py": "la cabecera de las decisiones y el índice de la documentación coinciden con la última decisión registrada",
+                  "test_panel_formato_redaccion.py": "formato de cifras del panel (miles, coma decimal, signo menos y half-up) y regla de redacción de conclusiones con valores sintéticos",
+                  "test_panel_cliente.py": "cliente HTTP del panel: solo GET, errores traducidos al español, un reintento de conexión y caché que no guarda fallos",
+                  "test_panel_registro_y_aislamiento.py": "registro de componentes (rutas, campos y KPI existen) y aislamiento del panel por análisis estático: solo la API, solo GET y sin cifras escritas a mano",
+                  "test_panel_paginas.py": "las ocho páginas con `AppTest` sobre la API real en memoria, alcance visible y resiliencia ante cada fallo de la API",
+                  "test_panel_integracion.py": "los valores que muestra el panel coinciden con las salidas del pipeline, leídas y recalculadas en la prueba",
+                  "test_panel_humo_extremo_a_extremo.py": "humo de solo lectura: API real en un subproceso, cliente HTTP real y las ocho páginas",
+                  "test_panel_lanzador.py": "lanzador del panel con subprocesos simulados: comandos, entorno, puertos, códigos de salida y cierre garantizado",
+                  "test_panel_tema.py": "relación de contraste WCAG de la paleta del panel",
                   "test_respaldo_y_medicion.py": "respaldo lógico con manifiesto sha256, restauración con conciliación, reglas de la medición de lotes y límites de los scripts en vivo"}
     tests_md = "\n".join(f"- `tests/{n}` ({k}): {desc_tests.get(n, '')}." for n, k in tests.items())
     barrio_ej = str(ej.barrio).zfill(2) if pd.notna(ej.barrio) else ""
@@ -550,6 +560,9 @@ Decisiones de las fuentes: el plan elegido es el de las construcciones de la cap
 - **DAG:** grafo de tareas de Airflow que se ejecutan en un orden y sin ciclos; el nuestro tiene cuatro (`validar_bronze`, `transformar_a_silver`, `integrar_a_gold` y `cargar_datawarehouse`).
 - **Orquestación:** programar, ejecutar y vigilar las tareas del pipeline con una herramienta (aquí Airflow en Docker) en lugar de lanzarlas a mano.
 - **Copia de trabajo:** carpeta temporal dentro del contenedor donde el DAG produce sus salidas para compararlas con las versionadas sin escribir nunca en el repositorio.
+- **Panel:** interfaz de usuario del proyecto; consume la API y nunca toca los datos directamente.
+- **Streamlit:** biblioteca de Python con la que se escribe el panel como una aplicación web local.
+- **AppTest:** herramienta de Streamlit para ejecutar una página en las pruebas, sin navegador, y revisar lo que muestra.
 - **Lote (batch):** grupo de filas que se inserta en una sola operación; es más rápido que insertar fila por fila.
 
 ## 17. Trabajo futuro y atribución
@@ -611,8 +624,19 @@ Hay {n_tests} pruebas automáticas, una **matriz de casos** por función crític
 ```
 Documentación: [orquestación](docs/orquestacion/README.md), [diferencias con la guía](docs/orquestacion/diferencias_con_la_guia.md), [matriz de casos](docs/validacion/matriz_casos_prueba.md), [informe de pruebas](docs/validacion/informe_pruebas.md) y [registro de defectos](docs/validacion/registro_defectos.md).
 
-## 21. Componentes en construcción
-Quedan en construcción, y se documentarán en `docs/` cuando existan: el **panel con Streamlit** que consume solo la API, los materiales de **usuarios y UX** y el análisis de **costos y finanzas**. El índice de la documentación, con la carpeta prevista para cada uno, está en [docs/README.md](docs/README.md).
+## 21. Panel (interfaz de solo lectura)
+El **panel** (`src/panel/`) es una interfaz Streamlit que muestra los resultados de Gold hablando **solo con la API** por HTTP (solo GET): no abre bases ni archivos de datos, no lee `.env` ni maneja credenciales. Tiene ocho páginas (Respuesta, Estratos, Comunas, Sensibilidades, Concentración, Calidad de la llave, Construcciones y Fuentes y sistema); todas muestran el recuadro de alcance (cambio satelital severo como proxy de daño, tasas condicionales a la muestra, estrato de 2015 por lados de manzana) y las conclusiones se redactan con la regla de `docs/gold/KPIs.md`.
+
+Se ejecuta con un solo comando (arranca la API y el panel en 127.0.0.1 y cierra los dos con Ctrl+C):
+```powershell
+.\\.venv\\Scripts\\python.exe scripts\\panel\\ejecutar_panel.py
+```
+Por separado: `python -m uvicorn src.api.app:app --host 127.0.0.1 --port 8000` y `python -m streamlit run src/panel/app.py`. Con `--almacenamiento mysql` la API sirve desde MySQL. El panel no está desplegado: se ejecuta en local.
+
+Documentación: [guía de uso](docs/panel/guia_de_uso.md), [arquitectura](docs/panel/arquitectura_panel.md), [trazabilidad de la interfaz](docs/panel/trazabilidad_ui.md), [pruebas](docs/panel/pruebas_panel.md) y [accesibilidad y respuesta](docs/panel/accesibilidad_y_respuesta.md).
+
+## 22. Componentes en construcción
+Quedan en construcción, y se documentarán en `docs/` cuando existan: los materiales de **usuarios y UX** y el análisis de **costos y finanzas**. El índice de la documentación, con la carpeta prevista para cada uno, está en [docs/README.md](docs/README.md).
 """
     (ROOT / "README.md").write_text(txt, encoding="utf-8", newline="\n")
     print("README.md generado")

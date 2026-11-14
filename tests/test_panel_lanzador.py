@@ -208,3 +208,11 @@ def test_esperar_devuelve_false_si_el_proceso_ya_termino_y_true_si_la_respuesta_
     assert lanzador.esperar("http://x", lambda r: True, muerto, 1, http=Http()) is False
     assert lanzador.esperar("http://x", lambda r: r.text == "ok", vivo, 1, http=Http()) is True
     assert lanzador.esperar("http://x", lambda r: False, vivo, 0, http=Http()) is False
+
+
+def test_con_duracion_los_procesos_se_cierran_solos_y_sale_con_0(monkeypatch):
+    _todo_responde(monkeypatch)
+    reloj = iter([0, 0, 1, 2, 3, 4, 5])
+    monkeypatch.setattr(lanzador.time, "monotonic", lambda: next(reloj))
+    assert lanzador.main(["--duracion", "3"], abrir=_abridor()) == 0
+    assert len(ProcesoFalso.vivos) == 2 and all(p.codigo is not None for p in ProcesoFalso.vivos)

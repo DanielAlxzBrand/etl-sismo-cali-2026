@@ -85,9 +85,12 @@ def tarjeta(etiqueta, valor, ayuda=None, clave=None):
     st.metric(etiqueta, valor, help=ayuda, border=True)
 
 
-def tabla(df, clave=None):
-    """Tabla con texto ya formateado; sin índice."""
-    st.dataframe(df, hide_index=True, width="stretch", key=clave)
+def tabla(df, clave=None, texto_largo=False):
+    """Tabla con texto ya formateado; sin índice. Con `texto_largo` se dibuja completa (el texto se parte en líneas) en lugar de una cuadrícula con desplazamiento."""
+    if texto_largo:
+        st.table(df.style.hide(axis="index"))
+    else:
+        st.dataframe(df, hide_index=True, width="stretch", key=clave)
 
 
 def _eje_pct(titulo):
@@ -101,7 +104,7 @@ def grafico_tasas(df, x, titulo, descripcion, alto=ALTO_GRAFICO, titulo_x=None):
     """
     col = tema.colores()
     orden = list(df[x])
-    base = alt.Chart(df).encode(x=alt.X(f"{x}:N", sort=orden, title=titulo_x or "", axis=alt.Axis(labelAngle=0, labelFontSize=12, titleFontSize=12)))
+    base = alt.Chart(df).encode(x=alt.X(f"{x}:N", sort=orden, title=titulo_x or "", axis=alt.Axis(labelAngle=0, labelFontSize=12, titleFontSize=12, labelLimit=0, labelExpr="split(datum.label, ' · ')")))
     barras = base.mark_bar().encode(
         y=alt.Y("tasa_pct:Q", axis=_eje_pct("Tasa de cambio satelital severo (%)")),
         color=alt.Color("muestra:N", scale=alt.Scale(domain=[ETIQUETA_SUFICIENTE, ETIQUETA_BAJA], range=[col["principal"], col["secundario"]]),

@@ -1,0 +1,25 @@
+# Capturas automatizadas del navegador de las ocho páginas del panel
+- comando: `python scripts/evidencias/evidencia_capturas_panel.py (navegador sin ventana por DevTools)`
+- fecha: 2026-11-14T10:38:34-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 68.6 s
+- Python: 3.13.0
+- commit del repositorio: ddd5e24
+
+Navegador: msedge.exe Edg/157.0.4341.46 sin ventana, por el protocolo DevTools; ventana de 1400 px de ancho.
+Panel: http://127.0.0.1:8766 (lanzado con scripts/panel/ejecutar_panel.py; API en http://127.0.0.1:8765, almacenamiento SQLite).
+Cada imagen es una «captura automatizada del navegador» (no la toma una persona) de la página ya dibujada; no muestra datos sensibles.
+
+| Página | Archivo | Alto (px) | Gráficos | Texto visible | Errores en pantalla |
+|---|---|---|---|---|---|
+| Respuesta | `EV-054_captura_respuesta.png` | 1175 | 0 | 1584 caracteres; recuadro de alcance: sí | ninguno |
+| Estratos (K1) | `EV-054_captura_estratos.png` | 1672 | 1 | 2019 caracteres; recuadro de alcance: sí | ninguno |
+| Comunas (K6) | `EV-054_captura_comunas.png` | 1946 | 1 | 1902 caracteres; recuadro de alcance: sí | ninguno |
+| Sensibilidades (S0 a S5) | `EV-054_captura_sensibilidades.png` | 2359 | 1 | 3204 caracteres; recuadro de alcance: sí | ninguno |
+| Concentración (K3 y K4) | `EV-054_captura_concentracion.png` | 1575 | 0 | 1697 caracteres; recuadro de alcance: sí | ninguno |
+| Calidad de la llave | `EV-054_captura_calidad.png` | 1534 | 0 | 1352 caracteres; recuadro de alcance: sí | ninguno |
+| Construcciones | `EV-054_captura_construcciones.png` | 1704 | 1 | 1489 caracteres; recuadro de alcance: sí | ninguno |
+| Fuentes y sistema | `EV-054_captura_fuentes.png` | 2265 | 0 | 2582 caracteres; recuadro de alcance: sí | ninguno |
+
+Procesos del panel o de la API que quedan vivos al terminar: 0.
+Resultado: todas las páginas se capturaron con su alcance visible y sin avisos de error.

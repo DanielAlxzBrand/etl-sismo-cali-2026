@@ -29,6 +29,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--airflow", default=str(ROOT.parent / "airflow-medallon"))
     ap.add_argument("--nombre", default="canario_orquestacion.txt")
+    ap.add_argument("--tema", default="orquestacion", help="carpeta de docs/evidencias donde se guarda")
+    ap.add_argument("--titulo", default="Comprobación canario de las credenciales de MySQL, del usuario de Docker y de la interfaz de Airflow")
+    ap.add_argument("--sin-imagen", action="store_true", help="no inspecciona la imagen de Docker (Docker no se usa en ese componente)")
     a = ap.parse_args()
     t0 = time.perf_counter()
     airflow = Path(a.airflow).resolve()
@@ -75,17 +78,20 @@ def main():
         L.append("5. La carpeta `airflow-medallon` no existe: no se revisó")
         ok = False
     # imagen: variables de entorno y capas declaradas
-    try:
-        r = subprocess.run(["docker", "image", "inspect", "airflow-medallon-airflow-worker"], capture_output=True, timeout=60)
-        datos = r.stdout
-        h = [k for k, v in can.items() if v.encode() in datos]
-        h2 = subprocess.run(["docker", "history", "--no-trunc", "airflow-medallon-airflow-worker"], capture_output=True, timeout=60).stdout
-        h += [k for k, v in can.items() if v.encode() in h2]
-        ok &= r.returncode == 0 and not h
-        L.append(f"7. Imagen `airflow-medallon-airflow-worker` (variables de entorno y capas de `docker image inspect` y `docker history`): {len(h)} hallazgos")
-    except (OSError, subprocess.SubprocessError):
-        L.append("7. Imagen: no se pudo inspeccionar (Docker no responde)")
-        ok = False
+    if a.sin_imagen:
+        L.append("7. Imagen de Docker: no se inspecciona en este componente (no se levanta Docker); la comprobación de la imagen consta en la evidencia de la orquestación.")
+    else:
+        try:
+            r = subprocess.run(["docker", "image", "inspect", "airflow-medallon-airflow-worker"], capture_output=True, timeout=60)
+            datos = r.stdout
+            h = [k for k, v in can.items() if v.encode() in datos]
+            h2 = subprocess.run(["docker", "history", "--no-trunc", "airflow-medallon-airflow-worker"], capture_output=True, timeout=60).stdout
+            h += [k for k, v in can.items() if v.encode() in h2]
+            ok &= r.returncode == 0 and not h
+            L.append(f"7. Imagen `airflow-medallon-airflow-worker` (variables de entorno y capas de `docker image inspect` y `docker history`): {len(h)} hallazgos")
+        except (OSError, subprocess.SubprocessError):
+            L.append("7. Imagen: no se pudo inspeccionar (Docker no responde)")
+            ok = False
     with tempfile.TemporaryDirectory() as tmp:
         clon = Path(tmp) / "clon"
         subprocess.run(["git", "clone", "--quiet", "--no-hardlinks", str(ROOT), str(clon)], check=True, capture_output=True)
@@ -109,8 +115,8 @@ def main():
     cuerpo = "\n".join(L) + "\n"
     print(cuerpo)
     extras = [(str(airflow), "<AIRFLOW>")]
-    ruta = evidencia.guardar("orquestacion", a.nombre, "Comprobación canario de las credenciales de MySQL, del usuario de Docker y de la interfaz de Airflow",
-                             "python scripts/evidencias/evidencia_canario_orquestacion.py", 0 if ok else 1, time.perf_counter() - t0, evidencia.limpiar(cuerpo, extras=extras))
+    ruta = evidencia.guardar(a.tema, a.nombre, a.titulo,
+                             "python scripts/evidencias/evidencia_canario_orquestacion.py" + (" --sin-imagen" if a.sin_imagen else ""), 0 if ok else 1, time.perf_counter() - t0, evidencia.limpiar(cuerpo, extras=extras))
     print("evidencia:", ruta.relative_to(ROOT))
     return 0 if ok else 1
 
