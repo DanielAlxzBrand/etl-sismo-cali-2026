@@ -1,8 +1,8 @@
 # Guía de evidencias para la plantilla del checklist
 
-**Fecha:** 2026-11-12 · **Política (D35):** el equipo **no graba video**. Para cada ítem del checklist se presentan **archivos adjuntables** (salidas registradas, JSON, XML de pruebas, documentos e imágenes renderizadas) y, **de forma opcional**, capturas de pantalla. Las capturas automatizadas del navegador (rotuladas) y las salidas registradas son evidencia suficiente; una captura manual complementa, no condiciona el cierre de un ítem.
+**Fecha:** 2026-11-13 (actualizada con Pruebas y orquestación; versión inicial 2026-11-12) · **Política (D35):** el equipo **no graba video**. Para cada ítem del checklist se presentan **archivos adjuntables** (salidas registradas, JSON, XML de pruebas, documentos e imágenes renderizadas) y, **de forma opcional**, capturas de pantalla. Las capturas automatizadas del navegador (rotuladas) y las salidas registradas son evidencia suficiente; una captura manual complementa, no condiciona el cierre de un ítem.
 
-**Rótulos.** Una captura que tome el equipo se rotula «captura tomada por el equipo» con la fecha. La captura de `/docs` incluida en el repositorio (EV-017) se rotula «captura automatizada del navegador». Las imágenes generadas desde salidas reales (EV-021 a EV-024 y los diagramas de `docs/estrategia/img/`) se rotulan «imagen generada a partir de la salida registrada; no es una captura de pantalla».
+**Rótulos.** Una captura que tome el equipo se rotula «captura tomada por el equipo» con la fecha. La captura de `/docs` incluida en el repositorio (EV-017) se rotula «captura automatizada del navegador». Las imágenes generadas desde salidas reales (EV-021 a EV-024, EV-045 a EV-048, el diagrama de `docs/orquestacion/img/` y los de `docs/estrategia/img/`) se rotulan «imagen generada a partir de la salida registrada; no es una captura de pantalla».
 
 **Cómo se lee cada ficha.** (a) archivo principal para adjuntar a la plantilla; (b) archivos de apoyo; (c) texto sugerido para la columna «Evidencia / observaciones»; (d) captura opcional, con comando probado; (e) cómo validar la evidencia con un comando de solo lectura. Las rutas son relativas a la raíz del repositorio. El índice de todas las evidencias con su sha256 está en `docs/evidencias/manifiesto.md`.
 
@@ -11,7 +11,7 @@
 **Comandos de PowerShell.** Todos se ejecutan en la raíz del repositorio con el entorno activado (`.\.venv\Scripts\Activate.ps1`) y no modifican nada. Para comprobar que no cambió nada: `git status --short` no debe imprimir nada.
 
 ## Índice
-Fichas de los ítems 1.1 a 1.5 (Estrategia), 2.1 a 2.3 (API, fuentes y credenciales) y 4.1 a 4.3 (Carga relacional). Las de Pruebas y orquestación, Panel, Usuarios, UX y finanzas, Documentación y demostración y Cierre y paquete se agregan en cada componente con esta misma estructura.
+Fichas de los ítems 1.1 a 1.5 (Estrategia), 2.1 a 2.3 (API, fuentes y credenciales), 4.1 a 4.3 (Carga relacional) y 5.1, 5.2, 5.4, 5.5 y 5.6 (Pruebas y orquestación). Las de Panel, Usuarios, UX y finanzas, Documentación y demostración y Cierre y paquete se agregan en cada componente con esta misma estructura.
 
 ---
 
@@ -46,9 +46,9 @@ Fichas de los ítems 1.1 a 1.5 (Estrategia), 2.1 a 2.3 (API, fuentes y credencia
 - **(e) Validar:** `.\.venv\Scripts\python.exe -m pytest tests/test_estrategia.py::test_1_4_declara_hipotesis_sin_validar_y_no_estimado -q -p no:cacheprovider`.
 
 ### Ítem 1.5 · MVP y criterios de aceptación
-- **(a) Archivo principal:** `docs/estrategia/05_mvp_criterios_aceptacion.md` (Markdown). Demuestra: MVP con ocho funcionalidades (FE1 a FE8) y 29 criterios; 25 ejecutados con fecha y 4 «no verificado aún» (Airflow y dashboard). **No demuestra:** los criterios pendientes.
+- **(a) Archivo principal:** `docs/estrategia/05_mvp_criterios_aceptacion.md` (Markdown). Demuestra: MVP con ocho funcionalidades (FE1 a FE8) y 29 criterios; 27 ejecutados con fecha y 2 «no verificado aún» (dashboard). AC26 se ajustó a las cuatro tareas de la guía (D66). **No demuestra:** los criterios del dashboard.
 - **(b) Apoyo:** `docs/evidencias/estrategia/EV-009_determinismo_clon.txt` (dos corridas en un clon con los mismos sha256), `docs/evidencias/api/EV-014_pytest.txt`, `EV-016_respuestas_api.txt` y `EV-015_sin_escritura_hashes.txt` (criterios de la API).
-- **(c) Texto sugerido:** «MVP del proyecto y 29 criterios de aceptación (23 verificados con su evidencia; 6 se verifican en Carga relacional, Pruebas y orquestación y Panel): `docs/estrategia/05_mvp_criterios_aceptacion.md`.»
+- **(c) Texto sugerido:** «MVP del proyecto y 29 criterios de aceptación (27 verificados con su evidencia; 2 se verifican en Panel): `docs/estrategia/05_mvp_criterios_aceptacion.md`.»
 - **(d) Captura opcional:** la tabla de criterios con la columna de estado visible. Nombre: `captura_1.5_criterios.png`.
 - **(e) Validar:** `.\.venv\Scripts\python.exe -m pytest tests/test_estrategia.py::test_1_5_tiene_al_menos_24_criterios_y_no_marca_cumple_sin_verificar -q -p no:cacheprovider`.
 
@@ -87,12 +87,13 @@ Fichas de los ítems 1.1 a 1.5 (Estrategia), 2.1 a 2.3 (API, fuentes y credencia
 - **(e) Validar:** `.\.venv\Scripts\python.exe -m pytest tests/test_catalogo.py -q -p no:cacheprovider` (debe terminar en `5 passed`); `.\.venv\Scripts\python.exe scripts\make_catalogo_fuentes.py` y luego `git status --short` no debe mostrar cambios en el catálogo.
 
 ### Ítem 2.3 · Credenciales, claves y tokens
-- **(a) Archivo principal:** `docs/seguridad/gestion_credenciales.md` (Markdown). Demuestra: qué se requiere hoy (ninguna credencial obligatoria), variables previstas (`MYSQL_*` en Carga relacional y claves de Airflow en Pruebas y orquestación, «previstas, no usadas todavía»), dónde se guardan, rotación, revocación y respuesta ante una filtración. **No demuestra:** que no exista una filtración en servicios de terceros ni que el escáner encuentre todos los secretos posibles. Estado: Cumple; se revalida con las variables `MYSQL_*` (Carga relacional) y con el escáner sobre el zip final (Cierre y paquete).
+- **(a) Archivo principal:** `docs/seguridad/gestion_credenciales.md` (Markdown). Demuestra: qué se requiere hoy (ninguna credencial obligatoria), variables en uso (`MYSQL_*`, `MYSQL_DOCKER_*` y la contraseña de la interfaz de Airflow, solo en su `.env`), dónde se guardan, rotación, revocación y respuesta ante una filtración. **No demuestra:** que no exista una filtración en servicios de terceros ni que el escáner encuentre todos los secretos posibles. Estado: Cumple; revalidado con las variables `MYSQL_*` (Carga relacional), con las del usuario de Docker y de Airflow (Pruebas y orquestación, EV-049) y, al final, con el escáner sobre el zip final (Cierre y paquete).
 - **(b) Apoyo:**
   - `docs/evidencias/api/EV-019_escaner_secretos.txt` y `EV-024_escaner.png` (escáner sobre el clon, su historial de git y un zip de prueba: `hallazgos: 0`).
   - `.env.example` (solo `HTTP_USER_AGENT`, la única variable que el código lee).
   - `tests/test_secretos.py` y `docs/evidencias/api/junit_api.xml` (detección de un secreto sembrado por tipo, `.env` fuera de `git ls-files`, `make_dist` sin `.env`).
   - `tests/test_logger.py` y la prueba `test_el_registro_enmascara_un_token_de_prueba` (enmascarado del registro).
+  - `docs/evidencias/orquestacion/EV-049_canario_orquestacion.txt` (las contraseñas de MySQL, del usuario de Docker y de la interfaz de Airflow no aparecen en el árbol, los registros, el historial, `airflow-medallon`, la imagen ni un zip de prueba: 0 hallazgos).
 - **(c) Texto sugerido:** «Política de credenciales y escáner de secretos sobre árbol, historial, notebooks, logs y zip, sin hallazgos; `.env` fuera de git y `.env.example` sin valores: `docs/seguridad/gestion_credenciales.md`.»
 - **(d) Captura opcional:** PowerShell con `.\.venv\Scripts\python.exe scripts\escanear_secretos.py`, que debe terminar en `hallazgos: 0` sin mostrar ningún valor. Nombre: `captura_2.3_escaner.png`.
 - **(e) Validar:** `.\.venv\Scripts\python.exe scripts\escanear_secretos.py` (termina en `hallazgos: 0`) y `.\.venv\Scripts\python.exe -m pytest tests/test_secretos.py -q -p no:cacheprovider` (debe terminar en `10 passed`).
@@ -134,6 +135,63 @@ Fichas de los ítems 1.1 a 1.5 (Estrategia), 2.1 a 2.3 (API, fuentes y credencia
 - **(c) Texto sugerido:** «Carga por lotes medida con tres tamaños frente a fila a fila (3,4 veces más rápido con el lote elegido), con mediana, p95 y filas por segundo: `docs/evidencias/almacenamiento/EV-030_benchmark_lotes.txt`.»
 - **(d) Captura opcional:** la tabla impresa por `.\.venv\Scripts\python.exe scripts\mysql\benchmark_lotes.py`. Nombre: `captura_4.3_lotes.png`.
 - **(e) Validar:** `.\.venv\Scripts\python.exe scripts\mysql\benchmark_lotes.py` (imprime la tabla y el lote propuesto; sin `--fijar` no cambia `config.yaml`).
+
+---
+
+## Pruebas y orquestación · Pruebas, Airflow y defectos (sección 5 del checklist)
+
+### Ítem 5.1 · Casos de prueba por función crítica
+- **(a) Archivo principal:** `docs/validacion/matriz_casos_prueba.md` (Markdown, con su `.csv`). Demuestra: 19 funciones críticas con 118 casos (55 correctos, 36 incorrectos y 27 límite), cada uno con su resultado esperado y la prueba que lo ejecuta, generados desde una única definición. **No demuestra:** que no existan fallos fuera de los casos definidos.
+- **(b) Apoyo:**
+  - `docs/validacion/informe_pruebas.md` y `informe_pruebas.csv` (resultado de cada caso en la última ejecución: 316 de 316).
+  - `tests/test_matriz_casos.py` (cada función crítica tiene casos y cada prueba citada existe).
+  - `docs/evidencias/orquestacion/EV-048_cobertura_por_modulo.png` (imagen generada a partir de la salida registrada; no es una captura de pantalla).
+- **(c) Texto sugerido:** «Matriz de 118 casos de prueba para 19 funciones críticas, cada uno con su resultado esperado y su prueba automática en verde: `docs/validacion/matriz_casos_prueba.md`.»
+- **(d) Captura opcional:** PowerShell con `.\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider`, que debe terminar en `316 passed`. Nombre: `captura_5.1_pytest.png`.
+- **(e) Validar:** `.\.venv\Scripts\python.exe -m pytest tests/test_matriz_casos.py -q -p no:cacheprovider` y `.\.venv\Scripts\python.exe scripts\make_matriz_casos.py` (regenera la matriz; `git status --short` no debe mostrar cambios).
+
+### Ítem 5.2 · Datos correctos, incorrectos y casos límite
+- **(a) Archivo principal:** `docs/validacion/informe_pruebas.md` (Markdown, generado). Demuestra: cada caso etiquetado como correcto, incorrecto o límite con su resultado obtenido; las salidas reales se reproducen byte a byte. **No demuestra:** datos de otras fuentes ni de otros sismos.
+- **(b) Apoyo:**
+  - `docs/validacion/matriz_casos_prueba.md` (tipo de cada caso).
+  - `tests/test_casos_limite.py`, `tests/test_carga_relacional.py` y `tests/test_usuario_docker.py` (entradas inválidas y valores en el borde).
+  - `docs/evidencias/orquestacion/EV-035_estabilidad_pipeline.txt` (las nueve salidas se regeneran idénticas).
+- **(c) Texto sugerido:** «Probamos datos correctos, incorrectos y límite en cada función crítica (55, 36 y 27 casos) y la reproducción byte a byte de las salidas: `docs/validacion/informe_pruebas.md`.»
+- **(d) Captura opcional:** el informe con la columna de tipo visible. Nombre: `captura_5.2_informe.png`.
+- **(e) Validar:** `.\.venv\Scripts\python.exe -m pytest tests/test_casos_limite.py tests/test_carga_relacional.py tests/test_pipeline_reproducible.py -q -p no:cacheprovider`.
+
+### Ítem 5.4 · MLOps y orquestación con Airflow
+- **(a) Archivo principal:** `docs/orquestacion/guia_de_implementacion.md` (Markdown), con `docs/orquestacion/diferencias_con_la_guia.md`, `docs/orquestacion/mlops_y_produccion.md` y el diagrama `docs/orquestacion/img/arquitectura_orquestacion.png`. Demuestra: el DAG `medallon_etl_sismo` con cuatro tareas en Airflow 3.3.2 con Docker, ejecutado de forma manual (con repetición y fallo inducido) y programado (`0 6 * * *`, hora de Bogotá). **No demuestra:** que se ejecute con el equipo apagado ni un despliegue en la nube; LLMOps no aplica (D22).
+- **(b) Apoyo:**
+  - `docs/evidencias/orquestacion/EV-037_pasos_13_a_19.txt`, `EV-038_pasos_27_a_30.txt` y `EV-039_pasos_31_a_33.txt` (carpeta, compose, imagen, contenedores sanos, interfaz y DAG sin errores de importación).
+  - `docs/evidencias/orquestacion/EV-040_origen_mysql_desde_docker.txt` (origen con el que MySQL ve la conexión y privilegios mínimos).
+  - `docs/evidencias/orquestacion/EV-041_ejecucion_manual.txt` y `EV-042_fallo_inducido_y_recuperacion.txt`.
+  - `docs/evidencias/orquestacion/EV-043_programacion.txt` y `EV-044_operacion.txt` (con `EV-044_estados_tareas.csv`).
+  - `docs/evidencias/orquestacion/EV-045_estados_de_tareas.png`, `EV-046_esperado_frente_a_obtenido.png` y `EV-047_ejecucion_programada.png` (imágenes generadas a partir de la salida registrada; no son capturas de pantalla).
+  - `dags/medallon_etl_dag.py`, `orquestacion/` y `tests/test_dag_estatico.py` (24 pruebas estáticas).
+- **(c) Texto sugerido:** «DAG de Airflow 3.3.2 en Docker con cuatro tareas (Bronze, Silver, Gold y carga a MySQL), ejecutado de forma manual y programada, con fallo inducido y recuperación; las salidas coinciden con las versionadas: `docs/orquestacion/guia_de_implementacion.md` y `docs/evidencias/orquestacion/EV-043_programacion.txt`.»
+- **(d) Captura opcional** (la toma el equipo; se rotula «captura tomada por el equipo»): la interfaz de Airflow en `http://localhost:8080` con el DAG y sus ejecuciones, sin mostrar la contraseña. Nombre: `captura_5.4_airflow.png`.
+- **(e) Validar:** `.\.venv\Scripts\python.exe -m pytest tests/test_dag_estatico.py -q -p no:cacheprovider` y, con Docker Desktop en marcha, `docker compose ps` y `docker compose exec airflow-scheduler airflow dags list-import-errors` desde la carpeta `airflow-medallon`.
+
+### Ítem 5.5 · Resultado esperado, obtenido y evidencia por prueba
+- **(a) Archivo principal:** `docs/validacion/informe_pruebas.md` (Markdown, con `informe_pruebas.csv`). Demuestra: por cada caso, el resultado esperado, el obtenido, su duración y la prueba; la cobertura por módulo (66,2 % de 3.383 líneas) y las métricas de validación del análisis (K1 recalculado con SQL y una fórmula propia, diferencia máxima de 4,82e-13). **No demuestra:** métricas de modelos, porque no se entrenan (N/A justificado, D22).
+- **(b) Apoyo:**
+  - `docs/validacion/cobertura_pruebas.csv` y `docs/evidencias/orquestacion/EV-048_cobertura_por_modulo.png`.
+  - `docs/evidencias/orquestacion/EV-046_esperado_frente_a_obtenido.png` y `EV-041_ejecucion_manual.txt` (esperado frente a obtenido en el DAG).
+  - `scripts/informe_pruebas.py` y `tests/test_informe_pruebas.py`.
+- **(c) Texto sugerido:** «Informe generado desde la salida de `pytest` con resultado esperado, obtenido y evidencia por caso, cobertura por módulo y métricas de validación del análisis; sin modelos que validar: `docs/validacion/informe_pruebas.md`.»
+- **(d) Captura opcional:** PowerShell con `.\.venv\Scripts\python.exe scripts\informe_pruebas.py`, que debe terminar en «0 fallan, 0 casos sin resultado». Nombre: `captura_5.5_informe.png`.
+- **(e) Validar:** `.\.venv\Scripts\python.exe scripts\informe_pruebas.py` y `.\.venv\Scripts\python.exe -m pytest tests/test_informe_pruebas.py -q -p no:cacheprovider`.
+
+### Ítem 5.6 · Corrección de errores y repetición de las pruebas
+- **(a) Archivo principal:** `docs/validacion/registro_defectos.md` (Markdown). Demuestra: 13 defectos con fecha, dónde se detectaron, causa, corrección con su commit y prueba de regresión, y la verificación de que la prueba falla sin la corrección. **No demuestra:** que el registro sea exhaustivo antes del 2026-10-15.
+- **(b) Apoyo:**
+  - `docs/evidencias/orquestacion/EV-036_regresiones_sin_correccion.txt` (nueve reintroducciones en una copia temporal: fallan sin la corrección y pasan con ella).
+  - `docs/evidencias/orquestacion/EV-035_estabilidad_pipeline.txt` y `EV-042_fallo_inducido_y_recuperacion.txt` (DEF-011 y DEF-013).
+  - `scripts/validacion/verificar_regresiones.py`.
+- **(c) Texto sugerido:** «Registro de 13 defectos corregidos, cada uno con su prueba de regresión que falla sin la corrección y pasa con ella, y repetición de todas las pruebas: `docs/validacion/registro_defectos.md` y `docs/evidencias/orquestacion/EV-036_regresiones_sin_correccion.txt`.»
+- **(d) Captura opcional:** PowerShell con `.\.venv\Scripts\python.exe scripts\validacion\verificar_regresiones.py`, con cada defecto «falla sin la corrección». Nombre: `captura_5.6_regresiones.png`.
+- **(e) Validar:** `.\.venv\Scripts\python.exe scripts\validacion\verificar_regresiones.py` (código de salida 0) y `.\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider`.
 
 ---
 

@@ -99,7 +99,7 @@
 | [operacion.md](orquestacion/operacion.md) | levantar, parar, registros y solución de problemas |
 
 ### Decisiones
-[DECISIONES.md](DECISIONES.md): todas las decisiones con alternativas, razón, riesgo y fecha (D1 a D64; las nuevas continúan desde D65).
+[DECISIONES.md](DECISIONES.md): todas las decisiones con alternativas, razón, riesgo y fecha (D1 a D66; las nuevas continúan desde D67).
 
 ### Almacenamiento relacional (MySQL)
 | documento | contenido |
@@ -126,7 +126,7 @@ Las evidencias del almacenamiento relacional están en `docs/evidencias/almacena
 | Estrategia | 1.1, 1.2, 1.3, 1.4 | hecho |
 | API, fuentes y credenciales | 2.1, 2.2, 2.3 | hecho |
 | Carga relacional | 4.1, 4.2, 4.3 | hecho |
-| Pruebas y orquestación | 5.1, 5.2, 5.4, 5.5, 5.6 | en construcción |
+| Pruebas y orquestación | 5.1, 5.2, 5.4, 5.5, 5.6 | hecho |
 | Panel | 1.5, 3.1, 3.2, 5.3 | en construcción |
 | Usuarios, UX y finanzas | 3.3, 6.1, 6.2, 6.3, 6.4 | en construcción |
 | Documentación y demostración | 6.5, 7.2, 7.3, 7.4, 7.5 | en construcción |
