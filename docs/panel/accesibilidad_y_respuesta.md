@@ -29,7 +29,7 @@ Relación de contraste según la fórmula de luminancia relativa de WCAG 2.x, ca
 | Medición | SQLite (mediana) | MySQL (mediana) |
 |---|---|---|
 | Latencia de las rutas de la API leídas por el panel | de 3,6 a 13,9 ms | de 74,8 a 126,9 ms (las rutas `/fuentes` y `/calidad` no consultan el almacén y responden en menos de 12 ms con los dos) |
-| Renderizado de una página, incluida la lectura de la API | de 389 a 537 ms | de 647 a 881 ms |
+| Renderizado de una página, incluida la lectura de la API | de 389 a 537 ms | de 647 a 882 ms |
 
 La diferencia entre almacenamientos viene de que la API abre una conexión a MySQL en cada solicitud (decisión D52). No se midió el tiempo en un navegador ni la red hacia una persona.
 
