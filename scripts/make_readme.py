@@ -236,9 +236,11 @@ def main():
         ("data/silver/", "tablas limpias, huérfanos y `quality_report.json`"),
         ("data/gold/", "`gold_final.csv`, `kpis_gold.csv`, `kpis_sensibilidad.csv`, `etl_sismo.db`"),
         ("notebooks/", "cinco notebooks ejecutados (conexión, EDA, Silver, Gold y validación)"),
+        ("dags/", "DAG de Airflow `medallon_etl_dag.py` (copia versionada del DAG vivo de `airflow-medallon`)"),
+        ("orquestacion/", "Dockerfile, requisitos de la imagen de Airflow y hash del DAG"),
         ("src/", "código por capas (ver `src/README.md`): `extract/`, `transform/`, `load/` (SQLite y carga relacional), `api/`, `common.py` y `logger.py`"),
         ("tests/", f"{n_tests} pruebas automáticas"),
-        ("scripts/", "generadores y utilidades (ver `scripts/README.md`): README, catálogo de fuentes, modelo de datos, carga relacional, `mysql/` (configuración y verificación en vivo), escáner de secretos, empaquetado y `evidencias/`"),
+        ("scripts/", "generadores y utilidades (ver `scripts/README.md`): README, catálogo de fuentes, modelo de datos, carga relacional, `mysql/` (configuración y verificación en vivo), matriz de casos de prueba e informe de pruebas, orquestación (`orquestacion/`), escáner de secretos, empaquetado y `evidencias/`"),
         ("docs/README.md", "índice de la documentación por capas y tabla «dónde está cada cosa»"),
         ("docs/DECISIONES.md", "decisiones con alternativas, razón y riesgo"),
         ("docs/proyecto/", "contexto, entorno, decisiones técnicas y referencias (documento de contexto y problema, imagen del enunciado)"),
@@ -247,6 +249,7 @@ def main():
         ("docs/silver/", "hallazgos del análisis exploratorio, reglas de limpieza, validación de la llave y revisión de códigos de barrio"),
         ("docs/gold/", "definición de cada KPI y diccionario de columnas de Gold"),
         ("docs/api/", "arquitectura del backend y de la API de solo lectura, con su diagrama"),
+        ("docs/orquestacion/", "pruebas y orquestación: diferencias con la guía de Airflow, guía de implementación, prácticas de producción y operación"),
         ("docs/almacenamiento/", "almacenamiento relacional: modelo de datos con su diagrama, configuración de MySQL y carga y verificación"),
         ("docs/seguridad/", "política de credenciales, claves y tokens"),
         ("docs/validacion/", "verificaciones: contra el enunciado, de los servicios, en entorno limpio y del registro de ejecución"),
@@ -269,6 +272,15 @@ def main():
                   "test_evidencias.py": "el saneamiento de evidencias sustituye rutas, usuario y equipo, y las evidencias guardadas no llevan datos del equipo",
                   "test_carga_relacional.py": "esquema relacional (paridad, diccionario al día), conversión estricta, carga con conciliación al 100 %, idempotencia, historial, reversión, integridad referencial y equivalencia de la API entre SQLite y el almacén relacional (sin servidor MySQL)",
                   "test_configurar_mysql.py": "configuración de MySQL con conexiones simuladas (privilegios, contraseñas que nunca llegan a `.env` ni a SQL, rotación), `.env` atómico, enmascarado del registro y comprobación canario del escáner",
+                  "test_usuario_docker.py": "usuario de MySQL para Docker: origen validado (sin `%`), permisos mínimos sobre la base real, contraseñas solo en `.env` e idempotencia, con conexiones simuladas",
+                  "test_canario_extra.py": "comprobación canario con archivos `.env` extra: detecta contraseñas de otra carpeta sin imprimirlas",
+                  "test_casos_limite.py": "casos límite: un solo registro, entrada vacía y extremos de paginación",
+                  "test_carga_sqlite.py": "carga a SQLite en una carpeta temporal: contenido igual al de la base versionada, repetida, con una fila y con un CSV ausente",
+                  "test_dag_estatico.py": "DAG y imagen de Airflow analizados con `ast`: tareas, dependencias, repositorio de solo lectura, fallo inducido, secretos, requisitos y hash",
+                  "test_matriz_casos.py": "la matriz de casos de prueba apunta a pruebas existentes y está al día con su definición",
+                  "test_pipeline_reproducible.py": "el pipeline regenerado en una copia reproduce byte a byte los nueve archivos de la línea base",
+                  "test_informe_pruebas.py": "lectura de JUnit, resultado por caso y recálculo independiente de K1 para el informe de pruebas",
+                  "test_entorno_de_pruebas.py": "configuración de pytest, extensiones de las pruebas y versión de pandas de la línea base",
                   "test_respaldo_y_medicion.py": "respaldo lógico con manifiesto sha256, restauración con conciliación, reglas de la medición de lotes y límites de los scripts en vivo"}
     tests_md = "\n".join(f"- `tests/{n}` ({k}): {desc_tests.get(n, '')}." for n, k in tests.items())
     barrio_ej = str(ej.barrio).zfill(2) if pd.notna(ej.barrio) else ""
@@ -535,6 +547,9 @@ Decisiones de las fuentes: el plan elegido es el de las construcciones de la cap
 - **Idempotente:** que repetir la operación con la misma entrada no cambia nada; la carga repetida responde «ya cargada».
 - **Clave foránea:** regla de la base que impide que una fila apunte a otra que no existe.
 - **Conciliación:** comparar lo cargado con los archivos de origen (conteos, huellas y cada valor) para demostrar que son iguales.
+- **DAG:** grafo de tareas de Airflow que se ejecutan en un orden y sin ciclos; el nuestro tiene cuatro (`validar_bronze`, `transformar_a_silver`, `integrar_a_gold` y `cargar_datawarehouse`).
+- **Orquestación:** programar, ejecutar y vigilar las tareas del pipeline con una herramienta (aquí Airflow en Docker) en lugar de lanzarlas a mano.
+- **Copia de trabajo:** carpeta temporal dentro del contenedor donde el DAG produce sus salidas para compararlas con las versionadas sin escribir nunca en el repositorio.
 - **Lote (batch):** grupo de filas que se inserta en una sola operación; es más rápido que insertar fila por fila.
 
 ## 17. Trabajo futuro y atribución
@@ -586,8 +601,18 @@ La verificación en vivo corre solo sobre la base de prueba. Para servir la API 
 
 Documentación: [modelo de datos](docs/almacenamiento/modelo_datos.md), [configuración de MySQL](docs/almacenamiento/mysql_configuracion.md), [carga y verificación](docs/almacenamiento/carga_y_verificacion.md) y [gestión de credenciales](docs/seguridad/gestion_credenciales.md).
 
-## 20. Componentes en construcción
-Quedan en construcción, y se documentarán en `docs/` cuando existan: la **orquestación con Airflow**, el **panel con Streamlit** que consume solo la API, los materiales de **usuarios y UX** y el análisis de **costos y finanzas**. El índice de la documentación, con la carpeta prevista para cada uno, está en [docs/README.md](docs/README.md).
+## 20. Pruebas y orquestación
+El pipeline se orquesta con **Apache Airflow en Docker**, siguiendo la guía de Airflow de la asignatura (artículo de Juan Manuel Núñez Velasco) con unas pocas diferencias documentadas. El DAG `medallon_etl_sismo` (`dags/medallon_etl_dag.py`) tiene cuatro tareas, `validar_bronze → transformar_a_silver → integrar_a_gold → cargar_datawarehouse`, y trabaja sobre una **copia de trabajo** dentro del contenedor: el repositorio se monta en solo lectura y cada tarea compara lo que produce con los archivos versionados (CSV y JSON byte a byte, `etl_sismo.db` tabla a tabla), así que ni los datos ni las salidas pueden alterarse. La carga a MySQL usa un usuario propio de Docker con permisos mínimos sobre la base real. Para reproducir los archivos de la línea base hay que usar **pandas 3.0.6** (con otra versión cambian celdas del decimal 12; ver D56).
+
+Hay {n_tests} pruebas automáticas, una **matriz de casos** por función crítica generada desde una única definición (`python scripts/make_matriz_casos.py`), un **informe de pruebas** con resultado esperado y obtenido por caso y cobertura por módulo (`python scripts/informe_pruebas.py`) y un **registro de defectos** cuyas pruebas de regresión fallan sin su corrección.
+```powershell
+.\\.venv\\Scripts\\python.exe scripts\\informe_pruebas.py
+.\\.venv\\Scripts\\python.exe scripts\\orquestacion\\sincronizar_dag.py --verificar
+```
+Documentación: [orquestación](docs/orquestacion/README.md), [diferencias con la guía](docs/orquestacion/diferencias_con_la_guia.md), [matriz de casos](docs/validacion/matriz_casos_prueba.md), [informe de pruebas](docs/validacion/informe_pruebas.md) y [registro de defectos](docs/validacion/registro_defectos.md).
+
+## 21. Componentes en construcción
+Quedan en construcción, y se documentarán en `docs/` cuando existan: el **panel con Streamlit** que consume solo la API, los materiales de **usuarios y UX** y el análisis de **costos y finanzas**. El índice de la documentación, con la carpeta prevista para cada uno, está en [docs/README.md](docs/README.md).
 """
     (ROOT / "README.md").write_text(txt, encoding="utf-8", newline="\n")
     print("README.md generado")

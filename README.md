@@ -275,7 +275,7 @@ Debe terminar sin errores (Python 3.13.0).
 ```powershell
 Get-FileHash -Algorithm SHA256 data\silver\*.csv, data\silver\quality_report.json, data\gold\*.csv
 ```
-4. **Pruebas:** `pytest -q` → `199 passed`.
+4. **Pruebas:** `pytest -q` → `314 passed`.
 5. **Notebooks** (cada uno se ejecuta de arriba a abajo sin errores):
 ```powershell
 jupyter nbconvert --to notebook --execute --inplace notebooks\05_validacion_evidencias.ipynb
@@ -297,9 +297,11 @@ jupyter nbconvert --to notebook --execute --inplace notebooks\05_validacion_evid
 - `data/silver/`: tablas limpias, huérfanos y `quality_report.json`
 - `data/gold/`: `gold_final.csv`, `kpis_gold.csv`, `kpis_sensibilidad.csv`, `etl_sismo.db`
 - `notebooks/`: cinco notebooks ejecutados (conexión, EDA, Silver, Gold y validación)
+- `dags/`: DAG de Airflow `medallon_etl_dag.py` (copia versionada del DAG vivo de `airflow-medallon`)
+- `orquestacion/`: Dockerfile, requisitos de la imagen de Airflow y hash del DAG
 - `src/`: código por capas (ver `src/README.md`): `extract/`, `transform/`, `load/` (SQLite y carga relacional), `api/`, `common.py` y `logger.py`
-- `tests/`: 199 pruebas automáticas
-- `scripts/`: generadores y utilidades (ver `scripts/README.md`): README, catálogo de fuentes, modelo de datos, carga relacional, `mysql/` (configuración y verificación en vivo), escáner de secretos, empaquetado y `evidencias/`
+- `tests/`: 314 pruebas automáticas
+- `scripts/`: generadores y utilidades (ver `scripts/README.md`): README, catálogo de fuentes, modelo de datos, carga relacional, `mysql/` (configuración y verificación en vivo), matriz de casos de prueba e informe de pruebas, orquestación (`orquestacion/`), escáner de secretos, empaquetado y `evidencias/`
 - `docs/README.md`: índice de la documentación por capas y tabla «dónde está cada cosa»
 - `docs/DECISIONES.md`: decisiones con alternativas, razón y riesgo
 - `docs/proyecto/`: contexto, entorno, decisiones técnicas y referencias (documento de contexto y problema, imagen del enunciado)
@@ -308,6 +310,7 @@ jupyter nbconvert --to notebook --execute --inplace notebooks\05_validacion_evid
 - `docs/silver/`: hallazgos del análisis exploratorio, reglas de limpieza, validación de la llave y revisión de códigos de barrio
 - `docs/gold/`: definición de cada KPI y diccionario de columnas de Gold
 - `docs/api/`: arquitectura del backend y de la API de solo lectura, con su diagrama
+- `docs/orquestacion/`: pruebas y orquestación: diferencias con la guía de Airflow, guía de implementación, prácticas de producción y operación
 - `docs/almacenamiento/`: almacenamiento relacional: modelo de datos con su diagrama, configuración de MySQL y carga y verificación
 - `docs/seguridad/`: política de credenciales, claves y tokens
 - `docs/validacion/`: verificaciones: contra el enunciado, de los servicios, en entorno limpio y del registro de ejecución
@@ -317,23 +320,32 @@ jupyter nbconvert --to notebook --execute --inplace notebooks\05_validacion_evid
 - `logs/`: archivos de registro diarios (se crean al ejecutar; no se versionan)
 
 ## 14. Pruebas y validación
-Hay **199 pruebas** automáticas, sin red:
+Hay **314 pruebas** automáticas, sin red:
 - `tests/test_api.py` (17): API de solo lectura: estructura, validación, coincidencia con las salidas, solo GET y sin escritura en `data/` ni en la base.
+- `tests/test_canario_extra.py` (5): comprobación canario con archivos `.env` extra: detecta contraseñas de otra carpeta sin imprimirlas.
 - `tests/test_carga_relacional.py` (54): esquema relacional (paridad, diccionario al día), conversión estricta, carga con conciliación al 100 %, idempotencia, historial, reversión, integridad referencial y equivalencia de la API entre SQLite y el almacén relacional (sin servidor MySQL).
+- `tests/test_carga_sqlite.py` (5): carga a SQLite en una carpeta temporal: contenido igual al de la base versionada, repetida, con una fila y con un CSV ausente.
+- `tests/test_casos_limite.py` (19): casos límite: un solo registro, entrada vacía y extremos de paginación.
 - `tests/test_catalogo.py` (5): el catálogo de fuentes coincide con el manifiesto, es determinista y `/fuentes` lo devuelve igual.
 - `tests/test_configurar_mysql.py` (25): configuración de MySQL con conexiones simuladas (privilegios, contraseñas que nunca llegan a `.env` ni a SQL, rotación), `.env` atómico, enmascarado del registro y comprobación canario del escáner.
-- `tests/test_dist.py` (15): el empaquetado detecta entornos virtuales por su contenido, aunque no tengan `pyvenv.cfg`.
+- `tests/test_dag_estatico.py` (23): DAG y imagen de Airflow analizados con `ast`: tareas, dependencias, repositorio de solo lectura, fallo inducido, secretos, requisitos y hash.
+- `tests/test_dist.py` (17): el empaquetado detecta entornos virtuales por su contenido, aunque no tengan `pyvenv.cfg`.
 - `tests/test_empaquetado_y_revision.py` (5): el empaquetado excluye entornos virtuales con cualquier nombre; la revisión de códigos de barrio cubre los casos pedidos y suma las construcciones sin nombre validado.
+- `tests/test_entorno_de_pruebas.py` (4): configuración de pytest, extensiones de las pruebas y versión de pandas de la línea base.
 - `tests/test_estrategia.py` (14): documentos de estrategia y estado del checklist: existencia, términos prohibidos, cifras, criterios con componente de la lista cerrada y pruebas negativas.
 - `tests/test_evidencias.py` (4): el saneamiento de evidencias sustituye rutas, usuario y equipo, y las evidencias guardadas no llevan datos del equipo.
 - `tests/test_extract.py` (6): manifiesto, sha256, filas y páginas de Bronze (sin red).
+- `tests/test_informe_pruebas.py` (6): lectura de JUnit, resultado por caso y recálculo independiente de K1 para el informe de pruebas.
 - `tests/test_kpis.py` (6): regresión numérica de los KPI, Newcombe, Mantel-Haenszel y regresión del defecto.
 - `tests/test_logger.py` (2): enmascarado de secretos y nombre de los loggers.
+- `tests/test_matriz_casos.py` (7): la matriz de casos de prueba apunta a pruebas existentes y está al día con su definición.
+- `tests/test_pipeline_reproducible.py` (4): el pipeline regenerado en una copia reproduce byte a byte los nueve archivos de la línea base.
 - `tests/test_quality.py` (4): campos del reporte, cobertura frente al umbral, mínimo de filas de Gold, KPI en rango.
 - `tests/test_readme_cifras.py` (13): las cifras de este README coinciden con los archivos de salida; recuadros de alcance, población e indicador satelital.
 - `tests/test_respaldo_y_medicion.py` (12): respaldo lógico con manifiesto sha256, restauración con conciliación, reglas de la medición de lotes y límites de los scripts en vivo.
 - `tests/test_secretos.py` (10): escáner de secretos (un secreto sembrado por tipo), `.env` fuera de git, enmascarado del registro y zip sin `.env`.
 - `tests/test_transform.py` (7): llaves, `normalize_key`, duplicados, tipos, zona horaria, vectores de Wilson.
+- `tests/test_usuario_docker.py` (40): usuario de MySQL para Docker: origen validado (sin `%`), permisos mínimos sobre la base real, contraseñas solo en `.env` e idempotencia, con conexiones simuladas.
 
 Además: (1) el **recálculo independiente de los KPI con SQL** sobre SQLite (notebook 04, diferencia máxima inferior a 1e-9), con implementaciones independientes de Wilson, Newcombe, Mantel-Haenszel y Spearman; (2) la **regresión del defecto de Mantel-Haenszel**: ese recálculo detectó que se contaban construcciones sin datos satelitales en los tamaños de grupo; se corrigió y una prueba fija el comportamiento (`docs/DECISIONES.md`); (3) las verificaciones en `docs/validacion/` (`verificacion_entrega.md`, `verificacion_servicios.md`, `prueba_entorno_limpio.md`, `verificacion_logging.md` y los hashes de antes y después del registro) y las salidas registradas en `docs/evidencias/`.
 
@@ -380,6 +392,9 @@ Decisiones de las fuentes: el plan elegido es el de las construcciones de la cap
 - **Idempotente:** que repetir la operación con la misma entrada no cambia nada; la carga repetida responde «ya cargada».
 - **Clave foránea:** regla de la base que impide que una fila apunte a otra que no existe.
 - **Conciliación:** comparar lo cargado con los archivos de origen (conteos, huellas y cada valor) para demostrar que son iguales.
+- **DAG:** grafo de tareas de Airflow que se ejecutan en un orden y sin ciclos; el nuestro tiene cuatro (`validar_bronze`, `transformar_a_silver`, `integrar_a_gold` y `cargar_datawarehouse`).
+- **Orquestación:** programar, ejecutar y vigilar las tareas del pipeline con una herramienta (aquí Airflow en Docker) en lugar de lanzarlas a mano.
+- **Copia de trabajo:** carpeta temporal dentro del contenedor donde el DAG produce sus salidas para compararlas con las versionadas sin escribir nunca en el repositorio.
 - **Lote (batch):** grupo de filas que se inserta en una sola operación; es más rápido que insertar fila por fila.
 
 ## 17. Trabajo futuro y atribución
@@ -430,5 +445,15 @@ La verificación en vivo corre solo sobre la base de prueba. Para servir la API 
 
 Documentación: [modelo de datos](docs/almacenamiento/modelo_datos.md), [configuración de MySQL](docs/almacenamiento/mysql_configuracion.md), [carga y verificación](docs/almacenamiento/carga_y_verificacion.md) y [gestión de credenciales](docs/seguridad/gestion_credenciales.md).
 
-## 20. Componentes en construcción
-Quedan en construcción, y se documentarán en `docs/` cuando existan: la **orquestación con Airflow**, el **panel con Streamlit** que consume solo la API, los materiales de **usuarios y UX** y el análisis de **costos y finanzas**. El índice de la documentación, con la carpeta prevista para cada uno, está en [docs/README.md](docs/README.md).
+## 20. Pruebas y orquestación
+El pipeline se orquesta con **Apache Airflow en Docker**, siguiendo la guía de Airflow de la asignatura (artículo de Juan Manuel Núñez Velasco) con unas pocas diferencias documentadas. El DAG `medallon_etl_sismo` (`dags/medallon_etl_dag.py`) tiene cuatro tareas, `validar_bronze → transformar_a_silver → integrar_a_gold → cargar_datawarehouse`, y trabaja sobre una **copia de trabajo** dentro del contenedor: el repositorio se monta en solo lectura y cada tarea compara lo que produce con los archivos versionados (CSV y JSON byte a byte, `etl_sismo.db` tabla a tabla), así que ni los datos ni las salidas pueden alterarse. La carga a MySQL usa un usuario propio de Docker con permisos mínimos sobre la base real. Para reproducir los archivos de la línea base hay que usar **pandas 3.0.6** (con otra versión cambian celdas del decimal 12; ver D56).
+
+Hay 314 pruebas automáticas, una **matriz de casos** por función crítica generada desde una única definición (`python scripts/make_matriz_casos.py`), un **informe de pruebas** con resultado esperado y obtenido por caso y cobertura por módulo (`python scripts/informe_pruebas.py`) y un **registro de defectos** cuyas pruebas de regresión fallan sin su corrección.
+```powershell
+.\.venv\Scripts\python.exe scripts\informe_pruebas.py
+.\.venv\Scripts\python.exe scripts\orquestacion\sincronizar_dag.py --verificar
+```
+Documentación: [orquestación](docs/orquestacion/README.md), [diferencias con la guía](docs/orquestacion/diferencias_con_la_guia.md), [matriz de casos](docs/validacion/matriz_casos_prueba.md), [informe de pruebas](docs/validacion/informe_pruebas.md) y [registro de defectos](docs/validacion/registro_defectos.md).
+
+## 21. Componentes en construcción
+Quedan en construcción, y se documentarán en `docs/` cuando existan: el **panel con Streamlit** que consume solo la API, los materiales de **usuarios y UX** y el análisis de **costos y finanzas**. El índice de la documentación, con la carpeta prevista para cada uno, está en [docs/README.md](docs/README.md).

@@ -109,6 +109,7 @@ def test_las_sentencias_no_dependen_de_separadores_dentro_de_los_textos():
     assert all(";" not in s for s in esquema.sentencias(esquema.leer("mysql")))
     for d in ("mysql", "sqlite"):
         assert sum(s.startswith("CREATE TABLE") for s in esquema.sentencias(esquema.leer(d))) == 7
+        assert all(len(columnas) > 1 for columnas in esquema.tablas(esquema.leer(d)).values())   # un `;` dentro de un COMMENT dejaría una tabla sin columnas
 
 
 # ---------------------------------------------------------------- conversión estricta

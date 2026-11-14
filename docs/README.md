@@ -66,6 +66,9 @@
 | [verificacion_servicios.md](validacion/verificacion_servicios.md) | verificación de la API, las fuentes y las credenciales (subcriterios y estado) |
 | [prueba_entorno_limpio.md](validacion/prueba_entorno_limpio.md) | ejecución en una copia limpia |
 | [verificacion_logging.md](validacion/verificacion_logging.md) | verificación del registro de ejecución |
+| [matriz_casos_prueba.md](validacion/matriz_casos_prueba.md) | casos de prueba por función crítica (generada) |
+| [informe_pruebas.md](validacion/informe_pruebas.md) | resultado esperado, obtenido y evidencia por prueba, con cobertura (generado) |
+| [registro_defectos.md](validacion/registro_defectos.md) | defectos corregidos y su prueba de regresión |
 | `validacion/sha256_antes_logging.txt`, `validacion/sha256_despues_logging.txt` | huellas antes y después de agregar el registro |
 
 ### `checklist/` · estado y evidencias del checklist
@@ -86,8 +89,17 @@
 | [retroalimentacion_del_profesor.txt](retroalimentacion/retroalimentacion_del_profesor.txt) | retroalimentación original (no se edita) |
 | [registro_de_cambios.md](retroalimentacion/registro_de_cambios.md) | retroalimentación del profesor y cómo la atendimos |
 
+### Pruebas y orquestación
+| documento | contenido |
+|---|---|
+| [orquestacion/README.md](orquestacion/README.md) | índice del componente y dónde está cada cosa |
+| [diferencias_con_la_guia.md](orquestacion/diferencias_con_la_guia.md) | diferencias permitidas con la guía de Airflow y hallazgos |
+| [guia_de_implementacion.md](orquestacion/guia_de_implementacion.md) | pasos 13 a 44 de la guía con su estado y evidencia |
+| [mlops_y_produccion.md](orquestacion/mlops_y_produccion.md) | prácticas de producción aplicadas y lo que no aplica |
+| [operacion.md](orquestacion/operacion.md) | levantar, parar, registros y solución de problemas |
+
 ### Decisiones
-[DECISIONES.md](DECISIONES.md): todas las decisiones con alternativas, razón, riesgo y fecha (D1 a D55; las nuevas continúan desde D56).
+[DECISIONES.md](DECISIONES.md): todas las decisiones con alternativas, razón, riesgo y fecha (D1 a D64; las nuevas continúan desde D65).
 
 ### Almacenamiento relacional (MySQL)
 | documento | contenido |
@@ -101,12 +113,11 @@
 ## Componentes en construcción
 | componente | estado |
 |---|---|
-| Orquestación (Airflow) | en construcción; se documentará en `docs/orquestacion/` |
 | Panel (dashboard) | en construcción; se documentará en `docs/dashboard/` |
 | Usuarios y UX | en construcción; se documentará en `docs/ux/` |
 | Costos y finanzas | en construcción; se documentará en `docs/finanzas/` |
 
-Las evidencias del almacenamiento relacional están en `docs/evidencias/almacenamiento/`; las de los demás irán en `docs/evidencias/orquestacion/`, `docs/evidencias/dashboard/` y `docs/evidencias/usuarios/`, que se crean cuando haya contenido.
+Las evidencias del almacenamiento relacional están en `docs/evidencias/almacenamiento/`; las de la orquestación están en `docs/evidencias/orquestacion/`; las de los demás irán en `docs/evidencias/dashboard/` y `docs/evidencias/usuarios/`, que se crean cuando haya contenido.
 
 ## Componentes del proyecto y los ítems del checklist que cierran
 | componente | ítems que cierra | estado |
@@ -114,7 +125,7 @@ Las evidencias del almacenamiento relacional están en `docs/evidencias/almacena
 | Base y orden | ninguno (deja la línea base protegida y el entorno documentado) | hecho |
 | Estrategia | 1.1, 1.2, 1.3, 1.4 | hecho |
 | API, fuentes y credenciales | 2.1, 2.2, 2.3 | hecho |
-| Carga relacional | 4.1, 4.2, 4.3 | en construcción |
+| Carga relacional | 4.1, 4.2, 4.3 | hecho |
 | Pruebas y orquestación | 5.1, 5.2, 5.4, 5.5, 5.6 | en construcción |
 | Panel | 1.5, 3.1, 3.2, 5.3 | en construcción |
 | Usuarios, UX y finanzas | 3.3, 6.1, 6.2, 6.3, 6.4 | en construcción |

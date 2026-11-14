@@ -109,6 +109,13 @@ def test_nunca_se_escribe_ni_se_borra_nada_fuera_de_la_copia_de_trabajo():
     assert not any(".env" in c for c in cadenas)
 
 
+def test_la_copia_incluye_la_entrada_de_docs_silver_que_lee_la_transformacion():
+    """`run_transform` lee docs/silver/hallazgos_eda.md: sin ese archivo en la copia la tarea transformar_a_silver falla."""
+    copiar = next(f for f in ARBOL.body if isinstance(f, ast.FunctionDef) and f.name == "_copiar_trabajo")
+    copias = [ast.unparse(c) for c in _llamadas(copiar) if _nombre_llamada(c) == "copy2"]   # solo las llamadas: el docstring también nombra el archivo
+    assert len(copias) == 1 and "hallazgos_eda.md" in copias[0] and "PROJECT_DIR" in copias[0]
+
+
 def test_la_copia_es_unica_por_ejecucion_y_esta_fuera_del_volumen_del_repositorio():
     texto = DAG.read_text(encoding="utf-8")
     assert "tempfile.gettempdir()" in texto and 're.sub(r"[^A-Za-z0-9]+", "_", run_id)' in texto

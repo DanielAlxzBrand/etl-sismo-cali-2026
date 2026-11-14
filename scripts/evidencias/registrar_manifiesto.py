@@ -38,10 +38,30 @@ FILAS = {
     "EV-022": ("2.1", "Imagen renderizada con los sha256 de EV-015", "imagen", "matplotlib sobre EV-015", "EV-022_hashes_antes_despues.png"),
     "EV-023": ("2.1, 2.2, 2.3", "Imagen renderizada con el resultado de EV-014", "imagen", "matplotlib sobre EV-014", "EV-023_pytest.png"),
     "EV-024": ("2.3", "Imagen renderizada con el resultado de EV-019", "imagen", "matplotlib sobre EV-019", "EV-024_escaner.png"),
+    "EV-016b": ("2.1, 2.2", "Respuesta real de la ruta calidad (apoyo de EV-016)", "archivo", "GET a la ruta con el servicio en 127.0.0.1", "respuestas_api/calidad.json"),
+    "EV-016c": ("2.1, 2.2", "Respuesta real de la ruta composicion (apoyo de EV-016)", "archivo", "GET a la ruta con el servicio en 127.0.0.1", "respuestas_api/composicion.json"),
+    "EV-016d": ("2.1, 2.2", "Respuesta real de la ruta comunas (apoyo de EV-016)", "archivo", "GET a la ruta con el servicio en 127.0.0.1", "respuestas_api/comunas.json"),
+    "EV-016e": ("2.1, 2.2", "Respuesta real de la ruta construcciones (apoyo de EV-016)", "archivo", "GET a la ruta con el servicio en 127.0.0.1", "respuestas_api/construcciones.json"),
+    "EV-016f": ("2.1, 2.2", "Respuesta real de la ruta fuentes (apoyo de EV-016)", "archivo", "GET a la ruta con el servicio en 127.0.0.1", "respuestas_api/fuentes.json"),
+    "EV-016g": ("2.1, 2.2", "Respuesta real de la ruta health (apoyo de EV-016)", "archivo", "GET a la ruta con el servicio en 127.0.0.1", "respuestas_api/health.json"),
+    "EV-016h": ("2.1, 2.2", "Respuesta real de la ruta kpis (apoyo de EV-016)", "archivo", "GET a la ruta con el servicio en 127.0.0.1", "respuestas_api/kpis.json"),
+    "EV-016i": ("2.1, 2.2", "Respuesta real de la ruta kpis K1 (apoyo de EV-016)", "archivo", "GET a la ruta con el servicio en 127.0.0.1", "respuestas_api/kpis_K1.json"),
+    "EV-016j": ("2.1, 2.2", "Respuesta real de la ruta kpis sensibilidad (apoyo de EV-016)", "archivo", "GET a la ruta con el servicio en 127.0.0.1", "respuestas_api/kpis_sensibilidad.json"),
+    "EV-016k": ("2.1, 2.2", "Respuesta real de la ruta llave revision (apoyo de EV-016)", "archivo", "GET a la ruta con el servicio en 127.0.0.1", "respuestas_api/llave_revision.json"),
+    "EV-016l": ("2.1, 2.2", "Respuesta real de la ruta metadata (apoyo de EV-016)", "archivo", "GET a la ruta con el servicio en 127.0.0.1", "respuestas_api/metadata.json"),
+    "EV-017b": ("2.1", "Registro de la captura automatizada del navegador de EV-017", "archivo", "`msedge.exe --headless=new --screenshot` sobre `/docs`", "EV-017_docs_navegador.txt"),
 }
 
 CARPETA_ALMACEN = "docs/evidencias/almacenamiento"
 FECHA_ALMACEN = "2026-11-13"
+CARPETA_ORQ = "docs/evidencias/orquestacion"
+FECHA_ORQ = "2026-11-13"
+FILAS_ORQ = {
+    "EV-035": ("5.4", "Estabilidad del pipeline antes de orquestarlo: dos ejecuciones en un clon reproducen los CSV y JSON versionados byte a byte y la base tabla a tabla (pandas 3.0.6)", "archivo", "`python scripts/evidencias/evidencia_estabilidad.py`", "EV-035_estabilidad_pipeline.txt"),
+    "EV-036": ("5.6", "Cada prueba de regresión falla sin la corrección que protege (defecto reintroducido en una copia temporal)", "archivo", "`python scripts/validacion/verificar_regresiones.py --evidencia`", "EV-036_regresiones_sin_correccion.txt"),
+}
+
+
 FILAS_ALMACEN = {
     "EV-027": ("4.1", "PyMySQL y cryptography instalados en el .venv, con `pip check` sin conflictos y ruedas para Python 3.13", "archivo", "`python scripts/evidencias/evidencia_conector.py` (pip install pymysql cryptography; pip check)", "EV-027_conector_mysql.txt"),
     "EV-028": ("4.1, 4.2", "Batería en vivo sobre la base de prueba de MySQL 8.0.45: privilegios mínimos, esquema desde cero, carga conciliada al 100 %, idempotencia, historial, reversión, violaciones de integridad rechazadas y API idéntica a SQLite (26 de 26)", "archivo",
@@ -78,6 +98,11 @@ def main():
             log.warning("falta %s; no se registra %s", archivo, ev)
             continue
         nuevas.append(fila(ev, item, que, tipo, cmd, archivo, CARPETA_ALMACEN, FECHA_ALMACEN))
+    for ev, (item, que, tipo, cmd, archivo) in FILAS_ORQ.items():
+        if not (REPO / CARPETA_ORQ / archivo).exists():
+            log.warning("falta %s; no se registra %s", archivo, ev)
+            continue
+        nuevas.append(fila(ev, item, que, tipo, cmd, archivo, CARPETA_ORQ, FECHA_ORQ))
     ids = {pref for pref, _ in nuevas}
     lineas = [l for l in lineas if not any(l.startswith(i) for i in ids)]
     ultima = max(i for i, l in enumerate(lineas) if l.startswith("| EV-"))   # las filas nuevas van al final de la tabla, antes de la convención

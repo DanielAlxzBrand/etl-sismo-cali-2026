@@ -2,8 +2,8 @@
 
 Este documento se genera con `scripts/make_matriz_casos.py` desde una única definición; no se edita a mano. Cada caso lleva un identificador **CP-nnn**, su tipo (correcto, incorrecto o límite), el resultado esperado y la prueba de `pytest` que lo ejecuta. El resultado obtenido de cada prueba está en [informe_pruebas.md](informe_pruebas.md).
 
-- **Funciones críticas:** 19. **Casos:** 114 (53 correctos, 34 incorrectos y 27 límite).
-- **Pruebas de primer nivel en `tests/`:** 241; 112 de ellas están vinculadas a un caso (otras pruebas parametrizadas o de apoyo cubren variantes de los mismos casos).
+- **Funciones críticas:** 19. **Casos:** 117 (55 correctos, 35 incorrectos y 27 límite).
+- **Pruebas de primer nivel en `tests/`:** 252; 115 de ellas están vinculadas a un caso (otras pruebas parametrizadas o de apoyo cubren variantes de los mismos casos).
 - **Regla:** cada función crítica tiene al menos un caso correcto y uno incorrecto o límite; una prueba lo comprueba y comprueba que cada prueba citada exista.
 
 ## FC-01 · Extracción y verificación de Bronze (manifiesto con sha256)
@@ -226,6 +226,9 @@ Módulos: `README.md, docs/, scripts/evidencias/`
 | CP-100 | Alteraciones de los 30 ítems | incorrecto | cada alteración se detecta | `tests/test_estrategia.py::test_negativas_de_los_30_items` |
 | CP-101 | Alteraciones de los criterios del MVP | incorrecto | cada alteración se detecta | `tests/test_estrategia.py::test_negativas_de_los_criterios_del_mvp` |
 | CP-102 | Evidencias saneadas | correcto | sin rutas ni usuario | `tests/test_evidencias.py::test_las_evidencias_guardadas_estan_saneadas` |
+| CP-103 | Recálculo independiente de K1 | correcto | diferencia máxima menor de 1e-9 frente a kpis_gold.csv | `tests/test_informe_pruebas.py::test_el_recalculo_independiente_coincide_con_los_kpi_publicados` |
+| CP-104 | Informe con esperado y obtenido, sin rutas de la máquina | correcto | caso fallido marcado y sin rutas | `tests/test_informe_pruebas.py::test_el_informe_se_genera_con_esperado_obtenido_y_sin_rutas_de_la_maquina` |
+| CP-105 | Una definición de la matriz con una prueba inexistente | incorrecto | se detecta | `tests/test_matriz_casos.py::test_una_definicion_con_una_prueba_inexistente_se_detecta` |
 
 ## FC-18 · Orquestación (DAG, imagen y requisitos)
 
@@ -233,13 +236,13 @@ Módulos: `dags/, orquestacion/`
 
 | CP | Caso | Tipo | Resultado esperado | Prueba |
 |---|---|---|---|---|
-| CP-103 | Identificador, parámetros y cadena de tareas | correcto | 4 tareas en orden con catchup=False | `tests/test_dag_estatico.py::test_las_cuatro_tareas_tienen_los_nombres_y_el_orden_de_la_guia` |
-| CP-104 | Dependencias lineales | correcto | bronze >> silver >> gold >> load | `tests/test_dag_estatico.py::test_las_dependencias_son_una_cadena_lineal` |
-| CP-105 | El repositorio nunca se escribe | incorrecto | solo se escribe en la copia de trabajo | `tests/test_dag_estatico.py::test_nunca_se_escribe_ni_se_borra_nada_fuera_de_la_copia_de_trabajo` |
-| CP-106 | Fallo inducido antes de producir salidas | incorrecto | las cuatro tareas lo implementan | `tests/test_dag_estatico.py::test_el_fallo_inducido_esta_en_las_cuatro_tareas_antes_de_producir_salidas` |
-| CP-107 | Sin secretos ni rutas de Windows | incorrecto | el escáner no halla nada | `tests/test_dag_estatico.py::test_el_dag_no_lleva_rutas_de_windows_ni_contrasenas_literales` |
-| CP-108 | Requisitos con las versiones del entorno | correcto | versiones idénticas | `tests/test_dag_estatico.py::test_los_requisitos_de_airflow_tienen_las_mismas_versiones_que_el_venv` |
-| CP-109 | Copia del DAG con el hash registrado | límite | sha256 igual | `tests/test_dag_estatico.py::test_la_copia_versionada_del_dag_coincide_con_el_hash_registrado` |
+| CP-106 | Identificador, parámetros y cadena de tareas | correcto | 4 tareas en orden con catchup=False | `tests/test_dag_estatico.py::test_las_cuatro_tareas_tienen_los_nombres_y_el_orden_de_la_guia` |
+| CP-107 | Dependencias lineales | correcto | bronze >> silver >> gold >> load | `tests/test_dag_estatico.py::test_las_dependencias_son_una_cadena_lineal` |
+| CP-108 | El repositorio nunca se escribe | incorrecto | solo se escribe en la copia de trabajo | `tests/test_dag_estatico.py::test_nunca_se_escribe_ni_se_borra_nada_fuera_de_la_copia_de_trabajo` |
+| CP-109 | Fallo inducido antes de producir salidas | incorrecto | las cuatro tareas lo implementan | `tests/test_dag_estatico.py::test_el_fallo_inducido_esta_en_las_cuatro_tareas_antes_de_producir_salidas` |
+| CP-110 | Sin secretos ni rutas de Windows | incorrecto | el escáner no halla nada | `tests/test_dag_estatico.py::test_el_dag_no_lleva_rutas_de_windows_ni_contrasenas_literales` |
+| CP-111 | Requisitos con las versiones del entorno | correcto | versiones idénticas | `tests/test_dag_estatico.py::test_los_requisitos_de_airflow_tienen_las_mismas_versiones_que_el_venv` |
+| CP-112 | Copia del DAG con el hash registrado | límite | sha256 igual | `tests/test_dag_estatico.py::test_la_copia_versionada_del_dag_coincide_con_el_hash_registrado` |
 
 ## FC-19 · Reproducibilidad del pipeline (transformar y gold)
 
@@ -247,8 +250,8 @@ Módulos: `src/transform/, src/load/load_database.py`
 
 | CP | Caso | Tipo | Resultado esperado | Prueba |
 |---|---|---|---|---|
-| CP-110 | Las etapas terminan sin error en una copia | correcto | código de salida 0 | `tests/test_pipeline_reproducible.py::test_las_etapas_terminan_sin_error` |
-| CP-111 | Los nueve archivos de la línea base se reproducen | correcto | sha256 idénticos a los versionados | `tests/test_pipeline_reproducible.py::test_los_nueve_archivos_de_la_linea_base_se_reproducen_byte_a_byte` |
-| CP-112 | Regenerar sobre salidas existentes | límite | no cambia nada | `tests/test_pipeline_reproducible.py::test_regenerar_no_cambia_lo_que_ya_estaba_versionado_en_la_copia` |
-| CP-113 | Dependencias de otra versión (pandas) | incorrecto | la prueba falla y nombra los archivos distintos | `tests/test_dag_estatico.py::test_pandas_es_la_version_con_la_que_se_generaron_los_archivos_de_la_linea_base` |
-| CP-114 | El repositorio no se toca | correcto | las nueve salidas conservan su sha256 | `tests/test_pipeline_reproducible.py::test_el_repositorio_no_se_toco` |
+| CP-113 | Las etapas terminan sin error en una copia | correcto | código de salida 0 | `tests/test_pipeline_reproducible.py::test_las_etapas_terminan_sin_error` |
+| CP-114 | Los nueve archivos de la línea base se reproducen | correcto | sha256 idénticos a los versionados | `tests/test_pipeline_reproducible.py::test_los_nueve_archivos_de_la_linea_base_se_reproducen_byte_a_byte` |
+| CP-115 | Regenerar sobre salidas existentes | límite | no cambia nada | `tests/test_pipeline_reproducible.py::test_regenerar_no_cambia_lo_que_ya_estaba_versionado_en_la_copia` |
+| CP-116 | Dependencias de otra versión (pandas) | incorrecto | la prueba falla y nombra los archivos distintos | `tests/test_dag_estatico.py::test_pandas_es_la_version_con_la_que_se_generaron_los_archivos_de_la_linea_base` |
+| CP-117 | El repositorio no se toca | correcto | las nueve salidas conservan su sha256 | `tests/test_pipeline_reproducible.py::test_el_repositorio_no_se_toco` |

@@ -137,7 +137,10 @@ FUNCIONES = [
         ("Estados de los 30 ítems", C, "completos y con componentes válidos", "test_estrategia.py::test_los_30_items_del_checklist_estan_completos_y_con_componentes_de_la_lista"),
         ("Alteraciones de los 30 ítems", I, "cada alteración se detecta", "test_estrategia.py::test_negativas_de_los_30_items"),
         ("Alteraciones de los criterios del MVP", I, "cada alteración se detecta", "test_estrategia.py::test_negativas_de_los_criterios_del_mvp"),
-        ("Evidencias saneadas", C, "sin rutas ni usuario", "test_evidencias.py::test_las_evidencias_guardadas_estan_saneadas")]),
+        ("Evidencias saneadas", C, "sin rutas ni usuario", "test_evidencias.py::test_las_evidencias_guardadas_estan_saneadas"),
+        ("Recálculo independiente de K1", C, "diferencia máxima menor de 1e-9 frente a kpis_gold.csv", "test_informe_pruebas.py::test_el_recalculo_independiente_coincide_con_los_kpi_publicados"),
+        ("Informe con esperado y obtenido, sin rutas de la máquina", C, "caso fallido marcado y sin rutas", "test_informe_pruebas.py::test_el_informe_se_genera_con_esperado_obtenido_y_sin_rutas_de_la_maquina"),
+        ("Una definición de la matriz con una prueba inexistente", I, "se detecta", "test_matriz_casos.py::test_una_definicion_con_una_prueba_inexistente_se_detecta")]),
     ("FC-18", "Orquestación (DAG, imagen y requisitos)", "dags/, orquestacion/", [
         ("Identificador, parámetros y cadena de tareas", C, "4 tareas en orden con catchup=False", "test_dag_estatico.py::test_las_cuatro_tareas_tienen_los_nombres_y_el_orden_de_la_guia"),
         ("Dependencias lineales", C, "bronze >> silver >> gold >> load", "test_dag_estatico.py::test_las_dependencias_son_una_cadena_lineal"),

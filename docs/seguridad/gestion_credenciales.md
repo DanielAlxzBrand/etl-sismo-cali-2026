@@ -26,6 +26,13 @@ Reglas para las previstas: se agregan a `.env.example` (solo el nombre, sin valo
 - **Rotación:** `configurar_mysql.py --rotar` cambia la contraseña con `ALTER USER`, verifica la conexión y actualiza `.env`.
 - **Quién no la ve:** quienes colaboran con el código del proyecto nunca reciben ni leen la contraseña de administrador ni la del usuario; la genera y la guarda el propio script.
 
+### Credenciales del DAG de Airflow (usuario de MySQL para Docker)
+- **Variables:** `MYSQL_DOCKER_USER`, `MYSQL_DOCKER_PASSWORD` y `MYSQL_DOCKER_ORIGEN` (nombres en `.env.example`, sin valores). Las crea `scripts/mysql/configurar_mysql.py --usuario-docker --origen <PATRÓN>`: usuario `sismo_airflow` con permisos solo sobre `sismo_cali` (`SELECT`, `INSERT`, `CREATE`, `INDEX`, `REFERENCES`), sin `GRANT OPTION`, sin privilegios globales y sin origen `%` (D60). La contraseña aleatoria de 32 caracteres solo se escribe en `.env` después de comprobar los permisos.
+- **Uso:** la tarea de carga del DAG lee esas variables en memoria del `.env` del proyecto (montado en solo lectura) y las pasa por `os.environ` de la tarea; nunca se copian a la copia de trabajo, a la imagen, al compose, a `airflow-medallon/.env` ni a los registros.
+- **Contraseña de la interfaz de Airflow:** no se deja en el valor por defecto; si el compose permite fijarla por variable, se genera con `secrets` y vive solo en `airflow-medallon/.env`.
+- **Rotación y revocación:** `configurar_mysql.py --usuario-docker --origen <PATRÓN> --rotar` cambia la contraseña con `ALTER USER`; para revocar, el administrador ejecuta `DROP USER 'sismo_airflow'@'<PATRÓN>';` (documentado, no ejecutado por ningún script).
+- **Comprobación:** `escanear_secretos.py --canario-env --env-extra ..\airflow-medallon\.env` busca también los valores sensibles del `.env` de Airflow en el árbol, el historial y un zip sin imprimirlos; `--solo-canario` permite revisar una carpeta ajena (como `airflow-medallon`) sin los patrones de contraseñas por defecto del compose oficial.
+
 ## 3. Dónde se guardan y qué nunca va al repositorio
 - **Se guardan en:** el archivo `.env` de cada integrante, fuera de git (`.gitignore` lo excluye). En el repositorio solo está `.env.example`, con **nombres** de variables y sin valores.
 - **Nunca van a:** `config/config.yaml` (solo parámetros no secretos), notebooks (ni en celdas ni en salidas), logs, mensajes de commit, capturas de pantalla ni URLs que lleven el token en la consulta. Las respuestas de la API que mostramos nunca incluyen secretos: no existen en la capa de servicio.
