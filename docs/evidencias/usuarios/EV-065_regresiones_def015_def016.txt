@@ -1,0 +1,18 @@
+# Las pruebas de regresión de DEF-015 y DEF-016 fallan sin su corrección
+- comando: `python scripts/evidencias/evidencia_regresiones_nuevas.py`
+- fecha: 2026-11-14T18:39:42-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 28.6 s
+- Python: 3.13.0
+- commit del repositorio: fdebca3
+
+En una copia temporal se reintrodujo cada defecto (un reemplazo de texto en `src/panel/paginas/concentracion.py`) y se ejecutó solo su prueba de regresión: debe pasar con la corrección y fallar sin ella.
+
+| Defecto | Archivo modificado | Prueba de regresión | Con la corrección | Sin la corrección | Resultado |
+|---|---|---|---|---|---|
+| DEF-015 | `src/panel/paginas/concentracion.py` | `tests/test_panel_textos.py::test_si_la_nota_de_k3_cambia_de_separador_no_se_muestra_una_tabla_a_medias` | con la corrección: 7 passed, 1 warning in 7.91s | sin la corrección: 1 failed, 1 warning in 4.43s | la prueba detecta el defecto |
+| DEF-016 | `src/panel/paginas/concentracion.py` | `tests/test_panel_textos.py::test_p_permutacion_nunca_falla_con_un_texto_mal_formado` | con la corrección: 6 passed, 1 warning in 4.82s | sin la corrección: 1 failed, 1 passed, 1 warning in 4.92s | la prueba detecta el defecto |
+
+Resultado: las dos pruebas de regresión fallan sin su corrección.
+
+Qué NO demuestra: que no existan otras formas de nota que la lectura acepte mal; solo cubre los dos defectos registrados.

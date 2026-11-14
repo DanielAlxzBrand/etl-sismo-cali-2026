@@ -115,6 +115,14 @@ FILAS_END = {
 }
 
 
+CARPETA_USU = "docs/evidencias/usuarios"
+FECHA_USU = "2026-11-14"
+FILAS_USU = {
+    "EV-065": ("5.6", "Las pruebas de regresión de DEF-015 y DEF-016 pasan con la corrección y fallan sin ella (reintroducción en una copia temporal)", "archivo",
+               "`python scripts/evidencias/evidencia_regresiones_nuevas.py`", "EV-065_regresiones_def015_def016.txt"),
+}
+
+
 FILAS_ALMACEN = {
     "EV-027": ("4.1", "PyMySQL y cryptography instalados en el .venv, con `pip check` sin conflictos y ruedas para Python 3.13", "archivo", "`python scripts/evidencias/evidencia_conector.py` (pip install pymysql cryptography; pip check)", "EV-027_conector_mysql.txt"),
     "EV-028": ("4.1, 4.2", "Batería en vivo sobre la base de prueba de MySQL 8.0.45: privilegios mínimos, esquema desde cero, carga conciliada al 100 %, idempotencia, historial, reversión, violaciones de integridad rechazadas y API idéntica a SQLite (26 de 26)", "archivo",
@@ -166,6 +174,11 @@ def main():
             log.warning("falta %s; no se registra %s", archivo, ev)
             continue
         nuevas.append(fila(ev, item, que, tipo, cmd, archivo, CARPETA_END, FECHA_END))
+    for ev, (item, que, tipo, cmd, archivo) in FILAS_USU.items():
+        if not (REPO / CARPETA_USU / archivo).exists():
+            log.warning("falta %s; no se registra %s", archivo, ev)
+            continue
+        nuevas.append(fila(ev, item, que, tipo, cmd, archivo, CARPETA_USU, FECHA_USU))
     ids = {pref for pref, _ in nuevas}
     lineas = [l for l in lineas if not any(l.startswith(i) for i in ids)]
     ultima = max(i for i, l in enumerate(lineas) if l.startswith("| EV-"))   # las filas nuevas van al final de la tabla, antes de la convención

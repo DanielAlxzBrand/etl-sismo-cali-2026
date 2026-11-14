@@ -38,6 +38,10 @@ MUTACIONES = [
      "tests/test_dag_estatico.py::test_el_fallo_inducido_de_las_tareas_con_copia_ocurre_dentro_del_try_que_elimina_la_copia"),
     ("DEF-012", "dags/medallon_etl_dag.py", '"docs" / "silver" / "hallazgos_eda.md", destino / "docs" / "silver" / "hallazgos_eda.md"', '"docs" / "silver" / "otro.md", destino / "docs" / "silver" / "otro.md"',
      "tests/test_dag_estatico.py::test_la_copia_incluye_la_entrada_de_docs_silver_que_lee_la_transformacion"),
+    ("DEF-015", "src/panel/paginas/concentracion.py", r'if re.fullmatch(r"\d+:\d+(?:; \d+:\d+)*", cuerpo) is None:', "if False:",
+     "tests/test_panel_textos.py::test_si_la_nota_de_k3_cambia_de_separador_no_se_muestra_una_tabla_a_medias"),
+    ("DEF-016", "src/panel/paginas/concentracion.py", r'r"p_permutacion=(\d+(?:\.\d+)?)(?!\.?\d)"', r'r"p_permutacion=([0-9.]+)"',
+     "tests/test_panel_textos.py::test_p_permutacion_nunca_falla_con_un_texto_mal_formado"),
 ]
 COPIAR = ("src", "scripts", "tests", "data", "dags", "orquestacion", "config")
 ARCHIVOS = ("pytest.ini", ".env.example", ".gitignore", "requirements.txt")
