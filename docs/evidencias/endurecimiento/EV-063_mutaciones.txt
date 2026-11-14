@@ -1,0 +1,65 @@
+# Mutaciones sobre las pruebas guardianas del endurecimiento
+- comando: `mutación de un archivo en un clon y `python -m pytest -q -p no:cacheprovider <pruebas guardianas>` (cwd: <CLON>)`
+- fecha: 2026-11-14T16:18:19-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 0.0 s
+- Python: 3.13.0
+- commit del repositorio: 83d5d85
+
+Cada mutación se aplicó a un archivo de un clon del commit de trabajo (carpeta temporal fuera del repositorio), se corrieron las pruebas guardianas indicadas y se restauró el archivo; al final de cada serie el clon quedó sin cambios. Una mutación cuenta como detectada si al menos una prueba falla.
+
+Resumen: 27 de 27 mutaciones detectadas.
+
+## Requisitos y versión de Python (`tests/test_requisitos.py`)
+6 de 6 mutaciones detectadas.
+
+| Mutación | Pruebas que fallan | ¿Detectada? |
+|---|---|---|
+| una línea pasa de «requests==2.34.2» a «requests>=2.34.2» | `test_toda_linea_de_requirements_usa_version_exacta`; `test_todo_paquete_de_terceros_importado_esta_declarado`; `test_la_tabla_import_distribucion_solo_tiene_distribuciones_declaradas` | sí |
+| una línea sin versión («pytest==9.2.0» → «pytest») | `test_toda_linea_de_requirements_usa_version_exacta`; `test_todo_paquete_de_terceros_importado_esta_declarado`; `test_la_tabla_import_distribucion_solo_tiene_distribuciones_declaradas` | sí |
+| un import nuevo sin declarar en src/ («import jinja2», instalado como dependencia de otro paquete) | `test_todo_paquete_de_terceros_importado_esta_declarado`; `test_la_tabla_import_distribucion_solo_tiene_imports_que_existen` | sí |
+| un import nuevo sin declarar dentro de una función de scripts/ («import tqdm») | `test_todo_paquete_de_terceros_importado_esta_declarado`; `test_la_tabla_import_distribucion_solo_tiene_imports_que_existen` | sí |
+| se quita numpy de requirements.txt (se importa y queda sin declarar) | `test_todo_paquete_de_terceros_importado_esta_declarado`; `test_la_tabla_import_distribucion_solo_tiene_distribuciones_declaradas` | sí |
+| la versión de Python soportada del comentario cambia a 3.11 | `test_requirements_declara_la_version_de_python_soportada` | sí |
+
+## Tabla real de criterios del MVP (`tests/test_estrategia.py`)
+6 de 6 mutaciones detectadas.
+
+| Mutación | Pruebas que fallan | ¿Detectada? |
+|---|---|---|
+| a2: un criterio (AC29) pasa a «no verificado aún» con el encabezado ajustado | `test_la_tabla_real_de_criterios_cumple_las_reglas`; `test_negativa_cada_alteracion_de_la_tabla_real_se_detecta[un criterio pasa a \xabno verificado a\xfan\xbb con el encabezado ajustado]`; `test_negativa_cada_alteracion_de_la_tabla_real_se_detecta[encabezado \xab28 de 29\xbb]` | sí |
+| b: comando de verificación vacío en AC28 | `test_la_tabla_real_de_criterios_cumple_las_reglas`; `test_negativa_cada_alteracion_de_la_tabla_real_se_detecta[comando de verificaci\xf3n vac\xedo en AC28]` | sí |
+| c: encabezado «28 de 29 criterios cumplen» | `test_1_5_tiene_al_menos_24_criterios_y_cada_estado_es_coherente`; `test_negativas_de_los_criterios_del_mvp`; `test_la_tabla_real_de_criterios_cumple_las_reglas` y 1 más | sí |
+| borrar una fila (AC12) | `test_1_5_tiene_al_menos_24_criterios_y_cada_estado_es_coherente`; `test_negativas_de_los_criterios_del_mvp`; `test_la_tabla_real_de_criterios_cumple_las_reglas` y 2 más | sí |
+| repetir un id (la fila AC13 pasa a ser AC12) | `test_1_5_tiene_al_menos_24_criterios_y_cada_estado_es_coherente`; `test_negativas_de_los_criterios_del_mvp`; `test_la_tabla_real_de_criterios_cumple_las_reglas` y 1 más | sí |
+| fecha futura en AC28 (2027-01-01) | `test_la_tabla_real_de_criterios_cumple_las_reglas` | sí |
+
+## Textos y notas del panel (`tests/test_panel_textos.py`)
+8 de 8 mutaciones detectadas.
+
+| Mutación | Pruebas que fallan | ¿Detectada? |
+|---|---|---|
+| «muy pocas comunas» → «muchas comunas» en LIMITES (sin tocar dígitos) | `test_los_limites_del_panel_dicen_lo_mismo_que_kpis_md` | sí |
+| el formato de la nota de K3 cambia («códigos:severos» → «códigos:casos») | `test_la_nota_real_de_k3_se_lee_completa`; `test_la_pagina_con_la_nota_real_de_k3_muestra_la_tabla_de_barrios` | sí |
+| la nota de K4 pierde «p_permutacion=» | `test_la_nota_real_de_k4_trae_p_de_permutacion_y_n_de_barrios` | sí |
+| cadena prohibida en conclusion_escenario («el estrato no influye») | `test_ninguna_rama_de_cada_funcion_de_texto_afirma_causalidad[conclusion_escenario]` | sí |
+| cadena causal en conclusion_comunas («el estrato provoca») | `test_ninguna_rama_de_cada_funcion_de_texto_afirma_causalidad[conclusion_comunas]` | sí |
+| función de texto nueva sin casos en redaccion.py | `test_toda_funcion_publica_de_redaccion_esta_cubierta` | sí |
+| KPIs.md cambia una idea del punto 2 («no se extrapolan» → «se extrapolan») | `test_los_limites_del_panel_dicen_lo_mismo_que_kpis_md` | sí |
+| KPIs.md agrega un noveno punto | `test_los_limites_del_panel_dicen_lo_mismo_que_kpis_md`; `test_kpis_md_lista_ocho_puntos_de_que_no_se_puede_concluir`; `test_negativa_cambiar_el_sentido_sin_tocar_digitos_se_detecta` y 2 más | sí |
+
+## Cifras de los documentos de estado (`tests/test_cifras_de_estado.py`)
+7 de 7 mutaciones detectadas.
+
+| Mutación | Pruebas que fallan | ¿Detectada? |
+|---|---|---|
+| estado_checklist.md: «696 pruebas en verde» pasa a «316 pruebas en verde» | `test_las_cifras_de_los_documentos_de_estado_coinciden_con_el_informe_y_la_matriz` | sí |
+| estado_checklist.md: la cobertura pasa a «66,2 % de 3.383 líneas» | `test_las_cifras_de_los_documentos_de_estado_coinciden_con_el_informe_y_la_matriz` | sí |
+| estado_checklist.md: los casos pasan a «118 casos para 19 funciones críticas» | `test_las_cifras_de_los_documentos_de_estado_coinciden_con_el_informe_y_la_matriz` | sí |
+| guia_de_evidencias.md: «N passed» de 5.1 pasa a «316 passed» | `test_las_cifras_de_los_documentos_de_estado_coinciden_con_el_informe_y_la_matriz` | sí |
+| 02_stakeholders.md: «Repositorio ejecutable, N pruebas» pasa a 55 | `test_las_cifras_de_los_documentos_de_estado_coinciden_con_el_informe_y_la_matriz` | sí |
+| 03_objetivo_alcance_okr_kpi.md: P5 vuelve a «55 passed … verificado el 2026-11-12» | `test_las_cifras_de_los_documentos_de_estado_coinciden_con_el_informe_y_la_matriz`; `test_la_fecha_de_p5_es_la_de_la_ultima_salida_del_informe` | sí |
+| estado_checklist.md: se reescribe una cifra de modo que ya no se encuentra («setecientas pruebas en verde») | `test_las_cifras_de_los_documentos_de_estado_coinciden_con_el_informe_y_la_matriz` | sí |
+
+## Qué NO demuestra
+Que no existan cambios que ninguna de estas pruebas vea: solo cubre las mutaciones listadas. Quedan fuera dos fragilidades de lectura de las notas de K3 y K4 en `src/panel` (un separador distinto y un punto final), registradas en D81 sin corregir.

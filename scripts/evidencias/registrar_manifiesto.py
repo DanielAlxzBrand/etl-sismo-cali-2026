@@ -103,6 +103,18 @@ FILAS_PANEL = {
 }
 
 
+CARPETA_END = "docs/evidencias/endurecimiento"
+FECHA_END = "2026-11-14"
+FILAS_END = {
+    "EV-062": ("5.6, 7.1", "Instalación desde cero con Python 3.13 (`pip check` limpio, `pip freeze` frente al del `.venv`, rechazo esperado con Python 3.11) y suite completa en un clon con ese entorno", "archivo",
+               "`python -m venv <VENV>`; `pip install -r requirements.txt`; `python -m pytest -q -p no:cacheprovider` en un clon del commit", "EV-062_instalacion_desde_cero.txt"),
+    "EV-063": ("1.5, 5.1, 5.2, 5.5, 5.6", "Tabla de mutaciones en clones: requisitos, tabla de criterios del MVP, textos y notas del panel y cifras de los documentos de estado; todas detectadas por alguna prueba", "archivo",
+               "mutación de un archivo en un clon temporal y `python -m pytest -q -p no:cacheprovider` sobre las pruebas guardianas", "EV-063_mutaciones.txt"),
+    "EV-064": ("5.4", "Airflow en vivo: interfaz en 127.0.0.1:8080, DAG sin errores de importación, ejecución manual por la línea de comandos con las cuatro tareas en éxito, `data/` y MySQL sin cambios", "archivo",
+               "`docker compose up -d`; `airflow dags list`; `airflow dags list-import-errors`; `airflow dags trigger medallon_etl_sismo`; `docker compose down`", "EV-064_airflow_en_vivo.txt"),
+}
+
+
 FILAS_ALMACEN = {
     "EV-027": ("4.1", "PyMySQL y cryptography instalados en el .venv, con `pip check` sin conflictos y ruedas para Python 3.13", "archivo", "`python scripts/evidencias/evidencia_conector.py` (pip install pymysql cryptography; pip check)", "EV-027_conector_mysql.txt"),
     "EV-028": ("4.1, 4.2", "Batería en vivo sobre la base de prueba de MySQL 8.0.45: privilegios mínimos, esquema desde cero, carga conciliada al 100 %, idempotencia, historial, reversión, violaciones de integridad rechazadas y API idéntica a SQLite (26 de 26)", "archivo",
@@ -149,6 +161,11 @@ def main():
             log.warning("falta %s; no se registra %s", archivo, ev)
             continue
         nuevas.append(fila(ev, item, que, tipo, cmd, archivo, CARPETA_PANEL, FECHA_PANEL))
+    for ev, (item, que, tipo, cmd, archivo) in FILAS_END.items():
+        if not (REPO / CARPETA_END / archivo).exists():
+            log.warning("falta %s; no se registra %s", archivo, ev)
+            continue
+        nuevas.append(fila(ev, item, que, tipo, cmd, archivo, CARPETA_END, FECHA_END))
     ids = {pref for pref, _ in nuevas}
     lineas = [l for l in lineas if not any(l.startswith(i) for i in ids)]
     ultima = max(i for i, l in enumerate(lineas) if l.startswith("| EV-"))   # las filas nuevas van al final de la tabla, antes de la convención

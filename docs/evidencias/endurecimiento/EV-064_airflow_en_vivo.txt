@@ -1,0 +1,52 @@
+# Airflow en vivo: interfaz, DAG, ejecución manual y estado final
+- comando: `docker compose up -d; airflow dags trigger medallon_etl_sismo; docker compose down`
+- fecha: 2026-11-14T16:18:19-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 0.0 s
+- Python: 3.13.0
+- commit del repositorio: 83d5d85
+
+- fecha: 2026-11-14 (America/Bogota)
+- carpeta de Airflow: `<AIRFLOW>` (carpeta hermana del proyecto, fuera del repositorio)
+- Docker Desktop: encendido por la persona del equipo; los contenedores estaban detenidos y se dejaron detenidos al terminar
+- no se leyó ni se imprimió ninguna contraseña; MySQL solo se consultó con SELECT
+
+## Antes de levantar
+- `docker ps -a`: 0 contenedores; imágenes de Airflow ya construidas; volumen `airflow-medallon_postgres-db-volume` presente
+- `GET http://127.0.0.1:8080/`: sin respuesta (código 000, puerto cerrado)
+- MySQL: corridas = 1; construccion = 5146; kpi = 23; kpi_sensibilidad = 107
+
+## Levantar (`docker compose up -d`, sin reconstruir)
+- contenedores con salud «healthy»: apiserver, scheduler, triggerer, dag-processor, worker, postgres y redis (siete)
+- `GET http://127.0.0.1:8080/`: código HTTP 200
+
+## DAG
+- `airflow dags list`: aparece `medallon_etl_sismo` en `/opt/airflow/dags/medallon_etl_dag.py` (bundle `dags-folder`)
+- `airflow dags list-import-errors`: «No data found» (sin errores de importación)
+- `scripts/orquestacion/sincronizar_dag.py --verificar`: DAG del repositorio a894786113aa; DAG vivo a894786113aa: iguales
+
+## Ejecución manual por la línea de comandos (`airflow dags trigger medallon_etl_sismo`)
+- run_id: `manual__2026-11-14T21:01:56.684380+00:00`; tipo manual; estado inicial `queued`
+- estado de la ejecución: `success` (observado a los 5 s de empezar a esperar; la ejecución completa duró unos 10 s)
+- estado de las cuatro tareas (`airflow tasks states-for-dag-run`):
+
+| tarea | estado | inicio (UTC) | fin (UTC) |
+|---|---|---|---|
+| validar_bronze | success | 2026-11-14T21:01:56 | 2026-11-14T21:01:58 |
+| transformar_a_silver | success | 2026-11-14T21:01:59 | 2026-11-14T21:02:00 |
+| integrar_a_gold | success | 2026-11-14T21:02:01 | 2026-11-14T21:02:02 |
+| cargar_datawarehouse | success | 2026-11-14T21:02:03 | 2026-11-14T21:02:05 |
+
+## Después de la ejecución
+- 9 de 9 hashes de la línea base y manifiesto de Bronze 8 de 8
+- los 19 archivos de `data/`: sha256 idénticos a los de antes de empezar
+- `git status` del repositorio: sin cambios
+- MySQL: corridas = 1; construccion = 5146; kpi = 23; kpi_sensibilidad = 107 (igual que antes: la carga repetida no duplica ni agrega historial)
+
+## Al terminar
+- `docker compose down`: contenedores y red eliminados; el volumen de Postgres se conserva
+- `docker ps -a`: 0 contenedores; `GET http://127.0.0.1:8080/`: código 000 (puerto cerrado)
+
+## Qué demuestra y qué no
+- Demuestra que con Docker encendido el DAG versionado se importa sin errores, se ejecuta de punta a punta desde la línea de comandos y no altera `data/` ni el contenido de MySQL.
+- No demuestra que la ejecución programada de las 06:00 funcione hoy (no se esperó al planificador) ni que otra persona pueda levantar Airflow desde el zip: ver el inventario de lo que falta en el informe del componente.

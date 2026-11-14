@@ -126,7 +126,7 @@
 | Usuarios y UX | en construcción; se documentará en `docs/ux/` |
 | Costos y finanzas | en construcción; se documentará en `docs/finanzas/` |
 
-Las evidencias del almacenamiento relacional están en `docs/evidencias/almacenamiento/`; las de la orquestación están en `docs/evidencias/orquestacion/`; las del panel, en `docs/evidencias/panel/`; las de los demás irán en `docs/evidencias/usuarios/`, que se crea cuando haya contenido.
+Las evidencias del almacenamiento relacional están en `docs/evidencias/almacenamiento/`; las de la orquestación están en `docs/evidencias/orquestacion/`; las del panel, en `docs/evidencias/panel/`; las del endurecimiento (instalación desde cero, mutaciones y Airflow en vivo), en `docs/evidencias/endurecimiento/`; las de los demás irán en `docs/evidencias/usuarios/`, que se crea cuando haya contenido.
 
 ## Componentes del proyecto y los ítems del checklist que cierran
 | componente | ítems que cierra | estado |
