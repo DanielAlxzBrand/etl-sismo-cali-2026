@@ -1,0 +1,23 @@
+# Comprobación canario de las credenciales de MySQL, del usuario de Docker y de la interfaz de Airflow
+- comando: `python scripts/evidencias/evidencia_canario_orquestacion.py`
+- fecha: 2026-11-13T22:46:01-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 21.2 s
+- Python: 3.13.0
+- commit del repositorio: 73cad60
+
+Variables sensibles usadas como canarios (solo nombres): MYSQL_DOCKER_PASSWORD, MYSQL_PASSWORD, _AIRFLOW_WWW_USER_PASSWORD@airflow-medallon
+Cantidad de canarios: 3 (proyecto: 2; Airflow: 1)
+
+1. `.env` del proyecto ignorado por git y no versionado: sí
+2. Árbol del proyecto (incluye `data/`, `docs/`, evidencias, notebooks y la copia versionada del DAG; excluye `.env`, `.git`, entornos y cachés): 0 hallazgos
+3. Registros del proyecto (`logs/*.log`, 5 archivos): 0 hallazgos
+4. Historial de git completo (67 commits, todas las ramas y etiquetas): 0 hallazgos
+5. Carpeta `airflow-medallon` (109 archivos, incluidos 102 registros de tareas, el compose, el Dockerfile y el DAG vivo; `.env` excluido como raíz): 0 hallazgos de las contraseñas del proyecto y del usuario de Docker
+   Variables de `airflow-medallon/.env` (solo nombres): AIRFLOW_UID, _AIRFLOW_WWW_USER_PASSWORD; solo variables de Airflow: sí
+6. La contraseña de la interfaz fuera de `airflow-medallon/.env` (compose, registros, DAG): 0 hallazgos
+7. Imagen `airflow-medallon-airflow-worker` (variables de entorno y capas de `docker image inspect` y `docker history`): 0 hallazgos
+8. Zip de prueba armado con `scripts/make_dist.py` en una carpeta temporal (250 entradas; trae `.env`: no; trae `dags/` y `orquestacion/`: sí): 0 hallazgos
+9. Escáner de patrones de secretos (árbol e historial del proyecto): 0 hallazgos
+
+Resultado: 0 hallazgos: ninguna contraseña aparece fuera de su `.env`.

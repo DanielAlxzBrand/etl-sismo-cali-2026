@@ -1,0 +1,29 @@
+# Pasos 41 a 43: reiniciar un servicio, registros, detener y volver a levantar
+- comando: `docker compose restart airflow-scheduler; docker compose logs [-f] airflow-scheduler; docker compose down; docker compose up -d`
+- fecha: 2026-11-13T22:44:44-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 200.0 s
+- Python: 3.13.0
+- commit del repositorio: 73cad60
+
+Pasos 41, 42 y 43 de la guía, desde `<AIRFLOW>`. Los estados de todas las ejecuciones (28 filas: 7 ejecuciones por 4 tareas) están en `EV-044_estados_tareas.csv`, exportados con `airflow tasks states-for-dag-run -o json`.
+
+## Paso 42 · reiniciar solo un servicio · tal cual
+`docker compose restart airflow-scheduler`: «Container airflow-medallon-airflow-scheduler-1 Restarting / Started» en 2 s; 25 s después el contenedor está `Up (healthy)`.
+
+## Paso 43 · registros desde Docker · tal cual
+`docker compose logs --tail 12 airflow-scheduler` muestra el arranque del planificador:
+```
+[warning] No visibility_timeout configured in [celery_broker_transport_options]. Using default of 86400 seconds (24 hours)...
+[info] Loaded executor: :CeleryExecutor: [airflow.executors.executor_loader]
+[info] Starting the scheduler [airflow.jobs.scheduler_job_runner.SchedulerJobRunner]
+[info] Adopting or resetting orphaned tasks for active dag runs [airflow.jobs.scheduler_job_runner.SchedulerJobRunner]
+```
+`docker compose logs -f airflow-scheduler` sigue el registro en tiempo real (se interrumpió a los 8 s). El ejecutor es el del compose oficial (CeleryExecutor), sin cambios (H-10).
+
+## Paso 41 · detener y volver a levantar · tal cual
+- `docker compose down`: detiene y elimina los 7 contenedores y la red en 9 s; `docker ps` queda vacío. El volumen de la base de Airflow (`airflow-medallon_postgres-db-volume`) se conserva: `down` sin `-v` no lo borra.
+- `docker compose up -d`: vuelve a levantar los 7 contenedores en 122 s y, con el volumen conservado, el DAG sigue **activo y con su programación**: `is_paused False` y `timetable_summary 0 6 * * *`.
+
+## Cómo operarlo (resumen; detalle en docs/orquestacion/operacion.md)
+Levantar: `docker compose up -d` desde `<AIRFLOW>` con Docker Desktop en marcha. Parar: `docker compose down`. Interfaz: http://localhost:8080 (solo 127.0.0.1). La contraseña de la interfaz está solo en `<AIRFLOW>\.env` y no se imprime.
