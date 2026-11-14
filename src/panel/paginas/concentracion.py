@@ -11,11 +11,19 @@ ID = "concentracion"
 
 
 def barrios_de_la_nota(nota):
-    """[(código, severos)] leídos de la nota de K3 («códigos:severos 1914:30; 1913:25; …»); lista vacía si la nota no tiene ese formato."""
-    m = re.search(r"severos ((?:\d+:\d+(?:; )?)+)", nota or "")
+    """[(código, severos)] leídos de la nota de K3 («códigos:severos 1914:30; 1913:25; …»).
+
+    Se lee todo lo que hay después de «severos » hasta la primera letra y debe ser exactamente una lista de pares «código:severos» separados por «; ».
+    Si algo no encaja (otro separador, un par incompleto), devuelve una lista vacía y la página muestra la nota tal cual (D78): una lectura a medias
+    mostraría una tabla con menos barrios de los que hay.
+    """
+    m = re.search(r"severos ((?:(?![^\W\d_]).)*)", nota or "")
     if m is None:
         return []
-    return [(par.split(":")[0], int(par.split(":")[1])) for par in m.group(1).split("; ") if ":" in par]
+    cuerpo = m.group(1).rstrip("; ")
+    if re.fullmatch(r"\d+:\d+(?:; \d+:\d+)*", cuerpo) is None:
+        return []
+    return [(par.split(":")[0], int(par.split(":")[1])) for par in cuerpo.split("; ")]
 
 
 def construcciones_de_la_nota(nota):
@@ -25,7 +33,11 @@ def construcciones_de_la_nota(nota):
 
 
 def p_permutacion(nota):
-    m = re.search(r"p_permutacion=([0-9.]+)", nota or "")
+    """p de la prueba de permutación leído de «p_permutacion=0.8218»; None si no está o no es un número bien formado.
+
+    Un punto al final (el de la frase) no forma parte del número; «0.8218.5» o «.» no son números y devuelven None en lugar de fallar.
+    """
+    m = re.search(r"p_permutacion=(\d+(?:\.\d+)?)(?!\.?\d)", nota or "")
     return float(m.group(1)) if m else None
 
 

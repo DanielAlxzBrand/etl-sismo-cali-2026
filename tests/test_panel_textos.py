@@ -156,6 +156,50 @@ def test_si_la_nota_de_k3_no_tiene_el_formato_no_se_inventan_barrios(rotulo, cam
     assert concentracion.barrios_de_la_nota(cambio(_fila_kpi("K3")["nota"])) == [], rotulo
 
 
+@pytest.mark.parametrize("rotulo,cambio", [
+    ("separador «, »", lambda n: n.replace("; ", ", ")),
+    ("separador «,» sin espacio", lambda n: n.replace("; ", ",")),
+    ("separador «;» sin espacio", lambda n: n.replace("; ", ";")),
+    ("separador « / »", lambda n: n.replace("; ", " / ")),
+    ("separador « & »", lambda n: n.replace("; ", " & ")),
+    ("un par incompleto al final", lambda n: n.replace("1903:10", "1903:")),
+    ("punto en lugar de «;» antes del texto final", lambda n: n.replace("1903:10; esos", "1903:10. esos")),
+])
+def test_si_la_nota_de_k3_cambia_de_separador_no_se_muestra_una_tabla_a_medias(rotulo, cambio):
+    """Antes de corregirlo, un separador distinto dejaba pasar solo el primer barrio (1 de 10); ahora la lectura es completa o vacía (D78, D81)."""
+    nota = cambio(_fila_kpi("K3")["nota"])
+    assert nota != _fila_kpi("K3")["nota"], rotulo
+    assert concentracion.barrios_de_la_nota(nota) == [], rotulo
+
+
+def test_la_lectura_de_la_nota_de_k3_acepta_el_formato_con_o_sin_cierre():
+    pares = "1914:30; 1913:25; 306:21"
+    esperado = [("1914", 30), ("1913", 25), ("306", 21)]
+    assert concentracion.barrios_de_la_nota(f"códigos:severos {pares}; esos barrios reúnen 1 %") == esperado
+    assert concentracion.barrios_de_la_nota(f"códigos:severos {pares}") == esperado
+    assert concentracion.barrios_de_la_nota(f"códigos:severos {pares};") == esperado
+
+
+@pytest.mark.parametrize("nota,esperado", [
+    ("p_permutacion=0.8218 (5000 permutaciones)", 0.8218),
+    ("n_barrios=45; p_permutacion=0.8218.", 0.8218),      # el punto final es el de la frase
+    ("p_permutacion=1", 1.0),
+    ("p_permutacion=0.8218.5", None),
+    ("p_permutacion=.", None),
+    ("p_permutacion=abc", None),
+])
+def test_p_permutacion_nunca_falla_con_un_texto_mal_formado(nota, esperado):
+    """Antes de corregirlo, «p_permutacion=0.8218.» lanzaba ValueError y hacía caer la página de Concentración."""
+    assert concentracion.p_permutacion(nota) == esperado
+
+
+def test_la_pagina_con_otro_separador_en_la_nota_de_k3_muestra_la_nota_tal_cual(api_real):
+    nota = _fila_kpi("K3")["nota"].replace("; ", ", ")
+    at = pa.pagina("concentracion", _api_con_nota_de_k3(api_real, nota))
+    assert not at.exception
+    assert len(at.dataframe) == 0 and nota in [i.value for i in at.info]
+
+
 @pytest.mark.parametrize("nota", ["", None, "texto libre", "(2292/4709)", "(dos de tres)"])
 def test_si_la_nota_no_trae_las_construcciones_devuelve_none(nota):
     assert concentracion.construcciones_de_la_nota(nota) is None
