@@ -36,12 +36,12 @@ PATRONES = {
     "pruebas_de_interesados": (r"Repositorio ejecutable, (\d+) pruebas", ["total"]),
     "p5": (r"\| P5 Pruebas en verde[^\n]*? (\d+) passed in [\d.]+s \(verificado el (\d{4}-\d{2}-\d{2})\)", ["total", "fecha"]),
 }
-# Cifras que cada documento DEBE repetir (si dejan de aparecer con esta forma, la prueba falla).
+# Cifras que cada documento DEBE repetir y cuántas veces como mínimo (si una desaparece o cambia de forma, la prueba falla).
 OBLIGATORIAS = {
-    "estado": {"pruebas_en_verde", "n_de_n", "casos_para_funciones", "funciones_con_casos", "casos_por_tipo", "cobertura"},
-    "guia": {"n_de_n", "passed_de_5_1", "matriz_de_casos_de_prueba", "funciones_con_casos", "tipos_entre_parentesis", "cobertura"},
-    "interesados": {"pruebas_de_interesados"},
-    "objetivos": {"p5"},
+    "estado": {"pruebas_en_verde": 2, "n_de_n": 2, "casos_para_funciones": 1, "funciones_con_casos": 1, "casos_por_tipo": 1, "cobertura": 1},
+    "guia": {"n_de_n": 1, "passed_de_5_1": 1, "matriz_de_casos_de_prueba": 1, "funciones_con_casos": 1, "tipos_entre_parentesis": 1, "cobertura": 1},
+    "interesados": {"pruebas_de_interesados": 1},
+    "objetivos": {"p5": 1},
 }
 
 
@@ -75,16 +75,16 @@ def revisar_cifras(textos, verdad, obligatorias=OBLIGATORIAS):
     """Errores de las cifras de `textos` ({documento: texto}) frente a `verdad` (lista vacía si todo coincide)."""
     errores = []
     for doc, texto in textos.items():
-        encontradas = set()
+        encontradas = Counter()
         for clave, (patron, grupos) in PATRONES.items():
             for m in re.finditer(patron, texto):
-                encontradas.add(clave)
+                encontradas[clave] += 1
                 for valor, verdad_de in zip(m.groups(), grupos):
                     if valor != verdad[verdad_de]:
                         errores.append(f"{doc}: «{m.group(0)[:80]}» dice {valor} y {verdad_de} vale {verdad[verdad_de]}")
-        faltan = sorted(obligatorias.get(doc, set()) - encontradas)
+        faltan = sorted(c for c, minimo in obligatorias.get(doc, {}).items() if encontradas[c] < minimo)
         if faltan:
-            errores.append(f"{doc}: no se encontró la cifra «{', '.join(faltan)}» con la forma esperada")
+            errores.append(f"{doc}: no se encontró la cifra «{', '.join(faltan)}» con la forma esperada y las veces esperadas")
     return errores
 
 
@@ -109,8 +109,11 @@ TEXTO_SINTETICO = {
 }
 
 
+OBLIGATORIAS_SINTETICAS = {"estado": {clave: 1 for clave in OBLIGATORIAS["estado"]}}
+
+
 def test_negativa_un_texto_con_las_cifras_vigentes_no_da_errores():
-    assert revisar_cifras(TEXTO_SINTETICO, VERDAD_SINTETICA, OBLIGATORIAS) == []
+    assert revisar_cifras(TEXTO_SINTETICO, VERDAD_SINTETICA, OBLIGATORIAS_SINTETICAS) == []
 
 
 @pytest.mark.parametrize("viejo,nuevo", [
@@ -120,15 +123,15 @@ def test_negativa_un_texto_con_las_cifras_vigentes_no_da_errores():
 def test_negativa_una_cifra_vieja_se_detecta(viejo, nuevo):
     alterado = {"estado": TEXTO_SINTETICO["estado"].replace(viejo, nuevo, 1)}
     assert alterado["estado"] != TEXTO_SINTETICO["estado"]
-    assert revisar_cifras(alterado, VERDAD_SINTETICA, OBLIGATORIAS)
+    assert revisar_cifras(alterado, VERDAD_SINTETICA, OBLIGATORIAS_SINTETICAS)
 
 
 def test_negativa_una_cifra_que_cambia_de_forma_y_ya_no_se_encuentra_se_detecta():
     alterado = {"estado": TEXTO_SINTETICO["estado"].replace("700 pruebas en verde", "setecientas pruebas en verde")}
-    assert any("no se encontró" in e for e in revisar_cifras(alterado, VERDAD_SINTETICA, OBLIGATORIAS))
+    assert any("no se encontró" in e for e in revisar_cifras(alterado, VERDAD_SINTETICA, OBLIGATORIAS_SINTETICAS))
 
 
 def test_negativa_la_fecha_de_p5_vieja_se_detecta():
     texto = {"objetivos": "| P5 Pruebas en verde | x | `tests/` | Todas | 700 passed in 190.00s (verificado el 2026-11-12) | s | l |"}
-    errores = revisar_cifras(texto, VERDAD_SINTETICA, {"objetivos": {"p5"}})
+    errores = revisar_cifras(texto, VERDAD_SINTETICA, {"objetivos": {"p5": 1}})
     assert errores and "fecha" in errores[0]
