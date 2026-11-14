@@ -2,6 +2,7 @@
 
 Reporta archivo, línea y NOMBRE del patrón; nunca el valor. Código de salida 1 si encuentra algo.
 Uso: python scripts/escanear_secretos.py [--raiz CARPETA] [--zip ARCHIVO.zip] [--sin-historial]
+Comprobación canario: --canario-env busca los valores sensibles de .env en todo lo demás; --env-extra RUTA suma los de otro .env (repetible); --solo-canario omite los patrones.
 Los patrones se construyen por concatenación para que este archivo y sus pruebas no se detecten a sí mismos.
 """
 import argparse
@@ -160,13 +161,19 @@ def escanear_zip(ruta):
 SENSIBLE = re.compile(r"PASSWORD|TOKEN|SECRET|KEY", re.I)
 
 
-def canarios(raiz):
-    """{nombre: valor} de las variables sensibles de `.env`, leídas EN MEMORIA (los valores nunca se imprimen ni se guardan)."""
+def _sensibles(ruta):
     from dotenv import dotenv_values
-    ruta = Path(raiz) / ".env"
-    if not ruta.exists():
-        return {}
-    return {k: v for k, v in dotenv_values(ruta).items() if v and len(v) >= 6 and SENSIBLE.search(k)}
+    return {k: v for k, v in dotenv_values(ruta).items() if v and len(v) >= 6 and SENSIBLE.search(k)} if Path(ruta).exists() else {}
+
+
+def canarios(raiz, extras=()):
+    """{nombre: valor} de las variables sensibles de `.env` y de los archivos `.env` extra (por ejemplo el de otra carpeta de trabajo), leídas EN MEMORIA
+    (los valores nunca se imprimen ni se guardan). Las de un archivo extra se nombran `VARIABLE@carpeta` para distinguirlas."""
+    can = _sensibles(Path(raiz) / ".env")
+    for e in extras:
+        e = Path(e)
+        can.update({f"{k}@{e.resolve().parent.name}": v for k, v in _sensibles(e).items()})
+    return can
 
 
 def _buscar_en(nombre, datos, can):
@@ -240,20 +247,22 @@ def main(argv=None):
     ap.add_argument("--zip", default=None)
     ap.add_argument("--sin-historial", action="store_true")
     ap.add_argument("--canario-env", action="store_true", help="comprueba que los valores sensibles de .env no aparecen en ningún otro lugar")
+    ap.add_argument("--env-extra", action="append", default=[], metavar="RUTA", help="otro archivo .env cuyas variables sensibles también se buscan (se puede repetir); implica --canario-env")
+    ap.add_argument("--solo-canario", action="store_true", help="solo la comprobación canario (omite los patrones de secretos; sirve para carpetas ajenas con valores por defecto conocidos)")
     a = ap.parse_args(argv)
     raiz = Path(a.raiz).resolve()
-    hallazgos = escanear_arbol(raiz) + estado_de_env(raiz)
-    if a.canario_env:
-        can = canarios(raiz)
+    hallazgos = [] if a.solo_canario else escanear_arbol(raiz) + estado_de_env(raiz)
+    if a.canario_env or a.env_extra or a.solo_canario:
+        can = canarios(raiz, a.env_extra)
         print(f"canarios leídos de .env (variables): {', '.join(sorted(can)) or 'ninguna'}")
         hallazgos += canario_arbol(raiz, can)
         if not a.sin_historial:
             hallazgos += canario_historial(raiz, can)
         if a.zip:
             hallazgos += canario_zip(a.zip, can)
-    if not a.sin_historial:
+    if not a.sin_historial and not a.solo_canario:
         hallazgos += escanear_historial(raiz)
-    if a.zip:
+    if a.zip and not a.solo_canario:
         hallazgos += escanear_zip(a.zip)
     for archivo, linea, patron in hallazgos:
         print(f"{archivo}:{linea}: {patron}")

@@ -58,6 +58,18 @@ Límite que aceptamos: con `DROP` el usuario podría borrar las dos bases del pr
 ```
 Pide de nuevo la contraseña del administrador, cambia la del usuario con `ALTER USER`, verifica la conexión con la nueva y actualiza `.env`. La rotamos al terminar el proyecto y cuando salga una persona con acceso al `.env`.
 
+## 5 bis. Usuario para el DAG de Airflow en Docker
+El DAG de [orquestación](../orquestacion/README.md) corre dentro de un contenedor, y MySQL ve esa conexión como proveniente de otro origen que `localhost`. Por eso existe un segundo usuario, `sismo_airflow`, que se crea con el mismo script y **nunca con `%`**:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\mysql\configurar_mysql.py --usuario-docker --origen <PATRÓN>
+```
+- **Origen (`<PATRÓN>`):** una IP privada exacta, un nombre exacto o una red con máscara privada de al menos 16 bits (por ejemplo `192.168.65.0/255.255.255.0`). El script rechaza vacío, `%`, `_`, comodines, IP públicas, `0.0.0.0`, loopback y máscaras más anchas que 16 bits.
+- **Permisos:** solo sobre `sismo_cali`: `SELECT` (leer la corrida), `INSERT` (cargarla) y `CREATE`, `INDEX` y `REFERENCES` (el esquema se aplica con `CREATE TABLE IF NOT EXISTS`, con sus índices y claves foráneas). Sin `UPDATE`, `DELETE`, `DROP` ni `ALTER`, sin `GRANT OPTION` y sin privilegios globales: el DAG no modifica ni borra datos.
+- **Credenciales:** contraseña aleatoria de 32 caracteres que solo se guarda en `.env` (`MYSQL_DOCKER_USER`, `MYSQL_DOCKER_PASSWORD` y `MYSQL_DOCKER_ORIGEN`; el script imprime nombres, nunca valores). La contraseña del administrador se pide con `getpass`, como siempre.
+- **Verificación:** este usuario no puede probarse desde Windows (su origen es el contenedor); `--solo-verificar` inspecciona sus permisos con la cuenta de administrador y el `.env` solo se escribe después de comprobarlos. Es idempotente y admite `--rotar`.
+- **Uso en el DAG:** la tarea de carga lee esas variables del `.env` del proyecto (montado en solo lectura) en memoria y las pasa por `os.environ` de la tarea; nunca se copian a la copia de trabajo, a la imagen, al compose ni a los registros.
+
 ## 6. Si algo falla
 | Síntoma | Causa probable | Qué hacemos |
 |---|---|---|

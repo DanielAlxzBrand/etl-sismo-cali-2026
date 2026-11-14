@@ -4,6 +4,8 @@ Uso (PowerShell, raíz del proyecto):  .\\.venv\\Scripts\\python.exe scripts\\my
 La contraseña del administrador se pide con getpass (sin eco): nunca por argumento, variable de entorno ni archivo; no se guarda ni se registra.
 La contraseña de `sismo_etl` se genera con `secrets` y solo se escribe en `.env` (de forma atómica); el script imprime NOMBRES de variables, nunca valores.
 Es idempotente: si el usuario ya existe y `.env` tiene credenciales válidas no cambia nada (ni pide la contraseña del administrador).
+Con `--usuario-docker --origen PATRON` crea además `sismo_airflow`@PATRON para que el DAG de Airflow (que corre en un contenedor) cargue en `sismo_cali`: PATRON es una IP privada exacta, un nombre exacto
+o una red/máscara privada (nunca `%`); sus variables MYSQL_DOCKER_* se guardan solo en `.env`. Admite `--rotar` y `--solo-verificar`.
 """
 import argparse
 import getpass
@@ -204,6 +206,116 @@ def configurar(cfg, args, conectar_admin, conectar_usuario, pedir_clave=getpass.
             admin.close()
 
 
+USUARIO_DOCKER = "sismo_airflow"
+# Solo lo que necesita la carga relacional sobre `sismo_cali`: leer la corrida (SELECT), insertarla (INSERT) y aplicar el esquema con CREATE TABLE IF NOT EXISTS
+# (CREATE, INDEX para sus índices y REFERENCES para sus claves foráneas). Sin UPDATE, DELETE, DROP ni ALTER: el DAG no modifica ni borra datos. Sin GRANT OPTION ni globales.
+PRIVILEGIOS_DOCKER = ("SELECT", "INSERT", "CREATE", "INDEX", "REFERENCES")
+NOMBRES_ENV_DOCKER = ("MYSQL_DOCKER_USER", "MYSQL_DOCKER_PASSWORD", "MYSQL_DOCKER_ORIGEN")
+MASCARA_MINIMA = 16   # una máscara de red más ancha que /16 cubriría demasiados orígenes
+
+
+def validar_origen(patron):
+    """Origen desde el que puede conectar el usuario de Docker: IP privada exacta, nombre exacto o `red/máscara` privada de al menos 16 bits. Rechaza `%`, `_`, vacío y comodines amplios."""
+    import ipaddress
+    p = (patron or "").strip()
+    if not p:
+        raise ConfiguracionError("el origen no puede estar vacío")
+    if any(c in p for c in "%_*?'\"`\\; "):
+        raise ConfiguracionError("el origen no admite comodines ni caracteres especiales (`%`, `_`, `*`, comillas, espacios)")
+    if "/" in p:
+        red, _, mascara = p.partition("/")
+        try:
+            r = ipaddress.IPv4Address(red)
+            mk = int(ipaddress.IPv4Address(mascara))
+        except ValueError:
+            raise ConfiguracionError("el origen con máscara debe tener la forma `red/máscara` en IPv4, por ejemplo 192.168.65.0/255.255.255.0") from None
+        bits = bin(mk).count("1")
+        if bits < MASCARA_MINIMA or mk != (0xFFFFFFFF << (32 - bits)) & 0xFFFFFFFF:
+            raise ConfiguracionError(f"la máscara debe ser contigua y de al menos {MASCARA_MINIMA} bits")
+        if not r.is_private or r.is_loopback:
+            raise ConfiguracionError("la red del origen debe ser privada (no pública ni de loopback)")
+        return p
+    try:
+        ip = ipaddress.ip_address(p)
+    except ValueError:
+        ip = None
+    if ip is not None:
+        if not ip.is_private or ip.is_unspecified or ip.is_loopback:
+            raise ConfiguracionError("la IP del origen debe ser privada y exacta (no pública, no 0.0.0.0 y no loopback)")
+        return p
+    if p.lower() == "localhost" or not re.fullmatch(r"[A-Za-z0-9]([A-Za-z0-9.-]{0,251}[A-Za-z0-9])?", p):
+        raise ConfiguracionError("el nombre del origen debe ser un nombre exacto distinto de localhost (letras, dígitos, punto y guion)")
+    return p
+
+
+def aplicar_docker(admin, base, origen, existe, clave):
+    """Crea el usuario de Docker (o cambia su contraseña) con permisos SOLO sobre `base`. Usuario, origen y contraseña van como parámetros; origen ya validado."""
+    if existe:
+        _ejecutar(admin, "ALTER USER %s@%s IDENTIFIED BY %s", (USUARIO_DOCKER, origen, clave))
+    else:
+        _ejecutar(admin, "CREATE USER %s@%s IDENTIFIED BY %s", (USUARIO_DOCKER, origen, clave))
+    _ejecutar(admin, f"GRANT {', '.join(PRIVILEGIOS_DOCKER)} ON `{base}`.* TO %s@%s", (USUARIO_DOCKER, origen))
+
+
+def verificar_privilegios_docker(admin, base, origen):
+    """SHOW GRANTS del usuario de Docker: exactamente los privilegios esperados sobre `base`, sin globales ni GRANT OPTION ni otras bases."""
+    concesiones = [f[0] for f in _consultar(admin, "SHOW GRANTS FOR %s@%s", (USUARIO_DOCKER, origen))]
+    if any("WITH GRANT OPTION" in g.upper() for g in concesiones):
+        raise ConfiguracionError("el usuario de Docker tiene GRANT OPTION")
+    por_base = {}
+    for g in concesiones:
+        m = re.match(r"GRANT (.+?) ON (.+?) TO ", g, re.I)
+        if not m:
+            continue
+        priv, objeto = m.group(1).strip(), m.group(2).replace("`", "").strip()
+        if objeto == "*.*":
+            if priv.upper() != "USAGE":
+                raise ConfiguracionError("el usuario de Docker tiene privilegios globales")
+            continue
+        por_base[objeto.split(".")[0]] = {x.strip().upper() for x in priv.split(",")}
+    if list(por_base) != [base] or por_base[base] != set(PRIVILEGIOS_DOCKER):
+        raise ConfiguracionError(f"los privilegios del usuario de Docker no son los esperados sobre {base}")
+    return sorted(por_base[base])
+
+
+def configurar_docker(cfg, args, conectar_admin, pedir_clave=getpass.getpass, ruta_env=ROOT / ".env"):
+    """Crea (o rota, o solo verifica) el usuario de MySQL para Docker. El usuario no puede probarse desde este equipo (su origen es el del contenedor), así que la verificación
+    inspecciona sus permisos con el administrador. Devuelve los NOMBRES de variables escritas."""
+    origen = validar_origen(args.origen)
+    base = cfg["almacenamiento"]["base"]
+    env = dict(dotenv_values(ruta_env)) if Path(ruta_env).exists() else {}
+    if not env_ignorado_y_no_versionado(Path(ruta_env).parent):
+        raise ConfiguracionError(".env no está ignorado por git o está versionado; corrige .gitignore antes de guardar credenciales")
+    completo = all(env.get(n) for n in NOMBRES_ENV_DOCKER) and env.get("MYSQL_DOCKER_ORIGEN") == origen
+    if completo and not args.rotar and not args.solo_verificar:
+        log.info("sin cambios: el .env ya tiene las credenciales del usuario de Docker para este origen")
+        return []
+    clave_admin = pedir_clave(f"Contraseña del administrador de MySQL ({args.usuario_admin}); no se muestra al escribir: ")
+    admin = None
+    nueva = None
+    try:
+        admin = conectar_admin(args.usuario_admin, clave_admin)
+        clave_admin = None
+        comprobar_servidor(admin)
+        existe = _consultar(admin, "SELECT COUNT(*) FROM mysql.user WHERE user = %s AND host = %s", (USUARIO_DOCKER, origen))[0][0] > 0
+        if args.solo_verificar:
+            if not existe or not completo:
+                raise ConfiguracionError("el usuario de Docker no existe para ese origen o el .env no tiene sus variables")
+            log.info("verificación correcta: permisos del usuario de Docker %s", ", ".join(verificar_privilegios_docker(admin, base, origen)))
+            return []
+        nueva = generar_clave()
+        aplicar_docker(admin, base, origen, existe, nueva)
+        verificar_privilegios_docker(admin, base, origen)
+        valores = {"MYSQL_DOCKER_USER": USUARIO_DOCKER, "MYSQL_DOCKER_PASSWORD": nueva, "MYSQL_DOCKER_ORIGEN": origen}
+        actualizar_env(ruta_env, valores)   # .env se escribe solo después de comprobar los permisos del usuario
+        return list(valores)
+    finally:
+        nueva = None
+        clave_admin = None
+        if admin is not None:
+            admin.close()
+
+
 def _conexiones(cfg):
     import pymysql
     al = cfg["almacenamiento"]
@@ -223,12 +335,19 @@ def main(argv=None):
     grupo = ap.add_mutually_exclusive_group()
     grupo.add_argument("--rotar", action="store_true", help="genera una contraseña nueva para sismo_etl y actualiza .env")
     grupo.add_argument("--solo-verificar", action="store_true", help="solo comprueba las credenciales de .env")
+    ap.add_argument("--usuario-docker", action="store_true", help="crea el usuario de MySQL para Docker (sismo_airflow) con permisos solo sobre la base real")
+    ap.add_argument("--origen", default=None, help="origen del usuario de Docker: IP privada exacta, nombre exacto o red/máscara privada (nunca %%)")
     args = ap.parse_args(argv)
+    if args.usuario_docker != bool(args.origen):
+        ap.error("--usuario-docker y --origen se usan juntos")
     cfg = load_config()
     import pymysql
     admin, usuario = _conexiones(cfg)
     try:
-        escritas = configurar(cfg, args, admin, usuario)
+        if args.usuario_docker:
+            escritas = configurar_docker(cfg, args, admin)
+        else:
+            escritas = configurar(cfg, args, admin, usuario)
     except ConfiguracionError as e:
         log.error("%s", e)
         return 1
