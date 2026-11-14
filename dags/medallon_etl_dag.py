@@ -98,7 +98,7 @@ with DAG(
     dag_id="medallon_etl_sismo",
     description="Pipeline ETL Medallion: Bronze -> Silver -> Gold -> Load",
     start_date=datetime(2026, 1, 1, tzinfo=ZoneInfo("America/Bogota")),
-    schedule=None,
+    schedule="0 6 * * *",
     catchup=False,
     tags=["etl", "medallion", "sismo"],
 ) as dag:

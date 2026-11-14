@@ -1,0 +1,44 @@
+# Paso 40: programación del DAG y ejecución disparada por el planificador
+- comando: `airflow dags unpause / details / list-runs; schedule temporal y definitivo 0 6 * * * en America/Bogota`
+- fecha: 2026-11-13T22:38:17-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 900.0 s
+- Python: 3.13.0
+- commit del repositorio: 165b2d0
+
+Paso 40 de la guía (programar automáticamente el pipeline) con DF-9. El DAG se validó antes con `schedule=None` (pasos 34 a 37); aquí se activa y se programa.
+
+## Activación (complemento documentado de DF-9)
+`airflow dags unpause medallon_etl_sismo` (el DAG nace pausado en el compose oficial; con el DAG pausado una ejecución manual se queda en `queued`, ver EV-041).
+
+## Cron temporal para obtener una ejecución programada en el momento
+Se cambió `schedule=None` por `schedule="36 22 * * *"` (cuatro minutos adelante, hora de Bogotá), se registró el hash y se sincronizó el DAG. `airflow dags details medallon_etl_sismo`:
+```
+is_paused             False
+timetable_summary     36 22 * * *
+timetable_description At 22:36
+next_dagrun_run_after 2026-11-14 03:36:00+00:00      (22:36 en Bogotá: UTC-5)
+```
+`start_date` lleva la zona America/Bogota, por eso el cron se evalúa en hora de Bogotá y no en UTC (H-12).
+
+## Ejecuciones disparadas por el planificador (`run_type` scheduled)
+`airflow dags list-runs`:
+| run_id | Estado | Inicio (UTC) | Fin (UTC) | Observación |
+|---|---|---|---|---|
+| scheduled__2026-11-13T03:36:00+00:00 | success | 03:31:42 | 03:31:50 | al activar el cron, con `catchup=False`, el planificador ejecutó una vez el intervalo vencido más reciente |
+| scheduled__2026-11-14T03:36:00+00:00 | success | **03:36:00,2** | 03:36:09,8 | disparada a las 22:36:00 de Bogotá, en el momento programado |
+
+Las cuatro tareas de cada ejecución terminaron en `success` (la del momento programado: validar_bronze 1,4 s, transformar_a_silver 1,6 s, integrar_a_gold 1,3 s y cargar_datawarehouse 1,8 s) con las mismas comparaciones con el repositorio y la salida `ya_cargada (corrida 1)`.
+
+## Restauración del cron definitivo
+`schedule="0 6 * * *"` en America/Bogota con `catchup=False`; se registró el hash del DAG (a894786113aa), se resincronizó y se verificó que el DAG vivo y el versionado son idénticos. `airflow dags list-import-errors`: «No data found».
+```
+is_paused             False
+timetable_summary     0 6 * * *
+timetable_description At 06:00
+next_dagrun_run_after 2026-11-14 11:00:00+00:00      (06:00 en Bogotá)
+```
+**Estado final del DAG: programado (`0 6 * * *`, hora de Bogotá) y activo (no pausado).** Mientras Docker Desktop y los contenedores estén encendidos, el planificador lo ejecutará a las 06:00; con `catchup=False` no recupera los intervalos en que estuvieron apagados.
+
+## Comprobaciones
+`git status` del proyecto sin cambios en `data/` ni en lo versionado (solo el DAG y su hash, que se editaron a propósito); los 19 archivos de `data/` con el mismo sha256 (incluida la base byte a byte); 9 hashes de la línea base y manifiesto 8 de 8 sin cambios; `sismo_cali` con una sola corrida; 0 copias de trabajo en el contenedor.
