@@ -276,7 +276,7 @@ Debe terminar sin errores (Python 3.13.0).
 Get-FileHash -Algorithm SHA256 data\silver\*.csv, data\silver\quality_report.json, data\gold\*.csv
 ```
    **Qué puede mostrar Git después de ejecutarlo.** Aunque los datos sean los mismos, `git status` puede listar dos cambios: `data/gold/etl_sismo.db` (SQLite no escribe el archivo igual byte a byte en cada carga: cambian los bytes, no las tablas) y una línea de `docs/silver/reglas_silver.md` (la regla R10 cita una ruta antigua que el pipeline vuelve a escribir). Lo comprobamos en un clon: los CSV de Silver y de Gold conservan sus sha256, así que no hay pérdida de datos. Para volver a lo versionado: `git checkout -- data/gold/etl_sismo.db docs/silver/reglas_silver.md`. No corregimos esa ruta porque cambiaría `quality_report.json` y con él la línea base (D81).
-4. **Pruebas:** `pytest -q` → `696 passed`.
+4. **Pruebas:** `pytest -q` → `711 passed`.
 5. **Notebooks** (cada uno se ejecuta de arriba a abajo sin errores):
 ```powershell
 jupyter nbconvert --to notebook --execute --inplace notebooks\05_validacion_evidencias.ipynb
@@ -301,7 +301,7 @@ jupyter nbconvert --to notebook --execute --inplace notebooks\05_validacion_evid
 - `dags/`: DAG de Airflow `medallon_etl_dag.py` (copia versionada del DAG vivo de `airflow-medallon`)
 - `orquestacion/`: Dockerfile, requisitos de la imagen de Airflow y hash del DAG
 - `src/`: código por capas (ver `src/README.md`): `extract/`, `transform/`, `load/` (SQLite y carga relacional), `api/`, `panel/` (interfaz Streamlit de solo lectura), `common.py` y `logger.py`
-- `tests/`: 696 pruebas automáticas
+- `tests/`: 711 pruebas automáticas
 - `scripts/`: generadores y utilidades (ver `scripts/README.md`): README, catálogo de fuentes, modelo de datos, carga relacional, `mysql/` (configuración y verificación en vivo), matriz de casos de prueba e informe de pruebas, orquestación (`orquestacion/`), escáner de secretos, empaquetado y `evidencias/`
 - `docs/README.md`: índice de la documentación por capas y tabla «dónde está cada cosa»
 - `docs/DECISIONES.md`: decisiones con alternativas, razón y riesgo
@@ -322,7 +322,7 @@ jupyter nbconvert --to notebook --execute --inplace notebooks\05_validacion_evid
 - `logs/`: archivos de registro diarios (se crean al ejecutar; no se versionan)
 
 ## 14. Pruebas y validación
-Hay **696 pruebas** automáticas, sin red:
+Hay **711 pruebas** automáticas, sin red:
 - `tests/test_api.py` (17): API de solo lectura: estructura, validación, coincidencia con las salidas, solo GET y sin escritura en `data/` ni en la base.
 - `tests/test_canario_extra.py` (5): comprobación canario con archivos `.env` extra: detecta contraseñas de otra carpeta sin imprimirlas.
 - `tests/test_carga_relacional.py` (54): esquema relacional (paridad, diccionario al día), conversión estricta, carga con conciliación al 100 %, idempotencia, historial, reversión, integridad referencial y equivalencia de la API entre SQLite y el almacén relacional (sin servidor MySQL).
@@ -351,7 +351,7 @@ Hay **696 pruebas** automáticas, sin red:
 - `tests/test_panel_paginas.py` (134): las ocho páginas con `AppTest` sobre la API real en memoria, alcance visible y resiliencia ante cada fallo de la API.
 - `tests/test_panel_registro_y_aislamiento.py` (39): registro de componentes (rutas, campos y KPI existen) y aislamiento del panel por análisis estático: solo la API, solo GET y sin cifras escritas a mano.
 - `tests/test_panel_tema.py` (10): relación de contraste WCAG de la paleta del panel.
-- `tests/test_panel_textos.py` (39): .
+- `tests/test_panel_textos.py` (54): .
 - `tests/test_pipeline_reproducible.py` (4): el pipeline regenerado en una copia reproduce byte a byte los nueve archivos de la línea base.
 - `tests/test_quality.py` (4): campos del reporte, cobertura frente al umbral, mínimo de filas de Gold, KPI en rango.
 - `tests/test_readme_cifras.py` (13): las cifras de este README coinciden con los archivos de salida; recuadros de alcance, población e indicador satelital.
@@ -465,7 +465,7 @@ Documentación: [modelo de datos](docs/almacenamiento/modelo_datos.md), [configu
 ## 20. Pruebas y orquestación
 El pipeline se orquesta con **Apache Airflow en Docker**, siguiendo la guía de Airflow de la asignatura (artículo de Juan Manuel Núñez Velasco) con unas pocas diferencias documentadas. El DAG `medallon_etl_sismo` (`dags/medallon_etl_dag.py`) tiene cuatro tareas, `validar_bronze → transformar_a_silver → integrar_a_gold → cargar_datawarehouse`, y trabaja sobre una **copia de trabajo** dentro del contenedor: el repositorio se monta en solo lectura y cada tarea compara lo que produce con los archivos versionados (CSV y JSON byte a byte, `etl_sismo.db` tabla a tabla), así que ni los datos ni las salidas pueden alterarse. La carga a MySQL usa un usuario propio de Docker con permisos mínimos sobre la base real. Para reproducir los archivos de la línea base hay que usar **pandas 3.0.6** (con otra versión cambian celdas del decimal 12; ver D56).
 
-Hay 696 pruebas automáticas, una **matriz de casos** por función crítica generada desde una única definición (`python scripts/make_matriz_casos.py`), un **informe de pruebas** con resultado esperado y obtenido por caso y cobertura por módulo (`python scripts/informe_pruebas.py`) y un **registro de defectos** cuyas pruebas de regresión fallan sin su corrección.
+Hay 711 pruebas automáticas, una **matriz de casos** por función crítica generada desde una única definición (`python scripts/make_matriz_casos.py`), un **informe de pruebas** con resultado esperado y obtenido por caso y cobertura por módulo (`python scripts/informe_pruebas.py`) y un **registro de defectos** cuyas pruebas de regresión fallan sin su corrección.
 ```powershell
 .\.venv\Scripts\python.exe scripts\informe_pruebas.py
 .\.venv\Scripts\python.exe scripts\orquestacion\sincronizar_dag.py --verificar
