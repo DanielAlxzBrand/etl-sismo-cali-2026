@@ -90,7 +90,7 @@ def test_los_valores_por_http_real_coinciden_con_las_salidas(servidor_real):
     api = pa.como_consulta(cliente)
     kpis = {(r["kpi_id"], r["grupo"]): r for r in _csv(RAIZ / "data" / "gold" / "kpis_gold.csv")}
     m = {x.label: x.value for x in pa.pagina("respuesta", api, tiempo=60).metric}
-    assert m["Tasa de los estratos 3-5"] == formato.porcentaje(float(kpis[("K2", "estratos_3-5")]["valor"]))
+    assert m["Tasa 3-5"] == formato.porcentaje(float(kpis[("K2", "estratos_3-5")]["valor"]))
     assert m["Diferencia (3-5 menos 1-2)"] == formato.puntos_porcentuales(float(kpis[("K2", "diferencia_3-5_menos_1-2")]["valor"]))
     assert m["Estrato válido"] == "99,845 %"
     gold = _csv(RAIZ / "data" / "gold" / "gold_final.csv")

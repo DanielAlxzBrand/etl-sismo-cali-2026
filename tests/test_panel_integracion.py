@@ -62,8 +62,8 @@ def test_respuesta_muestra_k2_igual_a_kpis_gold_y_a_lo_recalculado_de_gold_final
     m = _metricas(paginas[0]["respuesta"])
     t35, t12 = _k(datos, "K2", "estratos_3-5"), _k(datos, "K2", "estratos_1-2")
     dif, razon = _k(datos, "K2", "diferencia_3-5_menos_1-2"), _k(datos, "K2", "razon_3-5_vs_1-2")
-    assert m["Tasa de los estratos 3-5"].value == formato.porcentaje(_f(t35["valor"]))
-    assert m["Tasa de los estratos 1-2 (muestra baja)"].value == formato.porcentaje(_f(t12["valor"]))
+    assert m["Tasa 3-5"].value == formato.porcentaje(_f(t35["valor"]))
+    assert m["Tasa 1-2 (muestra baja)"].value == formato.porcentaje(_f(t12["valor"]))
     assert m["Diferencia (3-5 menos 1-2)"].value == formato.puntos_porcentuales(_f(dif["valor"]))
     assert m["Razón de tasas (3-5 / 1-2)"].value == formato.razon(_f(razon["valor"]))
     # recálculo independiente desde gold_final.csv
@@ -73,8 +73,8 @@ def test_respuesta_muestra_k2_igual_a_kpis_gold_y_a_lo_recalculado_de_gold_final
     k35, k12 = sum(_b(g["severo_estricto"]) for g in n35), sum(_b(g["severo_estricto"]) for g in n12)
     assert (k35, len(n35)) == (int(float(t35["numerador"])), int(float(t35["denominador"])))
     assert (k12, len(n12)) == (int(float(t12["numerador"])), int(float(t12["denominador"])))
-    assert m["Tasa de los estratos 3-5"].value == formato.porcentaje(k35 / len(n35))
-    assert m["Tasa de los estratos 1-2 (muestra baja)"].value == formato.porcentaje(k12 / len(n12))
+    assert m["Tasa 3-5"].value == formato.porcentaje(k35 / len(n35))
+    assert m["Tasa 1-2 (muestra baja)"].value == formato.porcentaje(k12 / len(n12))
     assert m["Diferencia (3-5 menos 1-2)"].value == formato.puntos_porcentuales(k35 / len(n35) - k12 / len(n12))
 
 

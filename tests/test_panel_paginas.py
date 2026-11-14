@@ -87,7 +87,7 @@ def test_cada_pagina_muestra_la_fecha_de_corte_el_estado_de_la_api_y_la_fuente(r
 
 
 @pytest.mark.parametrize("pagina,fragmentos", [
-    ("respuesta", ["Tasa de los estratos 3-5", "Tasa de los estratos 1-2 (muestra baja)", "Diferencia (3-5 menos 1-2)", "Razón de tasas (3-5 / 1-2)", "Cobertura de la llave", "Estrato válido", "Nombre validado"]),
+    ("respuesta", ["Tasa 3-5", "Tasa 1-2 (muestra baja)", "Diferencia (3-5 menos 1-2)", "Razón de tasas (3-5 / 1-2)", "Cobertura de la llave", "Estrato válido", "Nombre validado"]),
     ("concentracion", ["Correlación de Spearman", "Barrios incluidos", "p de permutación", "Participación de los barrios con más severos"]),
     ("calidad", ["Cobertura de la llave", "Estrato válido", "Nombre validado"]),
     ("fuentes", ["Fecha de corte", "Construcciones", "Comunas", "Códigos de barrio"]),

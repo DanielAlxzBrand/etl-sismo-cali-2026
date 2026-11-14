@@ -54,8 +54,9 @@ def cobertura():
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.barh([f["modulo"] for f in filas], valores, color=[NARANJA if v < 70 else AZUL for v in valores])
     for i, v in enumerate(valores):
-        ax.text(min(v + 1, 97), i, f"{v:.0f} %".replace(".", ","), va="center", fontsize=7.5)
-    ax.set_xlim(0, 100)
+        ax.text(v + 1, i, f"{v:.0f} %".replace(".", ","), va="center", fontsize=7.5)
+    ax.set_xlim(0, 110)
+    ax.set_xticks(range(0, 101, 20))
     ax.set_xlabel("cobertura de líneas (%)")
     ax.set_title("Cobertura de líneas de las pruebas por módulo del panel y su lanzador (naranja: menos de 70 %)", fontsize=10, loc="left")
     ax.tick_params(axis="y", labelsize=7.5)

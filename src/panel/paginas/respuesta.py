@@ -27,9 +27,9 @@ def render(api):
         st.subheader("Estratos 3-5 frente a 1-2")
         c1, c2, c3, c4 = st.columns(4)
         with c1:
-            componentes.tarjeta("Tasa de los estratos 3-5", formato.porcentaje(t35["valor"]), _detalle(t35))
+            componentes.tarjeta("Tasa 3-5", formato.porcentaje(t35["valor"]), _detalle(t35))
         with c2:
-            etiqueta = "Tasa de los estratos 1-2" + (f" ({componentes.ETIQUETA_BAJA})" if t12["muestra_baja"] else "")
+            etiqueta = "Tasa 1-2" + (f" ({componentes.ETIQUETA_BAJA})" if t12["muestra_baja"] else "")
             componentes.tarjeta(etiqueta, formato.porcentaje(t12["valor"]), _detalle(t12))
         with c3:
             componentes.tarjeta("Diferencia (3-5 menos 1-2)", formato.puntos_porcentuales(dif["valor"]),

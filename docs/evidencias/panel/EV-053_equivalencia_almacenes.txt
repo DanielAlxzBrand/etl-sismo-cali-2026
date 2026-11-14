@@ -1,10 +1,10 @@
 # Equivalencia de los datos del panel entre SQLite y MySQL
 - comando: `python scripts/evidencias/evidencia_panel_almacenes.py`
-- fecha: 2026-11-14T10:43:30-05:00 (America/Bogota)
+- fecha: 2026-11-14T10:58:40-05:00 (America/Bogota)
 - código de salida: 0
-- duración: 156.3 s
+- duración: 157.6 s
 - Python: 3.13.0
-- commit del repositorio: ddd5e24
+- commit del repositorio: ce71a44
 
 Equivalencia de los datos que consume el panel entre los dos almacenes (APIs reales en 127.0.0.1; el panel solo habla con la API):
 
