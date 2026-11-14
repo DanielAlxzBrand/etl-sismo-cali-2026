@@ -1,0 +1,38 @@
+# Estabilidad del pipeline antes de orquestarlo
+- comando: `python scripts/evidencias/evidencia_estabilidad.py`
+- fecha: 2026-11-13T21:20:14-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 7.0 s
+- Python: 3.13.0
+- commit del repositorio: 1b427f4
+
+Clon limpio del commit actual (carpeta temporal fuera del repositorio). Python 3.13.0; pandas 3.0.6, numpy 2.5.4, shapely 2.2.0, PyYAML 6.0.3, python-dotenv 1.2.4, requests 2.34.2.
+Cada corrida ejecuta `run_transform()`, `run_gold()` y `load_to_sqlite()`: corrida 1 en 3.1 s y corrida 2 en 2.9 s.
+
+| Archivo | Igual al versionado | Corrida 1 = corrida 2 | Regla del DAG |
+|---|---|---|---|
+| `data/gold/gold_final.csv` | sí | sí | byte a byte |
+| `data/gold/kpis_gold.csv` | sí | sí | byte a byte |
+| `data/gold/kpis_sensibilidad.csv` | sí | sí | byte a byte |
+| `data/silver/quality_report.json` | sí | sí | byte a byte |
+| `data/silver/silver_construcciones.csv` | sí | sí | byte a byte |
+| `data/silver/silver_estrato_barrio.csv` | sí | sí | byte a byte |
+| `data/silver/silver_integrated.csv` | sí | sí | byte a byte |
+| `data/silver/silver_orphans_left.csv` | sí | sí | byte a byte |
+| `data/silver/silver_orphans_right.csv` | sí | sí | byte a byte |
+| `docs/silver/hallazgos_eda.md` | sí | sí | no se compara (documento generado) |
+| `docs/silver/reglas_silver.md` | NO | sí | no se compara (documento generado) |
+| `docs/silver/revision_codigos_barrio.md` | sí | sí | no se compara (documento generado) |
+| `docs/silver/validacion_llave.md` | sí | sí | no se compara (documento generado) |
+
+| Tabla de `etl_sismo.db` | Filas | Contenido igual al versionado | Corrida 1 = corrida 2 |
+|---|---|---|---|
+| `gold_final` | 5146 | sí | sí | 
+| `kpis_gold` | 23 | sí | sí | 
+| `kpis_sensibilidad` | 107 | sí | sí | 
+| `silver_integrated` | 5146 | sí | sí | 
+
+Archivo `etl_sismo.db` byte a byte: igual al versionado NO; corrida 1 igual a corrida 2 NO. El contenido tabla a tabla sí es estable, por eso la regla del DAG para la base es la comparación de contenido.
+`docs/silver/reglas_silver.md` se regenera con la ruta anterior de un documento (texto del generador) y por eso difiere del versionado; es estable entre corridas y no se compara.
+
+Resultado: CSV y JSON byte a byte y base tabla a tabla estables e iguales a lo versionado.
