@@ -18,7 +18,7 @@ LIMITES = (
     "El grupo de estratos 1-2 está formado casi por completo por muy pocas comunas, así que comparar estratos es, en la práctica, comparar comunas.",
 )
 LIMITACIONES = (
-    "El panel se ejecuta en local (127.0.0.1) y no está desplegado.",
+    "El panel se ejecuta solo en esta máquina (dirección local) y no está desplegado.",
     "Solo lee la API; no calcula ni modifica datos.",
     "Las latencias y tiempos que se midan son de una máquina concreta.",
     "La evaluación con personas usuarias no se ha realizado.",

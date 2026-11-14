@@ -30,7 +30,7 @@ def fallo(resultado):
 
 def recuadro_alcance(metadata=None):
     """Recuadro permanente de alcance (DP-4): proxy de daño, tasas condicionales a la muestra y estrato de 2015."""
-    alcance = " " + metadata["alcance_temporal"] if metadata else " El estrato es anterior al evento y se asignó por lados de manzana al barrio."
+    alcance = " " + metadata["alcance_temporal"] if isinstance(metadata, dict) and "alcance_temporal" in metadata else " El estrato es anterior al evento y se asignó por lados de manzana al barrio."
     with st.container(border=True, key="alcance"):
         st.markdown(
             "**Alcance.** El cambio satelital severo (severo estricto) es un **proxy de daño**, no una evaluación estructural. "
@@ -40,7 +40,7 @@ def recuadro_alcance(metadata=None):
 
 def encabezado(salud):
     """Estado de la API, almacenamiento y fecha de corte, en una línea."""
-    if salud is None or not salud.ok:
+    if salud is None or not salud.ok or not isinstance(salud.datos, dict):
         st.caption("API: sin conexión")
         return
     s = salud.datos
@@ -50,7 +50,7 @@ def encabezado(salud):
 
 def pie(metadata):
     """Pie con la fuente y las licencias que informa la API."""
-    if not metadata:
+    if not isinstance(metadata, dict) or not isinstance(metadata.get("licencias"), dict):
         st.caption("Fuente: datos publicados por la API del proyecto.")
         return
     licencias = "; ".join(f"{k}: {str(v).split(' (')[0]}" for k, v in metadata["licencias"].items())
@@ -60,25 +60,25 @@ def pie(metadata):
 def marco(api, id_pagina, cuerpo):
     """Estructura común de cada página: título, pregunta, estado de la API, alcance, cuerpo y pie.
 
-    Degradación: si la API no responde, el cuerpo no se ejecuta y se muestra el aviso; nunca una traza.
+    Degradación: si la API no responde, el cuerpo no se ejecuta y se muestra el aviso; y si responde con una forma inesperada, se informa
+    sin mostrar la excepción ni sus rutas. Nunca se muestra una traza.
     """
     pagina = registro.pagina(id_pagina)
     st.title(pagina.titulo)
     st.caption(pagina.pregunta)
-    salud = api("/health")
-    encabezado(salud)
-    meta = api("/metadata")
-    recuadro_alcance(meta.datos if meta.ok else None)
-    if not salud.ok:
-        fallo(salud)
-    else:
-        try:
+    try:
+        salud = api("/health")
+        encabezado(salud)
+        meta = api("/metadata")
+        recuadro_alcance(meta.datos if meta.ok else None)
+        if not salud.ok:
+            fallo(salud)
+        else:
             cuerpo()
-        except (KeyError, TypeError, ValueError, AttributeError, IndexError):
-            # datos con una forma inesperada: se informa sin mostrar la excepción ni sus rutas
-            log.exception("la página %s recibió datos con un formato inesperado", id_pagina)
-            st.warning("Los datos recibidos de la API no tienen el formato esperado; no se pueden mostrar.", icon=":material/warning:")
-    pie(meta.datos if meta.ok else None)
+        pie(meta.datos if meta.ok else None)
+    except (KeyError, TypeError, ValueError, AttributeError, IndexError):
+        log.exception("la página %s recibió datos con un formato inesperado", id_pagina)
+        st.warning("Los datos recibidos de la API no tienen el formato esperado; no se pueden mostrar.", icon=":material/warning:")
 
 
 def tarjeta(etiqueta, valor, ayuda=None, clave=None):
@@ -127,7 +127,7 @@ def grafico_diferencias(df, x, titulo, descripcion, alto=ALTO_GRAFICO):
     cero = alt.Chart(pd.DataFrame({"y": [0]})).mark_rule(color=col["secundario"], strokeDash=[6, 4], size=2).encode(y="y:Q")
     chart = alt.layer(cero, error, puntos).properties(title=alt.TitleParams(titulo, fontSize=14, anchor="start", color=col["texto"]), height=alto)
     st.altair_chart(chart.properties(description=descripcion), width="stretch")
-    st.caption("La línea discontinua marca 0 (sin diferencia). Las barras de error son el intervalo de Newcombe al 95 % de la diferencia de tasas.")
+    st.caption("La línea discontinua marca la ausencia de diferencia. Las barras de error son el intervalo de Newcombe al 95 % de la diferencia de tasas.")
 
 
 def dispersion(df, titulo, descripcion, orden_clases, alto=ALTO_GRAFICO):

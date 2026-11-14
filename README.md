@@ -275,7 +275,7 @@ Debe terminar sin errores (Python 3.13.0).
 ```powershell
 Get-FileHash -Algorithm SHA256 data\silver\*.csv, data\silver\quality_report.json, data\gold\*.csv
 ```
-4. **Pruebas:** `pytest -q` → `320 passed`.
+4. **Pruebas:** `pytest -q` → `614 passed`.
 5. **Notebooks** (cada uno se ejecuta de arriba a abajo sin errores):
 ```powershell
 jupyter nbconvert --to notebook --execute --inplace notebooks\05_validacion_evidencias.ipynb
@@ -300,7 +300,7 @@ jupyter nbconvert --to notebook --execute --inplace notebooks\05_validacion_evid
 - `dags/`: DAG de Airflow `medallon_etl_dag.py` (copia versionada del DAG vivo de `airflow-medallon`)
 - `orquestacion/`: Dockerfile, requisitos de la imagen de Airflow y hash del DAG
 - `src/`: código por capas (ver `src/README.md`): `extract/`, `transform/`, `load/` (SQLite y carga relacional), `api/`, `common.py` y `logger.py`
-- `tests/`: 320 pruebas automáticas
+- `tests/`: 614 pruebas automáticas
 - `scripts/`: generadores y utilidades (ver `scripts/README.md`): README, catálogo de fuentes, modelo de datos, carga relacional, `mysql/` (configuración y verificación en vivo), matriz de casos de prueba e informe de pruebas, orquestación (`orquestacion/`), escáner de secretos, empaquetado y `evidencias/`
 - `docs/README.md`: índice de la documentación por capas y tabla «dónde está cada cosa»
 - `docs/DECISIONES.md`: decisiones con alternativas, razón y riesgo
@@ -320,7 +320,7 @@ jupyter nbconvert --to notebook --execute --inplace notebooks\05_validacion_evid
 - `logs/`: archivos de registro diarios (se crean al ejecutar; no se versionan)
 
 ## 14. Pruebas y validación
-Hay **320 pruebas** automáticas, sin red:
+Hay **614 pruebas** automáticas, sin red:
 - `tests/test_api.py` (17): API de solo lectura: estructura, validación, coincidencia con las salidas, solo GET y sin escritura en `data/` ni en la base.
 - `tests/test_canario_extra.py` (5): comprobación canario con archivos `.env` extra: detecta contraseñas de otra carpeta sin imprimirlas.
 - `tests/test_carga_relacional.py` (54): esquema relacional (paridad, diccionario al día), conversión estricta, carga con conciliación al 100 %, idempotencia, historial, reversión, integridad referencial y equivalencia de la API entre SQLite y el almacén relacional (sin servidor MySQL).
@@ -330,7 +330,7 @@ Hay **320 pruebas** automáticas, sin red:
 - `tests/test_configurar_mysql.py` (25): configuración de MySQL con conexiones simuladas (privilegios, contraseñas que nunca llegan a `.env` ni a SQL, rotación), `.env` atómico, enmascarado del registro y comprobación canario del escáner.
 - `tests/test_dag_estatico.py` (24): DAG y imagen de Airflow analizados con `ast`: tareas, dependencias, repositorio de solo lectura, fallo inducido, secretos, requisitos y hash.
 - `tests/test_decisiones.py` (4): .
-- `tests/test_dist.py` (17): el empaquetado detecta entornos virtuales por su contenido, aunque no tengan `pyvenv.cfg`.
+- `tests/test_dist.py` (19): el empaquetado detecta entornos virtuales por su contenido, aunque no tengan `pyvenv.cfg`.
 - `tests/test_empaquetado_y_revision.py` (5): el empaquetado excluye entornos virtuales con cualquier nombre; la revisión de códigos de barrio cubre los casos pedidos y suma las construcciones sin nombre validado.
 - `tests/test_entorno_de_pruebas.py` (4): configuración de pytest, extensiones de las pruebas y versión de pandas de la línea base.
 - `tests/test_estrategia.py` (14): documentos de estrategia y estado del checklist: existencia, términos prohibidos, cifras, criterios con componente de la lista cerrada y pruebas negativas.
@@ -340,6 +340,14 @@ Hay **320 pruebas** automáticas, sin red:
 - `tests/test_kpis.py` (6): regresión numérica de los KPI, Newcombe, Mantel-Haenszel y regresión del defecto.
 - `tests/test_logger.py` (2): enmascarado de secretos y nombre de los loggers.
 - `tests/test_matriz_casos.py` (7): la matriz de casos de prueba apunta a pruebas existentes y está al día con su definición.
+- `tests/test_panel_cliente.py` (29): .
+- `tests/test_panel_formato_redaccion.py` (47): .
+- `tests/test_panel_humo_extremo_a_extremo.py` (5): .
+- `tests/test_panel_integracion.py` (11): .
+- `tests/test_panel_lanzador.py` (18): .
+- `tests/test_panel_paginas.py` (134): .
+- `tests/test_panel_registro_y_aislamiento.py` (38): .
+- `tests/test_panel_tema.py` (10): .
 - `tests/test_pipeline_reproducible.py` (4): el pipeline regenerado en una copia reproduce byte a byte los nueve archivos de la línea base.
 - `tests/test_quality.py` (4): campos del reporte, cobertura frente al umbral, mínimo de filas de Gold, KPI en rango.
 - `tests/test_readme_cifras.py` (13): las cifras de este README coinciden con los archivos de salida; recuadros de alcance, población e indicador satelital.
@@ -449,7 +457,7 @@ Documentación: [modelo de datos](docs/almacenamiento/modelo_datos.md), [configu
 ## 20. Pruebas y orquestación
 El pipeline se orquesta con **Apache Airflow en Docker**, siguiendo la guía de Airflow de la asignatura (artículo de Juan Manuel Núñez Velasco) con unas pocas diferencias documentadas. El DAG `medallon_etl_sismo` (`dags/medallon_etl_dag.py`) tiene cuatro tareas, `validar_bronze → transformar_a_silver → integrar_a_gold → cargar_datawarehouse`, y trabaja sobre una **copia de trabajo** dentro del contenedor: el repositorio se monta en solo lectura y cada tarea compara lo que produce con los archivos versionados (CSV y JSON byte a byte, `etl_sismo.db` tabla a tabla), así que ni los datos ni las salidas pueden alterarse. La carga a MySQL usa un usuario propio de Docker con permisos mínimos sobre la base real. Para reproducir los archivos de la línea base hay que usar **pandas 3.0.6** (con otra versión cambian celdas del decimal 12; ver D56).
 
-Hay 320 pruebas automáticas, una **matriz de casos** por función crítica generada desde una única definición (`python scripts/make_matriz_casos.py`), un **informe de pruebas** con resultado esperado y obtenido por caso y cobertura por módulo (`python scripts/informe_pruebas.py`) y un **registro de defectos** cuyas pruebas de regresión fallan sin su corrección.
+Hay 614 pruebas automáticas, una **matriz de casos** por función crítica generada desde una única definición (`python scripts/make_matriz_casos.py`), un **informe de pruebas** con resultado esperado y obtenido por caso y cobertura por módulo (`python scripts/informe_pruebas.py`) y un **registro de defectos** cuyas pruebas de regresión fallan sin su corrección.
 ```powershell
 .\.venv\Scripts\python.exe scripts\informe_pruebas.py
 .\.venv\Scripts\python.exe scripts\orquestacion\sincronizar_dag.py --verificar

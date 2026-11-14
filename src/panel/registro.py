@@ -2,7 +2,8 @@
 
 De aquí salen la navegación de la aplicación, la documentación de trazabilidad (`docs/panel/trazabilidad_ui.md`, generada por
 `scripts/panel/generar_trazabilidad.py`) y las pruebas que verifican que cada componente apunta a una ruta de la API y a un campo
-o KPI que existen en los archivos de salida.
+o KPI que existen en los archivos de salida. Los campos son las columnas del archivo de salida; la API de /comunas los renombra
+(`tasa` = `valor`, `severos` = `numerador`, `n_con_datos` = `denominador`).
 """
 from dataclasses import dataclass
 
@@ -64,8 +65,8 @@ COMPONENTES = (
     Componente("estratos.grafico", "estratos", "Tasa por estrato con intervalo de Wilson", "grafico", ("/kpis/K1",), ("valor", "ic95_inf", "ic95_sup", "muestra_baja"), "K1", MUESTRA_BAJA, KPIS),
     Componente("estratos.tabla", "estratos", "Tabla de K1: casos, tasa, intervalo, sin datos y cotas", "tabla", ("/kpis/K1",), ("numerador", "denominador", "valor", "pct_sin_datos", "cota_inf", "cota_sup"), "K1", "E2 tiene mucha falta de datos; E6 tiene pocas construcciones.", KPIS),
     Componente("estratos.conclusion", "estratos", "Lectura generada de K1", "texto", ("/kpis/K1",), ("muestra_baja", "ic95_inf", "ic95_sup"), "K1", CONFUSION, KPIS),
-    Componente("comunas.grafico", "comunas", "Tasa por comuna con intervalo de Wilson", "grafico", ("/comunas",), ("tasa", "ic95_inf", "ic95_sup", "muestra_baja"), "K6", MUESTRA_BAJA, KPIS),
-    Componente("comunas.tabla", "comunas", "Tabla de K6", "tabla", ("/comunas",), ("n_con_datos", "severos", "tasa", "pct_sin_datos"), "K6", "Solo 7 comunas; la Comuna 2 no está.", KPIS),
+    Componente("comunas.grafico", "comunas", "Tasa por comuna con intervalo de Wilson", "grafico", ("/comunas",), ("valor", "ic95_inf", "ic95_sup", "muestra_baja"), "K6", MUESTRA_BAJA, KPIS),
+    Componente("comunas.tabla", "comunas", "Tabla de K6", "tabla", ("/comunas",), ("numerador", "denominador", "valor", "pct_sin_datos"), "K6", "Solo 7 comunas; la Comuna 2 no está.", KPIS),
     Componente("comunas.composicion", "comunas", "Construcciones con datos y severos por comuna y grupo de estrato", "tabla", ("/composicion",), ("comuna", "estrato", "sin_datos", "severo_estricto"), "", CONFUSION, GOLD),
     Componente("comunas.concentracion_1_2", "comunas", "Texto generado: comuna que concentra los estratos 1-2", "texto", ("/composicion",), ("comuna", "estrato", "sin_datos"), "", CONFUSION, GOLD),
     Componente("sensibilidades.grafico", "sensibilidades", "Diferencia 3-5 menos 1-2 por escenario", "grafico", ("/kpis/sensibilidad",), ("tasa", "ic95_inf", "ic95_sup"), "K2", "S4 es de baja confianza.", SENSIB),

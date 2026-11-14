@@ -149,7 +149,7 @@ def conclusion_concentracion(top10, spearman):
     """K3 y K4: concentración no es riesgo; correlación descriptiva a nivel de barrio."""
     partes = []
     if top10 and top10.get("valor") is not None:
-        partes.append(f"Los 10 barrios con más construcciones con cambio satelital severo reúnen {formato.porcentaje(top10['valor'], 1)} de los casos "
+        partes.append(f"Los barrios con más construcciones con cambio satelital severo (los que define K3) reúnen {formato.porcentaje(top10['valor'], 1)} de los casos "
                       f"({formato.numero(top10['numerador'])} de {formato.numero(top10['denominador'])}); esos barrios también tienen más construcciones: concentración de casos no es mayor riesgo.")
     if spearman and spearman.get("valor") is not None:
         partes.append(f"La correlación de Spearman entre el estrato moda y la tasa por barrio es {formato.numero(spearman['valor'], 3)} "

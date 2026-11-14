@@ -2,8 +2,8 @@
 
 Este documento se genera con `scripts/make_matriz_casos.py` desde una única definición; no se edita a mano. Cada caso lleva un identificador **CP-nnn**, su tipo (correcto, incorrecto o límite), el resultado esperado y la prueba de `pytest` que lo ejecuta. El resultado obtenido de cada prueba está en [informe_pruebas.md](informe_pruebas.md).
 
-- **Funciones críticas:** 19. **Casos:** 118 (55 correctos, 36 incorrectos y 27 límite).
-- **Pruebas de primer nivel en `tests/`:** 253; 116 de ellas están vinculadas a un caso (otras pruebas parametrizadas o de apoyo cubren variantes de los mismos casos).
+- **Funciones críticas:** 27. **Casos:** 178 (78 correctos, 61 incorrectos y 39 límite).
+- **Pruebas de primer nivel en `tests/`:** 379; 176 de ellas están vinculadas a un caso (otras pruebas parametrizadas o de apoyo cubren variantes de los mismos casos).
 - **Regla:** cada función crítica tiene al menos un caso correcto y uno incorrecto o límite; una prueba lo comprueba y comprueba que cada prueba citada exista.
 
 ## FC-01 · Extracción y verificación de Bronze (manifiesto con sha256)
@@ -256,3 +256,119 @@ Módulos: `src/transform/, src/load/load_database.py`
 | CP-116 | Regenerar sobre salidas existentes | límite | no cambia nada | `tests/test_pipeline_reproducible.py::test_regenerar_no_cambia_lo_que_ya_estaba_versionado_en_la_copia` |
 | CP-117 | Dependencias de otra versión (pandas) | incorrecto | la prueba falla y nombra los archivos distintos | `tests/test_dag_estatico.py::test_pandas_es_la_version_con_la_que_se_generaron_los_archivos_de_la_linea_base` |
 | CP-118 | El repositorio no se toca | correcto | las nueve salidas conservan su sha256 | `tests/test_pipeline_reproducible.py::test_el_repositorio_no_se_toco` |
+
+## FC-20 · Cliente HTTP de la API (solo lectura)
+
+Módulos: `src/panel/cliente_api.py, src/panel/configuracion.py`
+
+| CP | Caso | Tipo | Resultado esperado | Prueba |
+|---|---|---|---|---|
+| CP-119 | Respuesta correcta | correcto | devuelve los datos | `tests/test_panel_cliente.py::test_una_respuesta_correcta_devuelve_los_datos` |
+| CP-120 | Solo GET y sin parámetros nulos | correcto | una sola solicitud GET con los parámetros presentes | `tests/test_panel_cliente.py::test_solo_usa_get_y_omite_los_parametros_nulos` |
+| CP-121 | Cada estado HTTP de error | incorrecto | error tipado con mensaje en español | `tests/test_panel_cliente.py::test_cada_estado_http_se_traduce_a_un_error_tipado_en_espanol` |
+| CP-122 | JSON mal formado | incorrecto | respuesta inválida | `tests/test_panel_cliente.py::test_json_mal_formado_es_respuesta_invalida` |
+| CP-123 | Tiempo agotado | incorrecto | error sin reintento | `tests/test_panel_cliente.py::test_tiempo_agotado_no_se_reintenta` |
+| CP-124 | API apagada | incorrecto | un reintento y luego «api_apagada» | `tests/test_panel_cliente.py::test_error_de_conexion_se_reintenta_una_vez_y_luego_dice_api_apagada` |
+| CP-125 | Reintentos en cero | límite | falla a la primera | `tests/test_panel_cliente.py::test_sin_reintentos_configurados_falla_a_la_primera` |
+| CP-126 | La caché no guarda fallos | límite | un fallo no se queda pegado | `tests/test_panel_cliente.py::test_la_cache_no_guarda_los_fallos_y_si_guarda_los_aciertos` |
+| CP-127 | Dirección no local | incorrecto | se rechaza | `tests/test_panel_cliente.py::test_se_rechazan_las_direcciones_no_locales_o_sin_http` |
+
+## FC-21 · Formato de cifras del panel
+
+Módulos: `src/panel/formato.py`
+
+| CP | Caso | Tipo | Resultado esperado | Prueba |
+|---|---|---|---|---|
+| CP-128 | Miles, coma decimal y half-up | correcto | 1.173; 1.234.567,9; 0,13 | `tests/test_panel_formato_redaccion.py::test_numero_con_miles_coma_decimal_y_half_up` |
+| CP-129 | Porcentajes | correcto | 6,62 %; 100,00 % | `tests/test_panel_formato_redaccion.py::test_porcentaje` |
+| CP-130 | Puntos porcentuales con signo | correcto | +0,49 pp; −2,36 pp | `tests/test_panel_formato_redaccion.py::test_puntos_porcentuales_con_signo` |
+| CP-131 | Valores no numéricos | incorrecto | raya | `tests/test_panel_formato_redaccion.py::test_numero_sin_dato_devuelve_raya` |
+| CP-132 | 99,8445 redondea hacia arriba | límite | 99,845 % y no 99,844 % | `tests/test_panel_formato_redaccion.py::test_el_formateador_redondea_9984_45_hacia_arriba_y_no_hacia_abajo` |
+
+## FC-22 · Redacción de conclusiones
+
+Módulos: `src/panel/redaccion.py`
+
+| CP | Caso | Tipo | Resultado esperado | Prueba |
+|---|---|---|---|---|
+| CP-133 | Intervalo que incluye 0 | correcto | no se detecta diferencia | `tests/test_panel_formato_redaccion.py::test_intervalo_que_incluye_cero_usa_la_frase_de_no_deteccion` |
+| CP-134 | Intervalo que no incluye 0 | correcto | descripción de la muestra sin causalidad | `tests/test_panel_formato_redaccion.py::test_intervalo_que_no_incluye_cero_describe_la_muestra_sin_causalidad` |
+| CP-135 | Muestra baja | límite | advertencia de fragilidad | `tests/test_panel_formato_redaccion.py::test_muestra_baja_agrega_la_advertencia` |
+| CP-136 | Sin intervalo | incorrecto | no se redacta una conclusión | `tests/test_panel_formato_redaccion.py::test_sin_intervalo_no_se_redacta_una_conclusion` |
+| CP-137 | Estratos con muestra baja | límite | no se ordenan | `tests/test_panel_formato_redaccion.py::test_estratos_con_muestra_baja_no_se_ordenan_y_se_informa_el_solapamiento` |
+| CP-138 | Ninguna rama afirma causalidad | incorrecto | sin cadenas prohibidas | `tests/test_panel_formato_redaccion.py::test_ninguna_rama_afirma_causalidad_ni_que_el_estrato_no_influye` |
+
+## FC-23 · Páginas del panel (interfaz y lógica)
+
+Módulos: `src/panel/paginas/, src/panel/componentes.py, src/panel/app.py`
+
+| CP | Caso | Tipo | Resultado esperado | Prueba |
+|---|---|---|---|---|
+| CP-139 | Cada página se renderiza con su título | correcto | sin excepciones | `tests/test_panel_paginas.py::test_cada_pagina_se_renderiza_sin_excepciones_y_con_titulo_y_pregunta` |
+| CP-140 | Recuadro de alcance en cada página | correcto | visible en las ocho | `tests/test_panel_paginas.py::test_cada_pagina_muestra_el_recuadro_de_alcance` |
+| CP-141 | Cadenas prohibidas | incorrecto | ninguna página las contiene | `tests/test_panel_paginas.py::test_ninguna_pagina_contiene_cadenas_prohibidas` |
+| CP-142 | API completamente caída | incorrecto | aviso claro y sin traza | `tests/test_panel_paginas.py::test_si_toda_la_api_falla_cada_pagina_muestra_un_aviso_claro_y_nunca_una_traza` |
+| CP-143 | Respuestas vacías | límite | la página no se rompe | `tests/test_panel_paginas.py::test_con_respuestas_vacias_cada_pagina_no_se_rompe` |
+| CP-144 | Falla solo la ruta de la página | incorrecto | el resto sigue visible | `tests/test_panel_paginas.py::test_si_falla_solo_la_ruta_de_la_pagina_el_resto_sigue_visible` |
+| CP-145 | Página fuera de rango en construcciones | límite | mensaje de página sin filas | `tests/test_panel_paginas.py::test_construcciones_pagina_filtra_en_la_api_y_ofrece_la_descarga` |
+| CP-146 | Aplicación completa sin API | incorrecto | navegación y aviso | `tests/test_panel_paginas.py::test_la_aplicacion_arranca_con_la_navegacion_explicita_y_degrada_sin_api` |
+
+## FC-24 · Integración interfaz, API y almacenamiento
+
+Módulos: `src/panel/, src/api/`
+
+| CP | Caso | Tipo | Resultado esperado | Prueba |
+|---|---|---|---|---|
+| CP-147 | K2 mostrado frente a Gold recalculado | correcto | valores iguales | `tests/test_panel_integracion.py::test_respuesta_muestra_k2_igual_a_kpis_gold_y_a_lo_recalculado_de_gold_final` |
+| CP-148 | K5 con el formato de los documentos | correcto | 99,883 %; 99,845 %; 93,52 % | `tests/test_panel_integracion.py::test_respuesta_muestra_k5_con_el_formato_de_los_documentos` |
+| CP-149 | K1 y K6 frente a gold_final.csv | correcto | conteos iguales | `tests/test_panel_integracion.py::test_estratos_coincide_con_k1_y_con_los_conteos_de_gold_final` |
+| CP-150 | Composición por comuna | correcto | conteos iguales | `tests/test_panel_integracion.py::test_la_composicion_por_comuna_y_grupo_coincide_con_gold_final` |
+| CP-151 | Filtros de construcciones | límite | los totales filtrados coinciden con gold_final.csv | `tests/test_panel_integracion.py::test_construcciones_pagina_y_filtros_coinciden_con_gold_final` |
+| CP-152 | El panel no modifica data | incorrecto | la fecha de modificación de data/gold no cambia | `tests/test_panel_integracion.py::test_el_panel_no_modifica_data_al_consultar` |
+| CP-153 | API real por HTTP | correcto | once rutas responden | `tests/test_panel_humo_extremo_a_extremo.py::test_el_cliente_real_lee_por_http_las_once_rutas_de_la_api` |
+| CP-154 | Valores por HTTP real frente a las salidas | correcto | iguales | `tests/test_panel_humo_extremo_a_extremo.py::test_los_valores_por_http_real_coinciden_con_las_salidas` |
+| CP-155 | Intento de escritura | incorrecto | 405 y data intacta | `tests/test_panel_humo_extremo_a_extremo.py::test_el_panel_no_puede_escribir_y_data_no_cambia` |
+
+## FC-25 · Lanzador del panel
+
+Módulos: `scripts/panel/ejecutar_panel.py`
+
+| CP | Caso | Tipo | Resultado esperado | Prueba |
+|---|---|---|---|---|
+| CP-156 | Comando de la API con SQLite | correcto | el de la documentación | `tests/test_panel_lanzador.py::test_el_comando_de_la_api_con_sqlite_es_el_de_la_documentacion` |
+| CP-157 | Entorno de Streamlit | correcto | sin cabeza, local y sin telemetría | `tests/test_panel_lanzador.py::test_el_entorno_del_panel_es_local_sin_cabeza_y_sin_telemetria` |
+| CP-158 | Credenciales de MySQL | incorrecto | no pasan al panel | `tests/test_panel_lanzador.py::test_el_entorno_del_panel_no_recibe_credenciales_de_mysql` |
+| CP-159 | Puerto ocupado | límite | se elige otro libre | `tests/test_panel_lanzador.py::test_un_puerto_ocupado_se_reemplaza_por_otro_libre` |
+| CP-160 | La API no arranca | incorrecto | código de salida 1 | `tests/test_panel_lanzador.py::test_si_la_api_no_responde_sale_con_1_y_no_arranca_el_panel` |
+| CP-161 | El panel no arranca | incorrecto | código de salida 2 y la API se cierra | `tests/test_panel_lanzador.py::test_si_el_panel_no_responde_sale_con_2_y_cierra_la_api` |
+| CP-162 | Ctrl+C | límite | cierra los dos procesos | `tests/test_panel_lanzador.py::test_ctrl_c_cierra_los_dos_procesos_y_sale_con_0` |
+| CP-163 | Excepción al arrancar | incorrecto | el cierre ocurre en finally | `tests/test_panel_lanzador.py::test_el_cierre_ocurre_aunque_el_arranque_lance_una_excepcion` |
+
+## FC-26 · Aislamiento y solo lectura del panel
+
+Módulos: `src/panel/`
+
+| CP | Caso | Tipo | Resultado esperado | Prueba |
+|---|---|---|---|---|
+| CP-164 | Imports permitidos | correcto | solo logger y el propio panel | `tests/test_panel_registro_y_aislamiento.py::test_los_unicos_imports_de_src_son_logger_y_el_propio_panel` |
+| CP-165 | Sin almacenes ni credenciales | incorrecto | no importa sqlite3, pymysql ni capas del pipeline | `tests/test_panel_registro_y_aislamiento.py::test_el_panel_no_importa_almacenes_ni_capas_del_pipeline_ni_credenciales` |
+| CP-166 | Solo GET | incorrecto | ningún método de escritura | `tests/test_panel_registro_y_aislamiento.py::test_solo_hay_consultas_get_y_ninguna_llamada_peligrosa` |
+| CP-167 | Sin HTML inseguro ni recursos externos | incorrecto | ninguno | `tests/test_panel_registro_y_aislamiento.py::test_sin_html_inseguro_javascript_recursos_externos_ni_credenciales` |
+| CP-168 | Ninguna cifra escrita a mano | límite | los textos no llevan dígitos propios | `tests/test_panel_registro_y_aislamiento.py::test_ninguna_cifra_escrita_a_mano_en_los_textos_del_panel` |
+| CP-169 | Rutas del registro en el OpenAPI | correcto | cada ruta existe | `tests/test_panel_registro_y_aislamiento.py::test_cada_ruta_de_los_componentes_y_las_paginas_existe_en_el_openapi_de_la_api` |
+| CP-170 | Campos del registro en las salidas | correcto | cada campo existe en su archivo | `tests/test_panel_registro_y_aislamiento.py::test_cada_campo_de_los_componentes_existe_en_el_archivo_de_salida_que_declaran` |
+| CP-171 | Sin carpetas ocultas de Streamlit | incorrecto | no existen | `tests/test_panel_registro_y_aislamiento.py::test_no_hay_carpetas_ocultas_ni_pages_ni_streamlit_en_el_repositorio` |
+| CP-172 | Contraste del texto sobre el fondo | correcto | al menos 7 a 1 | `tests/test_panel_tema.py::test_el_texto_sobre_el_fondo_tiene_al_menos_7_a_1_y_sobre_el_fondo_secundario_tambien` |
+| CP-173 | Contraste de los colores de los gráficos | límite | al menos 3 a 1 sobre el fondo | `tests/test_panel_tema.py::test_los_colores_de_los_graficos_tienen_al_menos_3_a_1_sobre_el_fondo` |
+| CP-174 | Un par de bajo contraste | incorrecto | se detecta | `tests/test_panel_tema.py::test_un_par_de_bajo_contraste_se_detecta` |
+
+## FC-27 · Decisiones y empaquetado del panel
+
+Módulos: `docs/DECISIONES.md, scripts/make_dist.py`
+
+| CP | Caso | Tipo | Resultado esperado | Prueba |
+|---|---|---|---|---|
+| CP-175 | La cabecera nombra la siguiente decisión | correcto | la última más uno | `tests/test_decisiones.py::test_la_cabecera_nombra_la_siguiente_decision_a_la_ultima_registrada` |
+| CP-176 | Un desajuste de la cabecera | incorrecto | se detecta | `tests/test_decisiones.py::test_la_cabecera_detecta_un_desajuste` |
+| CP-177 | El zip incluye el panel y su lanzador | correcto | sin carpetas ocultas ni .env | `tests/test_dist.py::test_el_repo_real_empaqueta_el_panel_y_su_lanzador_sin_carpetas_ocultas_ni_credenciales` |
+| CP-178 | Carpeta de configuración de Streamlit | incorrecto | no entra al zip | `tests/test_dist.py::test_una_carpeta_de_configuracion_de_streamlit_o_sus_credenciales_no_entran_al_zip` |

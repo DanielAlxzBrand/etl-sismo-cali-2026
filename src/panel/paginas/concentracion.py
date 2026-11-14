@@ -41,8 +41,8 @@ def render(api):
         else:
             c1, c2 = st.columns(2)
             with c1:
-                componentes.tarjeta("Participación de los 10 barrios con más severos", formato.porcentaje(k3["valor"], 1),
-                                    f"{formato.numero(k3['numerador'])} de {formato.numero(k3['denominador'])} construcciones con cambio satelital severo")
+                componentes.tarjeta("Participación de los barrios con más severos", formato.porcentaje(k3["valor"], 1),
+                                    f"{k3['nombre']}: {formato.numero(k3['numerador'])} de {formato.numero(k3['denominador'])} construcciones con cambio satelital severo")
             share = construcciones_de_la_nota(k3["nota"])
             with c2:
                 if share:

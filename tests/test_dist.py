@@ -141,3 +141,16 @@ def test_ninguna_carpeta_oculta_dentro_de_las_carpetas_permitidas_entra(tmp_path
     nombres = _empaquetar(tmp_path, ["src/.herramienta_local/x.json", "docs/.otra/y.md", "tests/.cache_local/z.txt", "scripts/a/.oculta/b.py"])
     assert sorted(nombres) == sorted(PERMITIDOS)
     assert make_dist.prohibidos(["src/.herramienta_local/x.json"]) == ["src/.herramienta_local/x.json"]
+
+
+def test_el_repo_real_empaqueta_el_panel_y_su_lanzador_sin_carpetas_ocultas_ni_credenciales():
+    nombres = [p.relative_to(ROOT).as_posix() for p in make_dist.listar(ROOT)]
+    assert "src/panel/app.py" in nombres and "src/panel/cliente_api.py" in nombres and "src/panel/paginas/respuesta.py" in nombres
+    assert "scripts/panel/ejecutar_panel.py" in nombres and "tests/test_panel_paginas.py" in nombres
+    assert not [n for n in nombres if any(parte.startswith(".") and parte != ".env.example" and parte != ".gitignore" and parte != ".gitattributes" for parte in n.split("/"))]
+    assert ".env" not in nombres and make_dist.fuera_de_la_lista(nombres) == []
+
+
+def test_una_carpeta_de_configuracion_de_streamlit_o_sus_credenciales_no_entran_al_zip(tmp_path):
+    nombres = _empaquetar(tmp_path, [".streamlit/config.toml", ".streamlit/secrets.toml", "src/panel/.streamlit/credentials.toml", "scripts/panel/.streamlit/secrets.toml"])
+    assert sorted(nombres) == sorted(PERMITIDOS)
