@@ -125,7 +125,7 @@ Cada subcriterio indica su estado según la regla, la justificación, la evidenc
 | 5.6 | Repetición de las pruebas | Cumple | Todas las pruebas se repiten en cada ejecución del informe y en un clon limpio del commit (316 de 316, `data/` idéntico, escáner sin hallazgos) | `docs/validacion/informe_pruebas.md`; EV-050 | `pytest -q -p no:cacheprovider` |
 
 ## Detalle de los ítems 3.1, 3.2 y 5.3 (cierre de Panel, 2026-11-14)
-Cada subcriterio indica su estado según la regla, la justificación, la evidencia y cómo validarlo. Las evidencias están en `docs/evidencias/panel/` y en el manifiesto (EV-051 a EV-060); el detalle de la verificación, en `docs/validacion/verificacion_servicios.md` (sección «Panel»). El ítem 3.3 **no se cierra aquí**: solo hay avance técnico (`docs/panel/accesibilidad_y_respuesta.md`) y las sesiones con usuarios están pendientes (hecho externo).
+Cada subcriterio indica su estado según la regla, la justificación, la evidencia y cómo validarlo. Las evidencias están en `docs/evidencias/panel/` y en el manifiesto (EV-051 a EV-061); el detalle de la verificación, en `docs/validacion/verificacion_servicios.md` (sección «Panel»). El ítem 3.3 **no se cierra aquí**: solo hay avance técnico (`docs/panel/accesibilidad_y_respuesta.md`) y las sesiones con usuarios están pendientes (hecho externo).
 
 | ítem | subcriterio | estado | justificación | evidencia | cómo validar |
 |---|---|---|---|---|---|

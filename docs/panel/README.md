@@ -19,7 +19,7 @@ El panel es una interfaz Streamlit (`src/panel/`) que muestra los resultados de 
 Arranca la API y el panel, imprime las dos direcciones y los cierra con Ctrl+C. La evidencia de una ejecución real está en [EV-052](../evidencias/panel/EV-052_ejecucion_real.txt).
 
 ## Evidencias (`docs/evidencias/panel/`)
-EV-051 instalación de Streamlit sin tocar la línea base · EV-052 ejecución real con el lanzador · EV-053 equivalencia de los datos entre SQLite y MySQL · EV-054 capturas automatizadas de las ocho páginas · EV-055 mediciones locales · EV-056 comprobación canario · EV-057 contrastes · EV-058 a EV-060 imágenes generadas desde las salidas.
+EV-051 instalación de Streamlit sin tocar la línea base · EV-052 ejecución real con el lanzador · EV-053 equivalencia de los datos entre SQLite y MySQL · EV-054 capturas automatizadas de las ocho páginas · EV-055 mediciones locales · EV-056 comprobación canario · EV-057 contrastes · EV-058 a EV-060 imágenes generadas desde las salidas · EV-061 pruebas en un clon limpio.
 
 ## Alcance y límites
 - **Qué afirmamos:** el panel muestra las cifras de Gold tal como las sirve la API, con el alcance visible en cada página; los valores coinciden con las salidas del pipeline y con los dos almacenamientos.

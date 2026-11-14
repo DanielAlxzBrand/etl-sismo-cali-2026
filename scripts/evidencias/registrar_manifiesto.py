@@ -99,6 +99,7 @@ FILAS_PANEL = {
     "EV-058": ("3.2", "Imagen renderizada con las latencias del cliente del panel por ruta y almacenamiento (a partir de EV-055b)", "imagen", "`python scripts/evidencias/make_imagenes_panel.py`", "EV-058_latencias_cliente.png"),
     "EV-059": ("5.3", "Imagen renderizada con la cobertura de las pruebas por módulo del panel", "imagen", "`python scripts/evidencias/make_imagenes_panel.py`", "EV-059_cobertura_panel.png"),
     "EV-060": ("3.1, 3.2", "Imagen renderizada con los componentes del panel por página y tipo (a partir del registro de componentes)", "imagen", "`python scripts/evidencias/make_imagenes_panel.py`", "EV-060_trazabilidad_componentes.png"),
+    "EV-061": ("5.3", "Las 616 pruebas del proyecto pasan en un clon limpio del commit, `data/` del clon es idéntico al del árbol de trabajo y el escáner no halla secretos", "archivo", "`python scripts/evidencias/evidencia_pruebas_clon.py --nombre EV-061_pruebas_clon.txt` (el archivo se movió a la carpeta del panel)", "EV-061_pruebas_clon.txt"),
 }
 
 

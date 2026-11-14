@@ -91,6 +91,7 @@
 | EV-058 | 3.2 | Imagen renderizada con las latencias del cliente del panel por ruta y almacenamiento (a partir de EV-055b) | imagen | `python scripts/evidencias/make_imagenes_panel.py` | 2026-11-14 | docs/evidencias/panel/EV-058_latencias_cliente.png | 43f7f7329de0d2af17f414ad84b13375aea7fce3385475b6720f5cb0149b901c |
 | EV-059 | 5.3 | Imagen renderizada con la cobertura de las pruebas por módulo del panel | imagen | `python scripts/evidencias/make_imagenes_panel.py` | 2026-11-14 | docs/evidencias/panel/EV-059_cobertura_panel.png | 99882655aab7f888fb33be576e927398b811b999aee11df2822e7357d6a6f844 |
 | EV-060 | 3.1, 3.2 | Imagen renderizada con los componentes del panel por página y tipo (a partir del registro de componentes) | imagen | `python scripts/evidencias/make_imagenes_panel.py` | 2026-11-14 | docs/evidencias/panel/EV-060_trazabilidad_componentes.png | ffd748109582dc75e49eb1587f43a236c5016f95920dbbcdb72c9c5260ae0eb8 |
+| EV-061 | 5.3 | Las 616 pruebas del proyecto pasan en un clon limpio del commit, `data/` del clon es idéntico al del árbol de trabajo y el escáner no halla secretos | archivo | `python scripts/evidencias/evidencia_pruebas_clon.py --nombre EV-061_pruebas_clon.txt` (el archivo se movió a la carpeta del panel) | 2026-11-14 | docs/evidencias/panel/EV-061_pruebas_clon.txt | da7adad8785bdcda60422be585c0b5f3c9e7ea30aa44f7a02890b38362d2deaa |
 
 **Convención:** `EV-nnn` correlativo; los archivos de cada componente en la carpeta de su tema (`base/`, `estrategia/`, `api/`, …) con el nombre `EV-nnn_descripcion.ext`. Política de evidencias (D35): sin video; se adjuntan archivos (salidas registradas, JSON, XML de pruebas, documentos e imágenes renderizadas) y, de forma opcional, capturas de pantalla que toma el equipo y se rotulan «captura tomada por el equipo». Las capturas automatizadas del navegador se rotulan «captura automatizada del navegador» y las imágenes generadas desde salidas reales «imagen generada a partir de la salida registrada; no es una captura de pantalla». La guía por ítem está en `guia_de_evidencias.md`. Al cerrar cada componente se recalcula el sha256 de sus filas.
 
@@ -98,6 +99,7 @@
 
 
 **Archivos protegidos.** Las salidas crudas de `base/`, `estrategia/` y `api/`, las imágenes y los PDF, la retroalimentación original del profesor y `DECLARACION_USO_IA.md` no se editan: se movieron con `git mv` y su sha256 es el mismo que tenían al capturarse (por eso las filas de esta tabla siguen vigentes). Por eso las salidas crudas conservan los nombres de pruebas y las rutas que tenían al capturarse (por ejemplo, rutas de la estructura anterior de `docs/` y nombres de pruebas anteriores) y la imagen de la arquitectura conserva sus rótulos de ese momento. Se regeneran en el cierre final con `scripts/evidencias/evidencias_api.py` y `scripts/evidencias/make_diagrama_arquitectura.py`.
+
 
 
 
