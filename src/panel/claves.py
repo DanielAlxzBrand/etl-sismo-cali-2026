@@ -1,0 +1,15 @@
+"""Identificadores que usa la API (KPI, grupos, escenarios): son nombres de datos, no cifras del panel."""
+K1, K2, K3, K4, K5, K6 = "K1", "K2", "K3", "K4", "K5", "K6"
+K2_TASA_3_5 = "estratos_3-5"
+K2_TASA_1_2 = "estratos_1-2"
+K2_RAZON = "razon_3-5_vs_1-2"
+K2_DIFERENCIA = "diferencia_3-5_menos_1-2"
+K2_MANTEL_HAENSZEL = "razon_MH_ajustada_comuna"
+K3_TOP10 = "top10_barrios"
+K5_COBERTURA_LLAVE = "cobertura_llave"
+K5_ESTRATO_VALIDO = "cobertura_estrato_valido"
+K5_NOMBRE_VALIDADO = "pct_nombre_validado"
+GRUPO_COMPOSICION_1_2 = "1-2"
+GRUPO_COMPOSICION_3_5 = "3-5"
+ESCENARIOS = ("S0", "S1", "S2", "S3", "S4", "S5")
+CLASES_DANO = ("sin_cambio", "techo", "escombros", "sin_datos")

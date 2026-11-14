@@ -82,3 +82,21 @@ almacenamiento:   # carga relacional (MySQL; SQLite para pruebas). La contraseñ
   base_prueba: sismo_cali_prueba
   lote: 2000
   tiempo_espera_s: 10
+panel:   # interfaz de solo lectura sobre la API (Panel); sin secretos
+  api_url: http://127.0.0.1:8000
+  ttl_cache_s: 300
+  tiempo_espera_s: 10
+  reintentos_conexion: 1
+  espera_reintento_s: 0.3
+  tamano_pagina_tabla: 50
+  puerto_panel: 8501
+  puerto_api: 8000
+  espera_arranque_s: 60
+  colores:   # paleta apta para daltonismo (Okabe-Ito); el significado nunca depende solo del color
+    principal: "#0072B2"
+    secundario: "#D55E00"
+    apoyo: "#009E73"
+    neutro: "#595959"
+    texto: "#1F2933"
+    fondo: "#FFFFFF"
+    fondo_secundario: "#F0F4F8"
