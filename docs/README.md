@@ -109,7 +109,7 @@
 | [accesibilidad_y_respuesta.md](panel/accesibilidad_y_respuesta.md) | contrastes calculados, mediciones locales y lo pendiente de usuarios |
 
 ### Decisiones
-[DECISIONES.md](DECISIONES.md): todas las decisiones con alternativas, razón, riesgo y fecha (D1 a D80; las nuevas continúan desde D81).
+[DECISIONES.md](DECISIONES.md): todas las decisiones con alternativas, razón, riesgo y fecha (D1 a D81; las nuevas continúan desde D82).
 
 ### Almacenamiento relacional (MySQL)
 | documento | contenido |
