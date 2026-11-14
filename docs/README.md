@@ -99,7 +99,7 @@
 | [operacion.md](orquestacion/operacion.md) | levantar, parar, registros y solución de problemas |
 
 ### Decisiones
-[DECISIONES.md](DECISIONES.md): todas las decisiones con alternativas, razón, riesgo y fecha (D1 a D66; las nuevas continúan desde D67).
+[DECISIONES.md](DECISIONES.md): todas las decisiones con alternativas, razón, riesgo y fecha (D1 a D67; las nuevas continúan desde D68).
 
 ### Almacenamiento relacional (MySQL)
 | documento | contenido |

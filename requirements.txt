@@ -16,3 +16,6 @@ httpx>=0.28.1
 pymysql>=1.2.4
 cryptography>=50.0.2
 coverage>=7.17.3
+# Panel (Streamlit sobre la API; D24, D68). Altair llega con Streamlit y el panel lo importa directamente
+streamlit==1.67.0
+altair==6.3.0
