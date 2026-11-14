@@ -38,6 +38,9 @@
 | H-13 | (entorno) | el `.venv` había pasado a pandas 3.1.1 y las salidas ya no se reproducían ([EV-035](../evidencias/orquestacion/EV-035_estabilidad_pipeline.txt), DEF-011) | se restauró pandas 3.0.6 y se fijó en los requisitos (D56) |
 | H-14 | 21 | `run_transform` lee `docs/silver/hallazgos_eda.md`; una copia sin ese archivo falla (DEF-012) | la copia de trabajo incluye ese único archivo de `docs/silver` |
 | H-15 | 21 | para importar `src` solo desde la copia, la copia se crea antes de validar el manifiesto; la validación comprueba además que el manifiesto de la copia sea idéntico al del repositorio | `validar_bronze` copia, compara el manifiesto y verifica los 8 sha256 |
+| H-16 | 27 | `apache-airflow-providers-mysql 6.6.2` (ya incluido en la imagen base) pide `pymysql<1.2` y el proyecto usa 1.2.4: pip lo avisa y no impide la instalación ([EV-038](../evidencias/orquestacion/EV-038_pasos_27_a_30.txt)) | no se cambia la versión: el DAG no usa el proveedor de MySQL de Airflow, se conecta con `src.load.conexion` (PyMySQL 1.2.4) |
+| H-17 | 29 | el compose oficial usa `${FERNET_KEY}` sin valor por defecto y Compose avisa de una cadena vacía en cada comando | se deja así: no se guardan conexiones ni variables en Airflow (las credenciales se leen del `.env` del proyecto en memoria); ver `docs/seguridad/gestion_credenciales.md` |
+| H-18 | 18 y 29 | el compose oficial trae un secreto JWT y una contraseña de Postgres de ejemplo | se mitiga publicando solo el 8080 y solo en 127.0.0.1 (Postgres y Redis no se publican); no se cambian para no apartarse del compose oficial (DF-8 solo cubre la contraseña de la interfaz) |
 
 ## 3. Extras opcionales que no incluimos
 Reintentos, tareas adicionales, ejecutor local, carga de ejemplos y las pruebas P1 a P5 del laboratorio de clase no están en la guía y no se implementan.

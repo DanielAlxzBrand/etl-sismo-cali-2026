@@ -160,7 +160,7 @@ Latencia por ruta con el **servidor real** en `127.0.0.1` (no el cliente de prue
 
 ## 13. Almacén relacional y componentes futuros
 - **Carga a MySQL (Carga relacional):** implementada. `api.almacenamiento` en `config/config.yaml` elige `sqlite` (por defecto) o `mysql`; los endpoints no cambian y `/health` y `/metadata` informan el almacén activo. Se abre una conexión de solo lectura por solicitud y, si MySQL no responde, la API contesta 503 con el JSON uniforme. Ver `docs/almacenamiento/carga_y_verificacion.md`.
-- **Orquestación con Airflow (Pruebas y orquestación).** *En construcción.*
+- **Orquestación con Airflow (Pruebas y orquestación):** implementada fuera de `src/`: el DAG `medallon_etl_sismo` ejecuta las cuatro etapas desde una copia de trabajo con el repositorio en solo lectura. Ver `docs/orquestacion/`.
 - **Dashboard con Streamlit (Panel)** que consume solo esta API. *En construcción.*
 
 ## Alcance y límites

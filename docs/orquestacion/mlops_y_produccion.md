@@ -29,7 +29,9 @@ El proyecto no entrena modelos: calcula indicadores estadísticos sobre construc
 | Monitoreo de deriva de datos en producción | no aplicado | los datos son una captura estática (capa editada el 2026-09-02) |
 
 ## 3. Arquitectura de la orquestación
-El diagrama de la arquitectura de la orquestación (Windows, WSL2, Docker Desktop, Airflow, el DAG, las capas Bronze, Silver y Gold y MySQL) se genera con matplotlib al terminar la ejecución y se agrega a esta página.
+![Arquitectura de la orquestación](img/arquitectura_orquestacion.png)
+
+Diagrama generado con matplotlib (`python scripts/orquestacion/make_arquitectura.py`) a partir del compose, del DAG y de las evidencias [EV-038](../evidencias/orquestacion/EV-038_pasos_27_a_30.txt) y [EV-040](../evidencias/orquestacion/EV-040_origen_mysql_desde_docker.txt); no es una captura de pantalla. Windows 11 aloja Docker Desktop con WSL2; el compose oficial levanta siete contenedores (CeleryExecutor con Postgres y Redis); el repositorio entra en solo lectura y el DAG se sincroniza desde `dags/`; la tarea de carga llega a MySQL del anfitrión con un usuario de permisos mínimos.
 
 ## Alcance y límites
 - **Qué afirmamos:** aplicamos las prácticas de la tabla 1, cada una con su evidencia.
