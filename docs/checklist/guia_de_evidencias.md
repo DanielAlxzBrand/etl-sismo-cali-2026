@@ -180,14 +180,14 @@ El panel aporta mediciones y verificaciones técnicas (contrastes calculados, la
 ## Pruebas y orquestación · Pruebas, Airflow y defectos (sección 5 del checklist)
 
 ### Ítem 5.1 · Casos de prueba por función crítica
-- **(a) Archivo principal:** `docs/validacion/matriz_casos_prueba.md` (Markdown, con su `.csv`). Demuestra: 19 funciones críticas con 118 casos (55 correctos, 36 incorrectos y 27 límite), cada uno con su resultado esperado y la prueba que lo ejecuta, generados desde una única definición. **No demuestra:** que no existan fallos fuera de los casos definidos.
+- **(a) Archivo principal:** `docs/validacion/matriz_casos_prueba.md` (Markdown, con su `.csv`). Demuestra: 27 funciones críticas con 179 casos (78 correctos, 61 incorrectos y 40 límite), cada uno con su resultado esperado y la prueba que lo ejecuta, generados desde una única definición. **No demuestra:** que no existan fallos fuera de los casos definidos.
 - **(b) Apoyo:**
-  - `docs/validacion/informe_pruebas.md` y `informe_pruebas.csv` (resultado de cada caso en la última ejecución: 316 de 316).
+  - `docs/validacion/informe_pruebas.md` y `informe_pruebas.csv` (resultado de cada caso en la última ejecución: 696 de 696).
   - `tests/test_matriz_casos.py` (cada función crítica tiene casos y cada prueba citada existe).
   - `docs/evidencias/orquestacion/EV-048_cobertura_por_modulo.png` (imagen generada a partir de la salida registrada; no es una captura de pantalla).
-  - `docs/evidencias/orquestacion/EV-050_pruebas_clon.txt` (las 316 pruebas pasan en un clon limpio).
-- **(c) Texto sugerido:** «Matriz de 118 casos de prueba para 19 funciones críticas, cada uno con su resultado esperado y su prueba automática en verde: `docs/validacion/matriz_casos_prueba.md`.»
-- **(d) Captura opcional:** PowerShell con `.\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider`, que debe terminar en `316 passed`. Nombre: `captura_5.1_pytest.png`.
+  - `docs/evidencias/orquestacion/EV-050_pruebas_clon.txt` (las pruebas de ese momento pasan en un clon limpio).
+- **(c) Texto sugerido:** «Matriz de 179 casos de prueba para 27 funciones críticas, cada uno con su resultado esperado y su prueba automática en verde: `docs/validacion/matriz_casos_prueba.md`.»
+- **(d) Captura opcional:** PowerShell con `.\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider`, que debe terminar en `696 passed`. Nombre: `captura_5.1_pytest.png`.
 - **(e) Validar:** `.\.venv\Scripts\python.exe -m pytest tests/test_matriz_casos.py -q -p no:cacheprovider` y `.\.venv\Scripts\python.exe scripts\make_matriz_casos.py` (regenera la matriz; `git status --short` no debe mostrar cambios).
 
 ### Ítem 5.2 · Datos correctos, incorrectos y casos límite
@@ -196,7 +196,7 @@ El panel aporta mediciones y verificaciones técnicas (contrastes calculados, la
   - `docs/validacion/matriz_casos_prueba.md` (tipo de cada caso).
   - `tests/test_casos_limite.py`, `tests/test_carga_relacional.py` y `tests/test_usuario_docker.py` (entradas inválidas y valores en el borde).
   - `docs/evidencias/orquestacion/EV-035_estabilidad_pipeline.txt` (las nueve salidas se regeneran idénticas).
-- **(c) Texto sugerido:** «Probamos datos correctos, incorrectos y límite en cada función crítica (55, 36 y 27 casos) y la reproducción byte a byte de las salidas: `docs/validacion/informe_pruebas.md`.»
+- **(c) Texto sugerido:** «Probamos datos correctos, incorrectos y límite en cada función crítica (78, 61 y 40 casos) y la reproducción byte a byte de las salidas: `docs/validacion/informe_pruebas.md`.»
 - **(d) Captura opcional:** el informe con la columna de tipo visible. Nombre: `captura_5.2_informe.png`.
 - **(e) Validar:** `.\.venv\Scripts\python.exe -m pytest tests/test_casos_limite.py tests/test_carga_relacional.py tests/test_pipeline_reproducible.py -q -p no:cacheprovider`.
 
@@ -214,7 +214,7 @@ El panel aporta mediciones y verificaciones técnicas (contrastes calculados, la
 - **(e) Validar:** `.\.venv\Scripts\python.exe -m pytest tests/test_dag_estatico.py -q -p no:cacheprovider` y, con Docker Desktop en marcha, `docker compose ps` y `docker compose exec airflow-scheduler airflow dags list-import-errors` desde la carpeta `airflow-medallon`.
 
 ### Ítem 5.5 · Resultado esperado, obtenido y evidencia por prueba
-- **(a) Archivo principal:** `docs/validacion/informe_pruebas.md` (Markdown, con `informe_pruebas.csv`). Demuestra: por cada caso, el resultado esperado, el obtenido, su duración y la prueba; la cobertura por módulo (66,2 % de 3.383 líneas) y las métricas de validación del análisis (K1 recalculado con SQL y una fórmula propia, diferencia máxima de 4,82e-13). **No demuestra:** métricas de modelos, porque no se entrenan (N/A justificado, D22).
+- **(a) Archivo principal:** `docs/validacion/informe_pruebas.md` (Markdown, con `informe_pruebas.csv`). Demuestra: por cada caso, el resultado esperado, el obtenido, su duración y la prueba; la cobertura por módulo (72,9 % de 4.325 líneas) y las métricas de validación del análisis (K1 recalculado con SQL y una fórmula propia, diferencia máxima de 4,82e-13). **No demuestra:** métricas de modelos, porque no se entrenan (N/A justificado, D22).
 - **(b) Apoyo:**
   - `docs/validacion/cobertura_pruebas.csv` y `docs/evidencias/orquestacion/EV-048_cobertura_por_modulo.png`.
   - `docs/evidencias/orquestacion/EV-046_esperado_frente_a_obtenido.png` y `EV-041_ejecucion_manual.txt` (esperado frente a obtenido en el DAG).
@@ -229,7 +229,7 @@ El panel aporta mediciones y verificaciones técnicas (contrastes calculados, la
   - `docs/evidencias/orquestacion/EV-036_regresiones_sin_correccion.txt` (nueve reintroducciones en una copia temporal: fallan sin la corrección y pasan con ella).
   - `docs/evidencias/orquestacion/EV-035_estabilidad_pipeline.txt` y `EV-042_fallo_inducido_y_recuperacion.txt` (DEF-011 y DEF-013).
   - `scripts/validacion/verificar_regresiones.py`.
-  - `docs/evidencias/orquestacion/EV-050_pruebas_clon.txt` (repetición de todas las pruebas en un clon limpio: 316 de 316).
+  - `docs/evidencias/orquestacion/EV-050_pruebas_clon.txt` (repetición de todas las pruebas en un clon limpio, en su momento).
 - **(c) Texto sugerido:** «Registro de 13 defectos corregidos, cada uno con su prueba de regresión que falla sin la corrección y pasa con ella, y repetición de todas las pruebas: `docs/validacion/registro_defectos.md` y `docs/evidencias/orquestacion/EV-036_regresiones_sin_correccion.txt`.»
 - **(d) Captura opcional:** PowerShell con `.\.venv\Scripts\python.exe scripts\validacion\verificar_regresiones.py`, con cada defecto «falla sin la corrección». Nombre: `captura_5.6_regresiones.png`.
 - **(e) Validar:** `.\.venv\Scripts\python.exe scripts\validacion\verificar_regresiones.py` (código de salida 0) y `.\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider`.
