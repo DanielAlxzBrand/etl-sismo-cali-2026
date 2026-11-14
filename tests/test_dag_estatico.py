@@ -188,7 +188,7 @@ def test_el_dockerfile_separa_copy_y_run_y_declara_la_imagen_de_la_guia():
 
 def test_la_copia_versionada_del_dag_coincide_con_el_hash_registrado():
     registrado = (ROOT / "orquestacion" / "dag.sha256").read_text(encoding="utf-8").split()[0]
-    assert hashlib.sha256(DAG.read_bytes()).hexdigest() == registrado, "el DAG cambió: ejecute scripts/orquestacion/sincronizar_dag.py --registrar y vuelva a sincronizar"
+    assert hashlib.sha256(DAG.read_bytes().replace(b"\r\n", b"\n")).hexdigest() == registrado, "el DAG cambió: ejecute scripts/orquestacion/sincronizar_dag.py --registrar y vuelva a sincronizar"
 
 
 def test_las_variables_de_docker_estan_en_el_ejemplo_sin_valores():

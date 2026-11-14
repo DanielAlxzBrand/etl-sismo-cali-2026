@@ -21,7 +21,8 @@ REGISTRO = ROOT / "orquestacion" / "dag.sha256"
 
 
 def sha256(ruta):
-    return hashlib.sha256(Path(ruta).read_bytes()).hexdigest()
+    """sha256 del texto con saltos de línea LF: así no cambia si git entrega el archivo con CRLF en Windows."""
+    return hashlib.sha256(Path(ruta).read_bytes().replace(b"\r\n", b"\n")).hexdigest()
 
 
 def rutas(airflow=None):
