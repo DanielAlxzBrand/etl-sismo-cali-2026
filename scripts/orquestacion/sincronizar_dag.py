@@ -2,6 +2,7 @@
 
 Uso:  python scripts/orquestacion/sincronizar_dag.py              copia el DAG del repositorio a airflow-medallon/dags
       python scripts/orquestacion/sincronizar_dag.py --verificar  solo compara los sha256 de ambos (código 0 si son iguales)
+      python scripts/orquestacion/sincronizar_dag.py --registrar  anota el sha256 del DAG versionado en orquestacion/dag.sha256 (una prueba lo exige)
 La carpeta de Airflow se busca junto al proyecto (`../airflow-medallon`) o se indica con --airflow. El repositorio solo se lee.
 """
 import argparse
@@ -16,6 +17,7 @@ from src.logger import get_logger  # noqa: E402
 
 log = get_logger(__name__)
 NOMBRE = "medallon_etl_dag.py"
+REGISTRO = ROOT / "orquestacion" / "dag.sha256"
 
 
 def sha256(ruta):
@@ -39,12 +41,17 @@ def sincronizar(origen, destino):
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--verificar", action="store_true", help="solo compara los sha256")
+    ap.add_argument("--registrar", action="store_true", help="anota el sha256 del DAG versionado en orquestacion/dag.sha256")
     ap.add_argument("--airflow", default=None, help="carpeta airflow-medallon (por defecto, la hermana del proyecto)")
     a = ap.parse_args(argv)
     origen, destino = rutas(a.airflow)
     if not origen.exists():
         log.error("no existe el DAG versionado %s", origen.relative_to(ROOT))
         return 2
+    if a.registrar:
+        REGISTRO.write_text(f"{sha256(origen)}  dags/{NOMBRE}\n", encoding="utf-8", newline="\n")
+        log.info("registrado el sha256 %s en orquestacion/dag.sha256", sha256(origen)[:12])
+        return 0
     if a.verificar:
         if not destino.exists():
             log.error("el DAG vivo no existe todavía en airflow-medallon/dags")

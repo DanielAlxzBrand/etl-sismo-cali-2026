@@ -1,6 +1,6 @@
 """Empaqueta el proyecto en dist/etl_sismo_<fecha>.zip con una lista de INCLUSIÓN: solo entra lo permitido.
 
-Primer nivel permitido: archivos `RAIZ_ARCHIVOS` y carpetas `RAIZ_CARPETAS` (`dags/` solo si existe). Dentro de ellas se excluyen cachés,
+Primer nivel permitido: archivos `RAIZ_ARCHIVOS` y carpetas `RAIZ_CARPETAS` (`dags/` y `orquestacion/` solo si existen). Dentro de ellas se excluyen cachés,
 `*.pyc`, `logs/`, el `.env` real, toda carpeta oculta (que empiece por punto) y toda carpeta que sea un entorno virtual (por nombre y, sobre todo, por su contenido:
 `pyvenv.cfg`, `site-packages`, `conda-meta`, `python.exe`, `Scripts/python*` o `bin/python*`). En `docs/` solo entran los PDF de
 `docs/proyecto/referencias/` y `docs/retroalimentacion/`. Tras armar el zip se verifica su contenido y falla con un mensaje claro si algo sobra.
@@ -13,7 +13,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 RAIZ_ARCHIVOS = ("README.md", "main.py", "requirements.txt", "pytest.ini", ".env.example", ".gitignore", ".gitattributes", "DECLARACION_USO_IA.md")
-RAIZ_CARPETAS = ("config", "src", "scripts", "tests", "notebooks", "docs", "data", "dags")
+RAIZ_CARPETAS = ("config", "src", "scripts", "tests", "notebooks", "docs", "data", "dags", "orquestacion")
 PDF_PERMITIDOS = ("docs/proyecto/referencias/", "docs/retroalimentacion/")
 EXCLUIR_DIRS = {".git", "dist", "logs", "__pycache__", ".ipynb_checkpoints", ".pytest_cache", "venv", "env", ".env", "site-packages"}
 EXCLUIR_PREFIJOS = (".venv",)

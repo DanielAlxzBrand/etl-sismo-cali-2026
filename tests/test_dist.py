@@ -87,6 +87,18 @@ def test_dags_entra_cuando_existe_y_no_falla_cuando_no_existe(tmp_path):
     assert "dags/pipeline.py" in con
 
 
+def test_orquestacion_entra_cuando_existe_y_no_falla_cuando_no_existe(tmp_path):
+    assert not any(n.startswith("orquestacion/") for n in _empaquetar(tmp_path / "sin"))
+    con = _empaquetar(tmp_path / "con", ["orquestacion/Dockerfile", "orquestacion/requirements-airflow.txt"])
+    assert {"orquestacion/Dockerfile", "orquestacion/requirements-airflow.txt"} <= set(con)
+
+
+def test_el_repo_real_empaqueta_el_dag_y_la_carpeta_de_orquestacion():
+    nombres = [p.relative_to(ROOT).as_posix() for p in make_dist.listar(ROOT)]
+    assert "dags/medallon_etl_dag.py" in nombres and "orquestacion/Dockerfile" in nombres and "orquestacion/requirements-airflow.txt" in nombres
+    assert make_dist.fuera_de_la_lista(nombres) == []
+
+
 def test_un_entorno_simulado_sin_pyvenv_cfg_dentro_de_una_carpeta_permitida_no_entra(tmp_path):
     nombres = _empaquetar(tmp_path, ["src/entorno_a/bin/python", "src/entorno_a/lib.py", "notebooks/entorno_b/Scripts/python.exe", "tests/entorno_c/python.exe",
                                      "docs/entorno_d/conda-meta/h.json", "scripts/entorno_e/lib/python3.13/site-packages/m.py"])
