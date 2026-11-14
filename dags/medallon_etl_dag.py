@@ -131,9 +131,9 @@ with DAG(
     def transformar_a_silver():
         print("Transformando Bronze hacia Silver...")
         run_id, conf = _contexto()
-        _fallo_inducido("transformar_a_silver", conf)
         trabajo = _trabajo(run_id)
         try:
+            _fallo_inducido("transformar_a_silver", conf)   # dentro del try: si falla, la copia de trabajo también se elimina
             sys.path.insert(0, str(trabajo))
             from src.transform.integrate import run_transform
             run_transform()
@@ -147,9 +147,9 @@ with DAG(
     def integrar_a_gold():
         print("Construyendo capa Gold...")
         run_id, conf = _contexto()
-        _fallo_inducido("integrar_a_gold", conf)
         trabajo = _trabajo(run_id)
         try:
+            _fallo_inducido("integrar_a_gold", conf)   # dentro del try: si falla, la copia de trabajo también se elimina
             sys.path.insert(0, str(trabajo))
             from src.transform.build_gold import run_gold
             run_gold()
@@ -163,9 +163,9 @@ with DAG(
     def cargar_datawarehouse():
         print("Iniciando carga...")
         run_id, conf = _contexto()
-        _fallo_inducido("cargar_datawarehouse", conf)
         trabajo = _trabajo(run_id)
         try:
+            _fallo_inducido("cargar_datawarehouse", conf)
             sys.path.insert(0, str(trabajo))
             from src.load.load_database import load_to_sqlite
             load_to_sqlite()

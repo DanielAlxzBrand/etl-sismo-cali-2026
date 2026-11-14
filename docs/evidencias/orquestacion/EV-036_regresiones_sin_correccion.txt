@@ -1,22 +1,23 @@
 # Las pruebas de regresión fallan sin su corrección
 - comando: `python scripts/validacion/verificar_regresiones.py --evidencia`
-- fecha: 2026-11-13T21:43:26-05:00 (America/Bogota)
+- fecha: 2026-11-13T22:31:24-05:00 (America/Bogota)
 - código de salida: 0
-- duración: 27.5 s
+- duración: 33.7 s
 - Python: 3.13.0
-- commit del repositorio: 4719ea9
+- commit del repositorio: 7d1fe0f
 
 En una copia temporal se reintrodujo cada defecto (un reemplazo de texto en el código) y se ejecutó solo su prueba de regresión: debe pasar con la corrección y fallar sin ella.
 
 | Defecto | Archivo modificado | Prueba de regresión | Con la corrección | Sin la corrección | Resultado |
 |---|---|---|---|---|---|
-| DEF-001 | `src/transform/build_gold.py` | `tests/test_kpis.py::test_regresion_defecto_mh_sin_datos_no_entra_en_mh` | con la corrección: 1 passed in 1.02s | sin la corrección: 1 failed in 1.10s | la prueba detecta el defecto |
-| DEF-002 | `src/logger.py` | `tests/test_logger.py::test_enmascara_cabeceras_y_tokens` | con la corrección: 1 passed in 0.06s | sin la corrección: 1 failed in 0.21s | la prueba detecta el defecto |
-| DEF-004 | `pytest.ini` | `tests/test_entorno_de_pruebas.py::test_pytest_ini_fija_la_ruta_de_importacion_y_la_carpeta_de_pruebas` | con la corrección: 1 passed in 0.11s | sin la corrección: 1 failed in 0.24s | la prueba detecta el defecto |
-| DEF-005 | `scripts/make_dist.py` | `tests/test_dist.py::test_ninguna_carpeta_oculta_dentro_de_las_carpetas_permitidas_entra` | con la corrección: 1 passed in 0.22s | sin la corrección: 1 failed in 0.32s | la prueba detecta el defecto |
-| DEF-007 | `src/load/relacional.py` | `tests/test_carga_relacional.py::test_conversion_que_perderia_informacion_falla` | con la corrección: 10 passed, 1 warning in 0.99s | sin la corrección: 1 failed, 4 passed, 1 warning in 1.24s | la prueba detecta el defecto |
-| DEF-008 | `src/load/sql/esquema_mysql.sql` | `tests/test_carga_relacional.py::test_las_sentencias_no_dependen_de_separadores_dentro_de_los_textos` | con la corrección: 1 passed, 1 warning in 0.86s | sin la corrección: 1 failed, 1 warning in 1.00s | la prueba detecta el defecto |
-| DEF-008b | `src/load/sql/esquema_mysql.sql` | `tests/test_carga_relacional.py::test_los_dos_esquemas_declaran_las_mismas_tablas_y_columnas_en_el_mismo_orden` | con la corrección: 1 passed, 1 warning in 0.77s | sin la corrección: 1 failed, 1 warning in 1.22s | la prueba detecta el defecto |
-| DEF-012 | `dags/medallon_etl_dag.py` | `tests/test_dag_estatico.py::test_la_copia_incluye_la_entrada_de_docs_silver_que_lee_la_transformacion` | con la corrección: 1 passed in 0.13s | sin la corrección: 1 failed in 0.26s | la prueba detecta el defecto |
+| DEF-001 | `src/transform/build_gold.py` | `tests/test_kpis.py::test_regresion_defecto_mh_sin_datos_no_entra_en_mh` | con la corrección: 1 passed in 1.75s | sin la corrección: 1 failed in 1.11s | la prueba detecta el defecto |
+| DEF-002 | `src/logger.py` | `tests/test_logger.py::test_enmascara_cabeceras_y_tokens` | con la corrección: 1 passed in 0.08s | sin la corrección: 1 failed in 0.26s | la prueba detecta el defecto |
+| DEF-004 | `pytest.ini` | `tests/test_entorno_de_pruebas.py::test_pytest_ini_fija_la_ruta_de_importacion_y_la_carpeta_de_pruebas` | con la corrección: 1 passed in 0.12s | sin la corrección: 1 failed in 0.20s | la prueba detecta el defecto |
+| DEF-005 | `scripts/make_dist.py` | `tests/test_dist.py::test_ninguna_carpeta_oculta_dentro_de_las_carpetas_permitidas_entra` | con la corrección: 1 passed in 0.95s | sin la corrección: 1 failed in 0.93s | la prueba detecta el defecto |
+| DEF-007 | `src/load/relacional.py` | `tests/test_carga_relacional.py::test_conversion_que_perderia_informacion_falla` | con la corrección: 10 passed, 1 warning in 1.13s | sin la corrección: 1 failed, 4 passed, 1 warning in 1.07s | la prueba detecta el defecto |
+| DEF-008 | `src/load/sql/esquema_mysql.sql` | `tests/test_carga_relacional.py::test_las_sentencias_no_dependen_de_separadores_dentro_de_los_textos` | con la corrección: 1 passed, 1 warning in 0.78s | sin la corrección: 1 failed, 1 warning in 0.96s | la prueba detecta el defecto |
+| DEF-008b | `src/load/sql/esquema_mysql.sql` | `tests/test_carga_relacional.py::test_los_dos_esquemas_declaran_las_mismas_tablas_y_columnas_en_el_mismo_orden` | con la corrección: 1 passed, 1 warning in 1.11s | sin la corrección: 1 failed, 1 warning in 1.10s | la prueba detecta el defecto |
+| DEF-013 | `dags/medallon_etl_dag.py` | `tests/test_dag_estatico.py::test_el_fallo_inducido_de_las_tareas_con_copia_ocurre_dentro_del_try_que_elimina_la_copia` | con la corrección: 1 passed in 0.15s | sin la corrección: 1 failed in 0.28s | la prueba detecta el defecto |
+| DEF-012 | `dags/medallon_etl_dag.py` | `tests/test_dag_estatico.py::test_la_copia_incluye_la_entrada_de_docs_silver_que_lee_la_transformacion` | con la corrección: 1 passed in 0.14s | sin la corrección: 1 failed in 0.33s | la prueba detecta el defecto |
 
 Resultado: todas las pruebas de regresión fallan sin su corrección.

@@ -208,3 +208,15 @@ def test_las_variables_de_docker_estan_en_el_ejemplo_sin_valores():
 @pytest.mark.parametrize("fragmento", ["Windows", "WSL2", "Docker Desktop"])
 def test_el_dag_no_nombra_el_entorno_de_desarrollo_en_su_codigo(fragmento):
     assert fragmento not in DAG.read_text(encoding="utf-8")
+
+
+def test_el_fallo_inducido_de_las_tareas_con_copia_ocurre_dentro_del_try_que_elimina_la_copia():
+    """Si el fallo inducido ocurriera antes del try, la tarea fallida dejaría su copia de trabajo en el contenedor (DEF-013)."""
+    for t in _tareas():
+        if t.name == "validar_bronze":
+            continue   # todavía no existe la copia cuando falla
+        intentos = [n for n in t.body if isinstance(n, ast.Try)]
+        assert intentos, t.name
+        dentro = [c for c in _llamadas(intentos[0]) if _nombre_llamada(c) == "_fallo_inducido"]
+        assert dentro and any(_nombre_llamada(c) == "rmtree" for c in _llamadas(intentos[0])), t.name
+        assert not [n for n in t.body if isinstance(n, ast.Expr) and _nombre_llamada(n.value) == "_fallo_inducido"], t.name

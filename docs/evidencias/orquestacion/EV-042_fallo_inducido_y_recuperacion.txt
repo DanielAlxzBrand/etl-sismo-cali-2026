@@ -1,0 +1,43 @@
+# Pasos 35 y 36: fallo inducido, registros y recuperación
+- comando: `docker compose exec airflow-scheduler airflow dags trigger medallon_etl_sismo --conf fallo_inducido; tasks states-for-dag-run; registros de la tarea`
+- fecha: 2026-11-13T22:28:40-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 360.0 s
+- Python: 3.13.0
+- commit del repositorio: 7d1fe0f
+
+Pasos 35 y 36 de la guía (qué ocurre si una tarea falla y revisar los registros), con la adición DF-10: el DAG lee `dag_run.conf` y, si trae `fallo_inducido` con el nombre de una tarea, esa tarea falla antes de producir salidas.
+
+Comando: `docker compose exec airflow-scheduler airflow dags trigger medallon_etl_sismo --conf '{"fallo_inducido":"integrar_a_gold"}'`
+
+## Primer fallo inducido (ejecución manual__2026-11-14T03:25:22)
+Estado de la ejecución: **failed**.
+| Tarea | Estado | Duración |
+|---|---|---|
+| validar_bronze | success | 1,1 s |
+| transformar_a_silver | success | 1,7 s |
+| integrar_a_gold | **failed** | 0,2 s |
+| cargar_datawarehouse | **upstream_failed** (no se ejecutó) | — |
+
+Registro de la tarea `integrar_a_gold` (paso 36):
+```
+Construyendo capa Gold...
+Task failed with exception
+RuntimeError: Fallo inducido en la tarea integrar_a_gold (parámetro fallo_inducido)
+Failure caused by Fallo inducido en la tarea integrar_a_gold (parámetro fallo_inducido)
+```
+La tarea falló **antes** de producir salidas: no aparece ninguna línea de `etl.build_gold`.
+
+Hallazgo de la prueba (DEF-013): después de este fallo quedó **una** copia de trabajo en `/tmp` del trabajador, porque en las tres tareas con copia la comprobación del fallo inducido estaba antes del `try` que elimina la copia. Se corrigió moviendo esa comprobación dentro del `try`, se agregó una prueba estática y de regresión, se limpió esa copia y se repitió el fallo.
+
+## Segundo fallo inducido, con la corrección (ejecución manual__2026-11-14T03:27:22)
+Estado **failed**: validar_bronze success (1,5 s), transformar_a_silver success (2,4 s), integrar_a_gold failed (0,2 s) y cargar_datawarehouse upstream_failed. Copias de trabajo que quedan en el contenedor: **0**.
+
+## Recuperación (ejecución normal manual__2026-11-14T03:27:55)
+Estado **success**: validar_bronze 1,7 s, transformar_a_silver 2,6 s, integrar_a_gold 1,7 s y cargar_datawarehouse 1,8 s. Todas las comparaciones con el repositorio coinciden y la carga relacional responde `ya_cargada`.
+
+## Comprobaciones después de los fallos y la recuperación (5 ejecuciones en total)
+- `git status` del proyecto limpio; los 19 archivos de `data/` con el mismo sha256 que antes, incluida la base byte a byte; los 9 hashes de la línea base y el manifiesto 8 de 8 sin cambios.
+- `sismo_cali` con la **misma única corrida** (id 1, clave 05cb1d9f5b2c): no se duplicó nada. Sin copias de trabajo en el contenedor.
+
+Este fallo es una **prueba provocada a propósito**, no un defecto real del pipeline; solo DEF-013 (la copia que quedaba) es un defecto real y está en el registro de defectos.

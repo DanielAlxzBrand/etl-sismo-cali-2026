@@ -32,6 +32,10 @@ MUTACIONES = [
      "tests/test_carga_relacional.py::test_las_sentencias_no_dependen_de_separadores_dentro_de_los_textos"),
     ("DEF-008b", "src/load/sql/esquema_mysql.sql", "COMMENT 'identificador de la corrida'", "COMMENT 'identificador; de la corrida'",
      "tests/test_carga_relacional.py::test_los_dos_esquemas_declaran_las_mismas_tablas_y_columnas_en_el_mismo_orden"),
+    ("DEF-013", "dags/medallon_etl_dag.py", '''        try:
+            _fallo_inducido("integrar_a_gold", conf)   # dentro del try: si falla, la copia de trabajo también se elimina''', '''        _fallo_inducido("integrar_a_gold", conf)
+        try:''',
+     "tests/test_dag_estatico.py::test_el_fallo_inducido_de_las_tareas_con_copia_ocurre_dentro_del_try_que_elimina_la_copia"),
     ("DEF-012", "dags/medallon_etl_dag.py", '"docs" / "silver" / "hallazgos_eda.md", destino / "docs" / "silver" / "hallazgos_eda.md"', '"docs" / "silver" / "otro.md", destino / "docs" / "silver" / "otro.md"',
      "tests/test_dag_estatico.py::test_la_copia_incluye_la_entrada_de_docs_silver_que_lee_la_transformacion"),
 ]

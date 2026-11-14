@@ -1,0 +1,44 @@
+# Pasos 34 y 37: ejecución manual del DAG, repetición y comparación con el repositorio
+- comando: `docker compose exec airflow-scheduler airflow dags trigger / unpause / list-runs / tasks states-for-dag-run`
+- fecha: 2026-11-13T22:25:13-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 520.0 s
+- Python: 3.13.0
+- commit del repositorio: 7d1fe0f
+
+Pasos 34 y 37 de la guía con `schedule=None`, desde `<AIRFLOW>`. Usuario de MySQL para Docker creado por el equipo con `configurar_mysql.py --usuario-docker --origen localhost`; comprobado desde el contenedor (sin imprimir valores): sesión `sismo_airflow@localhost` en `sismo_cali`, permisos `SELECT, INSERT, CREATE, REFERENCES, INDEX` sobre `sismo_cali` y conteos 1 corrida, 346, 5.146, 23 y 107 filas.
+
+## Paso 37 · disparo desde la terminal · con complemento de DF-9
+`docker compose exec airflow-scheduler airflow dags trigger medallon_etl_sismo` crea la ejecución `manual__2026-11-14T03:15:59` en estado **queued**. Con el DAG pausado (nace así en el compose oficial, H-12) la ejecución no avanzó en más de 7 minutos. Complemento documentado de DF-9: `airflow dags unpause medallon_etl_sismo`; 28 s después la ejecución pasó a `success`.
+
+## Primera ejecución manual
+`airflow dags list-runs`: estado **success**; inicio 03:23:21 y fin 03:23:38 UTC (17,3 s).
+| Tarea | Estado | Duración | Qué comparó con el repositorio |
+|---|---|---|---|
+| validar_bronze | success | 7,7 s | 8 archivos de Bronze con sha256 igual al manifiesto; manifiesto de la copia igual al del repositorio |
+| transformar_a_silver | success | 2,4 s | 6 archivos (5 CSV y `quality_report.json`) con sha256 igual al versionado |
+| integrar_a_gold | success | 1,2 s | 3 archivos (`gold_final`, `kpis_gold` y `kpis_sensibilidad`) con sha256 igual al versionado |
+| cargar_datawarehouse | success | 1,9 s | 4 tablas de `etl_sismo.db` con el mismo contenido que el repositorio; carga relacional: `ya_cargada` (corrida 1, clave 05cb1d9f5b2c) |
+
+Extractos del registro de las tareas (copiados de `<AIRFLOW>\logs`, saneados):
+```
+validar_bronze        Bronze validado correctamente: 8 archivos con sha256 que coincide
+transformar_a_silver  Entrada: 5146 construcciones y 369 filas del CSV de estrato
+                      Salida: construcciones=5146 barrios=346 integrado=5146 | cobertura de llave=99.8834% (pasa)
+                      llave_confianza=alta (nombre validado 93.52%)
+                      Coinciden con el repositorio 6 archivos (sha256)
+integrar_a_gold       Salida: gold_final=5146 filas | kpis_gold=23 filas (6 indicadores) | sensibilidades=107 filas
+                      Coinciden con el repositorio 3 archivos (sha256)
+cargar_datawarehouse  SQLite cargada: 4 tablas con el mismo contenido que el repositorio
+                      corrida 05cb1d9f5b2c ya cargada (id 1): no se escribe nada
+                      Carga relacional: ya_cargada (corrida 1), filas {'barrio_estrato': 346, 'construccion': 5146, 'kpi': 23, 'kpi_sensibilidad': 107}
+```
+
+## Segunda ejecución (repetición)
+Estado **success**; las cuatro tareas terminan en 1,3 s, 1,5 s, 1,4 s y 2,0 s; mismas comparaciones y misma salida `ya_cargada (corrida 1)`.
+
+## Comprobaciones del repositorio y de MySQL después de las dos ejecuciones
+- `git status` del proyecto: limpio (0 cambios). Los 9 archivos de la línea base conservan sus hashes (85ea33eb, 0815be18, bc1d1c6b, 04bc074b, da95c33f, fa66f7f2, 496ab49e, 6db3dbee y 0cf75f2d) y el manifiesto de Bronze coincide 8 de 8.
+- Los 19 archivos de `data/` tienen el mismo sha256 antes y después, incluida `etl_sismo.db` byte a byte: el repositorio estaba montado en solo lectura y las tareas trabajaron en la copia.
+- `sismo_cali` sigue con **una sola corrida** (id 1, clave 05cb1d9f5b2c): 346 barrios, 5.146 construcciones, 23 indicadores y 107 filas de sensibilidad iguales a los CSV; 296 severas, 435 sin datos y 6 sin cruce.
+- Las copias de trabajo se eliminan al terminar: 0 carpetas `medallon_*` quedan en `/tmp` del trabajador.
