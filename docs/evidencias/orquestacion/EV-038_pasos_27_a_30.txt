@@ -1,0 +1,35 @@
+# Pasos 27 a 30: build, init, up y docker ps
+- comando: `docker compose build; docker compose up airflow-init; docker compose up -d; docker ps (desde <AIRFLOW>)`
+- fecha: 2026-11-13T22:09:39-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 330.0 s
+- Python: 3.13.0
+- commit del repositorio: 919f255
+
+Desde `<AIRFLOW>`, como en la guía.
+
+## Paso 27 · `docker compose build` · tal cual
+Código de salida 0, 81 s. La imagen se construye una vez y se etiqueta para los seis servicios (`airflow-medallon-airflow-init`, `-scheduler`, `-triggerer`, `-worker`, `-apiserver` y `-dag-processor`). El `RUN pip install` instaló exactamente las versiones de `requirements-airflow.txt`: pandas 3.0.6, numpy 2.5.4, python-dotenv 1.2.4, shapely 2.2.0, PyMySQL 1.2.4 y cryptography 50.0.2 (PyYAML y requests ya estaban en la imagen con esas versiones).
+
+Hallazgo H-16: pip avisa de un conflicto que no impide la instalación: `apache-airflow-providers-mysql 6.6.2` (ya incluido en la imagen) pide `pymysql<1.2` y el proyecto usa 1.2.4. El DAG no usa el proveedor de MySQL de Airflow (usa `src.load.conexion` con PyMySQL), por lo que no hay cambio.
+
+## Paso 28 · `docker compose up airflow-init` · tal cual
+Código de salida del contenedor: `airflow-init-1 exited with code 0` (135 s).
+
+## Paso 29 · `docker compose up -d` · con diferencia DF-8 (b)
+Código de salida 0 (111 s). Servicios iniciados: apiserver, scheduler, dag-processor, worker, triggerer, postgres y redis. El apiserver publica el 8080 solo en 127.0.0.1.
+
+Hallazgo H-17: el compose usa `${FERNET_KEY}` sin valor por defecto y Compose avisa «The "FERNET_KEY" variable is not set. Defaulting to a blank string» en cada comando. La guía no lo menciona y no está en la lista de diferencias, por lo que se deja tal cual; las advertencias se omiten en estas evidencias.
+
+## Paso 30 · `docker ps` · tal cual
+| Contenedor | Imagen | Estado | Puertos |
+|---|---|---|---|
+| airflow-medallon-airflow-worker-1 | airflow-medallon-airflow-worker | Up (healthy) | 8080/tcp |
+| airflow-medallon-airflow-triggerer-1 | airflow-medallon-airflow-triggerer | Up (healthy) | 8080/tcp |
+| airflow-medallon-airflow-apiserver-1 | airflow-medallon-airflow-apiserver | Up (healthy) | 127.0.0.1:8080->8080/tcp |
+| airflow-medallon-airflow-dag-processor-1 | airflow-medallon-airflow-dag-processor | Up (healthy) | 8080/tcp |
+| airflow-medallon-airflow-scheduler-1 | airflow-medallon-airflow-scheduler | Up (healthy) | 8080/tcp |
+| airflow-medallon-postgres-1 | postgres:16 | Up (healthy) | 5432/tcp |
+| airflow-medallon-redis-1 | redis:7.2-bookworm | Up (healthy) | 6379/tcp |
+
+Memoria en reposo de los contenedores: worker 677 MiB, dag-processor 662 MiB, scheduler 289 MiB, apiserver 280 MiB, triggerer 243 MiB, postgres 60 MiB y redis 4 MiB, sobre 7,62 GiB disponibles. Versión de Airflow: 3.3.2.

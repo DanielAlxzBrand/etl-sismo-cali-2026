@@ -1,0 +1,24 @@
+# Pasos 31 a 33: interfaz, dags list, list-import-errors y ls dags
+- comando: `curl http://localhost:8080; docker compose exec airflow-scheduler airflow dags list / list-import-errors / ls /opt/airflow/dags`
+- fecha: 2026-11-13T22:09:39-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 20.0 s
+- Python: 3.13.0
+- commit del repositorio: 919f255
+
+## Paso 31 · interfaz en http://localhost:8080 · con diferencia DF-8
+- `curl.exe -s -o NUL -w "HTTP %{http_code}" http://localhost:8080/` responde **HTTP 200**. La contraseña de la interfaz no se imprime ni se usa en esta evidencia.
+- `GET /api/v2/monitor/health`: metadatabase, scheduler, triggerer y dag_processor en estado `healthy`.
+
+## Paso 32 · `airflow dags list` y `airflow dags list-import-errors` · tal cual
+```
+dag_id             | fileloc                               | owners  | is_paused | bundle_name | bundle_version
+medallon_etl_sismo | /opt/airflow/dags/medallon_etl_dag.py | airflow | True      | dags-folder | None
+```
+`airflow dags list-import-errors`: «No data found» (sin errores de importación). Se confirma H-12: el DAG nace pausado (`is_paused` True), como en el compose oficial (`DAGS_ARE_PAUSED_AT_CREATION`).
+
+## Paso 33 · `ls /opt/airflow/dags` dentro del contenedor · tal cual
+`medallon_etl_dag.py` (y la carpeta `__pycache__` que crea el procesador de DAG). Es el DAG que se copió con `scripts/orquestacion/sincronizar_dag.py`: sha256 igual en el repositorio y en `<AIRFLOW>\dags` (empieza por c45af5fb912f).
+
+## Comprobación del volumen (DF-1)
+Dentro del contenedor, `/opt/airflow/medallon` muestra el proyecto (config, data, dags, docs, orquestacion, scripts, src, tests…) y `touch /opt/airflow/medallon/prueba_escritura` responde «touch: cannot touch: Read-only file system».

@@ -1,0 +1,3 @@
+# Nombres de las variables de ..irflow-medallon\.env (sin valores; el archivo no se versiona)
+AIRFLOW_UID
+_AIRFLOW_WWW_USER_PASSWORD

@@ -34,12 +34,12 @@ def _correr(env, admin, **kw):
     return cm.configurar_docker(load_config(), _args(**kw), lambda u, c: admin, pedir_clave=pedir, ruta_env=env), pedidas
 
 
-@pytest.mark.parametrize("origen", ["192.168.65.3", "10.0.0.0/255.255.0.0", "172.20.0.0/255.255.240.0", "host.docker.internal", "gateway.docker.internal"])
+@pytest.mark.parametrize("origen", ["192.168.65.3", "10.0.0.0/255.255.0.0", "172.20.0.0/255.255.240.0", "host.docker.internal", "gateway.docker.internal", "localhost", "127.0.0.1"])
 def test_origenes_validos(origen):
     assert cm.validar_origen(origen) == origen
 
 
-@pytest.mark.parametrize("origen", ["", "   ", "%", "192.168.%", "10.%.%.%", "host_docker", "0.0.0.0", "8.8.8.8", "127.0.0.1", "localhost", "10.0.0.0/255.0.0.0", "10.0.0.0/255.255.0.255",
+@pytest.mark.parametrize("origen", ["", "   ", "%", "192.168.%", "10.%.%.%", "host_docker", "0.0.0.0", "8.8.8.8", "127.0.0.0/255.255.0.0", "10.0.0.0/255.0.0.0", "10.0.0.0/255.255.0.255",
                                     "8.8.0.0/255.255.0.0", "10.0.0.0/16", "10.0.0.0/", "a b", "x'; DROP USER 'y", "192.168.1.*", None])
 def test_origenes_rechazados(origen):
     with pytest.raises(cm.ConfiguracionError):

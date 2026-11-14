@@ -215,7 +215,7 @@ MASCARA_MINIMA = 16   # una máscara de red más ancha que /16 cubriría demasia
 
 
 def validar_origen(patron):
-    """Origen desde el que puede conectar el usuario de Docker: IP privada exacta, nombre exacto o `red/máscara` privada de al menos 16 bits. Rechaza `%`, `_`, vacío y comodines amplios."""
+    """Origen desde el que puede conectar el usuario de Docker: IP exacta (privada o de loopback), nombre exacto o `red/máscara` privada de al menos 16 bits. Rechaza `%`, `_`, vacío, comodines, IP públicas y 0.0.0.0."""
     import ipaddress
     p = (patron or "").strip()
     if not p:
@@ -240,11 +240,12 @@ def validar_origen(patron):
     except ValueError:
         ip = None
     if ip is not None:
-        if not ip.is_private or ip.is_unspecified or ip.is_loopback:
-            raise ConfiguracionError("la IP del origen debe ser privada y exacta (no pública, no 0.0.0.0 y no loopback)")
+        # el origen real de un contenedor de Docker Desktop llega a MySQL como loopback (ver EV-040), por eso se admiten las IP privadas y la de loopback
+        if not (ip.is_private or ip.is_loopback) or ip.is_unspecified:
+            raise ConfiguracionError("la IP del origen debe ser exacta y privada o de loopback (no pública y no 0.0.0.0)")
         return p
-    if p.lower() == "localhost" or not re.fullmatch(r"[A-Za-z0-9]([A-Za-z0-9.-]{0,251}[A-Za-z0-9])?", p):
-        raise ConfiguracionError("el nombre del origen debe ser un nombre exacto distinto de localhost (letras, dígitos, punto y guion)")
+    if not re.fullmatch(r"[A-Za-z0-9]([A-Za-z0-9.-]{0,251}[A-Za-z0-9])?", p):
+        raise ConfiguracionError("el nombre del origen debe ser un nombre exacto (letras, dígitos, punto y guion)")
     return p
 
 

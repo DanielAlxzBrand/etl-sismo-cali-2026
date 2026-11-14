@@ -1,0 +1,34 @@
+# Pasos 13 a 19: carpeta, compose, .env, Dockerfile, volumen y build: .
+- comando: `mkdir, curl.exe -LfO <compose 3.3.2>, edición del compose y del .env, docker run --rm --entrypoint printenv apache/airflow:3.3.2 AIRFLOW_VERSION`
+- fecha: 2026-11-13T22:08:53-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 120.0 s
+- Python: 3.13.0
+- commit del repositorio: 919f255
+
+## Entorno (antes de empezar)
+- docker 29.9.3; compose v5.7.0; el motor responde (`docker info`): Docker Desktop con 12 procesadores y 7,62 GB de memoria disponibles para Docker (no existe `.wslconfig`: WSL2 usa el valor por defecto, la mitad de la RAM); puerto 8080 libre.
+- Hallazgo del equipo: ya existía una carpeta `airflow-medallon` en Downloads con el laboratorio de clase extraído (576 archivos, con contraseñas por defecto). Se movió, sin borrar nada y con el mismo conteo de archivos y de bytes, a `<GUIA>\referencias_clase\airflow-medallon_extraido_de_Downloads_2026-11-13` para dejar `<AIRFLOW>` limpia, como pide la guía.
+
+## Paso 13 · tal cual
+`mkdir airflow-medallon`, y dentro `mkdir dags, logs, plugins, config`. Contenido: config, dags, logs, plugins.
+
+## Paso 14 · tal cual
+`curl.exe -LfO https://airflow.apache.org/docs/apache-airflow/3.3.2/docker-compose.yaml`: código de salida 0; 13039 bytes; sha256 que empieza por 99da85d87016.
+
+## Paso 15 · con diferencia DF-8 (a)
+`"AIRFLOW_UID=50000" | Out-File -Encoding ascii .env` como en la guía. `Out-File -Encoding ascii` escribe saltos CRLF (H-6): no impidió que Compose leyera el valor, el contenedor `airflow-init` terminó con código 0 y el usuario de los contenedores es 50000 (en Windows con WSL2 el UID no cambia la propiedad de los archivos del volumen). Diferencia DF-8 (a): se agregó `_AIRFLOW_WWW_USER_PASSWORD` con una contraseña aleatoria de 24 caracteres generada con `secrets`, que no se imprime. Variables del `.env`: AIRFLOW_UID y _AIRFLOW_WWW_USER_PASSWORD.
+
+## Paso 17 · con diferencia DF-6
+Dockerfile de `orquestacion/` con `COPY` y `RUN` en líneas distintas (H-3). Comprobación de la variable (H-4):
+- `docker run --rm --entrypoint printenv apache/airflow:3.3.2 AIRFLOW_VERSION` devuelve 3.3.2: la imagen base ya define la variable, por lo que no hace falta declarar `ARG AIRFLOW_VERSION`.
+- Python de la imagen base: 3.13.15 (el `.venv` del proyecto usa 3.13.0).
+- `requirements-airflow.txt` (paso 16, ausente en la guía; DF-5): pandas 3.0.6, numpy 2.5.4, PyYAML 6.0.3, python-dotenv 1.2.4, requests 2.34.2, shapely 2.2.0, PyMySQL 1.2.4 y cryptography 50.0.2, las mismas versiones del `.venv`.
+
+## Paso 18 · con diferencia DF-1
+Volumen agregado en el bloque `volumes` del compose: `../etl_sismo_cali_2026:/opt/airflow/medallon:ro`. Comprobado más adelante: dentro del contenedor, `touch` en `/opt/airflow/medallon` responde «Read-only file system».
+
+## Paso 19 · con diferencia DF-12
+El compose descargado trae `image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:3.3.2}` y `# build: .`, con un comentario que indica comentar `image` y descomentar `build` (la guía no lo dice, H-7). Se hizo eso. Además, DF-8 (b): el puerto 8080 se publica solo en 127.0.0.1.
+
+Diff completo del compose frente al descargado: `orquestacion/docker-compose.diff` (sin secretos).

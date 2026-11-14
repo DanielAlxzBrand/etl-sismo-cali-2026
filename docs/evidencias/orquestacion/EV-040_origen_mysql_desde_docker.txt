@@ -1,0 +1,25 @@
+# Origen con el que MySQL ve una conexión desde el contenedor
+- comando: `docker compose exec -T airflow-worker python - (conexión con un usuario inexistente a host.docker.internal:3306)`
+- fecha: 2026-11-13T22:10:47-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 5.0 s
+- Python: 3.13.0
+- commit del repositorio: 919f255
+
+Objetivo: conocer el ORIGEN con el que MySQL ve una conexión que sale de un contenedor, para fijar el patrón más estrecho del usuario de Docker (DF-4). No se usa ningún secreto: el usuario y la contraseña de la prueba son inventados y no existen en MySQL.
+
+Comando (desde `<AIRFLOW>`, dentro del contenedor del trabajador):
+`docker compose exec -T airflow-worker python -` con un script de PyMySQL que resuelve `host.docker.internal` e intenta conectar a `host.docker.internal:3306` con un usuario inexistente.
+
+Salida:
+```
+resuelve host.docker.internal -> 192.168.65.254
+error 1045 Access denied for user 'usuario_inexistente_prueba'@'localhost' (using password: YES)
+```
+
+Lectura:
+- La conexión **llega** a MySQL (el rechazo es de autenticación, error 1045, no un tiempo de espera): no hace falta ninguna regla del cortafuegos de Windows.
+- `host.docker.internal` resuelve a 192.168.65.254 dentro del contenedor, pero MySQL informa el origen como **`localhost`**: Docker Desktop entrega la conexión desde el propio equipo (loopback), no desde una dirección de la red de Docker.
+- Por eso el patrón más estrecho que funciona es el nombre exacto **`localhost`** (el usuario `sismo_airflow`@`localhost`, distinto de `sismo_etl`). No depende de la subred de Docker, que es lo que puede cambiar tras `wsl --shutdown` o al reiniciar Docker Desktop.
+- Riesgo residual: cualquier proceso local del equipo podría usar esas credenciales, igual que con `sismo_etl`@`localhost`; se acota con permisos mínimos (SELECT, INSERT, CREATE, INDEX y REFERENCES solo sobre `sismo_cali`) y la contraseña solo vive en `.env`. Si Docker Desktop cambiara su modo de red y MySQL viera otra dirección, la carga fallaría con un error 1045 que nombra el nuevo origen y habría que repetir `configurar_mysql.py --usuario-docker --origen <nuevo>`.
+- No se repitió la observación tras `wsl --shutdown` y reinicio de Docker Desktop: el origen observado no es una dirección de la red de Docker.

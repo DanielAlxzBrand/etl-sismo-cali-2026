@@ -1,0 +1,24 @@
+--- docker-compose.yaml (descargado de la documentación oficial de Airflow 3.3.2)
++++ docker-compose.yaml (editado: pasos 18 y 19 de la guía y DF-1, DF-8, DF-12)
+@@ -50,6 +50,6 @@
+   # Comment the image line, place your Dockerfile in the directory where you placed the docker-compose.yaml
+   # and uncomment the "build" line below, Then run `docker-compose build` to build the images.
+-  image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:3.3.2}
+-  # build: .
++  # image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:3.3.2}
++  build: .
+   env_file:
+     - ${ENV_FILE_PATH:-.env}
+@@ -82,4 +82,5 @@
+     - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
+     - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
++    - ../etl_sismo_cali_2026:/opt/airflow/medallon:ro
+   user: "${AIRFLOW_UID:-50000}:0"
+   depends_on:
+@@ -124,5 +125,5 @@
+     command: api-server
+     ports:
+-      - "8080:8080"
++      - "127.0.0.1:8080:8080"
+     healthcheck:
+       test: ["CMD", "curl", "--fail", "http://localhost:8080/api/v2/monitor/health"]
