@@ -1,10 +1,10 @@
 # Ejecución real del panel con el lanzador: salud, ocho páginas y cierre limpio
 - comando: `python scripts/panel/ejecutar_panel.py --duracion 150`
-- fecha: 2026-11-14T10:54:12-05:00 (America/Bogota)
+- fecha: 2026-11-14T11:03:21-05:00 (America/Bogota)
 - código de salida: 0
-- duración: 159.7 s
+- duración: 159.3 s
 - Python: 3.13.0
-- commit del repositorio: ce71a44
+- commit del repositorio: c484b16
 
 Se lanza `python scripts/panel/ejecutar_panel.py --duracion 150` con el almacenamiento SQLite (puertos 8765 y 8766).
 
@@ -22,14 +22,14 @@ Salud:
 Las ocho páginas, con el cliente HTTP real y AppTest (la misma lectura de datos que hace la aplicación):
 | Página | Rutas de la API | Resultado | Elementos |
 |---|---|---|---|
-| Respuesta | /kpis, /metadata | correcta (5.5 s) | 7 métricas, 0 tablas, 3 textos |
+| Respuesta | /kpis, /metadata | correcta (4.7 s) | 7 métricas, 0 tablas, 3 textos |
 | Estratos (K1) | /kpis/K1 | correcta (0.5 s) | 0 métricas, 1 tablas, 2 textos |
 | Comunas (K6) | /comunas, /composicion | correcta (0.6 s) | 0 métricas, 2 tablas, 2 textos |
 | Sensibilidades (S0 a S5) | /kpis/sensibilidad | correcta (0.4 s) | 0 métricas, 1 tablas, 14 textos |
-| Concentración (K3 y K4) | /kpis | correcta (0.5 s) | 5 métricas, 1 tablas, 2 textos |
-| Calidad de la llave | /calidad, /llave/revision | correcta (0.4 s) | 3 métricas, 2 tablas, 2 textos |
-| Construcciones | /construcciones, /comunas, /kpis/K1 | correcta (0.7 s) | 0 métricas, 1 tablas, 1 textos |
-| Fuentes y sistema | /fuentes, /metadata, /health | correcta (0.6 s) | 4 métricas, 2 tablas, 13 textos |
+| Concentración (K3 y K4) | /kpis | correcta (0.4 s) | 5 métricas, 1 tablas, 2 textos |
+| Calidad de la llave | /calidad, /llave/revision | correcta (0.5 s) | 3 métricas, 2 tablas, 2 textos |
+| Construcciones | /construcciones, /comunas, /kpis/K1 | correcta (0.6 s) | 0 métricas, 1 tablas, 1 textos |
+| Fuentes y sistema | /fuentes, /metadata, /health | correcta (0.4 s) | 4 métricas, 2 tablas, 13 textos |
 
 Cierre: el lanzador terminó solo con código de salida 0 tras los 150 s.
 - Puertos de la API y del panel cerrados: sí.

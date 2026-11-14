@@ -1,180 +1,180 @@
 cp,funcion_critica,caso,tipo,resultado_esperado,resultado_obtenido,estado,duracion_s,prueba,variantes
-CP-001,FC-01,El manifiesto existe y tiene líneas,correcto,manifest.jsonl no vacío,cumplió lo esperado,pasa,0.024,tests/test_extract.py::test_manifiesto_existe_y_no_vacio,1
-CP-002,FC-01,Cada archivo existe y su sha256 coincide con el manifiesto,correcto,8 de 8 coinciden,cumplió lo esperado,pasa,0.062,tests/test_extract.py::test_archivos_existen_y_sha256_coincide,1
-CP-003,FC-01,Las páginas suman el conteo oficial de la capa,correcto,5.146 filas en 3 páginas,cumplió lo esperado,pasa,0.050,tests/test_extract.py::test_paginas_suman_el_conteo_oficial,1
-CP-004,FC-01,El conteo de filas del manifiesto coincide con el contenido,límite,filas del manifiesto = filas leídas,cumplió lo esperado,pasa,0.212,tests/test_extract.py::test_rows_coherente_con_el_contenido,1
-CP-005,FC-01,El manifiesto no repite rutas,incorrecto,ninguna ruta duplicada,cumplió lo esperado,pasa,0.033,tests/test_extract.py::test_sin_paths_duplicados,1
-CP-006,FC-01,El manifiesto no guarda tokens en sus parámetros,incorrecto,ningún campo sensible,cumplió lo esperado,pasa,0.035,tests/test_extract.py::test_campos_del_manifiesto_sin_tokens,1
-CP-007,FC-02,Tipos esperados en Silver,correcto,columnas con el tipo declarado,cumplió lo esperado,pasa,0.114,tests/test_transform.py::test_tipos_esperados_silver,1
-CP-008,FC-02,Sin duplicados por llave natural,correcto,OBJECTID único,cumplió lo esperado,pasa,0.164,tests/test_transform.py::test_cero_duplicados_por_llave_natural,1
-CP-009,FC-02,Fechas en zona horaria de Bogotá,correcto,zona America/Bogota,cumplió lo esperado,pasa,0.057,tests/test_transform.py::test_zona_horaria_bogota,1
-CP-010,FC-02,Reporte de calidad con todos los campos,correcto,campos presentes,cumplió lo esperado,pasa,0.002,tests/test_quality.py::test_reporte_con_todos_los_campos,1
+CP-001,FC-01,El manifiesto existe y tiene líneas,correcto,manifest.jsonl no vacío,cumplió lo esperado,pasa,0.029,tests/test_extract.py::test_manifiesto_existe_y_no_vacio,1
+CP-002,FC-01,Cada archivo existe y su sha256 coincide con el manifiesto,correcto,8 de 8 coinciden,cumplió lo esperado,pasa,0.048,tests/test_extract.py::test_archivos_existen_y_sha256_coincide,1
+CP-003,FC-01,Las páginas suman el conteo oficial de la capa,correcto,5.146 filas en 3 páginas,cumplió lo esperado,pasa,0.037,tests/test_extract.py::test_paginas_suman_el_conteo_oficial,1
+CP-004,FC-01,El conteo de filas del manifiesto coincide con el contenido,límite,filas del manifiesto = filas leídas,cumplió lo esperado,pasa,0.178,tests/test_extract.py::test_rows_coherente_con_el_contenido,1
+CP-005,FC-01,El manifiesto no repite rutas,incorrecto,ninguna ruta duplicada,cumplió lo esperado,pasa,0.032,tests/test_extract.py::test_sin_paths_duplicados,1
+CP-006,FC-01,El manifiesto no guarda tokens en sus parámetros,incorrecto,ningún campo sensible,cumplió lo esperado,pasa,0.028,tests/test_extract.py::test_campos_del_manifiesto_sin_tokens,1
+CP-007,FC-02,Tipos esperados en Silver,correcto,columnas con el tipo declarado,cumplió lo esperado,pasa,0.085,tests/test_transform.py::test_tipos_esperados_silver,1
+CP-008,FC-02,Sin duplicados por llave natural,correcto,OBJECTID único,cumplió lo esperado,pasa,0.182,tests/test_transform.py::test_cero_duplicados_por_llave_natural,1
+CP-009,FC-02,Fechas en zona horaria de Bogotá,correcto,zona America/Bogota,cumplió lo esperado,pasa,0.055,tests/test_transform.py::test_zona_horaria_bogota,1
+CP-010,FC-02,Reporte de calidad con todos los campos,correcto,campos presentes,cumplió lo esperado,pasa,0.003,tests/test_quality.py::test_reporte_con_todos_los_campos,1
 CP-011,FC-02,Gold con el mínimo de filas y sin duplicados,límite,al menos el umbral configurado,cumplió lo esperado,pasa,0.054,tests/test_quality.py::test_gold_minimo_de_filas_y_sin_duplicados,1
-CP-012,FC-03,El CSV de estrato se lee como UTF-8 y se limpia,correcto,una fila por barrio con código único,cumplió lo esperado,pasa,0.106,tests/test_casos_limite.py::test_la_limpieza_del_estrato_acepta_una_sola_fila_real,1
-CP-013,FC-03,Revisión de códigos de barrio por categoría,correcto,las categorías suman las construcciones sin nombre validado,cumplió lo esperado,pasa,0.028,tests/test_empaquetado_y_revision.py::test_categorias_de_la_revision_suman_las_construcciones_sin_nombre_validado,1
-CP-014,FC-03,Revisión de códigos con los casos pedidos,incorrecto,cada caso cae en su categoría,cumplió lo esperado,pasa,0.004,tests/test_empaquetado_y_revision.py::test_revision_de_codigos_cubre_los_casos_pedidos,1
-CP-015,FC-03,Una sola fila de estrato,límite,se limpia sin error,cumplió lo esperado,pasa,0.106,tests/test_casos_limite.py::test_la_limpieza_del_estrato_acepta_una_sola_fila_real,1
-CP-016,FC-04,Normalización de nombres,correcto,texto normalizado,cumplió lo esperado,pasa,0.003,tests/test_transform.py::test_normalize_key,1
-CP-017,FC-04,Código de barrio = comuna por 100 más barrio,correcto,código esperado,cumplió lo esperado,pasa,0.002,tests/test_transform.py::test_codigo_barrio,1
-CP-018,FC-04,La cobertura del JOIN supera el umbral,correcto,"cobertura >= 0,80",cumplió lo esperado,pasa,0.017,tests/test_quality.py::test_cobertura_join_supera_umbral,1
-CP-019,FC-04,Entradas mínimas para las llaves,límite,cadena vacía y un carácter se aceptan,cumplió lo esperado,pasa,0.001,tests/test_casos_limite.py::test_las_llaves_aceptan_entradas_minimas,1
-CP-020,FC-04,Revisión de llave coincide con Silver,correcto,mismos códigos y conteos,cumplió lo esperado,pasa,0.066,tests/test_api.py::test_revision_de_llave_coincide_con_silver,1
-CP-021,FC-05,Vectores de Wilson,correcto,límites con 4 decimales,cumplió lo esperado,pasa,0.002,tests/test_kpis.py::test_wilson_vectores,1
+CP-012,FC-03,El CSV de estrato se lee como UTF-8 y se limpia,correcto,una fila por barrio con código único,cumplió lo esperado,pasa,0.082,tests/test_casos_limite.py::test_la_limpieza_del_estrato_acepta_una_sola_fila_real,1
+CP-013,FC-03,Revisión de códigos de barrio por categoría,correcto,las categorías suman las construcciones sin nombre validado,cumplió lo esperado,pasa,0.027,tests/test_empaquetado_y_revision.py::test_categorias_de_la_revision_suman_las_construcciones_sin_nombre_validado,1
+CP-014,FC-03,Revisión de códigos con los casos pedidos,incorrecto,cada caso cae en su categoría,cumplió lo esperado,pasa,0.002,tests/test_empaquetado_y_revision.py::test_revision_de_codigos_cubre_los_casos_pedidos,1
+CP-015,FC-03,Una sola fila de estrato,límite,se limpia sin error,cumplió lo esperado,pasa,0.082,tests/test_casos_limite.py::test_la_limpieza_del_estrato_acepta_una_sola_fila_real,1
+CP-016,FC-04,Normalización de nombres,correcto,texto normalizado,cumplió lo esperado,pasa,0.002,tests/test_transform.py::test_normalize_key,1
+CP-017,FC-04,Código de barrio = comuna por 100 más barrio,correcto,código esperado,cumplió lo esperado,pasa,0.001,tests/test_transform.py::test_codigo_barrio,1
+CP-018,FC-04,La cobertura del JOIN supera el umbral,correcto,"cobertura >= 0,80",cumplió lo esperado,pasa,0.034,tests/test_quality.py::test_cobertura_join_supera_umbral,1
+CP-019,FC-04,Entradas mínimas para las llaves,límite,cadena vacía y un carácter se aceptan,cumplió lo esperado,pasa,0.002,tests/test_casos_limite.py::test_las_llaves_aceptan_entradas_minimas,1
+CP-020,FC-04,Revisión de llave coincide con Silver,correcto,mismos códigos y conteos,cumplió lo esperado,pasa,0.072,tests/test_api.py::test_revision_de_llave_coincide_con_silver,1
+CP-021,FC-05,Vectores de Wilson,correcto,límites con 4 decimales,cumplió lo esperado,pasa,0.003,tests/test_kpis.py::test_wilson_vectores,1
 CP-022,FC-05,Vector de Newcombe,correcto,diferencia e intervalo,cumplió lo esperado,pasa,0.003,tests/test_kpis.py::test_newcombe_vector,1
-CP-023,FC-05,Mantel-Haenszel con una sola comuna,límite,razón calculada solo con la comuna disponible,cumplió lo esperado,pasa,0.015,tests/test_kpis.py::test_mantel_haenszel_una_comuna,1
-CP-024,FC-05,Construcciones sin datos satelitales no entran en Mantel-Haenszel,incorrecto,se excluyen del cálculo,cumplió lo esperado,pasa,0.024,tests/test_kpis.py::test_regresion_defecto_mh_sin_datos_no_entra_en_mh,1
-CP-025,FC-05,"Consistencia entre K1, K5 y K6 y rangos",correcto,"valores en [0, 1] y sumas consistentes",cumplió lo esperado,pasa,0.031,tests/test_kpis.py::test_consistencia_k1_k6_k5_y_rangos,1
-CP-026,FC-05,K1 recalculado desde Gold,correcto,igual a kpis_gold.csv,cumplió lo esperado,pasa,0.041,tests/test_kpis.py::test_k1_recalculado_desde_gold,1
+CP-023,FC-05,Mantel-Haenszel con una sola comuna,límite,razón calculada solo con la comuna disponible,cumplió lo esperado,pasa,0.012,tests/test_kpis.py::test_mantel_haenszel_una_comuna,1
+CP-024,FC-05,Construcciones sin datos satelitales no entran en Mantel-Haenszel,incorrecto,se excluyen del cálculo,cumplió lo esperado,pasa,0.019,tests/test_kpis.py::test_regresion_defecto_mh_sin_datos_no_entra_en_mh,1
+CP-025,FC-05,"Consistencia entre K1, K5 y K6 y rangos",correcto,"valores en [0, 1] y sumas consistentes",cumplió lo esperado,pasa,0.035,tests/test_kpis.py::test_consistencia_k1_k6_k5_y_rangos,1
+CP-026,FC-05,K1 recalculado desde Gold,correcto,igual a kpis_gold.csv,cumplió lo esperado,pasa,0.022,tests/test_kpis.py::test_k1_recalculado_desde_gold,1
 CP-027,FC-05,Wilson con un solo registro,límite,"intervalo válido dentro de [0, 1]",cumplió lo esperado,pasa,0.005,tests/test_casos_limite.py::test_wilson_con_un_solo_registro_da_un_intervalo_valido,2
-CP-028,FC-05,Wilson sin registros,límite,nan en lugar de dividir por cero,cumplió lo esperado,pasa,0.003,tests/test_casos_limite.py::test_wilson_sin_registros_da_nan_en_lugar_de_dividir_por_cero,1
-CP-029,FC-05,Newcombe con un registro por grupo,límite,diferencia observada dentro del intervalo,cumplió lo esperado,pasa,0.002,tests/test_casos_limite.py::test_newcombe_con_un_registro_por_grupo_incluye_la_diferencia_observada,1
+CP-028,FC-05,Wilson sin registros,límite,nan en lugar de dividir por cero,cumplió lo esperado,pasa,0.002,tests/test_casos_limite.py::test_wilson_sin_registros_da_nan_en_lugar_de_dividir_por_cero,1
+CP-029,FC-05,Newcombe con un registro por grupo,límite,diferencia observada dentro del intervalo,cumplió lo esperado,pasa,0.001,tests/test_casos_limite.py::test_newcombe_con_un_registro_por_grupo_incluye_la_diferencia_observada,1
 CP-030,FC-05,Mantel-Haenszel con un registro,límite,razón vacía y comuna excluida,cumplió lo esperado,pasa,0.010,tests/test_casos_limite.py::test_mantel_haenszel_con_un_registro_no_inventa_una_razon,1
-CP-031,FC-05,Indicadores con un solo registro,límite,grupos vacíos con denominador 0,cumplió lo esperado,pasa,0.027,tests/test_casos_limite.py::test_los_indicadores_con_un_solo_registro_se_calculan_y_los_grupos_vacios_quedan_en_cero,1
-CP-032,FC-05,KPI presentes y en rango,correcto,K1 a K6 con valores válidos,cumplió lo esperado,pasa,0.025,tests/test_quality.py::test_kpis_presentes_y_en_rango,1
-CP-033,FC-06,Sensibilidades iguales al CSV,correcto,filas idénticas,cumplió lo esperado,pasa,0.105,tests/test_api.py::test_kpis_y_sensibilidad_son_iguales_a_los_csv,1
-CP-034,FC-06,Escenario no válido en la API,incorrecto,422 con el JSON de error uniforme,cumplió lo esperado,pasa,0.098,tests/test_api.py::test_parametros_invalidos_dan_422_con_el_json_uniforme,1
+CP-031,FC-05,Indicadores con un solo registro,límite,grupos vacíos con denominador 0,cumplió lo esperado,pasa,0.018,tests/test_casos_limite.py::test_los_indicadores_con_un_solo_registro_se_calculan_y_los_grupos_vacios_quedan_en_cero,1
+CP-032,FC-05,KPI presentes y en rango,correcto,K1 a K6 con valores válidos,cumplió lo esperado,pasa,0.050,tests/test_quality.py::test_kpis_presentes_y_en_rango,1
+CP-033,FC-06,Sensibilidades iguales al CSV,correcto,filas idénticas,cumplió lo esperado,pasa,0.123,tests/test_api.py::test_kpis_y_sensibilidad_son_iguales_a_los_csv,1
+CP-034,FC-06,Escenario no válido en la API,incorrecto,422 con el JSON de error uniforme,cumplió lo esperado,pasa,0.094,tests/test_api.py::test_parametros_invalidos_dan_422_con_el_json_uniforme,1
 CP-035,FC-06,La ruta de sensibilidades va antes que /kpis/{id},límite,no se confunde con un id de KPI,cumplió lo esperado,pasa,0.021,tests/test_api.py::test_orden_de_rutas_sensibilidad_antes_que_kpi_id,1
-CP-036,FC-07,Contenido igual al de la base versionada,correcto,4 tablas con el mismo contenido,cumplió lo esperado,pasa,0.862,tests/test_carga_sqlite.py::test_el_contenido_cargado_es_igual_al_de_la_base_versionada,1
-CP-037,FC-07,Cargar dos veces,límite,mismas tablas sin duplicar filas,cumplió lo esperado,pasa,1.227,tests/test_carga_sqlite.py::test_cargar_dos_veces_reemplaza_las_tablas_sin_duplicar_filas,1
-CP-038,FC-07,Una sola fila por tabla,límite,una fila en cada tabla,cumplió lo esperado,pasa,0.296,tests/test_carga_sqlite.py::test_con_una_sola_fila_por_tabla_se_cargan_cuatro_filas,1
-CP-039,FC-07,CSV de entrada ausente,incorrecto,FileNotFoundError y conexión cerrada,cumplió lo esperado,pasa,0.352,tests/test_carga_sqlite.py::test_un_csv_ausente_falla_y_no_deja_la_conexion_abierta,1
-CP-040,FC-07,La carga no toca el repositorio,correcto,la base versionada conserva su hash,cumplió lo esperado,pasa,0.464,tests/test_carga_sqlite.py::test_la_carga_no_modifica_el_repositorio,1
-CP-041,FC-08,Conversión correcta de cada tipo,correcto,valores convertidos sin pérdida,cumplió lo esperado,pasa,0.037,tests/test_carga_relacional.py::test_conversion_correcta,9
-CP-042,FC-08,Valores que perderían información,incorrecto,ConversionError con mensaje claro,cumplió lo esperado,pasa,0.044,tests/test_carga_relacional.py::test_conversion_que_perderia_informacion_falla,10
-CP-043,FC-08,Carga completa,correcto,"346, 5.146, 23 y 107 filas",cumplió lo esperado,pasa,2.075,tests/test_carga_relacional.py::test_la_carga_completa_concilia_al_cien_por_ciento,1
+CP-036,FC-07,Contenido igual al de la base versionada,correcto,4 tablas con el mismo contenido,cumplió lo esperado,pasa,0.766,tests/test_carga_sqlite.py::test_el_contenido_cargado_es_igual_al_de_la_base_versionada,1
+CP-037,FC-07,Cargar dos veces,límite,mismas tablas sin duplicar filas,cumplió lo esperado,pasa,1.085,tests/test_carga_sqlite.py::test_cargar_dos_veces_reemplaza_las_tablas_sin_duplicar_filas,1
+CP-038,FC-07,Una sola fila por tabla,límite,una fila en cada tabla,cumplió lo esperado,pasa,0.300,tests/test_carga_sqlite.py::test_con_una_sola_fila_por_tabla_se_cargan_cuatro_filas,1
+CP-039,FC-07,CSV de entrada ausente,incorrecto,FileNotFoundError y conexión cerrada,cumplió lo esperado,pasa,0.376,tests/test_carga_sqlite.py::test_un_csv_ausente_falla_y_no_deja_la_conexion_abierta,1
+CP-040,FC-07,La carga no toca el repositorio,correcto,la base versionada conserva su hash,cumplió lo esperado,pasa,0.413,tests/test_carga_sqlite.py::test_la_carga_no_modifica_el_repositorio,1
+CP-041,FC-08,Conversión correcta de cada tipo,correcto,valores convertidos sin pérdida,cumplió lo esperado,pasa,0.019,tests/test_carga_relacional.py::test_conversion_correcta,9
+CP-042,FC-08,Valores que perderían información,incorrecto,ConversionError con mensaje claro,cumplió lo esperado,pasa,0.013,tests/test_carga_relacional.py::test_conversion_que_perderia_informacion_falla,10
+CP-043,FC-08,Carga completa,correcto,"346, 5.146, 23 y 107 filas",cumplió lo esperado,pasa,1.681,tests/test_carga_relacional.py::test_la_carga_completa_concilia_al_cien_por_ciento,1
 CP-044,FC-08,Repetir la carga,límite,responde «ya cargada» y no escribe,cumplió lo esperado,pasa,0.044,tests/test_carga_relacional.py::test_la_carga_repetida_es_idempotente,1
-CP-045,FC-08,Clave de corrida determinista y sensible a la entrada,correcto,"misma entrada, misma clave",cumplió lo esperado,pasa,0.097,tests/test_carga_relacional.py::test_la_clave_de_corrida_es_determinista_y_sensible_a_cada_entrada,1
-CP-046,FC-08,Entrada alterada,correcto,corrida nueva y la anterior intacta,cumplió lo esperado,pasa,1.908,tests/test_carga_relacional.py::test_una_entrada_alterada_crea_una_corrida_nueva_y_conserva_la_anterior,1
-CP-047,FC-08,Fallo a mitad de carga,incorrecto,reversión completa,cumplió lo esperado,pasa,2.587,tests/test_carga_relacional.py::test_un_fallo_a_mitad_de_la_carga_revierte_todo,1
-CP-048,FC-08,Valor ilegible,incorrecto,falla antes de escribir nada,cumplió lo esperado,pasa,0.376,tests/test_carga_relacional.py::test_un_valor_ilegible_falla_antes_de_escribir_nada,1
-CP-049,FC-08,Una sola fila por tabla,límite,carga y concilia al 100 %,cumplió lo esperado,pasa,0.323,tests/test_casos_limite.py::test_la_carga_con_una_sola_fila_por_tabla_concilia_al_cien_por_ciento,1
-CP-050,FC-08,Entrada vacía,límite,se rechaza sin crear nada,cumplió lo esperado,pasa,0.386,tests/test_casos_limite.py::test_una_entrada_vacia_se_rechaza_sin_crear_nada_en_la_base,4
-CP-051,FC-08,Archivo de entrada ausente,incorrecto,FileNotFoundError sin tocar la base,cumplió lo esperado,pasa,0.068,tests/test_casos_limite.py::test_un_archivo_de_entrada_ausente_se_rechaza_sin_tocar_la_base,1
-CP-052,FC-08,La carga no escribe en data/,correcto,data/ conserva sus sha256,cumplió lo esperado,pasa,1.640,tests/test_carga_relacional.py::test_la_carga_no_escribe_en_data,1
-CP-053,FC-09,Esquemas de MySQL y SQLite con las mismas columnas,correcto,paridad sin diferencias,cumplió lo esperado,pasa,0.021,tests/test_carga_relacional.py::test_los_dos_esquemas_declaran_las_mismas_tablas_y_columnas_en_el_mismo_orden,1
-CP-054,FC-09,Sin filas huérfanas,correcto,0 en cada relación,cumplió lo esperado,pasa,0.024,tests/test_carga_relacional.py::test_la_integridad_referencial_no_deja_huerfanos,1
-CP-055,FC-09,Construcciones sin cruce de barrio,límite,se conservan con el enlace nulo,cumplió lo esperado,pasa,0.017,tests/test_carga_relacional.py::test_los_huerfanos_de_estrato_se_conservan_con_el_enlace_nulo,1
-CP-056,FC-09,Violaciones de integridad,incorrecto,diez violaciones rechazadas,cumplió lo esperado,pasa,0.234,tests/test_carga_relacional.py::test_las_violaciones_de_integridad_se_rechazan,10
-CP-057,FC-09,Borrar una corrida con datos,incorrecto,rechazado por RESTRICT,cumplió lo esperado,pasa,0.015,tests/test_carga_relacional.py::test_no_se_puede_borrar_una_corrida_con_datos,1
-CP-058,FC-09,La conciliación detecta un valor alterado,incorrecto,1 diferencia en la columna alterada,cumplió lo esperado,pasa,0.494,tests/test_carga_relacional.py::test_la_conciliacion_detecta_un_valor_alterado,1
-CP-059,FC-10,Primera configuración,correcto,bases y usuario creados; .env con nombres,cumplió lo esperado,pasa,0.040,tests/test_configurar_mysql.py::test_primera_configuracion_crea_bases_usuario_y_escribe_solo_nombres,1
-CP-060,FC-10,La contraseña del administrador no se guarda,correcto,"no llega a .env, SQL ni registro",cumplió lo esperado,pasa,0.064,tests/test_configurar_mysql.py::test_la_contrasena_del_administrador_nunca_se_guarda_ni_llega_a_sql,1
-CP-061,FC-10,Privilegios incorrectos,incorrecto,se rechazan y .env no cambia,cumplió lo esperado,pasa,0.160,tests/test_configurar_mysql.py::test_privilegios_incorrectos_se_rechazan_y_no_se_escribe_env,4
-CP-062,FC-10,Servidor anterior a 8.0,incorrecto,se rechaza con mensaje claro,cumplió lo esperado,pasa,0.034,tests/test_configurar_mysql.py::test_servidor_antiguo_se_rechaza,1
-CP-063,FC-10,Repetir con credenciales válidas,límite,no cambia nada ni pide la contraseña,cumplió lo esperado,pasa,0.088,tests/test_configurar_mysql.py::test_con_credenciales_validas_no_cambia_nada_ni_pide_la_contrasena_del_administrador,1
-CP-064,FC-11,Creación con permisos mínimos sobre la base real,correcto,"solo `sismo_cali`, sin globales ni GRANT OPTION",cumplió lo esperado,pasa,0.064,tests/test_usuario_docker.py::test_crea_el_usuario_con_permisos_solo_sobre_la_base_real_y_escribe_nombres,1
+CP-045,FC-08,Clave de corrida determinista y sensible a la entrada,correcto,"misma entrada, misma clave",cumplió lo esperado,pasa,0.100,tests/test_carga_relacional.py::test_la_clave_de_corrida_es_determinista_y_sensible_a_cada_entrada,1
+CP-046,FC-08,Entrada alterada,correcto,corrida nueva y la anterior intacta,cumplió lo esperado,pasa,1.764,tests/test_carga_relacional.py::test_una_entrada_alterada_crea_una_corrida_nueva_y_conserva_la_anterior,1
+CP-047,FC-08,Fallo a mitad de carga,incorrecto,reversión completa,cumplió lo esperado,pasa,2.332,tests/test_carga_relacional.py::test_un_fallo_a_mitad_de_la_carga_revierte_todo,1
+CP-048,FC-08,Valor ilegible,incorrecto,falla antes de escribir nada,cumplió lo esperado,pasa,0.320,tests/test_carga_relacional.py::test_un_valor_ilegible_falla_antes_de_escribir_nada,1
+CP-049,FC-08,Una sola fila por tabla,límite,carga y concilia al 100 %,cumplió lo esperado,pasa,0.328,tests/test_casos_limite.py::test_la_carga_con_una_sola_fila_por_tabla_concilia_al_cien_por_ciento,1
+CP-050,FC-08,Entrada vacía,límite,se rechaza sin crear nada,cumplió lo esperado,pasa,0.357,tests/test_casos_limite.py::test_una_entrada_vacia_se_rechaza_sin_crear_nada_en_la_base,4
+CP-051,FC-08,Archivo de entrada ausente,incorrecto,FileNotFoundError sin tocar la base,cumplió lo esperado,pasa,0.063,tests/test_casos_limite.py::test_un_archivo_de_entrada_ausente_se_rechaza_sin_tocar_la_base,1
+CP-052,FC-08,La carga no escribe en data/,correcto,data/ conserva sus sha256,cumplió lo esperado,pasa,1.437,tests/test_carga_relacional.py::test_la_carga_no_escribe_en_data,1
+CP-053,FC-09,Esquemas de MySQL y SQLite con las mismas columnas,correcto,paridad sin diferencias,cumplió lo esperado,pasa,0.030,tests/test_carga_relacional.py::test_los_dos_esquemas_declaran_las_mismas_tablas_y_columnas_en_el_mismo_orden,1
+CP-054,FC-09,Sin filas huérfanas,correcto,0 en cada relación,cumplió lo esperado,pasa,0.023,tests/test_carga_relacional.py::test_la_integridad_referencial_no_deja_huerfanos,1
+CP-055,FC-09,Construcciones sin cruce de barrio,límite,se conservan con el enlace nulo,cumplió lo esperado,pasa,0.016,tests/test_carga_relacional.py::test_los_huerfanos_de_estrato_se_conservan_con_el_enlace_nulo,1
+CP-056,FC-09,Violaciones de integridad,incorrecto,diez violaciones rechazadas,cumplió lo esperado,pasa,0.173,tests/test_carga_relacional.py::test_las_violaciones_de_integridad_se_rechazan,10
+CP-057,FC-09,Borrar una corrida con datos,incorrecto,rechazado por RESTRICT,cumplió lo esperado,pasa,0.014,tests/test_carga_relacional.py::test_no_se_puede_borrar_una_corrida_con_datos,1
+CP-058,FC-09,La conciliación detecta un valor alterado,incorrecto,1 diferencia en la columna alterada,cumplió lo esperado,pasa,0.435,tests/test_carga_relacional.py::test_la_conciliacion_detecta_un_valor_alterado,1
+CP-059,FC-10,Primera configuración,correcto,bases y usuario creados; .env con nombres,cumplió lo esperado,pasa,0.037,tests/test_configurar_mysql.py::test_primera_configuracion_crea_bases_usuario_y_escribe_solo_nombres,1
+CP-060,FC-10,La contraseña del administrador no se guarda,correcto,"no llega a .env, SQL ni registro",cumplió lo esperado,pasa,0.055,tests/test_configurar_mysql.py::test_la_contrasena_del_administrador_nunca_se_guarda_ni_llega_a_sql,1
+CP-061,FC-10,Privilegios incorrectos,incorrecto,se rechazan y .env no cambia,cumplió lo esperado,pasa,0.184,tests/test_configurar_mysql.py::test_privilegios_incorrectos_se_rechazan_y_no_se_escribe_env,4
+CP-062,FC-10,Servidor anterior a 8.0,incorrecto,se rechaza con mensaje claro,cumplió lo esperado,pasa,0.041,tests/test_configurar_mysql.py::test_servidor_antiguo_se_rechaza,1
+CP-063,FC-10,Repetir con credenciales válidas,límite,no cambia nada ni pide la contraseña,cumplió lo esperado,pasa,0.086,tests/test_configurar_mysql.py::test_con_credenciales_validas_no_cambia_nada_ni_pide_la_contrasena_del_administrador,1
+CP-064,FC-11,Creación con permisos mínimos sobre la base real,correcto,"solo `sismo_cali`, sin globales ni GRANT OPTION",cumplió lo esperado,pasa,0.055,tests/test_usuario_docker.py::test_crea_el_usuario_con_permisos_solo_sobre_la_base_real_y_escribe_nombres,1
 CP-065,FC-11,Orígenes válidos,correcto,"IP privada, nombre exacto o red privada",cumplió lo esperado,pasa,0.021,tests/test_usuario_docker.py::test_origenes_validos,7
-CP-066,FC-11,Orígenes con comodines o públicos,incorrecto,rechazados,cumplió lo esperado,pasa,0.033,tests/test_usuario_docker.py::test_origenes_rechazados,18
-CP-067,FC-11,Permisos distintos de los esperados,incorrecto,se rechazan y .env no cambia,cumplió lo esperado,pasa,0.193,tests/test_usuario_docker.py::test_permisos_distintos_de_los_esperados_se_rechazan,5
-CP-068,FC-11,Repetir con el .env completo,límite,no pide contraseña y no cambia,cumplió lo esperado,pasa,0.088,tests/test_usuario_docker.py::test_es_idempotente_y_no_pide_la_contrasena_si_el_env_esta_completo,1
-CP-069,FC-12,Respaldo con manifiesto,correcto,un CSV por tabla y manifiesto sha256,cumplió lo esperado,pasa,2.053,tests/test_respaldo_y_medicion.py::test_el_respaldo_escribe_un_csv_por_tabla_con_manifiesto,1
-CP-070,FC-12,Restauración conciliada,correcto,huellas iguales en 7 tablas,cumplió lo esperado,pasa,2.704,tests/test_respaldo_y_medicion.py::test_restaurar_reproduce_cada_tabla_con_la_misma_huella,1
-CP-071,FC-12,Respaldo alterado,incorrecto,se rechaza antes de restaurar,cumplió lo esperado,pasa,1.068,tests/test_respaldo_y_medicion.py::test_un_respaldo_alterado_se_rechaza_antes_de_restaurar,1
-CP-072,FC-12,Destino con datos,límite,no se restaura encima,cumplió lo esperado,pasa,0.952,tests/test_respaldo_y_medicion.py::test_no_se_restaura_encima_de_datos,1
-CP-073,FC-13,Cada endpoint responde 200 con su estructura,correcto,11 rutas válidas,cumplió lo esperado,pasa,0.418,tests/test_api.py::test_cada_endpoint_responde_200_con_la_estructura_esperada,1
-CP-074,FC-13,Parámetros inválidos,incorrecto,422 con JSON uniforme,cumplió lo esperado,pasa,0.098,tests/test_api.py::test_parametros_invalidos_dan_422_con_el_json_uniforme,1
-CP-075,FC-13,Identificadores y rutas inexistentes,incorrecto,404 uniforme,cumplió lo esperado,pasa,0.029,tests/test_api.py::test_ids_inexistentes_dan_404_y_rutas_desconocidas_tambien,1
-CP-076,FC-13,Límites de paginación,límite,"mínimo, máximo y offset respetados",cumplió lo esperado,pasa,0.112,tests/test_api.py::test_limites_de_paginacion_y_offset,1
-CP-077,FC-13,Extremos de paginación,límite,"una fila, página final y página vacía",cumplió lo esperado,pasa,0.290,tests/test_casos_limite.py::test_la_pagina_de_un_solo_registro_y_la_pagina_final,1
-CP-078,FC-13,Inyección en filtros,incorrecto,rechazada,cumplió lo esperado,pasa,0.178,tests/test_api.py::test_la_inyeccion_en_comuna_y_estrato_se_rechaza,1
+CP-066,FC-11,Orígenes con comodines o públicos,incorrecto,rechazados,cumplió lo esperado,pasa,0.049,tests/test_usuario_docker.py::test_origenes_rechazados,18
+CP-067,FC-11,Permisos distintos de los esperados,incorrecto,se rechazan y .env no cambia,cumplió lo esperado,pasa,0.210,tests/test_usuario_docker.py::test_permisos_distintos_de_los_esperados_se_rechazan,5
+CP-068,FC-11,Repetir con el .env completo,límite,no pide contraseña y no cambia,cumplió lo esperado,pasa,0.079,tests/test_usuario_docker.py::test_es_idempotente_y_no_pide_la_contrasena_si_el_env_esta_completo,1
+CP-069,FC-12,Respaldo con manifiesto,correcto,un CSV por tabla y manifiesto sha256,cumplió lo esperado,pasa,2.062,tests/test_respaldo_y_medicion.py::test_el_respaldo_escribe_un_csv_por_tabla_con_manifiesto,1
+CP-070,FC-12,Restauración conciliada,correcto,huellas iguales en 7 tablas,cumplió lo esperado,pasa,2.995,tests/test_respaldo_y_medicion.py::test_restaurar_reproduce_cada_tabla_con_la_misma_huella,1
+CP-071,FC-12,Respaldo alterado,incorrecto,se rechaza antes de restaurar,cumplió lo esperado,pasa,0.949,tests/test_respaldo_y_medicion.py::test_un_respaldo_alterado_se_rechaza_antes_de_restaurar,1
+CP-072,FC-12,Destino con datos,límite,no se restaura encima,cumplió lo esperado,pasa,0.754,tests/test_respaldo_y_medicion.py::test_no_se_restaura_encima_de_datos,1
+CP-073,FC-13,Cada endpoint responde 200 con su estructura,correcto,11 rutas válidas,cumplió lo esperado,pasa,0.452,tests/test_api.py::test_cada_endpoint_responde_200_con_la_estructura_esperada,1
+CP-074,FC-13,Parámetros inválidos,incorrecto,422 con JSON uniforme,cumplió lo esperado,pasa,0.094,tests/test_api.py::test_parametros_invalidos_dan_422_con_el_json_uniforme,1
+CP-075,FC-13,Identificadores y rutas inexistentes,incorrecto,404 uniforme,cumplió lo esperado,pasa,0.025,tests/test_api.py::test_ids_inexistentes_dan_404_y_rutas_desconocidas_tambien,1
+CP-076,FC-13,Límites de paginación,límite,"mínimo, máximo y offset respetados",cumplió lo esperado,pasa,0.092,tests/test_api.py::test_limites_de_paginacion_y_offset,1
+CP-077,FC-13,Extremos de paginación,límite,"una fila, página final y página vacía",cumplió lo esperado,pasa,0.132,tests/test_casos_limite.py::test_la_pagina_de_un_solo_registro_y_la_pagina_final,1
+CP-078,FC-13,Inyección en filtros,incorrecto,rechazada,cumplió lo esperado,pasa,0.190,tests/test_api.py::test_la_inyeccion_en_comuna_y_estrato_se_rechaza,1
 CP-079,FC-13,Solo GET,incorrecto,los demás métodos dan 405,cumplió lo esperado,pasa,0.123,tests/test_api.py::test_solo_existen_rutas_get_y_los_demas_metodos_dan_405,1
-CP-080,FC-13,Base ausente,incorrecto,503 y /health degradado,cumplió lo esperado,pasa,0.112,tests/test_api.py::test_base_ausente_da_503_y_health_degradado,1
-CP-081,FC-13,Misma respuesta desde el almacén relacional,correcto,17 rutas idénticas entre almacenes,cumplió lo esperado,pasa,1.056,tests/test_carga_relacional.py::test_la_api_sirve_lo_mismo_desde_el_almacen_relacional_que_desde_sqlite,1
-CP-082,FC-13,No escribe en data/ ni en la base,correcto,hashes idénticos tras consultar todo,cumplió lo esperado,pasa,0.702,tests/test_api.py::test_consultar_todos_los_endpoints_no_escribe_en_data_ni_en_la_base,1
-CP-083,FC-14,El catálogo coincide con el manifiesto,correcto,mismas huellas y filas,cumplió lo esperado,pasa,0.076,tests/test_catalogo.py::test_el_catalogo_coincide_con_el_manifiesto,1
-CP-084,FC-14,Cubre todas las fuentes del manifiesto,correcto,ninguna fuente sin ficha,cumplió lo esperado,pasa,0.026,tests/test_catalogo.py::test_el_catalogo_cubre_todas_las_fuentes_del_manifiesto,1
-CP-085,FC-14,Dos generaciones son idénticas,límite,salida determinista,cumplió lo esperado,pasa,0.935,tests/test_catalogo.py::test_dos_generaciones_son_identicas,1
+CP-080,FC-13,Base ausente,incorrecto,503 y /health degradado,cumplió lo esperado,pasa,0.092,tests/test_api.py::test_base_ausente_da_503_y_health_degradado,1
+CP-081,FC-13,Misma respuesta desde el almacén relacional,correcto,17 rutas idénticas entre almacenes,cumplió lo esperado,pasa,0.884,tests/test_carga_relacional.py::test_la_api_sirve_lo_mismo_desde_el_almacen_relacional_que_desde_sqlite,1
+CP-082,FC-13,No escribe en data/ ni en la base,correcto,hashes idénticos tras consultar todo,cumplió lo esperado,pasa,0.578,tests/test_api.py::test_consultar_todos_los_endpoints_no_escribe_en_data_ni_en_la_base,1
+CP-083,FC-14,El catálogo coincide con el manifiesto,correcto,mismas huellas y filas,cumplió lo esperado,pasa,0.065,tests/test_catalogo.py::test_el_catalogo_coincide_con_el_manifiesto,1
+CP-084,FC-14,Cubre todas las fuentes del manifiesto,correcto,ninguna fuente sin ficha,cumplió lo esperado,pasa,0.029,tests/test_catalogo.py::test_el_catalogo_cubre_todas_las_fuentes_del_manifiesto,1
+CP-085,FC-14,Dos generaciones son idénticas,límite,salida determinista,cumplió lo esperado,pasa,0.876,tests/test_catalogo.py::test_dos_generaciones_son_identicas,1
 CP-086,FC-14,El diccionario de Gold describe todas las columnas,incorrecto,ninguna columna sin descripción,cumplió lo esperado,pasa,0.003,tests/test_catalogo.py::test_el_diccionario_de_gold_describe_todas_las_columnas,1
-CP-087,FC-15,Sin hallazgos en el árbol,correcto,0 hallazgos,cumplió lo esperado,pasa,10.381,tests/test_secretos.py::test_sin_hallazgos_en_el_arbol_de_trabajo,1
-CP-088,FC-15,Un secreto sembrado por tipo,incorrecto,se detecta cada uno,cumplió lo esperado,pasa,0.069,tests/test_secretos.py::test_detecta_un_secreto_sembrado_de_cada_tipo,1
-CP-089,FC-15,"Huellas, rutas y URLs largas",límite,no se marcan como secretos,cumplió lo esperado,pasa,0.012,tests/test_secretos.py::test_no_marca_huellas_ni_rutas_ni_urls_largas,1
-CP-090,FC-15,Contraseña sembrada con canario,incorrecto,se detecta sin imprimirla,cumplió lo esperado,pasa,0.679,tests/test_configurar_mysql.py::test_el_canario_detecta_la_contrasena_sembrada_sin_imprimirla,1
-CP-091,FC-15,Contraseña de un .env extra,incorrecto,se detecta sin imprimirla,cumplió lo esperado,pasa,0.022,tests/test_canario_extra.py::test_detecta_la_contrasena_del_env_extra_en_el_arbol_sin_imprimirla,1
-CP-092,FC-15,Enmascarado del registro,correcto,tokens y cabeceras reemplazados por ***,cumplió lo esperado,pasa,0.018,tests/test_logger.py::test_enmascara_cabeceras_y_tokens,1
-CP-093,FC-16,Lo permitido entra y el zip se verifica,correcto,zip sin entradas prohibidas,cumplió lo esperado,pasa,0.114,tests/test_dist.py::test_lo_permitido_entra_y_el_zip_pasa_la_verificacion,1
-CP-094,FC-16,Entornos virtuales y carpetas ocultas,incorrecto,no entran,cumplió lo esperado,pasa,0.067,tests/test_dist.py::test_entorno_sin_pyvenv_cfg_no_entra_al_zip,1
-CP-095,FC-16,dags y orquestacion presentes o ausentes,límite,entran si existen y no fallan si faltan,cumplió lo esperado,pasa,0.144,tests/test_dist.py::test_orquestacion_entra_cuando_existe_y_no_falla_cuando_no_existe,1
-CP-096,FC-16,El repositorio real,correcto,"solo primer nivel permitido, con dags y orquestacion",cumplió lo esperado,pasa,0.207,tests/test_dist.py::test_el_repo_real_empaqueta_el_dag_y_la_carpeta_de_orquestacion,1
-CP-097,FC-17,Cifras del README iguales a las salidas,correcto,"K5, K2 y Gold coinciden",cumplió lo esperado,pasa,0.006,tests/test_readme_cifras.py::test_cifras_de_gold_bronze_y_silver_en_readme,1
-CP-098,FC-17,Conteo de pruebas del README,correcto,igual a la recolección,cumplió lo esperado,pasa,5.246,tests/test_readme_cifras.py::test_numero_de_pruebas_en_readme,1
-CP-099,FC-17,Estados de los 30 ítems,correcto,completos y con componentes válidos,cumplió lo esperado,pasa,0.006,tests/test_estrategia.py::test_los_30_items_del_checklist_estan_completos_y_con_componentes_de_la_lista,1
-CP-100,FC-17,Alteraciones de los 30 ítems,incorrecto,cada alteración se detecta,cumplió lo esperado,pasa,0.148,tests/test_estrategia.py::test_negativas_de_los_30_items,1
-CP-101,FC-17,Alteraciones de los criterios del MVP,incorrecto,cada alteración se detecta,cumplió lo esperado,pasa,0.151,tests/test_estrategia.py::test_negativas_de_los_criterios_del_mvp,1
-CP-102,FC-17,Evidencias saneadas,correcto,sin rutas ni usuario,cumplió lo esperado,pasa,0.060,tests/test_evidencias.py::test_las_evidencias_guardadas_estan_saneadas,1
-CP-103,FC-17,Recálculo independiente de K1,correcto,diferencia máxima menor de 1e-9 frente a kpis_gold.csv,cumplió lo esperado,pasa,0.122,tests/test_informe_pruebas.py::test_el_recalculo_independiente_coincide_con_los_kpi_publicados,1
-CP-104,FC-17,"Informe con esperado y obtenido, sin rutas de la máquina",correcto,caso fallido marcado y sin rutas,cumplió lo esperado,pasa,0.211,tests/test_informe_pruebas.py::test_el_informe_se_genera_con_esperado_obtenido_y_sin_rutas_de_la_maquina,1
-CP-105,FC-17,Una definición de la matriz con una prueba inexistente,incorrecto,se detecta,cumplió lo esperado,pasa,0.104,tests/test_matriz_casos.py::test_una_definicion_con_una_prueba_inexistente_se_detecta,1
+CP-087,FC-15,Sin hallazgos en el árbol,correcto,0 hallazgos,cumplió lo esperado,pasa,11.861,tests/test_secretos.py::test_sin_hallazgos_en_el_arbol_de_trabajo,1
+CP-088,FC-15,Un secreto sembrado por tipo,incorrecto,se detecta cada uno,cumplió lo esperado,pasa,0.049,tests/test_secretos.py::test_detecta_un_secreto_sembrado_de_cada_tipo,1
+CP-089,FC-15,"Huellas, rutas y URLs largas",límite,no se marcan como secretos,cumplió lo esperado,pasa,0.011,tests/test_secretos.py::test_no_marca_huellas_ni_rutas_ni_urls_largas,1
+CP-090,FC-15,Contraseña sembrada con canario,incorrecto,se detecta sin imprimirla,cumplió lo esperado,pasa,0.617,tests/test_configurar_mysql.py::test_el_canario_detecta_la_contrasena_sembrada_sin_imprimirla,1
+CP-091,FC-15,Contraseña de un .env extra,incorrecto,se detecta sin imprimirla,cumplió lo esperado,pasa,0.023,tests/test_canario_extra.py::test_detecta_la_contrasena_del_env_extra_en_el_arbol_sin_imprimirla,1
+CP-092,FC-15,Enmascarado del registro,correcto,tokens y cabeceras reemplazados por ***,cumplió lo esperado,pasa,0.016,tests/test_logger.py::test_enmascara_cabeceras_y_tokens,1
+CP-093,FC-16,Lo permitido entra y el zip se verifica,correcto,zip sin entradas prohibidas,cumplió lo esperado,pasa,0.078,tests/test_dist.py::test_lo_permitido_entra_y_el_zip_pasa_la_verificacion,1
+CP-094,FC-16,Entornos virtuales y carpetas ocultas,incorrecto,no entran,cumplió lo esperado,pasa,0.057,tests/test_dist.py::test_entorno_sin_pyvenv_cfg_no_entra_al_zip,1
+CP-095,FC-16,dags y orquestacion presentes o ausentes,límite,entran si existen y no fallan si faltan,cumplió lo esperado,pasa,0.113,tests/test_dist.py::test_orquestacion_entra_cuando_existe_y_no_falla_cuando_no_existe,1
+CP-096,FC-16,El repositorio real,correcto,"solo primer nivel permitido, con dags y orquestacion",cumplió lo esperado,pasa,0.210,tests/test_dist.py::test_el_repo_real_empaqueta_el_dag_y_la_carpeta_de_orquestacion,1
+CP-097,FC-17,Cifras del README iguales a las salidas,correcto,"K5, K2 y Gold coinciden",cumplió lo esperado,pasa,0.013,tests/test_readme_cifras.py::test_cifras_de_gold_bronze_y_silver_en_readme,1
+CP-098,FC-17,Conteo de pruebas del README,correcto,igual a la recolección,cumplió lo esperado,pasa,4.651,tests/test_readme_cifras.py::test_numero_de_pruebas_en_readme,1
+CP-099,FC-17,Estados de los 30 ítems,correcto,completos y con componentes válidos,cumplió lo esperado,pasa,0.012,tests/test_estrategia.py::test_los_30_items_del_checklist_estan_completos_y_con_componentes_de_la_lista,1
+CP-100,FC-17,Alteraciones de los 30 ítems,incorrecto,cada alteración se detecta,cumplió lo esperado,pasa,0.142,tests/test_estrategia.py::test_negativas_de_los_30_items,1
+CP-101,FC-17,Alteraciones de los criterios del MVP,incorrecto,cada alteración se detecta,cumplió lo esperado,pasa,0.142,tests/test_estrategia.py::test_negativas_de_los_criterios_del_mvp,1
+CP-102,FC-17,Evidencias saneadas,correcto,sin rutas ni usuario,cumplió lo esperado,pasa,0.062,tests/test_evidencias.py::test_las_evidencias_guardadas_estan_saneadas,1
+CP-103,FC-17,Recálculo independiente de K1,correcto,diferencia máxima menor de 1e-9 frente a kpis_gold.csv,cumplió lo esperado,pasa,0.098,tests/test_informe_pruebas.py::test_el_recalculo_independiente_coincide_con_los_kpi_publicados,1
+CP-104,FC-17,"Informe con esperado y obtenido, sin rutas de la máquina",correcto,caso fallido marcado y sin rutas,cumplió lo esperado,pasa,0.160,tests/test_informe_pruebas.py::test_el_informe_se_genera_con_esperado_obtenido_y_sin_rutas_de_la_maquina,1
+CP-105,FC-17,Una definición de la matriz con una prueba inexistente,incorrecto,se detecta,cumplió lo esperado,pasa,0.084,tests/test_matriz_casos.py::test_una_definicion_con_una_prueba_inexistente_se_detecta,1
 CP-106,FC-18,"Identificador, parámetros y cadena de tareas",correcto,4 tareas en orden con catchup=False,cumplió lo esperado,pasa,0.002,tests/test_dag_estatico.py::test_las_cuatro_tareas_tienen_los_nombres_y_el_orden_de_la_guia,1
 CP-107,FC-18,Dependencias lineales,correcto,bronze >> silver >> gold >> load,cumplió lo esperado,pasa,0.002,tests/test_dag_estatico.py::test_las_dependencias_son_una_cadena_lineal,1
-CP-108,FC-18,El repositorio nunca se escribe,incorrecto,solo se escribe en la copia de trabajo,cumplió lo esperado,pasa,0.024,tests/test_dag_estatico.py::test_nunca_se_escribe_ni_se_borra_nada_fuera_de_la_copia_de_trabajo,1
-CP-109,FC-18,Fallo inducido antes de producir salidas,incorrecto,las cuatro tareas lo implementan,cumplió lo esperado,pasa,0.007,tests/test_dag_estatico.py::test_el_fallo_inducido_esta_en_las_cuatro_tareas_antes_de_producir_salidas,1
-CP-110,FC-18,Sin secretos ni rutas de Windows,incorrecto,el escáner no halla nada,cumplió lo esperado,pasa,0.018,tests/test_dag_estatico.py::test_el_dag_no_lleva_rutas_de_windows_ni_contrasenas_literales,1
-CP-111,FC-18,Requisitos con las versiones del entorno,correcto,versiones idénticas,cumplió lo esperado,pasa,0.068,tests/test_dag_estatico.py::test_los_requisitos_de_airflow_tienen_las_mismas_versiones_que_el_venv,1
+CP-108,FC-18,El repositorio nunca se escribe,incorrecto,solo se escribe en la copia de trabajo,cumplió lo esperado,pasa,0.022,tests/test_dag_estatico.py::test_nunca_se_escribe_ni_se_borra_nada_fuera_de_la_copia_de_trabajo,1
+CP-109,FC-18,Fallo inducido antes de producir salidas,incorrecto,las cuatro tareas lo implementan,cumplió lo esperado,pasa,0.012,tests/test_dag_estatico.py::test_el_fallo_inducido_esta_en_las_cuatro_tareas_antes_de_producir_salidas,1
+CP-110,FC-18,Sin secretos ni rutas de Windows,incorrecto,el escáner no halla nada,cumplió lo esperado,pasa,0.019,tests/test_dag_estatico.py::test_el_dag_no_lleva_rutas_de_windows_ni_contrasenas_literales,1
+CP-111,FC-18,Requisitos con las versiones del entorno,correcto,versiones idénticas,cumplió lo esperado,pasa,0.066,tests/test_dag_estatico.py::test_los_requisitos_de_airflow_tienen_las_mismas_versiones_que_el_venv,1
 CP-112,FC-18,Copia del DAG con el hash registrado,límite,sha256 igual,cumplió lo esperado,pasa,0.003,tests/test_dag_estatico.py::test_la_copia_versionada_del_dag_coincide_con_el_hash_registrado,1
-CP-113,FC-18,Fallo inducido dentro del bloque que elimina la copia de trabajo,incorrecto,la copia se elimina también al fallar (DEF-013),cumplió lo esperado,pasa,0.005,tests/test_dag_estatico.py::test_el_fallo_inducido_de_las_tareas_con_copia_ocurre_dentro_del_try_que_elimina_la_copia,1
-CP-114,FC-19,Las etapas terminan sin error en una copia,correcto,código de salida 0,cumplió lo esperado,pasa,4.155,tests/test_pipeline_reproducible.py::test_las_etapas_terminan_sin_error,1
-CP-115,FC-19,Los nueve archivos de la línea base se reproducen,correcto,sha256 idénticos a los versionados,cumplió lo esperado,pasa,0.126,tests/test_pipeline_reproducible.py::test_los_nueve_archivos_de_la_linea_base_se_reproducen_byte_a_byte,1
-CP-116,FC-19,Regenerar sobre salidas existentes,límite,no cambia nada,cumplió lo esperado,pasa,0.011,tests/test_pipeline_reproducible.py::test_regenerar_no_cambia_lo_que_ya_estaba_versionado_en_la_copia,1
-CP-117,FC-19,Dependencias de otra versión (pandas),incorrecto,la prueba falla y nombra los archivos distintos,cumplió lo esperado,pasa,0.011,tests/test_dag_estatico.py::test_pandas_es_la_version_con_la_que_se_generaron_los_archivos_de_la_linea_base,1
-CP-118,FC-19,El repositorio no se toca,correcto,las nueve salidas conservan su sha256,cumplió lo esperado,pasa,0.011,tests/test_pipeline_reproducible.py::test_el_repositorio_no_se_toco,1
+CP-113,FC-18,Fallo inducido dentro del bloque que elimina la copia de trabajo,incorrecto,la copia se elimina también al fallar (DEF-013),cumplió lo esperado,pasa,0.006,tests/test_dag_estatico.py::test_el_fallo_inducido_de_las_tareas_con_copia_ocurre_dentro_del_try_que_elimina_la_copia,1
+CP-114,FC-19,Las etapas terminan sin error en una copia,correcto,código de salida 0,cumplió lo esperado,pasa,3.874,tests/test_pipeline_reproducible.py::test_las_etapas_terminan_sin_error,1
+CP-115,FC-19,Los nueve archivos de la línea base se reproducen,correcto,sha256 idénticos a los versionados,cumplió lo esperado,pasa,0.135,tests/test_pipeline_reproducible.py::test_los_nueve_archivos_de_la_linea_base_se_reproducen_byte_a_byte,1
+CP-116,FC-19,Regenerar sobre salidas existentes,límite,no cambia nada,cumplió lo esperado,pasa,0.009,tests/test_pipeline_reproducible.py::test_regenerar_no_cambia_lo_que_ya_estaba_versionado_en_la_copia,1
+CP-117,FC-19,Dependencias de otra versión (pandas),incorrecto,la prueba falla y nombra los archivos distintos,cumplió lo esperado,pasa,0.014,tests/test_dag_estatico.py::test_pandas_es_la_version_con_la_que_se_generaron_los_archivos_de_la_linea_base,1
+CP-118,FC-19,El repositorio no se toca,correcto,las nueve salidas conservan su sha256,cumplió lo esperado,pasa,0.009,tests/test_pipeline_reproducible.py::test_el_repositorio_no_se_toco,1
 CP-119,FC-20,Respuesta correcta,correcto,devuelve los datos,cumplió lo esperado,pasa,0.003,tests/test_panel_cliente.py::test_una_respuesta_correcta_devuelve_los_datos,1
-CP-120,FC-20,Solo GET y sin parámetros nulos,correcto,una sola solicitud GET con los parámetros presentes,cumplió lo esperado,pasa,0.004,tests/test_panel_cliente.py::test_solo_usa_get_y_omite_los_parametros_nulos,1
-CP-121,FC-20,Cada estado HTTP de error,incorrecto,error tipado con mensaje en español,cumplió lo esperado,pasa,0.024,tests/test_panel_cliente.py::test_cada_estado_http_se_traduce_a_un_error_tipado_en_espanol,6
+CP-120,FC-20,Solo GET y sin parámetros nulos,correcto,una sola solicitud GET con los parámetros presentes,cumplió lo esperado,pasa,0.003,tests/test_panel_cliente.py::test_solo_usa_get_y_omite_los_parametros_nulos,1
+CP-121,FC-20,Cada estado HTTP de error,incorrecto,error tipado con mensaje en español,cumplió lo esperado,pasa,0.019,tests/test_panel_cliente.py::test_cada_estado_http_se_traduce_a_un_error_tipado_en_espanol,6
 CP-122,FC-20,JSON mal formado,incorrecto,respuesta inválida,cumplió lo esperado,pasa,0.003,tests/test_panel_cliente.py::test_json_mal_formado_es_respuesta_invalida,1
-CP-123,FC-20,Tiempo agotado,incorrecto,error sin reintento,cumplió lo esperado,pasa,0.004,tests/test_panel_cliente.py::test_tiempo_agotado_no_se_reintenta,1
-CP-124,FC-20,API apagada,incorrecto,un reintento y luego «api_apagada»,cumplió lo esperado,pasa,0.004,tests/test_panel_cliente.py::test_error_de_conexion_se_reintenta_una_vez_y_luego_dice_api_apagada,1
-CP-125,FC-20,Reintentos en cero,límite,falla a la primera,cumplió lo esperado,pasa,0.003,tests/test_panel_cliente.py::test_sin_reintentos_configurados_falla_a_la_primera,1
-CP-126,FC-20,La caché no guarda fallos,límite,un fallo no se queda pegado,cumplió lo esperado,pasa,0.009,tests/test_panel_cliente.py::test_la_cache_no_guarda_los_fallos_y_si_guarda_los_aciertos,1
-CP-127,FC-20,Dirección no local,incorrecto,se rechaza,cumplió lo esperado,pasa,0.014,tests/test_panel_cliente.py::test_se_rechazan_las_direcciones_no_locales_o_sin_http,5
-CP-128,FC-21,"Miles, coma decimal y half-up",correcto,"1.173; 1.234.567,9; 0,13",cumplió lo esperado,pasa,0.027,tests/test_panel_formato_redaccion.py::test_numero_con_miles_coma_decimal_y_half_up,11
+CP-123,FC-20,Tiempo agotado,incorrecto,error sin reintento,cumplió lo esperado,pasa,0.003,tests/test_panel_cliente.py::test_tiempo_agotado_no_se_reintenta,1
+CP-124,FC-20,API apagada,incorrecto,un reintento y luego «api_apagada»,cumplió lo esperado,pasa,0.003,tests/test_panel_cliente.py::test_error_de_conexion_se_reintenta_una_vez_y_luego_dice_api_apagada,1
+CP-125,FC-20,Reintentos en cero,límite,falla a la primera,cumplió lo esperado,pasa,0.004,tests/test_panel_cliente.py::test_sin_reintentos_configurados_falla_a_la_primera,1
+CP-126,FC-20,La caché no guarda fallos,límite,un fallo no se queda pegado,cumplió lo esperado,pasa,0.010,tests/test_panel_cliente.py::test_la_cache_no_guarda_los_fallos_y_si_guarda_los_aciertos,1
+CP-127,FC-20,Dirección no local,incorrecto,se rechaza,cumplió lo esperado,pasa,0.012,tests/test_panel_cliente.py::test_se_rechazan_las_direcciones_no_locales_o_sin_http,5
+CP-128,FC-21,"Miles, coma decimal y half-up",correcto,"1.173; 1.234.567,9; 0,13",cumplió lo esperado,pasa,0.033,tests/test_panel_formato_redaccion.py::test_numero_con_miles_coma_decimal_y_half_up,11
 CP-129,FC-21,Porcentajes,correcto,"6,62 %; 100,00 %",cumplió lo esperado,pasa,0.015,tests/test_panel_formato_redaccion.py::test_porcentaje,5
-CP-130,FC-21,Puntos porcentuales con signo,correcto,"+0,49 pp; −2,36 pp",cumplió lo esperado,pasa,0.010,tests/test_panel_formato_redaccion.py::test_puntos_porcentuales_con_signo,4
-CP-131,FC-21,Valores no numéricos,incorrecto,raya,cumplió lo esperado,pasa,0.012,tests/test_panel_formato_redaccion.py::test_numero_sin_dato_devuelve_raya,5
-CP-132,FC-21,"99,8445 redondea hacia arriba",límite,"99,845 % y no 99,844 %",cumplió lo esperado,pasa,0.001,tests/test_panel_formato_redaccion.py::test_el_formateador_redondea_9984_45_hacia_arriba_y_no_hacia_abajo,1
-CP-133,FC-22,Intervalo que incluye 0,correcto,no se detecta diferencia,cumplió lo esperado,pasa,0.005,tests/test_panel_formato_redaccion.py::test_intervalo_que_incluye_cero_usa_la_frase_de_no_deteccion,1
-CP-134,FC-22,Intervalo que no incluye 0,correcto,descripción de la muestra sin causalidad,cumplió lo esperado,pasa,0.005,tests/test_panel_formato_redaccion.py::test_intervalo_que_no_incluye_cero_describe_la_muestra_sin_causalidad,1
-CP-135,FC-22,Muestra baja,límite,advertencia de fragilidad,cumplió lo esperado,pasa,0.003,tests/test_panel_formato_redaccion.py::test_muestra_baja_agrega_la_advertencia,1
+CP-130,FC-21,Puntos porcentuales con signo,correcto,"+0,49 pp; −2,36 pp",cumplió lo esperado,pasa,0.011,tests/test_panel_formato_redaccion.py::test_puntos_porcentuales_con_signo,4
+CP-131,FC-21,Valores no numéricos,incorrecto,raya,cumplió lo esperado,pasa,0.011,tests/test_panel_formato_redaccion.py::test_numero_sin_dato_devuelve_raya,5
+CP-132,FC-21,"99,8445 redondea hacia arriba",límite,"99,845 % y no 99,844 %",cumplió lo esperado,pasa,0.002,tests/test_panel_formato_redaccion.py::test_el_formateador_redondea_9984_45_hacia_arriba_y_no_hacia_abajo,1
+CP-133,FC-22,Intervalo que incluye 0,correcto,no se detecta diferencia,cumplió lo esperado,pasa,0.002,tests/test_panel_formato_redaccion.py::test_intervalo_que_incluye_cero_usa_la_frase_de_no_deteccion,1
+CP-134,FC-22,Intervalo que no incluye 0,correcto,descripción de la muestra sin causalidad,cumplió lo esperado,pasa,0.002,tests/test_panel_formato_redaccion.py::test_intervalo_que_no_incluye_cero_describe_la_muestra_sin_causalidad,1
+CP-135,FC-22,Muestra baja,límite,advertencia de fragilidad,cumplió lo esperado,pasa,0.002,tests/test_panel_formato_redaccion.py::test_muestra_baja_agrega_la_advertencia,1
 CP-136,FC-22,Sin intervalo,incorrecto,no se redacta una conclusión,cumplió lo esperado,pasa,0.002,tests/test_panel_formato_redaccion.py::test_sin_intervalo_no_se_redacta_una_conclusion,1
 CP-137,FC-22,Estratos con muestra baja,límite,no se ordenan,cumplió lo esperado,pasa,0.002,tests/test_panel_formato_redaccion.py::test_estratos_con_muestra_baja_no_se_ordenan_y_se_informa_el_solapamiento,1
-CP-138,FC-22,Ninguna rama afirma causalidad,incorrecto,sin cadenas prohibidas,cumplió lo esperado,pasa,0.018,tests/test_panel_formato_redaccion.py::test_ninguna_rama_afirma_causalidad_ni_que_el_estrato_no_influye,4
-CP-139,FC-23,Cada página se renderiza con su título,correcto,sin excepciones,cumplió lo esperado,pasa,12.296,tests/test_panel_paginas.py::test_cada_pagina_se_renderiza_sin_excepciones_y_con_titulo_y_pregunta,8
-CP-140,FC-23,Recuadro de alcance en cada página,correcto,visible en las ocho,cumplió lo esperado,pasa,0.027,tests/test_panel_paginas.py::test_cada_pagina_muestra_el_recuadro_de_alcance,8
-CP-141,FC-23,Cadenas prohibidas,incorrecto,ninguna página las contiene,cumplió lo esperado,pasa,0.023,tests/test_panel_paginas.py::test_ninguna_pagina_contiene_cadenas_prohibidas,8
-CP-142,FC-23,API completamente caída,incorrecto,aviso claro y sin traza,cumplió lo esperado,pasa,48.510,tests/test_panel_paginas.py::test_si_toda_la_api_falla_cada_pagina_muestra_un_aviso_claro_y_nunca_una_traza,40
-CP-143,FC-23,Respuestas vacías,límite,la página no se rompe,cumplió lo esperado,pasa,7.156,tests/test_panel_paginas.py::test_con_respuestas_vacias_cada_pagina_no_se_rompe,8
-CP-144,FC-23,Falla solo la ruta de la página,incorrecto,el resto sigue visible,cumplió lo esperado,pasa,22.301,tests/test_panel_paginas.py::test_si_falla_solo_la_ruta_de_la_pagina_el_resto_sigue_visible,32
-CP-145,FC-23,Página fuera de rango en construcciones,límite,mensaje de página sin filas,cumplió lo esperado,pasa,2.594,tests/test_panel_paginas.py::test_construcciones_pagina_filtra_en_la_api_y_ofrece_la_descarga,1
-CP-146,FC-23,Aplicación completa sin API,incorrecto,navegación y aviso,cumplió lo esperado,pasa,9.909,tests/test_panel_paginas.py::test_la_aplicacion_arranca_con_la_navegacion_explicita_y_degrada_sin_api,1
-CP-147,FC-24,K2 mostrado frente a Gold recalculado,correcto,valores iguales,cumplió lo esperado,pasa,9.058,tests/test_panel_integracion.py::test_respuesta_muestra_k2_igual_a_kpis_gold_y_a_lo_recalculado_de_gold_final,1
+CP-138,FC-22,Ninguna rama afirma causalidad,incorrecto,sin cadenas prohibidas,cumplió lo esperado,pasa,0.017,tests/test_panel_formato_redaccion.py::test_ninguna_rama_afirma_causalidad_ni_que_el_estrato_no_influye,4
+CP-139,FC-23,Cada página se renderiza con su título,correcto,sin excepciones,cumplió lo esperado,pasa,8.049,tests/test_panel_paginas.py::test_cada_pagina_se_renderiza_sin_excepciones_y_con_titulo_y_pregunta,8
+CP-140,FC-23,Recuadro de alcance en cada página,correcto,visible en las ocho,cumplió lo esperado,pasa,0.016,tests/test_panel_paginas.py::test_cada_pagina_muestra_el_recuadro_de_alcance,8
+CP-141,FC-23,Cadenas prohibidas,incorrecto,ninguna página las contiene,cumplió lo esperado,pasa,0.017,tests/test_panel_paginas.py::test_ninguna_pagina_contiene_cadenas_prohibidas,8
+CP-142,FC-23,API completamente caída,incorrecto,aviso claro y sin traza,cumplió lo esperado,pasa,29.992,tests/test_panel_paginas.py::test_si_toda_la_api_falla_cada_pagina_muestra_un_aviso_claro_y_nunca_una_traza,40
+CP-143,FC-23,Respuestas vacías,límite,la página no se rompe,cumplió lo esperado,pasa,6.480,tests/test_panel_paginas.py::test_con_respuestas_vacias_cada_pagina_no_se_rompe,8
+CP-144,FC-23,Falla solo la ruta de la página,incorrecto,el resto sigue visible,cumplió lo esperado,pasa,26.390,tests/test_panel_paginas.py::test_si_falla_solo_la_ruta_de_la_pagina_el_resto_sigue_visible,32
+CP-145,FC-23,Página fuera de rango en construcciones,límite,mensaje de página sin filas,cumplió lo esperado,pasa,1.512,tests/test_panel_paginas.py::test_construcciones_pagina_filtra_en_la_api_y_ofrece_la_descarga,1
+CP-146,FC-23,Aplicación completa sin API,incorrecto,navegación y aviso,cumplió lo esperado,pasa,9.706,tests/test_panel_paginas.py::test_la_aplicacion_arranca_con_la_navegacion_explicita_y_degrada_sin_api,1
+CP-147,FC-24,K2 mostrado frente a Gold recalculado,correcto,valores iguales,cumplió lo esperado,pasa,6.230,tests/test_panel_integracion.py::test_respuesta_muestra_k2_igual_a_kpis_gold_y_a_lo_recalculado_de_gold_final,1
 CP-148,FC-24,K5 con el formato de los documentos,correcto,"99,883 %; 99,845 %; 93,52 %",cumplió lo esperado,pasa,0.002,tests/test_panel_integracion.py::test_respuesta_muestra_k5_con_el_formato_de_los_documentos,1
-CP-149,FC-24,K1 y K6 frente a gold_final.csv,correcto,conteos iguales,cumplió lo esperado,pasa,0.113,tests/test_panel_integracion.py::test_estratos_coincide_con_k1_y_con_los_conteos_de_gold_final,1
-CP-150,FC-24,Composición por comuna,correcto,conteos iguales,cumplió lo esperado,pasa,0.038,tests/test_panel_integracion.py::test_la_composicion_por_comuna_y_grupo_coincide_con_gold_final,1
-CP-151,FC-24,Filtros de construcciones,límite,los totales filtrados coinciden con gold_final.csv,cumplió lo esperado,pasa,1.787,tests/test_panel_integracion.py::test_construcciones_pagina_y_filtros_coinciden_con_gold_final,1
-CP-152,FC-24,El panel no modifica data,incorrecto,la fecha de modificación de data/gold no cambia,cumplió lo esperado,pasa,1.015,tests/test_panel_integracion.py::test_el_panel_no_modifica_data_al_consultar,1
-CP-153,FC-24,API real por HTTP,correcto,once rutas responden,cumplió lo esperado,pasa,2.539,tests/test_panel_humo_extremo_a_extremo.py::test_el_cliente_real_lee_por_http_las_once_rutas_de_la_api,1
-CP-154,FC-24,Valores por HTTP real frente a las salidas,correcto,iguales,cumplió lo esperado,pasa,4.406,tests/test_panel_humo_extremo_a_extremo.py::test_los_valores_por_http_real_coinciden_con_las_salidas,1
-CP-155,FC-24,Intento de escritura,incorrecto,405 y data intacta,cumplió lo esperado,pasa,2.238,tests/test_panel_humo_extremo_a_extremo.py::test_el_panel_no_puede_escribir_y_data_no_cambia,1
+CP-149,FC-24,K1 y K6 frente a gold_final.csv,correcto,conteos iguales,cumplió lo esperado,pasa,0.050,tests/test_panel_integracion.py::test_estratos_coincide_con_k1_y_con_los_conteos_de_gold_final,1
+CP-150,FC-24,Composición por comuna,correcto,conteos iguales,cumplió lo esperado,pasa,0.021,tests/test_panel_integracion.py::test_la_composicion_por_comuna_y_grupo_coincide_con_gold_final,1
+CP-151,FC-24,Filtros de construcciones,límite,los totales filtrados coinciden con gold_final.csv,cumplió lo esperado,pasa,1.597,tests/test_panel_integracion.py::test_construcciones_pagina_y_filtros_coinciden_con_gold_final,1
+CP-152,FC-24,El panel no modifica data,incorrecto,la fecha de modificación de data/gold no cambia,cumplió lo esperado,pasa,0.779,tests/test_panel_integracion.py::test_el_panel_no_modifica_data_al_consultar,1
+CP-153,FC-24,API real por HTTP,correcto,once rutas responden,cumplió lo esperado,pasa,2.089,tests/test_panel_humo_extremo_a_extremo.py::test_el_cliente_real_lee_por_http_las_once_rutas_de_la_api,1
+CP-154,FC-24,Valores por HTTP real frente a las salidas,correcto,iguales,cumplió lo esperado,pasa,2.678,tests/test_panel_humo_extremo_a_extremo.py::test_los_valores_por_http_real_coinciden_con_las_salidas,1
+CP-155,FC-24,Intento de escritura,incorrecto,405 y data intacta,cumplió lo esperado,pasa,1.758,tests/test_panel_humo_extremo_a_extremo.py::test_el_panel_no_puede_escribir_y_data_no_cambia,1
 CP-156,FC-25,Comando de la API con SQLite,correcto,el de la documentación,cumplió lo esperado,pasa,0.002,tests/test_panel_lanzador.py::test_el_comando_de_la_api_con_sqlite_es_el_de_la_documentacion,1
-CP-157,FC-25,Entorno de Streamlit,correcto,"sin cabeza, local y sin telemetría",cumplió lo esperado,pasa,0.005,tests/test_panel_lanzador.py::test_el_entorno_del_panel_es_local_sin_cabeza_y_sin_telemetria,1
-CP-158,FC-25,Credenciales de MySQL,incorrecto,no pasan al panel,cumplió lo esperado,pasa,0.007,tests/test_panel_lanzador.py::test_el_entorno_del_panel_no_recibe_credenciales_de_mysql,1
-CP-159,FC-25,Puerto ocupado,límite,se elige otro libre,cumplió lo esperado,pasa,0.004,tests/test_panel_lanzador.py::test_un_puerto_ocupado_se_reemplaza_por_otro_libre,1
-CP-160,FC-25,La API no arranca,incorrecto,código de salida 1,cumplió lo esperado,pasa,0.040,tests/test_panel_lanzador.py::test_si_la_api_no_responde_sale_con_1_y_no_arranca_el_panel,1
-CP-161,FC-25,El panel no arranca,incorrecto,código de salida 2 y la API se cierra,cumplió lo esperado,pasa,0.064,tests/test_panel_lanzador.py::test_si_el_panel_no_responde_sale_con_2_y_cierra_la_api,1
-CP-162,FC-25,Ctrl+C,límite,cierra los dos procesos,cumplió lo esperado,pasa,0.056,tests/test_panel_lanzador.py::test_ctrl_c_cierra_los_dos_procesos_y_sale_con_0,1
-CP-163,FC-25,Excepción al arrancar,incorrecto,el cierre ocurre en finally,cumplió lo esperado,pasa,0.070,tests/test_panel_lanzador.py::test_el_cierre_ocurre_aunque_el_arranque_lance_una_excepcion,1
-CP-164,FC-25,Duración acotada,límite,los procesos se cierran solos y sale con 0,cumplió lo esperado,pasa,0.080,tests/test_panel_lanzador.py::test_con_duracion_los_procesos_se_cierran_solos_y_sale_con_0,1
-CP-165,FC-26,Imports permitidos,correcto,solo logger y el propio panel,cumplió lo esperado,pasa,0.076,tests/test_panel_registro_y_aislamiento.py::test_los_unicos_imports_de_src_son_logger_y_el_propio_panel,1
-CP-166,FC-26,Sin almacenes ni credenciales,incorrecto,"no importa sqlite3, pymysql ni capas del pipeline",cumplió lo esperado,pasa,0.172,tests/test_panel_registro_y_aislamiento.py::test_el_panel_no_importa_almacenes_ni_capas_del_pipeline_ni_credenciales,20
-CP-167,FC-26,Solo GET,incorrecto,ningún método de escritura,cumplió lo esperado,pasa,0.084,tests/test_panel_registro_y_aislamiento.py::test_solo_hay_consultas_get_y_ninguna_llamada_peligrosa,1
-CP-168,FC-26,Sin HTML inseguro ni recursos externos,incorrecto,ninguno,cumplió lo esperado,pasa,0.017,tests/test_panel_registro_y_aislamiento.py::test_sin_html_inseguro_javascript_recursos_externos_ni_credenciales,1
-CP-169,FC-26,Ninguna cifra escrita a mano,límite,los textos no llevan dígitos propios,cumplió lo esperado,pasa,0.103,tests/test_panel_registro_y_aislamiento.py::test_ninguna_cifra_escrita_a_mano_en_los_textos_del_panel,1
-CP-170,FC-26,Rutas del registro en el OpenAPI,correcto,cada ruta existe,cumplió lo esperado,pasa,0.221,tests/test_panel_registro_y_aislamiento.py::test_cada_ruta_de_los_componentes_y_las_paginas_existe_en_el_openapi_de_la_api,1
-CP-171,FC-26,Campos del registro en las salidas,correcto,cada campo existe en su archivo,cumplió lo esperado,pasa,0.023,tests/test_panel_registro_y_aislamiento.py::test_cada_campo_de_los_componentes_existe_en_el_archivo_de_salida_que_declaran,1
-CP-172,FC-26,Sin carpetas ocultas de Streamlit,incorrecto,no existen,cumplió lo esperado,pasa,1.478,tests/test_panel_registro_y_aislamiento.py::test_no_hay_carpetas_ocultas_ni_pages_ni_streamlit_en_el_repositorio,1
-CP-173,FC-26,Contraste del texto sobre el fondo,correcto,al menos 7 a 1,cumplió lo esperado,pasa,0.026,tests/test_panel_tema.py::test_el_texto_sobre_el_fondo_tiene_al_menos_7_a_1_y_sobre_el_fondo_secundario_tambien,1
-CP-174,FC-26,Contraste de los colores de los gráficos,límite,al menos 3 a 1 sobre el fondo,cumplió lo esperado,pasa,0.110,tests/test_panel_tema.py::test_los_colores_de_los_graficos_tienen_al_menos_3_a_1_sobre_el_fondo,4
-CP-175,FC-26,Un par de bajo contraste,incorrecto,se detecta,cumplió lo esperado,pasa,0.002,tests/test_panel_tema.py::test_un_par_de_bajo_contraste_se_detecta,1
-CP-176,FC-27,La cabecera nombra la siguiente decisión,correcto,la última más uno,cumplió lo esperado,pasa,0.006,tests/test_decisiones.py::test_la_cabecera_nombra_la_siguiente_decision_a_la_ultima_registrada,1
-CP-177,FC-27,Un desajuste de la cabecera,incorrecto,se detecta,cumplió lo esperado,pasa,0.004,tests/test_decisiones.py::test_la_cabecera_detecta_un_desajuste,1
-CP-178,FC-27,El zip incluye el panel y su lanzador,correcto,sin carpetas ocultas ni .env,cumplió lo esperado,pasa,0.207,tests/test_dist.py::test_el_repo_real_empaqueta_el_panel_y_su_lanzador_sin_carpetas_ocultas_ni_credenciales,1
-CP-179,FC-27,Carpeta de configuración de Streamlit,incorrecto,no entra al zip,cumplió lo esperado,pasa,0.079,tests/test_dist.py::test_una_carpeta_de_configuracion_de_streamlit_o_sus_credenciales_no_entran_al_zip,1
+CP-157,FC-25,Entorno de Streamlit,correcto,"sin cabeza, local y sin telemetría",cumplió lo esperado,pasa,0.003,tests/test_panel_lanzador.py::test_el_entorno_del_panel_es_local_sin_cabeza_y_sin_telemetria,1
+CP-158,FC-25,Credenciales de MySQL,incorrecto,no pasan al panel,cumplió lo esperado,pasa,0.002,tests/test_panel_lanzador.py::test_el_entorno_del_panel_no_recibe_credenciales_de_mysql,1
+CP-159,FC-25,Puerto ocupado,límite,se elige otro libre,cumplió lo esperado,pasa,0.002,tests/test_panel_lanzador.py::test_un_puerto_ocupado_se_reemplaza_por_otro_libre,1
+CP-160,FC-25,La API no arranca,incorrecto,código de salida 1,cumplió lo esperado,pasa,0.034,tests/test_panel_lanzador.py::test_si_la_api_no_responde_sale_con_1_y_no_arranca_el_panel,1
+CP-161,FC-25,El panel no arranca,incorrecto,código de salida 2 y la API se cierra,cumplió lo esperado,pasa,0.052,tests/test_panel_lanzador.py::test_si_el_panel_no_responde_sale_con_2_y_cierra_la_api,1
+CP-162,FC-25,Ctrl+C,límite,cierra los dos procesos,cumplió lo esperado,pasa,0.032,tests/test_panel_lanzador.py::test_ctrl_c_cierra_los_dos_procesos_y_sale_con_0,1
+CP-163,FC-25,Excepción al arrancar,incorrecto,el cierre ocurre en finally,cumplió lo esperado,pasa,0.037,tests/test_panel_lanzador.py::test_el_cierre_ocurre_aunque_el_arranque_lance_una_excepcion,1
+CP-164,FC-25,Duración acotada,límite,los procesos se cierran solos y sale con 0,cumplió lo esperado,pasa,0.035,tests/test_panel_lanzador.py::test_con_duracion_los_procesos_se_cierran_solos_y_sale_con_0,1
+CP-165,FC-26,Imports permitidos,correcto,solo logger y el propio panel,cumplió lo esperado,pasa,0.050,tests/test_panel_registro_y_aislamiento.py::test_los_unicos_imports_de_src_son_logger_y_el_propio_panel,1
+CP-166,FC-26,Sin almacenes ni credenciales,incorrecto,"no importa sqlite3, pymysql ni capas del pipeline",cumplió lo esperado,pasa,0.094,tests/test_panel_registro_y_aislamiento.py::test_el_panel_no_importa_almacenes_ni_capas_del_pipeline_ni_credenciales,20
+CP-167,FC-26,Solo GET,incorrecto,ningún método de escritura,cumplió lo esperado,pasa,0.041,tests/test_panel_registro_y_aislamiento.py::test_solo_hay_consultas_get_y_ninguna_llamada_peligrosa,1
+CP-168,FC-26,Sin HTML inseguro ni recursos externos,incorrecto,ninguno,cumplió lo esperado,pasa,0.009,tests/test_panel_registro_y_aislamiento.py::test_sin_html_inseguro_javascript_recursos_externos_ni_credenciales,1
+CP-169,FC-26,Ninguna cifra escrita a mano,límite,los textos no llevan dígitos propios,cumplió lo esperado,pasa,0.106,tests/test_panel_registro_y_aislamiento.py::test_ninguna_cifra_escrita_a_mano_en_los_textos_del_panel,1
+CP-170,FC-26,Rutas del registro en el OpenAPI,correcto,cada ruta existe,cumplió lo esperado,pasa,0.163,tests/test_panel_registro_y_aislamiento.py::test_cada_ruta_de_los_componentes_y_las_paginas_existe_en_el_openapi_de_la_api,1
+CP-171,FC-26,Campos del registro en las salidas,correcto,cada campo existe en su archivo,cumplió lo esperado,pasa,0.010,tests/test_panel_registro_y_aislamiento.py::test_cada_campo_de_los_componentes_existe_en_el_archivo_de_salida_que_declaran,1
+CP-172,FC-26,Sin carpetas ocultas de Streamlit,incorrecto,no existen,cumplió lo esperado,pasa,0.480,tests/test_panel_registro_y_aislamiento.py::test_no_hay_carpetas_ocultas_ni_pages_ni_streamlit_en_el_repositorio,1
+CP-173,FC-26,Contraste del texto sobre el fondo,correcto,al menos 7 a 1,cumplió lo esperado,pasa,0.018,tests/test_panel_tema.py::test_el_texto_sobre_el_fondo_tiene_al_menos_7_a_1_y_sobre_el_fondo_secundario_tambien,1
+CP-174,FC-26,Contraste de los colores de los gráficos,límite,al menos 3 a 1 sobre el fondo,cumplió lo esperado,pasa,0.082,tests/test_panel_tema.py::test_los_colores_de_los_graficos_tienen_al_menos_3_a_1_sobre_el_fondo,4
+CP-175,FC-26,Un par de bajo contraste,incorrecto,se detecta,cumplió lo esperado,pasa,0.003,tests/test_panel_tema.py::test_un_par_de_bajo_contraste_se_detecta,1
+CP-176,FC-27,La cabecera nombra la siguiente decisión,correcto,la última más uno,cumplió lo esperado,pasa,0.007,tests/test_decisiones.py::test_la_cabecera_nombra_la_siguiente_decision_a_la_ultima_registrada,1
+CP-177,FC-27,Un desajuste de la cabecera,incorrecto,se detecta,cumplió lo esperado,pasa,0.006,tests/test_decisiones.py::test_la_cabecera_detecta_un_desajuste,1
+CP-178,FC-27,El zip incluye el panel y su lanzador,correcto,sin carpetas ocultas ni .env,cumplió lo esperado,pasa,0.199,tests/test_dist.py::test_el_repo_real_empaqueta_el_panel_y_su_lanzador_sin_carpetas_ocultas_ni_credenciales,1
+CP-179,FC-27,Carpeta de configuración de Streamlit,incorrecto,no entra al zip,cumplió lo esperado,pasa,0.050,tests/test_dist.py::test_una_carpeta_de_configuracion_de_streamlit_o_sus_credenciales_no_entran_al_zip,1

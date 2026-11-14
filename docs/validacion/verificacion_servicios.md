@@ -236,3 +236,43 @@ Subcriterios nuevos, además de los seis anteriores: 7. la contraseña del usuar
 | 8 | Cumple | comprobación canario con la contraseña real: 0 hallazgos en el árbol, 5 registros, 54 commits del historial y un zip de prueba de 194 entradas sin `.env` (EV-033) |
 
 **Estado del 2.3:** Cumple. Queda por repetir la comprobación canario sobre el zip final en Cierre y paquete.
+
+---
+
+## Panel (2026-11-14)
+Ítems 3.1, 3.2 y 5.3, y criterios AC28 y AC29 del MVP. El ítem 3.3 (usabilidad, capacidad de respuesta y coherencia visual) **no se cierra aquí**: solo se producen mediciones y verificaciones técnicas reutilizables ([accesibilidad_y_respuesta.md](../panel/accesibilidad_y_respuesta.md)).
+
+### Auditoría previa
+| Qué había | Brecha |
+|---|---|
+| API de solo lectura con 11 rutas GET y errores JSON uniformes; salidas de Gold; decisión D20 (Streamlit sobre la API) | ninguna interfaz, ningún código del panel y Streamlit sin instalar |
+| Streamlit no estaba en el entorno | instalarlo sin cambiar pandas, numpy ni shapely ([EV-051](../evidencias/panel/EV-051_instalacion_streamlit.txt)) |
+| La API no entrega el umbral de muestra baja, el texto de «qué no se puede concluir» ni el detalle de los barrios de K3 más que en una nota | se resuelve en el panel sin modificar `src/api/` (D78) |
+
+### Subcriterios, decisiones y estado
+| # | Ítem | Subcriterio | Brecha | Decisión | Acción | Evidencia producida | Estado | Cómo validar |
+|---|---|---|---|---|---|---|---|---|
+| 1 | 3.1 | Componentes de interfaz: ocho páginas con métricas, tablas y gráficos con barras de error | no existían | D68, D71 | `src/panel/` con registro único de componentes | [EV-054](../evidencias/panel/EV-054_capturas_panel.txt); [trazabilidad_ui.md](../panel/trazabilidad_ui.md) | Cumple | `python scripts/panel/ejecutar_panel.py` |
+| 2 | 3.1 | Visualización fiel y con alcance visible en todas las páginas (K1 a K6, sensibilidades, calidad y fuentes) | no existía | D73, D74, D80 | recuadro de alcance permanente; conclusiones generadas con la regla de `KPIs.md`; ninguna cifra escrita a mano | `tests/test_panel_integracion.py` (valores iguales a las salidas) | Cumple | `pytest tests/test_panel_integracion.py tests/test_panel_paginas.py` |
+| 3 | 3.1 | Interacción: filtros que aplica la API, paginación y descarga CSV de lo mostrado | no existía | D75, D76 | página Construcciones | `tests/test_panel_paginas.py::test_construcciones_pagina_filtra_en_la_api_y_ofrece_la_descarga`; capturas | Cumple | abrir la página Construcciones |
+| 4 | 3.1 | Ejecución reproducible con un comando y cierre limpio | no existía | D72 | `scripts/panel/ejecutar_panel.py` | [EV-052](../evidencias/panel/EV-052_ejecucion_real.txt) | Cumple | `python scripts/panel/ejecutar_panel.py --verificar` |
+| 5 | 3.2 | El frontend consume solo los endpoints de la API, de forma modular | no existía | D69, D70 | cliente HTTP único y solo GET; páginas `render(api)` | análisis estático (`tests/test_panel_registro_y_aislamiento.py`); registro de rutas contra el OpenAPI | Cumple | `pytest tests/test_panel_registro_y_aislamiento.py` |
+| 6 | 3.2 | Errores de la API traducidos a avisos claros, sin trazas | no existía | D69, D71 | resultados tipados y marco con degradación | `tests/test_panel_cliente.py`; 5 tipos de fallo en las 8 páginas (`tests/test_panel_paginas.py`) | Cumple | `pytest tests/test_panel_cliente.py tests/test_panel_paginas.py` |
+| 7 | 3.2 | Eficiencia: caché con tiempo de vida y mediciones | no existía | D70 | `st.cache_data` que no guarda fallos; mediciones locales | [EV-055](../evidencias/panel/EV-055_mediciones_panel.txt) | Cumple | `python scripts/evidencias/evidencia_panel_almacenes.py` |
+| 8 | 5.3 | Pruebas interfaz ↔ lógica con `AppTest` | no existían | D77 | una prueba por página y tipo de fallo | `tests/test_panel_paginas.py` | Cumple | `pytest tests/test_panel_paginas.py` |
+| 9 | 5.3 | Integración interfaz ↔ API ↔ almacenamiento con la API real | no existía | D77 | cliente en memoria contra la API real sobre una copia temporal de SQLite en solo lectura | `tests/test_panel_integracion.py` (11 pruebas) | Cumple | `pytest tests/test_panel_integracion.py` |
+| 10 | 5.3 | Humo de extremo a extremo de solo lectura (D23 vigente por D67) | no existía | D77 | API real en un subproceso y cliente HTTP real | `tests/test_panel_humo_extremo_a_extremo.py`; [EV-052](../evidencias/panel/EV-052_ejecucion_real.txt) | Cumple | `pytest tests/test_panel_humo_extremo_a_extremo.py` |
+| 11 | 5.3 | Equivalencia entre almacenamientos: los datos de cada página son iguales con SQLite y con MySQL | no existía | D77 | dos APIs reales, una por almacén | [EV-053](../evidencias/panel/EV-053_equivalencia_almacenes.txt): 12 de 12 respuestas y 8 de 8 páginas idénticas | Cumple | `python scripts/evidencias/evidencia_panel_almacenes.py` (necesita MySQL) |
+| 12 | AC28 | K1 a K6 con alcance visible y sin leer la base | no verificado | D68 | ver subcriterios 2 y 5 | EV-054 y análisis estático | Cumple | ver 2 y 5 |
+| 13 | AC29 | Humo de solo lectura interfaz → API → almacén | no verificado | D77 | ver subcriterios 10 y 11 | EV-052 y EV-053 | Cumple | ver 10 y 11 |
+
+### Hallazgos de la API (resueltos sin modificar `src/api/`)
+La API no entrega el umbral de muestra baja; no sirve el texto de «qué no se puede concluir» (que hoy lista ocho puntos y no siete); entrega el detalle de los barrios de K3 solo en la nota del KPI; `/composicion` trae los grupos de estrato 1-2, 3-5 y 6; y `/comunas` renombra las columnas de Gold. Detalle y manejo en D78.
+
+### Revalidación del ítem 2.3
+El panel no maneja credenciales: no importa módulos de conexión, no lee `.env` y el lanzador no le pasa variables `MYSQL_*` (pruebas de aislamiento y del lanzador). La comprobación canario con las contraseñas de MySQL, del usuario de Docker y de la interfaz de Airflow sobre el árbol, el historial, los registros, la carpeta de Airflow y un zip de prueba dio 0 hallazgos ([EV-056](../evidencias/panel/EV-056_canario_panel.txt)). Estado del 2.3: Cumple.
+
+### Avance de otros ítems
+7.2: el README tiene la sección «Panel» (cómo ejecutarlo, páginas, estructura y glosario). 7.3: [arquitectura_panel.md](../panel/arquitectura_panel.md) y la trazabilidad de la interfaz; el feedback de usuarios sigue pendiente (hecho externo).
+
+**Estado final:** 3.1 Cumple, 3.2 Cumple, 5.3 Cumple, AC28 y AC29 cumplen. El 3.3 queda como avance técnico; las sesiones con usuarios están pendientes.

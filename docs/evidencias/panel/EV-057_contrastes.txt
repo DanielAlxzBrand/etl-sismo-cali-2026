@@ -1,10 +1,10 @@
 # Relaciones de contraste calculadas de la paleta del panel
 - comando: `python scripts/panel/contraste.py --evidencia`
-- fecha: 2026-11-14T10:55:25-05:00 (America/Bogota)
+- fecha: 2026-11-14T11:06:43-05:00 (America/Bogota)
 - código de salida: 0
 - duración: 0.1 s
 - Python: 3.13.0
-- commit del repositorio: ce71a44
+- commit del repositorio: c484b16
 
 Relación de contraste de la paleta del panel, calculada con la fórmula de luminancia relativa de WCAG 2.x (valores calculados, no un nivel declarado).
 

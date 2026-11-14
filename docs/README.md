@@ -98,8 +98,18 @@
 | [mlops_y_produccion.md](orquestacion/mlops_y_produccion.md) | prácticas de producción aplicadas y lo que no aplica |
 | [operacion.md](orquestacion/operacion.md) | levantar, parar, registros y solución de problemas |
 
+### Panel
+| documento | contenido |
+|---|---|
+| [panel/README.md](panel/README.md) | índice del componente, cómo ejecutarlo y evidencias |
+| [guia_de_uso.md](panel/guia_de_uso.md) | qué muestra cada página, cómo leer intervalos y avisos, y qué no se puede concluir |
+| [arquitectura_panel.md](panel/arquitectura_panel.md) | capas, flujo, errores y seguridad del panel, con su diagrama |
+| [trazabilidad_ui.md](panel/trazabilidad_ui.md) | componente, ruta de la API, campo, archivo de salida y pregunta de negocio (generado) |
+| [pruebas_panel.md](panel/pruebas_panel.md) | pruebas del panel y resultados de las evidencias |
+| [accesibilidad_y_respuesta.md](panel/accesibilidad_y_respuesta.md) | contrastes calculados, mediciones locales y lo pendiente de usuarios |
+
 ### Decisiones
-[DECISIONES.md](DECISIONES.md): todas las decisiones con alternativas, razón, riesgo y fecha (D1 a D67; las nuevas continúan desde D68).
+[DECISIONES.md](DECISIONES.md): todas las decisiones con alternativas, razón, riesgo y fecha (D1 a D80; las nuevas continúan desde D81).
 
 ### Almacenamiento relacional (MySQL)
 | documento | contenido |
@@ -113,11 +123,10 @@
 ## Componentes en construcción
 | componente | estado |
 |---|---|
-| Panel (dashboard) | en construcción; se documentará en `docs/dashboard/` |
 | Usuarios y UX | en construcción; se documentará en `docs/ux/` |
 | Costos y finanzas | en construcción; se documentará en `docs/finanzas/` |
 
-Las evidencias del almacenamiento relacional están en `docs/evidencias/almacenamiento/`; las de la orquestación están en `docs/evidencias/orquestacion/`; las de los demás irán en `docs/evidencias/dashboard/` y `docs/evidencias/usuarios/`, que se crean cuando haya contenido.
+Las evidencias del almacenamiento relacional están en `docs/evidencias/almacenamiento/`; las de la orquestación están en `docs/evidencias/orquestacion/`; las del panel, en `docs/evidencias/panel/`; las de los demás irán en `docs/evidencias/usuarios/`, que se crea cuando haya contenido.
 
 ## Componentes del proyecto y los ítems del checklist que cierran
 | componente | ítems que cierra | estado |
@@ -127,7 +136,7 @@ Las evidencias del almacenamiento relacional están en `docs/evidencias/almacena
 | API, fuentes y credenciales | 2.1, 2.2, 2.3 | hecho |
 | Carga relacional | 4.1, 4.2, 4.3 | hecho |
 | Pruebas y orquestación | 5.1, 5.2, 5.4, 5.5, 5.6 | hecho |
-| Panel | 1.5, 3.1, 3.2, 5.3 | en construcción |
+| Panel | 1.5, 3.1, 3.2, 5.3 | hecho |
 | Usuarios, UX y finanzas | 3.3, 6.1, 6.2, 6.3, 6.4 | en construcción |
 | Documentación y demostración | 6.5, 7.2, 7.3, 7.4, 7.5 | en construcción |
 | Cierre y paquete | 7.1 | en construcción |
@@ -142,6 +151,7 @@ El detalle de cada ítem (estado, evidencia y cómo validarlo) está en `docs/ch
 | por qué una regla de limpieza existe | `docs/silver/reglas_silver.md` y `docs/silver/hallazgos_eda.md` |
 | cómo se calcula un indicador | `docs/gold/KPIs.md` |
 | los endpoints de la API y sus errores | `docs/api/arquitectura.md` |
+| cómo ejecutar y leer el panel | `docs/panel/guia_de_uso.md` |
 | dónde va una credencial | `docs/seguridad/gestion_credenciales.md` |
 | el estado de cada ítem del checklist | `docs/checklist/estado_checklist.md` |
 | qué archivo adjuntar como evidencia de un ítem | `docs/checklist/guia_de_evidencias.md` |

@@ -199,19 +199,36 @@ def _copia(tmp_path, texto, reemplazos):
     return destino.read_text(encoding="utf-8")
 
 
+def _con_un_criterio_pendiente(t):
+    """Si todos los criterios ya cumplen, devuelve una copia en memoria con un criterio pendiente (y el encabezado ajustado) para poder alterar esa forma de fila."""
+    if re.search(r"\*\*no verificado aún: ([^*]+)\*\* \| ([^|]+) \| — \|", t):
+        return t
+    filas = FILA_AC.findall(t)
+    ultimo = filas[-1]
+    fila = re.search(rf"^\| {ultimo[0]} \|.*$", t, re.M).group(0)
+    pendiente = fila.replace(f"**cumple** | {ultimo[3].strip()} | {ultimo[4].strip()} |", "**no verificado aún: Panel** | Panel | — |")
+    assert pendiente != fila
+    encabezado = re.search(r"(\d+) de (\d+) criterios cumplen hoy; (\d+) están «no verificado aún»", t)
+    nuevo = f"{int(encabezado[1]) - 1} de {encabezado[2]} criterios cumplen hoy; {int(encabezado[3]) + 1} están «no verificado aún»"
+    return t.replace(fila, pendiente, 1).replace(encabezado.group(0), nuevo, 1)
+
+
 def test_negativas_de_los_criterios_del_mvp(tmp_path):
-    t = _texto("05_mvp_criterios_aceptacion.md")
+    original = _texto("05_mvp_criterios_aceptacion.md")
+    t = _con_un_criterio_pendiente(original)
+    assert revisar_criterios(t) == []      # la copia con un pendiente es válida: las alteraciones parten de una tabla correcta
     pendiente = re.search(r"\*\*no verificado aún: ([^*]+)\*\* \| ([^|]+) \| — \|", t)
     cumple = re.search(r"\*\*cumple\*\* \| [^|]+ \| (\d{4}-\d{2}-\d{2}) \|", t)
     assert pendiente and cumple
     comp = pendiente.group(1)
+    encabezado = re.search(r"(\d+) de (\d+) criterios cumplen hoy", t)
     alteraciones = {
         "componente vacío": [(f"**no verificado aún: {comp}** | {comp} | —", "**no verificado aún: ** |  | —")],
         "componente inventado": [(f"**no verificado aún: {comp}** | {comp} | —", "**no verificado aún: Fase uno** | Fase uno | —")],
         "componente por definir": [(f"**no verificado aún: {comp}** | {comp} | —", "**no verificado aún: por definir** | por definir | —")],
         "criterio pendiente con guion": [(f"**no verificado aún: {comp}** | {comp} | —", "**no verificado aún: —** | — | —")],
         "criterio cumple sin fecha": [(cumple.group(0), cumple.group(0).replace(cumple.group(1), "—"))],
-        "conteo que no coincide": [("27 de 29 criterios cumplen hoy", "28 de 29 criterios cumplen hoy")],
+        "conteo que no coincide": [(encabezado.group(0), f"{int(encabezado[1]) + 1} de {encabezado[2]} criterios cumplen hoy")],
     }
     for nombre, cambios in alteraciones.items():
         assert revisar_criterios(_copia(tmp_path, t, cambios)), nombre

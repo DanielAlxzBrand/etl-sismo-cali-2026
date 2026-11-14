@@ -1,10 +1,10 @@
 # Equivalencia de los datos del panel entre SQLite y MySQL
 - comando: `python scripts/evidencias/evidencia_panel_almacenes.py`
-- fecha: 2026-11-14T10:58:40-05:00 (America/Bogota)
+- fecha: 2026-11-14T11:06:43-05:00 (America/Bogota)
 - código de salida: 0
-- duración: 157.6 s
+- duración: 134.4 s
 - Python: 3.13.0
-- commit del repositorio: ce71a44
+- commit del repositorio: c484b16
 
 Equivalencia de los datos que consume el panel entre los dos almacenes (APIs reales en 127.0.0.1; el panel solo habla con la API):
 
@@ -32,7 +32,7 @@ Respuestas idénticas: 12 de 12.
 Contenido de cada página renderizada con AppTest contra cada API (texto, métricas y tablas; se normaliza la línea del almacenamiento activo):
 | Página | Caracteres SQLite | Caracteres MySQL | Contenido |
 |---|---|---|---|
-| Respuesta | 1795 | 1795 | idéntico |
+| Respuesta | 1763 | 1763 | idéntico |
 | Estratos (K1) | 2344 | 2344 | idéntico |
 | Comunas (K6) | 2372 | 2372 | idéntico |
 | Sensibilidades (S0 a S5) | 5271 | 5271 | idéntico |

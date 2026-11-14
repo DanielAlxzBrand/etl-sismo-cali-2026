@@ -1,37 +1,37 @@
 # Mediciones locales de latencia del cliente y de renderizado por página
 - comando: `python scripts/evidencias/evidencia_panel_almacenes.py`
-- fecha: 2026-11-14T10:58:40-05:00 (America/Bogota)
+- fecha: 2026-11-14T11:06:43-05:00 (America/Bogota)
 - código de salida: 0
-- duración: 157.6 s
+- duración: 134.4 s
 - Python: 3.13.0
-- commit del repositorio: ce71a44
+- commit del repositorio: c484b16
 
 Mediciones locales de una máquina (no generalizan a otro equipo ni a otro servidor). Son insumos técnicos; no sustituyen la evaluación de usabilidad con personas.
 
 Latencia del cliente del panel por ruta (HTTP real a 127.0.0.1; 5 de calentamiento y 30 mediciones; mediana y p95 en ms):
 | Ruta | SQLite mediana | SQLite p95 | MySQL mediana | MySQL p95 |
 |---|---|---|---|---|
-| `/health` | 9.3 | 13.8 | 79.9 | 104.6 |
-| `/metadata` | 13.6 | 14.7 | 96.7 | 127.2 |
-| `/fuentes` | 4.6 | 5.4 | 4.5 | 5.1 |
-| `/kpis` | 3.8 | 5.0 | 82.6 | 115.4 |
-| `/kpis/K1` | 3.4 | 4.1 | 81.3 | 114.2 |
-| `/kpis/sensibilidad` | 7.0 | 9.4 | 79.5 | 140.0 |
-| `/comunas` | 3.5 | 4.4 | 76.2 | 80.8 |
-| `/composicion` | 9.7 | 12.6 | 111.4 | 143.4 |
-| `/construcciones?limit=50&offset=0` | 6.9 | 9.0 | 78.5 | 113.8 |
-| `/construcciones?limit=50&offset=0&comuna=20&severo_estricto=True` | 6.6 | 10.5 | 80.9 | 120.9 |
-| `/calidad` | 9.7 | 22.3 | 16.4 | 22.3 |
-| `/llave/revision` | 8.7 | 13.7 | 114.0 | 139.4 |
+| `/health` | 9.0 | 10.7 | 82.7 | 130.0 |
+| `/metadata` | 13.9 | 14.4 | 126.9 | 164.7 |
+| `/fuentes` | 4.8 | 5.6 | 4.8 | 5.3 |
+| `/kpis` | 3.8 | 5.0 | 77.5 | 93.8 |
+| `/kpis/K1` | 3.6 | 4.4 | 86.5 | 118.7 |
+| `/kpis/sensibilidad` | 8.2 | 11.9 | 74.8 | 80.9 |
+| `/comunas` | 3.7 | 4.3 | 77.7 | 97.1 |
+| `/composicion` | 11.4 | 12.9 | 100.9 | 132.9 |
+| `/construcciones?limit=50&offset=0` | 8.5 | 10.7 | 79.4 | 104.1 |
+| `/construcciones?limit=50&offset=0&comuna=20&severo_estricto=True` | 5.3 | 6.8 | 92.8 | 124.4 |
+| `/calidad` | 11.8 | 15.9 | 8.8 | 9.4 |
+| `/llave/revision` | 5.3 | 6.1 | 97.3 | 129.6 |
 
 Tiempo de renderizado de cada página con AppTest, incluida la lectura de la API (1 de calentamiento y 7 mediciones; mediana y p95 en ms). No incluye el navegador ni la red hacia una persona:
 | Página | SQLite mediana | SQLite p95 | MySQL mediana | MySQL p95 |
 |---|---|---|---|---|
-| Respuesta | 671 | 708 | 950 | 1055 |
-| Estratos (K1) | 702 | 750 | 976 | 1010 |
-| Comunas (K6) | 758 | 811 | 1216 | 1301 |
-| Sensibilidades (S0 a S5) | 705 | 723 | 1085 | 1148 |
-| Concentración (K3 y K4) | 695 | 715 | 812 | 1042 |
-| Calidad de la llave | 433 | 493 | 730 | 791 |
-| Construcciones | 532 | 609 | 917 | 1182 |
-| Fuentes y sistema | 560 | 697 | 800 | 890 |
+| Respuesta | 389 | 488 | 674 | 700 |
+| Estratos (K1) | 500 | 524 | 660 | 671 |
+| Comunas (K6) | 449 | 542 | 764 | 808 |
+| Sensibilidades (S0 a S5) | 460 | 562 | 692 | 825 |
+| Concentración (K3 y K4) | 406 | 461 | 647 | 732 |
+| Calidad de la llave | 513 | 657 | 850 | 902 |
+| Construcciones | 537 | 554 | 881 | 980 |
+| Fuentes y sistema | 483 | 540 | 761 | 796 |

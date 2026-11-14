@@ -1,8 +1,8 @@
 # Guía de evidencias para la plantilla del checklist
 
-**Fecha:** 2026-11-13 (actualizada con Pruebas y orquestación; versión inicial 2026-11-12) · **Política (D35):** el equipo **no graba video**. Para cada ítem del checklist se presentan **archivos adjuntables** (salidas registradas, JSON, XML de pruebas, documentos e imágenes renderizadas) y, **de forma opcional**, capturas de pantalla. Las capturas automatizadas del navegador (rotuladas) y las salidas registradas son evidencia suficiente; una captura manual complementa, no condiciona el cierre de un ítem.
+**Fecha:** 2026-11-14 (actualizada con Panel; versión inicial 2026-11-12) · **Política (D35):** el equipo **no graba video**. Para cada ítem del checklist se presentan **archivos adjuntables** (salidas registradas, JSON, XML de pruebas, documentos e imágenes renderizadas) y, **de forma opcional**, capturas de pantalla. Las capturas automatizadas del navegador (rotuladas) y las salidas registradas son evidencia suficiente; una captura manual complementa, no condiciona el cierre de un ítem.
 
-**Rótulos.** Una captura que tome el equipo se rotula «captura tomada por el equipo» con la fecha. La captura de `/docs` incluida en el repositorio (EV-017) se rotula «captura automatizada del navegador». Las imágenes generadas desde salidas reales (EV-021 a EV-024, EV-045 a EV-048, el diagrama de `docs/orquestacion/img/` y los de `docs/estrategia/img/`) se rotulan «imagen generada a partir de la salida registrada; no es una captura de pantalla».
+**Rótulos.** Una captura que tome el equipo se rotula «captura tomada por el equipo» con la fecha. La captura de `/docs` incluida en el repositorio (EV-017) y las del panel (EV-054) se rotulan «captura automatizada del navegador». Las imágenes generadas desde salidas reales (EV-021 a EV-024, EV-045 a EV-048, EV-058 a EV-060, los diagramas de `docs/orquestacion/img/` y `docs/panel/img/` y los de `docs/estrategia/img/`) se rotulan «imagen generada a partir de la salida registrada; no es una captura de pantalla».
 
 **Cómo se lee cada ficha.** (a) archivo principal para adjuntar a la plantilla; (b) archivos de apoyo; (c) texto sugerido para la columna «Evidencia / observaciones»; (d) captura opcional, con comando probado; (e) cómo validar la evidencia con un comando de solo lectura. Las rutas son relativas a la raíz del repositorio. El índice de todas las evidencias con su sha256 está en `docs/evidencias/manifiesto.md`.
 
@@ -11,7 +11,7 @@
 **Comandos de PowerShell.** Todos se ejecutan en la raíz del repositorio con el entorno activado (`.\.venv\Scripts\Activate.ps1`) y no modifican nada. Para comprobar que no cambió nada: `git status --short` no debe imprimir nada.
 
 ## Índice
-Fichas de los ítems 1.1 a 1.5 (Estrategia), 2.1 a 2.3 (API, fuentes y credenciales), 4.1 a 4.3 (Carga relacional) y 5.1, 5.2, 5.4, 5.5 y 5.6 (Pruebas y orquestación). Las de Panel, Usuarios, UX y finanzas, Documentación y demostración y Cierre y paquete se agregan en cada componente con esta misma estructura.
+Fichas de los ítems 1.1 a 1.5 (Estrategia), 2.1 a 2.3 (API, fuentes y credenciales), 3.1, 3.2 y 5.3 (Panel), 4.1 a 4.3 (Carga relacional) y 5.1, 5.2, 5.4, 5.5 y 5.6 (Pruebas y orquestación). Las de Usuarios, UX y finanzas, Documentación y demostración y Cierre y paquete se agregan en cada componente con esta misma estructura.
 
 ---
 
@@ -46,9 +46,9 @@ Fichas de los ítems 1.1 a 1.5 (Estrategia), 2.1 a 2.3 (API, fuentes y credencia
 - **(e) Validar:** `.\.venv\Scripts\python.exe -m pytest tests/test_estrategia.py::test_1_4_declara_hipotesis_sin_validar_y_no_estimado -q -p no:cacheprovider`.
 
 ### Ítem 1.5 · MVP y criterios de aceptación
-- **(a) Archivo principal:** `docs/estrategia/05_mvp_criterios_aceptacion.md` (Markdown). Demuestra: MVP con ocho funcionalidades (FE1 a FE8) y 29 criterios; 27 ejecutados con fecha y 2 «no verificado aún» (dashboard). AC26 se ajustó a las cuatro tareas de la guía (D66). **No demuestra:** los criterios del dashboard.
+- **(a) Archivo principal:** `docs/estrategia/05_mvp_criterios_aceptacion.md` (Markdown). Demuestra: MVP con ocho funcionalidades (FE1 a FE8) y 29 criterios, todos ejecutados con fecha. AC26 se ajustó a las cuatro tareas de la guía (D66). **No demuestra:** el uso por personas reales del dashboard.
 - **(b) Apoyo:** `docs/evidencias/estrategia/EV-009_determinismo_clon.txt` (dos corridas en un clon con los mismos sha256), `docs/evidencias/api/EV-014_pytest.txt`, `EV-016_respuestas_api.txt` y `EV-015_sin_escritura_hashes.txt` (criterios de la API).
-- **(c) Texto sugerido:** «MVP del proyecto y 29 criterios de aceptación (27 verificados con su evidencia; 2 se verifican en Panel): `docs/estrategia/05_mvp_criterios_aceptacion.md`.»
+- **(c) Texto sugerido:** «MVP del proyecto y 29 criterios de aceptación (los 29 verificados con su evidencia; AC26 con la interpretación de D66): `docs/estrategia/05_mvp_criterios_aceptacion.md`.»
 - **(d) Captura opcional:** la tabla de criterios con la columna de estado visible. Nombre: `captura_1.5_criterios.png`.
 - **(e) Validar:** `.\.venv\Scripts\python.exe -m pytest tests/test_estrategia.py::test_1_5_tiene_al_menos_24_criterios_y_no_marca_cumple_sin_verificar -q -p no:cacheprovider`.
 
@@ -87,7 +87,7 @@ Fichas de los ítems 1.1 a 1.5 (Estrategia), 2.1 a 2.3 (API, fuentes y credencia
 - **(e) Validar:** `.\.venv\Scripts\python.exe -m pytest tests/test_catalogo.py -q -p no:cacheprovider` (debe terminar en `5 passed`); `.\.venv\Scripts\python.exe scripts\make_catalogo_fuentes.py` y luego `git status --short` no debe mostrar cambios en el catálogo.
 
 ### Ítem 2.3 · Credenciales, claves y tokens
-- **(a) Archivo principal:** `docs/seguridad/gestion_credenciales.md` (Markdown). Demuestra: qué se requiere hoy (ninguna credencial obligatoria), variables en uso (`MYSQL_*`, `MYSQL_DOCKER_*` y la contraseña de la interfaz de Airflow, solo en su `.env`), dónde se guardan, rotación, revocación y respuesta ante una filtración. **No demuestra:** que no exista una filtración en servicios de terceros ni que el escáner encuentre todos los secretos posibles. Estado: Cumple; revalidado con las variables `MYSQL_*` (Carga relacional), con las del usuario de Docker y de Airflow (Pruebas y orquestación, EV-049) y, al final, con el escáner sobre el zip final (Cierre y paquete).
+- **(a) Archivo principal:** `docs/seguridad/gestion_credenciales.md` (Markdown). Demuestra: qué se requiere hoy (ninguna credencial obligatoria), variables en uso (`MYSQL_*`, `MYSQL_DOCKER_*` y la contraseña de la interfaz de Airflow, solo en su `.env`), dónde se guardan, rotación, revocación y respuesta ante una filtración. **No demuestra:** que no exista una filtración en servicios de terceros ni que el escáner encuentre todos los secretos posibles. Estado: Cumple; revalidado con las variables `MYSQL_*` (Carga relacional), con las del usuario de Docker y de Airflow (Pruebas y orquestación, EV-049), con el panel, que no maneja credenciales (EV-056) y, al final, con el escáner sobre el zip final (Cierre y paquete).
 - **(b) Apoyo:**
   - `docs/evidencias/api/EV-019_escaner_secretos.txt` y `EV-024_escaner.png` (escáner sobre el clon, su historial de git y un zip de prueba: `hallazgos: 0`).
   - `.env.example` (solo `HTTP_USER_AGENT`, la única variable que el código lee).
@@ -135,6 +135,45 @@ Fichas de los ítems 1.1 a 1.5 (Estrategia), 2.1 a 2.3 (API, fuentes y credencia
 - **(c) Texto sugerido:** «Carga por lotes medida con tres tamaños frente a fila a fila (3,4 veces más rápido con el lote elegido), con mediana, p95 y filas por segundo: `docs/evidencias/almacenamiento/EV-030_benchmark_lotes.txt`.»
 - **(d) Captura opcional:** la tabla impresa por `.\.venv\Scripts\python.exe scripts\mysql\benchmark_lotes.py`. Nombre: `captura_4.3_lotes.png`.
 - **(e) Validar:** `.\.venv\Scripts\python.exe scripts\mysql\benchmark_lotes.py` (imprime la tabla y el lote propuesto; sin `--fijar` no cambia `config.yaml`).
+
+---
+
+## Panel · Interfaz y consumo de la API (ítems 3.1, 3.2 y 5.3 del checklist)
+
+### Ítem 3.1 · Componentes de interfaz y dashboards
+- **(a) Archivo principal:** `docs/panel/guia_de_uso.md` (Markdown), con `docs/panel/arquitectura_panel.md` y `docs/panel/trazabilidad_ui.md`. Demuestra: un panel de ocho páginas que muestra K1 a K6, las sensibilidades, la calidad de la llave, las construcciones y las fuentes, con el recuadro de alcance en todas, intervalos y conclusiones generadas con la regla del proyecto. **No demuestra:** usabilidad con personas ni un despliegue (el panel se ejecuta en local).
+- **(b) Apoyo:**
+  - `docs/evidencias/panel/EV-054_captura_respuesta.png`, `EV-054_captura_estratos.png`, `EV-054_captura_comunas.png`, `EV-054_captura_sensibilidades.png`, `EV-054_captura_concentracion.png`, `EV-054_captura_calidad.png`, `EV-054_captura_construcciones.png` y `EV-054_captura_fuentes.png` (capturas automatizadas del navegador) y `EV-054_capturas_panel.txt` (registro).
+  - `docs/evidencias/panel/EV-052_ejecucion_real.txt` (ejecución con el lanzador, salud, ocho páginas y cierre limpio).
+  - `docs/panel/img/arquitectura_panel.png` y `docs/evidencias/panel/EV-060_trazabilidad_componentes.png` (imágenes generadas a partir de la salida registrada; no son capturas de pantalla).
+  - `docs/evidencias/panel/EV-057_contrastes.txt` (contrastes calculados).
+- **(c) Texto sugerido:** «Panel Streamlit de solo lectura con ocho páginas (K1 a K6, sensibilidades, calidad, construcciones y fuentes), alcance visible en todas y conclusiones generadas con la regla del proyecto; se ejecuta con un comando: `docs/panel/guia_de_uso.md` y capturas en `docs/evidencias/panel/`.»
+- **(d) Captura opcional** (la toma el equipo; se rotula «captura tomada por el equipo»): el navegador en la dirección que imprime `.\.venv\Scripts\python.exe scripts\panel\ejecutar_panel.py`, con la página Respuesta. Nombre: `captura_3.1_panel.png`.
+- **(e) Validar:** `.\.venv\Scripts\python.exe scripts\panel\ejecutar_panel.py --verificar` (código de salida 0) y `.\.venv\Scripts\python.exe -m pytest tests/test_panel_paginas.py -q -p no:cacheprovider`.
+
+### Ítem 3.2 · Integración del frontend con la API
+- **(a) Archivo principal:** `docs/panel/arquitectura_panel.md` (Markdown). Demuestra: un cliente HTTP único y de solo lectura, páginas modulares, errores de la API traducidos a avisos claros y un registro de componentes con su ruta, su campo y su archivo de salida. **No demuestra:** rendimiento con muchas personas a la vez.
+- **(b) Apoyo:**
+  - `docs/panel/trazabilidad_ui.md` (generado desde el registro).
+  - `tests/test_panel_registro_y_aislamiento.py` (análisis estático: solo la API, solo GET, sin recursos externos ni cifras escritas a mano) y `tests/test_panel_cliente.py`.
+  - `docs/evidencias/panel/EV-055_mediciones_panel.txt` y `EV-055_mediciones_panel.csv` (mediciones locales) y `EV-058_latencias_cliente.png` (imagen generada a partir de la salida registrada).
+  - `docs/evidencias/panel/EV-056_canario_panel.txt` (el panel no maneja credenciales).
+- **(c) Texto sugerido:** «El panel consume únicamente la API por HTTP (solo GET) con un cliente propio, de forma modular y con errores traducidos a avisos; ninguna cifra se escribe a mano: `docs/panel/arquitectura_panel.md` y `docs/panel/trazabilidad_ui.md`.»
+- **(d) Captura opcional:** la página «Fuentes y sistema» con el almacenamiento activo visible. Nombre: `captura_3.2_integracion.png`.
+- **(e) Validar:** `.\.venv\Scripts\python.exe -m pytest tests/test_panel_registro_y_aislamiento.py tests/test_panel_cliente.py -q -p no:cacheprovider`.
+
+### Ítem 5.3 · Integración entre interfaz, lógica y almacenamiento
+- **(a) Archivo principal:** `docs/panel/pruebas_panel.md` (Markdown). Demuestra: pruebas de cada página con `AppTest`, integración del panel con la API real sobre una copia de la base, humo de extremo a extremo de solo lectura y equivalencia de los datos entre SQLite y MySQL. **No demuestra:** pruebas en un navegador por personas.
+- **(b) Apoyo:**
+  - `tests/test_panel_paginas.py`, `tests/test_panel_integracion.py` y `tests/test_panel_humo_extremo_a_extremo.py`.
+  - `docs/evidencias/panel/EV-053_equivalencia_almacenes.txt` (12 de 12 respuestas y 8 de 8 páginas idénticas con SQLite y con MySQL).
+  - `docs/evidencias/panel/EV-052_ejecucion_real.txt` y `docs/evidencias/panel/EV-059_cobertura_panel.png` (imagen generada a partir de la salida registrada).
+- **(c) Texto sugerido:** «Pruebas de integración interfaz-API-almacenamiento: los valores del panel coinciden con las salidas del pipeline, el humo de extremo a extremo de solo lectura pasa y los datos son idénticos con SQLite y MySQL: `docs/panel/pruebas_panel.md`.»
+- **(d) Captura opcional:** PowerShell con `.\.venv\Scripts\python.exe -m pytest tests/test_panel_humo_extremo_a_extremo.py -q -p no:cacheprovider`, que debe terminar en `5 passed`. Nombre: `captura_5.3_humo.png`.
+- **(e) Validar:** `.\.venv\Scripts\python.exe -m pytest tests/test_panel_paginas.py tests/test_panel_integracion.py tests/test_panel_humo_extremo_a_extremo.py -q -p no:cacheprovider` y, con MySQL, `.\.venv\Scripts\python.exe scripts\evidencias\evidencia_panel_almacenes.py`.
+
+### Nota sobre el ítem 3.3
+El panel aporta mediciones y verificaciones técnicas (contrastes calculados, latencias y tiempos de renderizado de una máquina) en `docs/panel/accesibilidad_y_respuesta.md`. El ítem 3.3 **no se marca**: depende de sesiones con usuarios.
 
 ---
 

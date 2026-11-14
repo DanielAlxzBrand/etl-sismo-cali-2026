@@ -77,6 +77,31 @@ FILAS_ORQ = {
 }
 
 
+CARPETA_PANEL = "docs/evidencias/panel"
+FECHA_PANEL = "2026-11-14"
+FILAS_PANEL = {
+    "EV-051": ("3.1", "Instalación de Streamlit 1.67.0 en el `.venv` con restricciones: solo paquetes añadidos, ninguno cambió de versión, `pip check` limpio y línea base reproducible", "archivo", "`pip install streamlit -c restricciones.txt`; `pip freeze`; `pip check`", "EV-051_instalacion_streamlit.txt"),
+    "EV-052": ("3.1, 5.3", "Ejecución real con el lanzador: salud de la API y del panel, ocho páginas con el cliente real y cierre limpio sin procesos huérfanos", "archivo", "`python scripts/evidencias/evidencia_panel_ejecucion.py`", "EV-052_ejecucion_real.txt"),
+    "EV-053": ("5.3", "Equivalencia SQLite frente a MySQL: 12 de 12 respuestas que consume el panel y 8 de 8 páginas con contenido idéntico", "archivo", "`python scripts/evidencias/evidencia_panel_almacenes.py`", "EV-053_equivalencia_almacenes.txt"),
+    "EV-054": ("3.1", "Registro de las capturas automatizadas del navegador de las ocho páginas del panel", "archivo", "`python scripts/evidencias/evidencia_capturas_panel.py`", "EV-054_capturas_panel.txt"),
+    "EV-054b": ("3.1", "Captura automatizada del navegador de la página Respuesta", "imagen", "`python scripts/evidencias/evidencia_capturas_panel.py`", "EV-054_captura_respuesta.png"),
+    "EV-054c": ("3.1", "Captura automatizada del navegador de la página Estratos (K1)", "imagen", "`python scripts/evidencias/evidencia_capturas_panel.py`", "EV-054_captura_estratos.png"),
+    "EV-054d": ("3.1", "Captura automatizada del navegador de la página Comunas (K6)", "imagen", "`python scripts/evidencias/evidencia_capturas_panel.py`", "EV-054_captura_comunas.png"),
+    "EV-054e": ("3.1", "Captura automatizada del navegador de la página Sensibilidades (S0 a S5)", "imagen", "`python scripts/evidencias/evidencia_capturas_panel.py`", "EV-054_captura_sensibilidades.png"),
+    "EV-054f": ("3.1", "Captura automatizada del navegador de la página Concentración (K3 y K4)", "imagen", "`python scripts/evidencias/evidencia_capturas_panel.py`", "EV-054_captura_concentracion.png"),
+    "EV-054g": ("3.1", "Captura automatizada del navegador de la página Calidad de la llave", "imagen", "`python scripts/evidencias/evidencia_capturas_panel.py`", "EV-054_captura_calidad.png"),
+    "EV-054h": ("3.1", "Captura automatizada del navegador de la página Construcciones", "imagen", "`python scripts/evidencias/evidencia_capturas_panel.py`", "EV-054_captura_construcciones.png"),
+    "EV-054i": ("3.1", "Captura automatizada del navegador de la página Fuentes y sistema", "imagen", "`python scripts/evidencias/evidencia_capturas_panel.py`", "EV-054_captura_fuentes.png"),
+    "EV-055": ("3.2", "Mediciones locales de una máquina: latencia del cliente por ruta y tiempo de renderizado por página, con SQLite y MySQL", "archivo", "`python scripts/evidencias/evidencia_panel_almacenes.py`", "EV-055_mediciones_panel.txt"),
+    "EV-055b": ("3.2", "Datos de las mediciones de EV-055", "archivo", "mismo comando que EV-055", "EV-055_mediciones_panel.csv"),
+    "EV-056": ("2.3", "Comprobación canario con las contraseñas de MySQL, del usuario de Docker y de la interfaz de Airflow tras agregar el panel", "archivo", "`python scripts/evidencias/evidencia_canario_orquestacion.py --tema panel --sin-imagen`", "EV-056_canario_panel.txt"),
+    "EV-057": ("3.1", "Relaciones de contraste calculadas de la paleta del panel", "archivo", "`python scripts/panel/contraste.py --evidencia`", "EV-057_contrastes.txt"),
+    "EV-058": ("3.2", "Imagen renderizada con las latencias del cliente del panel por ruta y almacenamiento (a partir de EV-055b)", "imagen", "`python scripts/evidencias/make_imagenes_panel.py`", "EV-058_latencias_cliente.png"),
+    "EV-059": ("5.3", "Imagen renderizada con la cobertura de las pruebas por módulo del panel", "imagen", "`python scripts/evidencias/make_imagenes_panel.py`", "EV-059_cobertura_panel.png"),
+    "EV-060": ("3.1, 3.2", "Imagen renderizada con los componentes del panel por página y tipo (a partir del registro de componentes)", "imagen", "`python scripts/evidencias/make_imagenes_panel.py`", "EV-060_trazabilidad_componentes.png"),
+}
+
+
 FILAS_ALMACEN = {
     "EV-027": ("4.1", "PyMySQL y cryptography instalados en el .venv, con `pip check` sin conflictos y ruedas para Python 3.13", "archivo", "`python scripts/evidencias/evidencia_conector.py` (pip install pymysql cryptography; pip check)", "EV-027_conector_mysql.txt"),
     "EV-028": ("4.1, 4.2", "Batería en vivo sobre la base de prueba de MySQL 8.0.45: privilegios mínimos, esquema desde cero, carga conciliada al 100 %, idempotencia, historial, reversión, violaciones de integridad rechazadas y API idéntica a SQLite (26 de 26)", "archivo",
@@ -118,6 +143,11 @@ def main():
             log.warning("falta %s; no se registra %s", archivo, ev)
             continue
         nuevas.append(fila(ev, item, que, tipo, cmd, archivo, CARPETA_ORQ, FECHA_ORQ))
+    for ev, (item, que, tipo, cmd, archivo) in FILAS_PANEL.items():
+        if not (REPO / CARPETA_PANEL / archivo).exists():
+            log.warning("falta %s; no se registra %s", archivo, ev)
+            continue
+        nuevas.append(fila(ev, item, que, tipo, cmd, archivo, CARPETA_PANEL, FECHA_PANEL))
     ids = {pref for pref, _ in nuevas}
     lineas = [l for l in lineas if not any(l.startswith(i) for i in ids)]
     ultima = max(i for i, l in enumerate(lineas) if l.startswith("| EV-"))   # las filas nuevas van al final de la tabla, antes de la convención

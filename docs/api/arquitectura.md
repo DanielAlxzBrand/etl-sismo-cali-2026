@@ -161,7 +161,7 @@ Latencia por ruta con el **servidor real** en `127.0.0.1` (no el cliente de prue
 ## 13. Almacén relacional y componentes futuros
 - **Carga a MySQL (Carga relacional):** implementada. `api.almacenamiento` en `config/config.yaml` elige `sqlite` (por defecto) o `mysql`; los endpoints no cambian y `/health` y `/metadata` informan el almacén activo. Se abre una conexión de solo lectura por solicitud y, si MySQL no responde, la API contesta 503 con el JSON uniforme. Ver `docs/almacenamiento/carga_y_verificacion.md`.
 - **Orquestación con Airflow (Pruebas y orquestación):** implementada fuera de `src/`: el DAG `medallon_etl_sismo` ejecuta las cuatro etapas desde una copia de trabajo con el repositorio en solo lectura. Ver `docs/orquestacion/`.
-- **Dashboard con Streamlit (Panel)** que consume solo esta API. *En construcción.*
+- **Dashboard con Streamlit (Panel):** implementado en `src/panel/`; consume solo esta API por HTTP (solo GET) y nunca abre la base. Ver `docs/panel/arquitectura_panel.md`.
 
 ## Alcance y límites
 - **Qué afirmamos:** diseñamos e implementamos un backend con capas, una API de solo lectura con 11 endpoints GET tipados, validación, errores uniformes, registro de solicitudes y pruebas; entrega exactamente lo que está en Gold. [Evidencia en el repo: `src/api/`, `tests/test_api.py`, `docs/evidencias/api/`]
