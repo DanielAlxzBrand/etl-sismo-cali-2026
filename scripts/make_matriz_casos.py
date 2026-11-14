@@ -148,7 +148,8 @@ FUNCIONES = [
         ("Fallo inducido antes de producir salidas", I, "las cuatro tareas lo implementan", "test_dag_estatico.py::test_el_fallo_inducido_esta_en_las_cuatro_tareas_antes_de_producir_salidas"),
         ("Sin secretos ni rutas de Windows", I, "el escáner no halla nada", "test_dag_estatico.py::test_el_dag_no_lleva_rutas_de_windows_ni_contrasenas_literales"),
         ("Requisitos con las versiones del entorno", C, "versiones idénticas", "test_dag_estatico.py::test_los_requisitos_de_airflow_tienen_las_mismas_versiones_que_el_venv"),
-        ("Copia del DAG con el hash registrado", L, "sha256 igual", "test_dag_estatico.py::test_la_copia_versionada_del_dag_coincide_con_el_hash_registrado")]),
+        ("Copia del DAG con el hash registrado", L, "sha256 igual", "test_dag_estatico.py::test_la_copia_versionada_del_dag_coincide_con_el_hash_registrado"),
+        ("Fallo inducido dentro del bloque que elimina la copia de trabajo", I, "la copia se elimina también al fallar (DEF-013)", "test_dag_estatico.py::test_el_fallo_inducido_de_las_tareas_con_copia_ocurre_dentro_del_try_que_elimina_la_copia")]),
     ("FC-19", "Reproducibilidad del pipeline (transformar y gold)", "src/transform/, src/load/load_database.py", [
         ("Las etapas terminan sin error en una copia", C, "código de salida 0", "test_pipeline_reproducible.py::test_las_etapas_terminan_sin_error"),
         ("Los nueve archivos de la línea base se reproducen", C, "sha256 idénticos a los versionados", "test_pipeline_reproducible.py::test_los_nueve_archivos_de_la_linea_base_se_reproducen_byte_a_byte"),
