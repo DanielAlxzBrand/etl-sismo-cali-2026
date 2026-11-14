@@ -1,10 +1,12 @@
 """Estrategia (docs/estrategia) y estado del checklist: existencia, rastros de elaboración, cifras, rúbrica R1, avisos de honestidad,
-criterios del MVP y tabla de los 30 ítems, con pruebas negativas sobre copias alteradas de las tablas."""
+criterios del MVP (forma general y tabla real, D81) y tabla de los 30 ítems, con pruebas negativas sobre copias alteradas de las tablas."""
+import datetime
 import json
 import re
 from decimal import ROUND_HALF_UP, Decimal
 
 import pandas as pd
+import pytest
 
 from src.common import ROOT
 
@@ -286,3 +288,130 @@ def test_ningun_documento_conserva_terminos_de_proceso_ni_rutas_antiguas():
         t = p.read_text(encoding="utf-8", errors="ignore")
         hallazgos += [(rel.as_posix(), x) for x in TERMINOS_DE_PROCESO if re.search(x, t)]
     assert hallazgos == []
+
+
+# ---------------------------------------------------------------- tabla REAL de criterios del MVP (D81)
+# `revisar_criterios` valida la forma de una tabla cualquiera; aquí se vigila la tabla verdadera de
+# docs/estrategia/05_mvp_criterios_aceptacion.md: que no pierda filas, que cada «cumple» tenga con qué comprobarse y que sus rutas existan.
+PISO_DE_CRITERIOS = 29    # número mínimo de filas; solo sube cuando se agregan criterios
+PISO_DE_CUMPLEN = 29      # criterios que ya cumplen; solo sube: bajar uno es un retroceso que debe verse
+VACIOS = {"", "—", "-", "n/d", "N/D"}
+MARCADORES_DE_RUTA = {"ruta"}   # `ruta` es el ejemplo de la leyenda de etiquetas, no un archivo
+ENCABEZADO_DE_CONTEOS = re.compile(r"(\d+) de (\d+) criterios cumplen hoy; (\d+) están «no verificado aún»")
+ETIQUETA_DE_RUTAS = re.compile(r"\[Evidencia en el repo:([^\]]*)\]")
+
+
+def _filas_de_criterios(texto):
+    """Líneas de la tabla de criterios: cada una empieza por `| ACnn |`."""
+    return [l for l in texto.splitlines() if re.match(r"^\| AC\d+ \|", l)]
+
+
+def revisar_tabla_real(texto, raiz, hoy):
+    """Errores de la tabla real de criterios del MVP (lista vacía si todo está en regla).
+
+    Reglas: ids consecutivos AC01 a ACnn; conteos del encabezado y de «Alcance y límites» iguales al recuento propio de las filas;
+    pisos de filas y de criterios que cumplen; toda fila «cumple» con comando, evidencia, resultado y fecha ISO no futura
+    (y de las que declara el encabezado); rutas citadas como «[Evidencia en el repo: …]» existentes; ningún «cumple» que diga pendiente.
+    """
+    errores = []
+    filas = _filas_de_criterios(texto)
+    ids = [re.match(r"^\| (AC\d+) \|", l).group(1) for l in filas]
+    if ids != [f"AC{i:02d}" for i in range(1, len(ids) + 1)]:
+        errores.append(f"los ids no son consecutivos desde AC01 sin saltos ni repetidos: {ids}")
+    if len(filas) < PISO_DE_CRITERIOS:
+        errores.append(f"menos criterios que el piso: {len(filas)} frente a {PISO_DE_CRITERIOS}")
+    cumplen = pendientes = 0
+    encabezado = ENCABEZADO_DE_CONTEOS.search(texto)
+    fechas_declaradas = set(re.findall(r"\d{4}-\d{2}-\d{2}", texto[encabezado.start():].split("\n", 1)[0])) if encabezado else set()
+    for linea in filas:
+        c = linea[2:-2].split(" | ")
+        if len(c) != 9:
+            errores.append(f"{c[0].strip()}: la fila tiene {len(c)} celdas y no 9")
+            continue
+        _id, estado = c[0].strip(), c[6].strip().replace("*", "")
+        if estado.startswith("no verificado aún"):
+            pendientes += 1
+        if estado != "cumple":
+            continue
+        cumplen += 1
+        for nombre, valor in (("cómo se verifica", c[3]), ("evidencia", c[4]), ("resultado actual", c[5])):
+            if valor.strip() in VACIOS:
+                errores.append(f"{_id}: «cumple» sin {nombre}")
+        if re.search(r"(?i)no verificado|pendiente", c[5]):
+            errores.append(f"{_id}: «cumple» con un resultado que dice no verificado o pendiente")
+        try:
+            fecha = datetime.date.fromisoformat(c[8].strip())
+        except ValueError:
+            errores.append(f"{_id}: la fecha {c[8].strip()!r} no es una fecha ISO válida")
+        else:
+            if fecha > hoy:
+                errores.append(f"{_id}: fecha futura ({fecha})")
+            if fecha.isoformat() not in fechas_declaradas:
+                errores.append(f"{_id}: la fecha {fecha} no está entre las que declara el encabezado ({sorted(fechas_declaradas)})")
+    if cumplen < PISO_DE_CUMPLEN:
+        errores.append(f"menos criterios que cumplen que el piso: {cumplen} frente a {PISO_DE_CUMPLEN}")
+    if encabezado is None:
+        errores.append("falta el encabezado con los conteos")
+    elif (int(encabezado[1]), int(encabezado[2]), int(encabezado[3])) != (cumplen, len(filas), pendientes):
+        errores.append(f"el encabezado dice {encabezado.groups()} y el recuento de filas da {(cumplen, len(filas), pendientes)}")
+    alcance = re.search(r"con ocho funcionalidades y (\d+) criterios", texto)
+    if alcance is None or int(alcance[1]) != len(filas):
+        errores.append(f"«Alcance y límites» dice {alcance[1] if alcance else 'nada'} criterios y la tabla tiene {len(filas)}")
+    for etiqueta in ETIQUETA_DE_RUTAS.finditer(texto):
+        for ruta in re.findall(r"`([^`]+)`", etiqueta.group(1)):
+            ruta = re.sub(r"\s*\(.*\)$", "", ruta)
+            if ruta in MARCADORES_DE_RUTA:
+                continue
+            existe = any(raiz.glob(ruta)) if "*" in ruta else (raiz / ruta).exists()
+            if not existe:
+                errores.append(f"la ruta citada no existe: {ruta}")
+    return errores
+
+
+def _con_celda_cambiada(texto, ac, indice, nuevo):
+    """Copia en memoria con la celda `indice` (0 a 8) de la fila `ac` reemplazada por `nuevo`."""
+    fila = re.search(rf"^\| {ac} \|.*$", texto, re.M).group(0)
+    celdas = fila[2:-2].split(" | ")
+    celdas[indice] = nuevo
+    return texto.replace(fila, "| " + " | ".join(celdas) + " |", 1)
+
+
+def _sin_la_fila(texto, ac):
+    return re.sub(rf"^\| {ac} \|.*\n", "", texto, count=1, flags=re.M)
+
+
+def _fila(texto, ac):
+    return re.search(rf"^\| {ac} \|.*$", texto, re.M).group(0)
+
+
+def test_la_tabla_real_de_criterios_cumple_las_reglas():
+    assert revisar_tabla_real(_texto("05_mvp_criterios_aceptacion.md"), ROOT, datetime.date.today()) == []
+
+
+MUTACIONES_DE_LA_TABLA = {
+    # nombre: (cambio sobre el texto real, fragmento que debe aparecer en el error)
+    "un criterio pasa a «no verificado aún» con el encabezado ajustado": (lambda t: _con_un_criterio_pendiente(t), "menos criterios que cumplen que el piso"),
+    "comando de verificación vacío en AC28": (lambda t: _con_celda_cambiada(t, "AC28", 3, ""), "AC28: «cumple» sin cómo se verifica"),
+    "evidencia vacía en AC10": (lambda t: _con_celda_cambiada(t, "AC10", 4, "—"), "AC10: «cumple» sin evidencia"),
+    "resultado vacío en AC05": (lambda t: _con_celda_cambiada(t, "AC05", 5, " "), "AC05: «cumple» sin resultado actual"),
+    "resultado que dice pendiente": (lambda t: _con_celda_cambiada(t, "AC07", 5, "pendiente de revisar"), "AC07: «cumple» con un resultado"),
+    "encabezado «28 de 29»": (lambda t: t.replace("29 de 29 criterios cumplen", "28 de 29 criterios cumplen", 1), "el encabezado dice"),
+    "borrar una fila del medio": (lambda t: _sin_la_fila(t, "AC12"), "no son consecutivos"),
+    "borrar la última fila": (lambda t: _sin_la_fila(t, "AC29"), "menos criterios que el piso"),
+    "repetir un id": (lambda t: t.replace(_fila(t, "AC13"), _fila(t, "AC12"), 1), "no son consecutivos"),
+    "fecha futura": (lambda t: _con_celda_cambiada(t, "AC28", 8, (datetime.date.today() + datetime.timedelta(days=1)).isoformat()), "fecha futura"),
+    "fecha que el encabezado no declara": (lambda t: _con_celda_cambiada(t, "AC28", 8, "2026-11-01"), "no está entre las que declara"),
+    "fecha que no es una fecha": (lambda t: _con_celda_cambiada(t, "AC28", 8, "2026-13-45"), "no es una fecha ISO válida"),
+    "ruta citada que no existe": (lambda t: t.replace("`docs/panel/trazabilidad_ui.md`", "`docs/panel/no_existe.md`", 1), "la ruta citada no existe"),
+    "conteo de «Alcance y límites»": (lambda t: t.replace("ocho funcionalidades y 29 criterios", "ocho funcionalidades y 30 criterios", 1), "«Alcance y límites» dice 30"),
+}
+
+
+@pytest.mark.parametrize("nombre", list(MUTACIONES_DE_LA_TABLA))
+def test_negativa_cada_alteracion_de_la_tabla_real_se_detecta(nombre):
+    cambio, esperado = MUTACIONES_DE_LA_TABLA[nombre]
+    original = _texto("05_mvp_criterios_aceptacion.md")
+    alterada = cambio(original)
+    assert alterada != original, f"la alteración «{nombre}» no cambió nada: la prueba está mal armada"
+    errores = revisar_tabla_real(alterada, ROOT, datetime.date.today())
+    assert any(esperado in e for e in errores), f"«{nombre}» no produjo el error esperado ({esperado!r}): {errores}"
