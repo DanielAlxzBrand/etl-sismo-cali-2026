@@ -1,12 +1,12 @@
 # Instalación desde cero (Python 3.13) y suite completa en un clon
 - comando: `python -m venv <VENV>; pip install -r requirements.txt; pip check; pip freeze; python -m pytest -q -p no:cacheprovider (cwd: <CLON>)`
-- fecha: 2026-11-14T16:18:09-05:00 (America/Bogota)
+- fecha: 2026-11-14T16:47:31-05:00 (America/Bogota)
 - código de salida: 0
-- duración: 115.7 s
+- duración: 115.0 s
 - Python: 3.13.0
-- commit del repositorio: 83d5d85
+- commit del repositorio: 01f4f91
 
-Instalación desde cero a partir del commit 83d5d85 del repositorio, en una carpeta temporal fuera de él (`<CLON>`), con un entorno virtual nuevo de Python 3.13 (`<VENV>`).
+Instalación desde cero a partir del commit 01f4f91 del repositorio, en una carpeta temporal fuera de él (`<CLON>`), con un entorno virtual nuevo de Python 3.13 (`<VENV>`).
 
 ## Instalación (`python -m pip install -r requirements.txt`)
 - tiempo: 290 s; líneas con advertencia, error o conflicto en la salida de pip: 0
@@ -23,9 +23,9 @@ Instalación desde cero a partir del commit 83d5d85 del repositorio, en una carp
 - ERROR: No matching distribution found for numpy==2.5.4
 - resultado esperado según la política (Python 3.13 soportado): pip no encuentra numpy 2.5.4, que exige Python 3.12 o más.
 
-## Suite completa en el clon (intérprete del entorno nuevo, commit 83d5d85)
-- pytest: código de salida 0; 696 passed, 1 warning in 102.38s (0:01:42)
-- pruebas recolectadas: 696
+## Suite completa en el clon (intérprete del entorno nuevo, commit 01f4f91)
+- pytest: código de salida 0; 711 passed, 1 warning in 103.70s (0:01:43)
+- pruebas recolectadas: 711
 - sha256 de los 19 archivos de `data/` del clon iguales a los del árbol de trabajo: sí
 - escáner de secretos sobre el clon (árbol e historial): código 0; hallazgos: 0
 

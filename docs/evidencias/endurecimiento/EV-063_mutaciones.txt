@@ -1,14 +1,14 @@
 # Mutaciones sobre las pruebas guardianas del endurecimiento
 - comando: `mutación de un archivo en un clon y `python -m pytest -q -p no:cacheprovider <pruebas guardianas>` (cwd: <CLON>)`
-- fecha: 2026-11-14T16:18:19-05:00 (America/Bogota)
+- fecha: 2026-11-14T16:45:35-05:00 (America/Bogota)
 - código de salida: 0
 - duración: 0.0 s
 - Python: 3.13.0
-- commit del repositorio: 83d5d85
+- commit del repositorio: 01f4f91
 
 Cada mutación se aplicó a un archivo de un clon del commit de trabajo (carpeta temporal fuera del repositorio), se corrieron las pruebas guardianas indicadas y se restauró el archivo; al final de cada serie el clon quedó sin cambios. Una mutación cuenta como detectada si al menos una prueba falla.
 
-Resumen: 27 de 27 mutaciones detectadas.
+Resumen: 29 de 29 mutaciones detectadas.
 
 ## Requisitos y versión de Python (`tests/test_requisitos.py`)
 6 de 6 mutaciones detectadas.
@@ -61,5 +61,13 @@ Resumen: 27 de 27 mutaciones detectadas.
 | 03_objetivo_alcance_okr_kpi.md: P5 vuelve a «55 passed … verificado el 2026-11-12» | `test_las_cifras_de_los_documentos_de_estado_coinciden_con_el_informe_y_la_matriz`; `test_la_fecha_de_p5_es_la_de_la_ultima_salida_del_informe` | sí |
 | estado_checklist.md: se reescribe una cifra de modo que ya no se encuentra («setecientas pruebas en verde») | `test_las_cifras_de_los_documentos_de_estado_coinciden_con_el_informe_y_la_matriz` | sí |
 
+## Se deshace la corrección de la lectura de las notas de K3 y K4 (`tests/test_panel_textos.py`)
+2 de 2 mutaciones detectadas.
+
+| Mutación | Pruebas que fallan | ¿Detectada? |
+|---|---|---|
+| se vuelve a la lectura anterior de la nota de K3 (acepta un prefijo de pares) | `test_si_la_nota_de_k3_cambia_de_separador_no_se_muestra_una_tabla_a_medias[separador «, »-<lambda>]`; `test_si_la_nota_de_k3_cambia_de_separador_no_se_muestra_una_tabla_a_medias[separador «,» sin espacio-<lambda>]`; `test_si_la_nota_de_k3_cambia_de_separador_no_se_muestra_una_tabla_a_medias[separador «;» sin espacio-<lambda>]` y 5 más | sí |
+| se vuelve a la lectura anterior de p_permutacion («[0-9.]+», falla con un punto final) | `test_p_permutacion_nunca_falla_con_un_texto_mal_formado[n_barrios=45; p_permutacion=0.8218.-0.8218]`; `test_p_permutacion_nunca_falla_con_un_texto_mal_formado[p_permutacion=0.8218.5-None]`; `test_p_permutacion_nunca_falla_con_un_texto_mal_formado[p_permutacion=.-None]` | sí |
+
 ## Qué NO demuestra
-Que no existan cambios que ninguna de estas pruebas vea: solo cubre las mutaciones listadas. Quedan fuera dos fragilidades de lectura de las notas de K3 y K4 en `src/panel` (un separador distinto y un punto final), registradas en D81 sin corregir.
+Que no existan cambios que ninguna de estas pruebas vea: solo cubre las mutaciones listadas. Las dos fragilidades de lectura de las notas de K3 y K4 que se hallaron al escribir las pruebas se corrigieron después en `src/panel/paginas/concentracion.py` (D81) y la última serie comprueba que las pruebas fallan si se deshace la corrección.
