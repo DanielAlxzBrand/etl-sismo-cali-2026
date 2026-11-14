@@ -73,6 +73,7 @@ FILAS_ORQ = {
     "EV-047": ("5.4", "Imagen renderizada con las ejecuciones disparadas por el planificador (a partir de EV-044b)", "imagen", "`python scripts/evidencias/make_imagenes_orquestacion.py`", "EV-047_ejecucion_programada.png"),
     "EV-048": ("5.1, 5.2", "Imagen renderizada con la cobertura de líneas por módulo (a partir de `docs/validacion/cobertura_pruebas.csv`)", "imagen", "`python scripts/evidencias/make_imagenes_orquestacion.py`", "EV-048_cobertura_por_modulo.png"),
     "EV-049": ("2.3", "Comprobación canario con las contraseñas de MySQL, del usuario de Docker y de la interfaz de Airflow en el árbol, los registros, el historial, la carpeta de Airflow, la imagen y un zip de prueba", "archivo", "`python scripts/evidencias/evidencia_canario_orquestacion.py`", "EV-049_canario_orquestacion.txt"),
+    "EV-050": ("5.1, 5.6", "Las 316 pruebas pasan en un clon limpio del commit, `data/` del clon es idéntico al del árbol de trabajo y el escáner no halla secretos", "archivo", "`python scripts/evidencias/evidencia_pruebas_clon.py --nombre EV-050_pruebas_clon.txt` (el archivo se movió a la carpeta de orquestación)", "EV-050_pruebas_clon.txt"),
 }
 
 

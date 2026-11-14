@@ -1,0 +1,45 @@
+# Pruebas completas en un clon limpio
+- comando: `python -m pytest -q -p no:cacheprovider (cwd: <CLON>)`
+- fecha: 2026-11-13T23:00:08-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 39.8 s
+- Python: 3.13.0
+- commit del repositorio: 3abcab5
+
+Clon limpio del commit 3abcab5 (carpeta temporal fuera del repositorio).
+
+- pytest: código de salida 0; 316 passed, 1 warning in 31.43s
+- pruebas recolectadas: 316
+- sha256 de los 19 archivos de `data/` del clon iguales a los del árbol de trabajo: sí
+- escáner de secretos sobre el clon (árbol e historial): código 0; hallazgos: 0
+
+Pruebas por archivo:
+| Archivo | Pruebas |
+|---|---|
+| `tests/test_api.py` | 17 |
+| `tests/test_canario_extra.py` | 5 |
+| `tests/test_carga_relacional.py` | 54 |
+| `tests/test_carga_sqlite.py` | 5 |
+| `tests/test_casos_limite.py` | 19 |
+| `tests/test_catalogo.py` | 5 |
+| `tests/test_configurar_mysql.py` | 25 |
+| `tests/test_dag_estatico.py` | 24 |
+| `tests/test_dist.py` | 17 |
+| `tests/test_empaquetado_y_revision.py` | 5 |
+| `tests/test_entorno_de_pruebas.py` | 4 |
+| `tests/test_estrategia.py` | 14 |
+| `tests/test_evidencias.py` | 4 |
+| `tests/test_extract.py` | 6 |
+| `tests/test_informe_pruebas.py` | 6 |
+| `tests/test_kpis.py` | 6 |
+| `tests/test_logger.py` | 2 |
+| `tests/test_matriz_casos.py` | 7 |
+| `tests/test_pipeline_reproducible.py` | 4 |
+| `tests/test_quality.py` | 4 |
+| `tests/test_readme_cifras.py` | 13 |
+| `tests/test_respaldo_y_medicion.py` | 12 |
+| `tests/test_secretos.py` | 10 |
+| `tests/test_transform.py` | 7 |
+| `tests/test_usuario_docker.py` | 41 |
+
+Resultado: todo correcto.

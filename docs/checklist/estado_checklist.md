@@ -101,7 +101,7 @@ Cada subcriterio indica su estado según la regla, la justificación, la evidenc
 | 4.3 | Tamaño elegido por medición y estrategia de actualización | Cumple | Lote 2000 (D53); la clave de corrida evita recargar lo que no cambió | `docs/DECISIONES.md` D44 y D53; EV-029 | `docs/almacenamiento/carga_y_verificacion.md` |
 
 ## Detalle de los ítems 5.1, 5.2, 5.4, 5.5 y 5.6 (cierre de Pruebas y orquestación, 2026-11-13)
-Cada subcriterio indica su estado según la regla, la justificación, la evidencia y cómo validarlo. Las evidencias de la orquestación están en `docs/evidencias/orquestacion/` y en el manifiesto (EV-035 a EV-049); los documentos de pruebas, en `docs/validacion/`; y los de la orquestación, en `docs/orquestacion/`.
+Cada subcriterio indica su estado según la regla, la justificación, la evidencia y cómo validarlo. Las evidencias de la orquestación están en `docs/evidencias/orquestacion/` y en el manifiesto (EV-035 a EV-050); los documentos de pruebas, en `docs/validacion/`; y los de la orquestación, en `docs/orquestacion/`.
 
 | ítem | subcriterio | estado | justificación | evidencia | cómo validar |
 |---|---|---|---|---|---|
@@ -122,4 +122,4 @@ Cada subcriterio indica su estado según la regla, la justificación, la evidenc
 | 5.5 | Métricas de validación de modelos | N/A justificado | No se entrenan modelos (D22); las métricas de validación son las del análisis | `docs/validacion/informe_pruebas.md` | — |
 | 5.6 | Defectos corregidos y registrados | Cumple | 13 defectos (DEF-001 a DEF-013) con fecha, causa, corrección y commit | `docs/validacion/registro_defectos.md` | Revisión del documento |
 | 5.6 | La prueba de regresión protege la corrección | Cumple | Nueve reintroducciones en una copia temporal fallan sin la corrección y pasan con ella; los defectos de entorno (DEF-003, DEF-006, DEF-009, DEF-010 y DEF-011) se verifican de otra manera, que se declara en cada fila | EV-036 | `python scripts/validacion/verificar_regresiones.py --evidencia` |
-| 5.6 | Repetición de las pruebas | Cumple | Todas las pruebas se repiten en cada ejecución del informe y en un clon limpio del commit final | `docs/validacion/informe_pruebas.md` | `pytest -q -p no:cacheprovider` |
+| 5.6 | Repetición de las pruebas | Cumple | Todas las pruebas se repiten en cada ejecución del informe y en un clon limpio del commit (316 de 316, `data/` idéntico, escáner sin hallazgos) | `docs/validacion/informe_pruebas.md`; EV-050 | `pytest -q -p no:cacheprovider` |

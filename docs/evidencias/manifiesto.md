@@ -71,6 +71,7 @@
 | EV-047 | 5.4 | Imagen renderizada con las ejecuciones disparadas por el planificador (a partir de EV-044b) | imagen | `python scripts/evidencias/make_imagenes_orquestacion.py` | 2026-11-13 | docs/evidencias/orquestacion/EV-047_ejecucion_programada.png | 1ed1491551cebb03507f5aad29e9ad35175948b41c04a2ae8c22e0b5b53409bd |
 | EV-048 | 5.1, 5.2 | Imagen renderizada con la cobertura de líneas por módulo (a partir de `docs/validacion/cobertura_pruebas.csv`) | imagen | `python scripts/evidencias/make_imagenes_orquestacion.py` | 2026-11-13 | docs/evidencias/orquestacion/EV-048_cobertura_por_modulo.png | 8ff494039ea0d386369c8f2bf3f642df6f6ae1d896783152d30298f62162b6a1 |
 | EV-049 | 2.3 | Comprobación canario con las contraseñas de MySQL, del usuario de Docker y de la interfaz de Airflow en el árbol, los registros, el historial, la carpeta de Airflow, la imagen y un zip de prueba | archivo | `python scripts/evidencias/evidencia_canario_orquestacion.py` | 2026-11-13 | docs/evidencias/orquestacion/EV-049_canario_orquestacion.txt | c8ef48ef36eb3a1802daf1431250c11cf4a6e6ea344f88a27d8ff3525334d9ee |
+| EV-050 | 5.1, 5.6 | Las 316 pruebas pasan en un clon limpio del commit, `data/` del clon es idéntico al del árbol de trabajo y el escáner no halla secretos | archivo | `python scripts/evidencias/evidencia_pruebas_clon.py --nombre EV-050_pruebas_clon.txt` (el archivo se movió a la carpeta de orquestación) | 2026-11-13 | docs/evidencias/orquestacion/EV-050_pruebas_clon.txt | 39795e2d8c9c5800be8f10e27e0fe6d3459588ab4dc3334f0a8c2287dd0f8b90 |
 
 **Convención:** `EV-nnn` correlativo; los archivos de cada componente en la carpeta de su tema (`base/`, `estrategia/`, `api/`, …) con el nombre `EV-nnn_descripcion.ext`. Política de evidencias (D35): sin video; se adjuntan archivos (salidas registradas, JSON, XML de pruebas, documentos e imágenes renderizadas) y, de forma opcional, capturas de pantalla que toma el equipo y se rotulan «captura tomada por el equipo». Las capturas automatizadas del navegador se rotulan «captura automatizada del navegador» y las imágenes generadas desde salidas reales «imagen generada a partir de la salida registrada; no es una captura de pantalla». La guía por ítem está en `guia_de_evidencias.md`. Al cerrar cada componente se recalcula el sha256 de sus filas.
 
@@ -78,6 +79,7 @@
 
 
 **Archivos protegidos.** Las salidas crudas de `base/`, `estrategia/` y `api/`, las imágenes y los PDF, la retroalimentación original del profesor y `DECLARACION_USO_IA.md` no se editan: se movieron con `git mv` y su sha256 es el mismo que tenían al capturarse (por eso las filas de esta tabla siguen vigentes). Por eso las salidas crudas conservan los nombres de pruebas y las rutas que tenían al capturarse (por ejemplo, rutas de la estructura anterior de `docs/` y nombres de pruebas anteriores) y la imagen de la arquitectura conserva sus rótulos de ese momento. Se regeneran en el cierre final con `scripts/evidencias/evidencias_api.py` y `scripts/evidencias/make_diagrama_arquitectura.py`.
+
 
 
 
