@@ -5,7 +5,7 @@ Uso (PowerShell, raíz del proyecto):
   .\\.venv\\Scripts\\python.exe scripts\\orquestacion\\preparar_airflow.py --verificar          solo mira, no escribe nada (idempotente)
 
 Qué hace: crea `dags`, `logs`, `plugins` y `config` en la carpeta de destino (por defecto `airflow-medallon`, hermana del proyecto), copia el compose adaptado, el Dockerfile y
-`requirements-airflow.txt`, copia el DAG comprobando su sha256 contra `orquestacion/dag.sha256` y escribe el `.env` de Airflow SOLO si no existe, con una contraseña de la interfaz y una FERNET_KEY aleatorias
+`requirements-airflow.txt`, copia el DAG comprobando su sha256 contra `orquestacion/dag.sha256` y escribe el `.env` de Airflow SOLO si no existe, con cuatro secretos aleatorios (contraseña de la interfaz, FERNET_KEY, contraseña de Postgres y secreto JWT)
 (más AIRFLOW_UID, PROYECTO_NOMBRE y AIRFLOW_PUERTO). Después imprime los comandos que siguen. El nombre de la carpeta del proyecto se detecta solo, porque el compose monta `../<nombre>` y ese nombre ya no es fijo.
 Por qué es así: quien reciba el zip no tiene la carpeta de Airflow, ni el compose original, ni su `.env`; este script deja todo listo sin pedir que parchee nada a mano y sin que ningún valor secreto pase por la pantalla.
 Qué NO hace: no ejecuta `docker compose`, no toca el `.env` del proyecto (solo comprueba, por nombre, las variables MYSQL_DOCKER_* que necesita la tarea de carga), no sobrescribe un `.env` existente sin `--regenerar`
@@ -33,7 +33,7 @@ from src.logger import get_logger  # noqa: E402
 
 log = get_logger(__name__)
 PUERTO_POR_DEFECTO = 8080
-NOMBRES_ENV_AIRFLOW = ("AIRFLOW_UID", "_AIRFLOW_WWW_USER_PASSWORD", "FERNET_KEY", "PROYECTO_NOMBRE", "AIRFLOW_PUERTO")
+NOMBRES_ENV_AIRFLOW = ("AIRFLOW_UID", "_AIRFLOW_WWW_USER_PASSWORD", "FERNET_KEY", "POSTGRES_PASSWORD", "AIRFLOW__API_AUTH__JWT_SECRET", "PROYECTO_NOMBRE", "AIRFLOW_PUERTO")
 NOMBRES_ENV_MYSQL_DOCKER = ("MYSQL_DOCKER_USER", "MYSQL_DOCKER_PASSWORD", "MYSQL_PORT", "MYSQL_DATABASE")   # las que lee la tarea de carga
 ARCHIVOS = ("docker-compose.yaml", "Dockerfile", "requirements-airflow.txt")
 CARPETAS = ("dags", "logs", "plugins", "config")
@@ -94,9 +94,9 @@ def clave_fernet():
 
 
 def valores_nuevos(proyecto, puerto):
-    """Variables del `.env` de Airflow con sus valores; las dos secretas son aleatorias. AIRFLOW_UID=50000 es el de la imagen oficial."""
-    return {"AIRFLOW_UID": "50000", "_AIRFLOW_WWW_USER_PASSWORD": secrets.token_urlsafe(24), "FERNET_KEY": clave_fernet(),
-            "PROYECTO_NOMBRE": proyecto, "AIRFLOW_PUERTO": str(puerto)}
+    """Variables del `.env` de Airflow con sus valores; las cuatro secretas (interfaz, Fernet, Postgres y JWT) son aleatorias y distintas. AIRFLOW_UID=50000 es el de la imagen oficial."""
+    return {"AIRFLOW_UID": "50000", "_AIRFLOW_WWW_USER_PASSWORD": secrets.token_urlsafe(24), "FERNET_KEY": clave_fernet(), "POSTGRES_PASSWORD": secrets.token_urlsafe(24),
+            "AIRFLOW__API_AUTH__JWT_SECRET": secrets.token_urlsafe(32), "PROYECTO_NOMBRE": proyecto, "AIRFLOW_PUERTO": str(puerto)}
 
 
 def escribir_env(ruta, valores):
@@ -223,7 +223,7 @@ def verificar(raiz, destino, ejecutar=subprocess.run, comprobar_puerto=None):
     filas.append((igual, "DAG igual al del proyecto (sha256)" if igual else "el DAG de la carpeta de Airflow falta o es distinto del del proyecto"))
     env = destino / ".env"
     falta = variables_que_faltan(env, NOMBRES_ENV_AIRFLOW)
-    filas.append((not falta, "`.env` de Airflow con sus 5 variables" if not falta else "al `.env` de Airflow le faltan: " + ", ".join(falta) + " (use --completar)"))
+    filas.append((not falta, f"`.env` de Airflow con sus {len(NOMBRES_ENV_AIRFLOW)} variables" if not falta else "al `.env` de Airflow le faltan: " + ", ".join(falta) + " (use --completar)"))
     if env.exists():
         proyecto = dotenv_values(env).get("PROYECTO_NOMBRE")
         coincide = proyecto == nombre_del_proyecto(raiz)

@@ -70,21 +70,24 @@ def test_el_nombre_de_la_carpeta_del_proyecto_se_detecta_y_no_es_fijo(proyecto):
     assert pa.nombre_del_proyecto(proyecto.parent / "otro nombre distinto") == "otro nombre distinto"
 
 
-def test_las_dos_claves_son_aleatorias_y_la_fernet_es_valida(proyecto):
+def test_los_cuatro_secretos_son_aleatorios_distintos_entre_si_y_la_fernet_es_valida(proyecto):
     _preparar(proyecto)
     v1 = dotenv_values(proyecto.parent / "airflow-medallon" / ".env")
-    assert len(v1["_AIRFLOW_WWW_USER_PASSWORD"]) >= 24 and v1["_AIRFLOW_WWW_USER_PASSWORD"] != "airflow"
+    assert len(v1["_AIRFLOW_WWW_USER_PASSWORD"]) >= 24 and len(v1["POSTGRES_PASSWORD"]) >= 24 and len(v1["AIRFLOW__API_AUTH__JWT_SECRET"]) >= 32
     import base64
     assert len(base64.urlsafe_b64decode(v1["FERNET_KEY"])) == 32
     _preparar(proyecto, regenerar=True)
     v2 = dotenv_values(proyecto.parent / "airflow-medallon" / ".env")
     assert v2["FERNET_KEY"] != v1["FERNET_KEY"] and v2["_AIRFLOW_WWW_USER_PASSWORD"] != v1["_AIRFLOW_WWW_USER_PASSWORD"]
+    assert v2["POSTGRES_PASSWORD"] != v1["POSTGRES_PASSWORD"] and v2["AIRFLOW__API_AUTH__JWT_SECRET"] != v1["AIRFLOW__API_AUTH__JWT_SECRET"]
+    secretos = [v1[k] for k in ("_AIRFLOW_WWW_USER_PASSWORD", "FERNET_KEY", "POSTGRES_PASSWORD", "AIRFLOW__API_AUTH__JWT_SECRET")]
+    assert len(set(secretos)) == 4 and "airflow" not in (v1["POSTGRES_PASSWORD"], v1["AIRFLOW__API_AUTH__JWT_SECRET"])
 
 
 def test_un_env_existente_no_se_sobrescribe(proyecto):
     destino = proyecto.parent / "airflow-medallon"
     destino.mkdir()
-    propio = "AIRFLOW_UID=50000\n_AIRFLOW_WWW_USER_PASSWORD=Contrasena-que-ya-tenia-0123\nFERNET_KEY=clave-propia-0123456789abcdef=\nPROYECTO_NOMBRE=otra\nAIRFLOW_PUERTO=9000\n"
+    propio = "AIRFLOW_UID=50000\n_AIRFLOW_WWW_USER_PASSWORD=Contrasena-que-ya-tenia-0123\nFERNET_KEY=clave-propia-0123456789abcdef=\nPOSTGRES_PASSWORD=pg-propia-0123456789\nAIRFLOW__API_AUTH__JWT_SECRET=jwt-propio-0123456789\nPROYECTO_NOMBRE=otra\nAIRFLOW_PUERTO=9000\n"
     (destino / ".env").write_text(propio, encoding="utf-8")
     hecho = _preparar(proyecto)
     assert (destino / ".env").read_text(encoding="utf-8") == propio and hecho["env"] == "sin cambios"
@@ -99,7 +102,7 @@ def test_regenerar_si_sobrescribe_y_completar_solo_agrega_lo_que_falta(proyecto)
     hecho = _preparar(proyecto, completar=True)
     v = dotenv_values(destino / ".env")
     assert v["_AIRFLOW_WWW_USER_PASSWORD"] == "Contrasena-que-ya-tenia-0123" and v["AIRFLOW_UID"] == "50000"
-    assert set(hecho["agregadas"]) == {"FERNET_KEY", "PROYECTO_NOMBRE", "AIRFLOW_PUERTO"} and hecho["faltan_en_env"] == []
+    assert set(hecho["agregadas"]) == {"FERNET_KEY", "POSTGRES_PASSWORD", "AIRFLOW__API_AUTH__JWT_SECRET", "PROYECTO_NOMBRE", "AIRFLOW_PUERTO"} and hecho["faltan_en_env"] == []
     antes = (destino / ".env").read_text(encoding="utf-8")
     assert _preparar(proyecto, completar=True)["env"] == "sin cambios" and (destino / ".env").read_text(encoding="utf-8") == antes
     _preparar(proyecto, regenerar=True)
@@ -157,9 +160,9 @@ def test_ningun_valor_secreto_se_imprime_ni_se_registra(proyecto, capsys, caplog
     assert codigo == 0
     salida = capsys.readouterr()
     todo = salida.out + salida.err + caplog.text
-    secretos = [v for k, v in dotenv_values(proyecto.parent / "airflow-medallon" / ".env").items() if k in ("_AIRFLOW_WWW_USER_PASSWORD", "FERNET_KEY")]
+    secretos = [v for k, v in dotenv_values(proyecto.parent / "airflow-medallon" / ".env").items() if k in ("_AIRFLOW_WWW_USER_PASSWORD", "FERNET_KEY", "POSTGRES_PASSWORD", "AIRFLOW__API_AUTH__JWT_SECRET")]
     secretos.append("Docker-ficticia-0123456789")
-    assert len(secretos) == 3 and all(s not in todo for s in secretos)
+    assert len(secretos) == 5 and all(s not in todo for s in secretos)
     assert "docker compose up airflow-init" in todo and "http://127.0.0.1:8082" in todo and "_AIRFLOW_WWW_USER_PASSWORD" in todo
 
 
