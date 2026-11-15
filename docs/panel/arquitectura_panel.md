@@ -14,6 +14,7 @@ Diagrama generado con matplotlib (`python scripts/panel/make_arquitectura_panel.
 | `formato.py` | cifras con coma decimal, punto de miles, signo menos y redondeo half-up |
 | `redaccion.py` | conclusiones generadas con la regla de `docs/gold/KPIs.md` (D73) |
 | `componentes.py` | marco común, recuadro de alcance, tarjetas, tablas y gráficos Altair (D71, D74 y D75) |
+| `glosario.py` | un solo diccionario de términos técnicos y la lista de los que usa cada página; el marco lo muestra en un desplegable al final de la página (D88) |
 | `tema.py` y `claves.py` | colores y relación de contraste; identificadores de KPI, grupos y escenarios |
 | `paginas/` | una función `render(api)` por página, sin efectos al importarse |
 
@@ -33,7 +34,7 @@ Cada fallo se traduce a un aviso en español: API apagada, tiempo agotado, almac
 - **Solo local:** el panel y la API escuchan en 127.0.0.1 y el cliente rechaza direcciones que no sean locales.
 
 ## 4. Decisiones relacionadas
-D20 (Streamlit sobre la API), D23 y D67 (pruebas de integración), D68 a D80 (panel).
+D20 (Streamlit sobre la API), D23 y D67 (pruebas de integración), D68 a D80 (panel), D87 a D90 (ajustes tras la evaluación heurística).
 
 ## 5. Alcance y límites
 - **Qué afirmamos:** el panel es una capa de presentación delgada: toda cifra viene de la API y toda conclusión se genera con una regla.

@@ -36,6 +36,14 @@ Todas tienen el mismo marco: título, la pregunta de negocio que responden, el e
 - **Cotas por «sin datos»:** valores extremos si todas las construcciones sin datos fueran sin daño o con daño; no son estimaciones. Si las cotas de dos grupos se solapan, el orden entre ellos no es identificable.
 - **Formato:** coma decimal, punto de miles y signo menos «−»; las diferencias se dan en puntos porcentuales (pp).
 
+### Qué cambió tras la evaluación heurística (D87 a D90)
+- **Glosario:** cada página termina con un desplegable cerrado, «Glosario de esta página: qué significan los términos técnicos», con los términos que esa página usa.
+- **Tablas anchas:** la tabla que tiene cuatro columnas o más lleva encima el aviso «Tabla ancha: en una pantalla estrecha, deslícela hacia los lados para ver todas las columnas».
+- **Gráficos de tasas:** las barras son horizontales, una por fila con su etiqueta completa; la línea que cruza cada barra y las rayas de sus extremos son los límites del intervalo de Wilson, y el pie del gráfico lo dice.
+- **Pantallas estrechas:** la barra lateral se abre sola en pantallas anchas y queda plegada en las estrechas; para abrirla se usa el botón de la esquina superior izquierda.
+- **Coordenadas:** los ejes de latitud y longitud de la dispersión se rotulan «grados decimales» y llevan cuatro decimales.
+- Los botones que Streamlit pone en las tablas y los gráficos («Download as CSV», «Fullscreen», «Search»…) siguen en inglés: la versión fijada no permite traducirlos ni ocultarlos (F-11 aplazado, EV-080).
+
 ## 4. Avisos y errores
 Si la API está apagada, tarda demasiado o su almacenamiento no está disponible, cada página muestra un aviso en español con el motivo y mantiene visible el alcance; nunca muestra una traza. Al volver la API, basta recargar la página (un fallo no queda guardado en la caché).
 
