@@ -8,7 +8,7 @@
 1. Se arrancó el panel con `scripts/panel/ejecutar_panel.py` (API y panel en `127.0.0.1`, almacenamiento SQLite) y se controló un navegador sin ventana por el protocolo DevTools, como en D79 (`scripts/evidencias/evidencia_capturas_anchos.py` y `evidencia_capturas_movil.py`).
 2. Por cada página y en tres anchos (1400, 1024 y 390 px) se tomó una captura completa, se midió si el contenido se desborda en horizontal, qué elementos tienen el texto recortado por el CSS y cuánto tarda la página en dibujarse (1 carga de calentamiento y 5 medidas; medición local de una máquina), y se calculó el contraste del texto con la fórmula WCAG de `src/panel/tema.py`. Evidencias: [EV-066](../evidencias/usuarios/EV-066_capturas_anchos.txt), [EV-067](../evidencias/usuarios/EV-067_mediciones_anchos.txt), [EV-068](../evidencias/usuarios/EV-068_contraste_texto.txt) y [EV-069](../evidencias/usuarios/EV-069_capturas_390_barra_cerrada.txt).
 3. Se abrieron las capturas una por una y los hallazgos salieron de lo que se veía y se midió, no de una lista previa. Varios «candidatos» que traíamos (textos de Streamlit en inglés, etiquetas de latitud, pocas filas visibles en la tabla de construcciones, falta de glosario, 390 px) se confirmaron con captura o se rebajaron de severidad: están marcados en la tabla.
-4. **Nada de esto se corrigió** en este componente (no se tocó `src/panel`): los hallazgos se documentan y se priorizan en el [registro de fricciones](registro_de_friccion.md) como iteración técnica, no como validación con personas.
+4. **Nada de esto se corrigió** al hacer la evaluación (no se tocó `src/panel`): los hallazgos se documentan y se priorizan en el [registro de fricciones](registro_de_friccion.md) como iteración técnica, no como validación con personas. Los ajustes vinieron después y se reevaluaron en la sección «Reevaluación tras los ajustes».
 
 ## 2. Hallazgos
 | Id | Página | Heurística | Descripción (lo que se vio) | Captura | Severidad | Recomendación |
@@ -61,9 +61,36 @@ H5 y H9 quedan sin hallazgos porque el panel es de solo lectura y, en las captur
 - **Severidad 1 (cosmético):** F-13, F-14.
 - Cuatro de los cinco hallazgos mayores dependen del ancho de pantalla (1024 y 390 px); a 1400 px el panel se ve completo.
 
+## Reevaluación tras los ajustes
+**Qué es:** una segunda pasada **del propio equipo**, con la misma medición, sobre el panel ya modificado (decisiones D87 a D90). Es una **iteración técnica a partir de esta evaluación heurística**: no la hicieron personas usuarias y no cuenta para 6.1, 6.2, 6.3, 6.5 ni 7.4. Tomamos de nuevo las 24 capturas (8 páginas en 1400, 1024 y 390 px), los tiempos y los contrastes con `scripts/evidencias/evidencia_capturas_ajustes.py`: el «antes» está en EV-073 a EV-076 y el «después» en EV-077 a EV-079; EV-080 evalúa F-11. Abrimos las 24 capturas «después» una por una: no hay texto tapado, ni avisos de error, ni rutas, ni nombres de usuario; las únicas columnas cortadas son las de las tablas que llevan su aviso de desplazamiento. La severidad de después es otra estimación nuestra.
+
+| Id | Severidad antes → después | Qué cambió | Qué vimos después (evidencia) |
+|---|---|---|---|
+| **F-01** | 3 → 0 | Tarjetas de dos en dos y etiquetas cortas. | 0 elementos con texto recortado en las 24 capturas, contra 13 a 1024 px antes (EV-073 y EV-077); la cifra de la respuesta se lee completa. |
+| **F-02** | 3 → 0 | La barra lateral pasó a `initial_sidebar_state="auto"`. | A 390 px la página empieza en el contenido y la barra queda plegada con su botón (EV-077). |
+| **F-03** | 3 → 2 | Aviso «Tabla ancha…» encima de toda tabla de cuatro columnas o más. | El aviso aparece, pero las tablas siguen cortándose y hay que deslizarlas: dos contenedores a 390 px y uno a 1024 px (Fuentes). Por eso queda en 2. |
+| **F-04** | 3 → 0 | Barras horizontales con un paso fijo por barra y etiquetas sin ocultar; título corto; leyenda en dos columnas. | Se ven las seis etiquetas de Estratos y las siete de Comunas a 390 px, y el título de Construcciones cabe (EV-077). |
+| **F-05** | 2 → 0 | Pie que explica la línea y las rayas del intervalo. | El pie está bajo cada gráfico de barras y bajo el de Sensibilidades. Al revisar el código vimos que las rayas eran los límites del intervalo de Wilson y no las cotas por «sin datos». |
+| **F-07** | 3 → 2 | Glosario común, en un desplegable al final de cada página. | Las 8 páginas lo muestran (EV-077). Que se entienda no lo sabemos sin personas. |
+| **F-12** | 2 → 0 | Texto más oscuro (`#0B141C`) y color propio para los textos de los gráficos (`#4A5560`). | Pies 4,86 a 1 (antes 4,05) y textos de los gráficos 7,61 a 1 (antes 3,72) (EV-075 y EV-079). |
+| **F-13** | 1 → 0 | Cuatro decimales con coma y rótulo «grados decimales». | Los ejes de la dispersión dicen «3,4400» y «Latitud (grados decimales)» (EV-077). |
+| **F-06, F-08, F-09, F-10** | 2 → 2 | Nada: aplazados (D87). | Sin cambio. |
+| **F-11** | 2 → 2 | Nada: evaluado y aplazado por una razón técnica. | Streamlit 1.67.0 escribe esos textos dentro de su front y no ofrece opción de idioma ni forma de ocultarlos (EV-080). |
+| **F-14** | 1 → 1 | Nada: aplazado. | Los tiempos varían más entre corridas que lo que podríamos atribuir a un cambio (ver abajo). |
+
+**Resumen por severidad después de los ajustes.**
+- **Severidad 3 (mayor):** ninguna (antes cinco: F-01, F-02, F-03, F-04, F-07).
+- **Severidad 2 (menor):** F-03, F-06, F-07, F-08, F-09, F-10, F-11.
+- **Severidad 1 (cosmético):** F-14.
+- **Severidad 0 (ya no es un problema):** F-01, F-02, F-04, F-05, F-12, F-13.
+
+**Tiempos de dibujo** (EV-078, mediana de 5 medidas por página y ancho; medición local de una máquina). Con gráfico: de 1,5 a 2,0 s a 1400 px (Estratos 1.977 ms, Comunas 1.691, Sensibilidades 1.539, Construcciones 1.940) y entre 1,6 y 1,9 s a 390 px; sin gráfico: de 0,7 a 1,0 s; Respuesta, 264 ms a 1400 px. En la corrida de «antes» (EV-074) las páginas de Estratos, Comunas y Sensibilidades a 1400 px dieron 0,6 s y Construcciones 3.044 ms, y en la medición original (EV-067) entre 1,1 y 2,1 s. **No sacamos ninguna conclusión de rapidez:** la variación entre corridas de la misma página es mayor que cualquier efecto que podamos atribuir a los cambios, así que no afirmamos que mejoraron ni que empeoraron.
+
+**Qué NO demuestra esta reevaluación:** que las personas usuarias vean mejor el panel, que entiendan el glosario o los intervalos, que la severidad de después coincida con la que sentirían, que el panel cumpla un nivel de accesibilidad ni que los tiempos sean los de otro equipo. Todo lo que dependa de personas sigue pendiente de las sesiones ([protocolo_sesiones.md](protocolo_sesiones.md)).
+
 ## Alcance y límites
-- **Qué afirmamos:** cada hallazgo sale de una captura o de una medición guardada como evidencia, y ninguno se corrigió aquí.
-- **Con qué evidencia:** EV-066 a EV-069 y `scripts/evidencias/evidencia_capturas_anchos.py`, `evidencia_capturas_movil.py`.
+- **Qué afirmamos:** cada hallazgo sale de una captura o de una medición guardada como evidencia; la evaluación original no corrigió ninguno, y las correcciones y su reevaluación están en la sección anterior.
+- **Con qué evidencia:** EV-066 a EV-069 y `scripts/evidencias/evidencia_capturas_anchos.py`, `evidencia_capturas_movil.py` (evaluación original); EV-073 a EV-080 y `evidencia_capturas_ajustes.py` (reevaluación).
 - **Qué NO afirmamos:** que estos sean todos los problemas, que las severidades coincidan con lo que vería una persona real, que el panel cumpla un nivel de accesibilidad ni que alguien lo haya usado.
 
 ---

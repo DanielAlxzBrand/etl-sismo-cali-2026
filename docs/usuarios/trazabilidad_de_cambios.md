@@ -1,6 +1,6 @@
 # Trazabilidad de los cambios al panel
 
-**Ítems del checklist:** 6.3 (subcriterio 4: trazabilidad a cambios del dashboard), 6.5 y 7.4 (iteración tras la retroalimentación) · **Estado:** plantilla vacía; **todavía no se hizo ningún cambio al panel a partir de las fricciones**. Se llena cuando el equipo decida y haga arreglos.
+**Ítems del checklist:** 6.3 (subcriterio 4: trazabilidad a cambios del dashboard), 6.5 y 7.4 (iteración tras la retroalimentación) · **Estado:** llena con los ajustes de la evaluación heurística interna (iteración técnica); **ningún cambio viene de sesiones con personas**.
 
 > Esta tabla une cada fricción del [registro](registro_de_friccion.md) con el cambio que la atiende. Una fila solo se llena cuando existe el commit; no se anota un cambio «previsto» como si estuviera hecho. Un cambio que sale de una fricción de fuente `heuristica` es una **iteración técnica**; solo los que salen de sesiones reales con su consentimiento cuentan como retroalimentación de personas usuarias.
 
@@ -12,9 +12,25 @@
 5. Actualizar el registro (`cambio`, `antes`, `despues`, `verificacion`, `estado`).
 
 ## Tabla de cambios
+
+Todos los cambios son una **iteración técnica a partir de evaluación heurística** (D87 a D90): no vienen de sesiones con personas y no cuentan para 6.1, 6.2, 6.3, 6.5 ni 7.4. Las capturas «antes» son EV-073 a EV-076 (y EV-069 para 390 px con la barra cerrada) y las «después» son EV-077 a EV-079; las rutas están en `docs/evidencias/ajustes_ux/` salvo EV-069 (`docs/evidencias/usuarios/`).
+
 | Fricción | Fuente | Decisión y razón | Cambio (commit) | Captura antes | Captura después | Prueba o medición | Estado |
 |---|---|---|---|---|---|---|---|
-| — | — | — | — | — | — | — | sin cambios todavía |
+| F-01 | heuristica | corregir: La cifra central de la respuesta no se leía completa a 1024 px y el cambio no toca datos ni contratos. | 6309c79 | EV-073_captura_respuesta_1024.png; EV-073_captura_concentracion_1024.png; EV-073_captura_fuentes_1024.png | EV-077_captura_respuesta_1024.png; EV-077_captura_concentracion_1024.png; EV-077_captura_fuentes_1024.png | tests/test_panel_ajustes.py (tarjetas de dos en dos y etiquetas cortas); 0 elementos con texto recortado a 1024 px en EV-077 | corregida |
+| F-02 | heuristica | corregir: A 390 px la barra lateral tapaba casi todo el contenido y basta cambiar un parámetro de la configuración de página. | b04f9da | EV-073_captura_respuesta_390.png | EV-077_captura_respuesta_390.png | tests/test_panel_ajustes.py (initial_sidebar_state en «auto»); la captura a 390 px muestra el contenido y el botón para abrir el menú | corregida |
+| F-03 | heuristica | corregir: Las tablas cortadas no avisaban que había más columnas; el aviso es la solución que cabe sin rehacer las tablas. | 6309c79 y 8b107d2 | EV-069_captura_estratos_390_barra_cerrada.png; EV-073_captura_fuentes_1024.png | EV-077_captura_estratos_390.png; EV-077_captura_fuentes_1024.png | tests/test_panel_ajustes.py (cada tabla de cuatro columnas o más lleva su aviso); la tabla sigue necesitando desplazarse | corregida con residuo |
+| F-04 | heuristica | corregir: A 390 px solo se dibujaban la primera y la última etiqueta de las barras; con barras horizontales y un paso fijo caben todas. | 6309c79 y 298b458 | EV-069_captura_estratos_390_barra_cerrada.png; EV-069_captura_comunas_390_barra_cerrada.png | EV-077_captura_estratos_390.png; EV-077_captura_comunas_390.png; EV-077_captura_construcciones_390.png | tests/test_panel_ajustes.py (barras horizontales, paso fijo y etiquetas sin ocultar); las capturas muestran todas las etiquetas | corregida |
+| F-05 | heuristica | corregir: Al revisar el código se vio que las rayas eran los límites del intervalo de Wilson y no las cotas por «sin datos»; el pie ahora lo dice. | 6309c79 y 298b458 | EV-073_captura_estratos_1400.png | EV-077_captura_estratos_1400.png | tests/test_panel_ajustes.py (el pie explica la línea y las rayas) | corregida |
+| F-07 | heuristica | corregir: El glosario existía solo en la documentación; un desplegable común no cambia el número de páginas. | 320f9fa y 6309c79 | EV-073_captura_estratos_1400.png | EV-077_captura_estratos_1400.png | tests/test_panel_ajustes.py (cada página muestra su glosario y todo término técnico que usa tiene entrada); si se entiende lo decidirán las sesiones | corregida; falta saber si se entiende |
+| F-12 | heuristica | corregir: Pies y gráficos quedaban bajo 4,5 a 1 y el cambio solo toca colores de la configuración y del texto de los gráficos. | b04f9da y 6309c79 | EV-075_contraste_texto.txt | EV-079_contraste_texto.txt | tests/test_panel_ajustes.py (4,5 a 1 para texto y 3 a 1 para gráficos, calculados); EV-079: pies 4,86 a 1 y texto de gráficos 7,61 a 1 | corregida |
+| F-13 | heuristica | corregir: Con tres decimales «3,440» se lee como miles; cuatro decimales y «grados decimales» lo evitan. | 6309c79 y 298b458 | EV-073_captura_construcciones_1400.png | EV-077_captura_construcciones_1400.png | tests/test_panel_ajustes.py (cuatro decimales con coma y rótulo «grados decimales») | corregida |
+| F-06 | heuristica | aplazar: Acortar las frases repetidas obliga a cambiar `redaccion.py`, que protege la regla de no afirmar de más; conviene decidirlo con lo que digan las sesiones. | — | — | — | — | aplazada |
+| F-08 | heuristica | aplazar: Los identificadores vienen de la API y de las notas de Gold; traducirlos exige un diccionario de etiquetas y volver a probar la integración. | — | — | — | — | aplazada |
+| F-09 | heuristica | aplazar: El nombre del barrio no viene en la nota de K3; pedirlo exige otra consulta o cambiar la API, que no se toca aquí. | — | — | — | — | aplazada |
+| F-10 | heuristica | aplazar: Los botones de página anterior y siguiente exigen estado de sesión y cambiar la tabla; hasta ver si alguien revisa tantas construcciones no vale el riesgo. | — | — | — | — | aplazada |
+| F-11 | heuristica | aplazar: Streamlit 1.67.0 escribe esos textos dentro de su front, no ofrece opción de idioma ni parámetro para ocultar la barra de herramientas, y `embedOptions` no la quita. | — | EV-066_capturas_anchos.txt | EV-080_controles_de_streamlit.txt | EV-080 (prueba en vivo con una aplicación mínima) | aplazada (razón técnica) |
+| F-14 | heuristica | aplazar: Los tiempos medidos son de unos dos segundos y no hay evidencia de que molesten; acelerar exige caché de gráficos o cambiar el cliente. | — | EV-074_mediciones_anchos.txt | EV-078_mediciones_anchos.txt | — | aplazada |
 
 ## Alcance y límites
 - **Qué afirmamos:** dejamos el formato para trazar cada fricción hasta su cambio, su captura antes y después y su prueba.
