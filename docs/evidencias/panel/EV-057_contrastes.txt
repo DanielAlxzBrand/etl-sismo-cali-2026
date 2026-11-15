@@ -1,22 +1,24 @@
 # Relaciones de contraste calculadas de la paleta del panel
 - comando: `python scripts/panel/contraste.py --evidencia`
-- fecha: 2026-11-14T11:06:43-05:00 (America/Bogota)
+- fecha: 2026-11-14T22:25:08-05:00 (America/Bogota)
 - código de salida: 0
 - duración: 0.1 s
 - Python: 3.13.0
-- commit del repositorio: c484b16
+- commit del repositorio: 47b3c75
 
 Relación de contraste de la paleta del panel, calculada con la fórmula de luminancia relativa de WCAG 2.x (valores calculados, no un nivel declarado).
 
 | Par | Colores | Relación de contraste | Supera 3 | Supera 4,5 | Supera 7 |
 |---|---|---|---|---|---|
-| texto sobre el fondo | #1F2933 sobre #FFFFFF | 14,76 a 1 | sí | sí | sí |
-| texto sobre el fondo secundario | #1F2933 sobre #F0F4F8 | 13,35 a 1 | sí | sí | sí |
+| texto sobre el fondo | #0B141C sobre #FFFFFF | 18,57 a 1 | sí | sí | sí |
+| texto sobre el fondo secundario | #0B141C sobre #F0F4F8 | 16,8 a 1 | sí | sí | sí |
+| pies y subtítulos (Streamlit los pinta al 60 % del texto) sobre el fondo | #6d7277 sobre #FFFFFF | 4,86 a 1 | sí | sí | no |
+| texto de los ejes y leyendas de los gráficos sobre el fondo | #4A5560 sobre #FFFFFF | 7,61 a 1 | sí | sí | sí |
 | color principal (barras, puntos) sobre el fondo | #0072B2 sobre #FFFFFF | 5,19 a 1 | sí | sí | no |
 | color secundario (muestra baja, línea de cero) sobre el fondo | #D55E00 sobre #FFFFFF | 3,87 a 1 | sí | no | no |
 | color de apoyo (clase de daño) sobre el fondo | #009E73 sobre #FFFFFF | 3,42 a 1 | sí | no | no |
 | color neutro (clase sin cambio) sobre el fondo | #595959 sobre #FFFFFF | 7,0 a 1 | sí | sí | sí |
-| barras de error (color del texto) sobre el fondo | #1F2933 sobre #FFFFFF | 14,76 a 1 | sí | sí | sí |
+| barras de error (color del texto) sobre el fondo | #0B141C sobre #FFFFFF | 18,57 a 1 | sí | sí | sí |
 | principal frente al secundario (dos categorías vecinas) | #0072B2 sobre #D55E00 | 1,34 a 1 | no | no | no |
 
-Lo que no se calcula: el texto secundario (pies y subtítulos) y los rótulos de los ejes los dibuja Streamlit o Vega con sus propios grises; el significado de los gráficos no depende solo del color (la muestra baja y la clase de daño llevan además texto o forma).
+Lo que se calcula con una suposición: los pies y subtítulos los pinta Streamlit al 60 % del color del texto (medido en EV-075 y EV-079). Lo que no se calcula: los demás colores que Streamlit define por su cuenta (bordes, iconos); el significado de los gráficos no depende solo del color (la muestra baja y la clase de daño llevan además texto o forma).
