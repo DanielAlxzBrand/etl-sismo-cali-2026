@@ -5,6 +5,7 @@ import importlib.util
 import json
 import re
 from decimal import ROUND_HALF_UP, Decimal
+from pathlib import Path
 
 import pandas as pd
 import pytest
@@ -501,10 +502,30 @@ def _script_de_la_matriz():
 
 def atestado_de_la_figura(ruta):
     """Los puntos y nombres que el script dejó como metadato del PNG (None si la imagen no salió del script)."""
-    from PIL import Image
-    with Image.open(ruta) as im:
-        d = im.text.get("Description")
+    d = _texto_png(ruta).get("Description")
     return json.loads(d) if d else None
+
+
+def _texto_png(ruta):
+    """Pares clave-valor de los fragmentos de texto (`tEXt` e `iTXt`) de un PNG, leídos sin librerías de imágenes."""
+    datos = Path(ruta).read_bytes()
+    assert datos[:8] == b"\x89PNG\r\n\x1a\n"
+    textos, pos = {}, 8
+    while pos < len(datos):
+        largo = int.from_bytes(datos[pos:pos + 4], "big")
+        tipo, cuerpo = datos[pos + 4:pos + 8], datos[pos + 8:pos + 8 + largo]
+        if tipo == b"tEXt":
+            clave, _, valor = cuerpo.partition(b"\x00")
+            textos[clave.decode("latin-1")] = valor.decode("latin-1")
+        elif tipo == b"iTXt":
+            clave, _, resto = cuerpo.partition(b"\x00")
+            comprimido, resto = resto[0], resto[2:]
+            _, _, resto = resto.partition(b"\x00")      # etiqueta de idioma
+            _, _, valor = resto.partition(b"\x00")      # clave traducida
+            if not comprimido:
+                textos[clave.decode("latin-1")] = valor.decode("utf-8")
+        pos += 12 + largo
+    return textos
 
 
 def errores_de_la_figura(atestado, tabla):

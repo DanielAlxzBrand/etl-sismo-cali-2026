@@ -11,6 +11,7 @@ python-dotenv==1.2.4
 tzdata==2026.6
 jupyter==1.1.1
 nbconvert==7.17.2
+nbformat==5.11.1  # llega con jupyter; se declara porque scripts/validacion/igualdad_de_codigo.py y sus pruebas lo importan
 ipykernel==7.4.0
 shapely==2.2.0
 fastapi==0.162.7

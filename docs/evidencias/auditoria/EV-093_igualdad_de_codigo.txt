@@ -1,0 +1,55 @@
+# Igualdad de código entre la etiqueta inicial de la auditoría y el árbol de trabajo
+- comando: `python scripts/validacion/igualdad_de_codigo.py --base auditoria-inicio --rutas src dags notebooks main.py`
+- fecha: 2026-11-15T13:54:01-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 0.0 s
+- Python: 3.13.0
+- commit del repositorio: f04e8e0
+
+Se compara el árbol de trabajo con la etiqueta `auditoria-inicio` (el commit de partida de la auditoría) con `scripts/validacion/igualdad_de_codigo.py`: para cada `.py`, el árbol sintáctico sin docstrings; para cada `.ipynb`, la validación con `nbformat`, la lista de celdas y sus tipos, el código sin docstrings de cada celda y las salidas, el número de ejecución y los metadatos idénticos.
+
+## `src/`, `dags/`, `main.py` y `notebooks/` (código de salida 0)
+```
+resumen: {"igual": 46, "solo cambian textos": 5}
+  solo cambian textos    notebooks/01_conexion_y_extraccion.ipynb
+  solo cambian textos    notebooks/02_eda_bronze.ipynb
+  solo cambian textos    notebooks/03_silver.ipynb
+  solo cambian textos    notebooks/04_gold_kpis.ipynb
+  solo cambian textos    notebooks/05_validacion_evidencias.ipynb
+```
+Lectura: en `src/`, `dags/` y `main.py` no cambió ni un archivo; los cinco notebooks cambian solo en textos (diez celdas sin el vocativo), con las salidas, los números de ejecución y los metadatos idénticos y el JSON válido para `nbformat`.
+
+## `scripts/` (código de salida 0; se permiten los cinco archivos cuyo cambio de código está justificado)
+```
+resumen: {"igual": 47, "nuevo": 7, "cambia el c�digo": 5}
+  nuevo                  scripts/contar_estados_checklist.py
+  cambia el c�digo       scripts/evidencias/evidencia.py  (permitido)
+  nuevo                  scripts/evidencias/evidencia_airflow_desde_zip.py
+  nuevo                  scripts/evidencias/evidencia_independencia.py
+  nuevo                  scripts/evidencias/evidencia_phpmyadmin.py
+  nuevo                  scripts/evidencias/medir_memoria_suite.py
+  cambia el c�digo       scripts/evidencias/registrar_manifiesto.py  (permitido)
+  cambia el c�digo       scripts/informe_pruebas.py  (permitido)
+  cambia el c�digo       scripts/make_dist.py  (permitido)
+  nuevo                  scripts/make_matriz_poder_interes.py
+  cambia el c�digo       scripts/make_readme.py  (permitido)
+  nuevo                  scripts/validacion/igualdad_de_codigo.py
+```
+Los cinco cambios justificados: `evidencia.py` y `informe_pruebas.py` (devuelven «sin-commit» si no hay `.git`), `registrar_manifiesto.py` (filas de las evidencias nuevas), `make_dist.py` (regla `RAIZ_DOC`) y `make_readme.py` (`py -3.13` en el texto que genera). El resto de los archivos nuevos son los scripts de la auditoría.
+
+## Diferencia de los notebooks (líneas cambiadas)
+```
+notebooks/01_conexion_y_extraccion.ipynb | 4 ++--
+ notebooks/02_eda_bronze.ipynb            | 6 +++---
+ notebooks/03_silver.ipynb                | 4 ++--
+ notebooks/04_gold_kpis.ipynb             | 4 ++--
+ notebooks/05_validacion_evidencias.ipynb | 2 +-
+ 5 files changed, 10 insertions(+), 10 deletions(-)
+```
+
+## Pruebas de la herramienta (código de salida 0)
+```
+7 passed in 3.11s
+```
+
+Qué NO demuestra: que el código sea correcto ni que los notebooks se ejecuten; solo que la limpieza de textos no tocó el código ni las salidas.

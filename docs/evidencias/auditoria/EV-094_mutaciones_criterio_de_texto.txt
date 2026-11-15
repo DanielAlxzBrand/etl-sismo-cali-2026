@@ -1,0 +1,27 @@
+# Mutaciones sobre las pruebas del criterio de texto, el documento aislado, la figura y la herramienta de igualdad
+- comando: `mutación de un archivo en un clon y `python -m pytest -q -p no:cacheprovider` sobre las pruebas de criterio de texto, empaquetado, estrategia e igualdad`
+- fecha: 2026-11-15T13:54:01-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 0.0 s
+- Python: 3.13.0
+- commit del repositorio: f04e8e0
+
+Cada mutación se aplicó a un archivo de un clon del commit de trabajo (carpeta temporal fuera del repositorio), se corrieron `tests/test_criterio_de_texto.py`, `test_estrategia.py`, `test_dist.py`, `test_igualdad_de_codigo.py` y `test_independencia_del_repositorio.py` y se restauró el archivo; el clon quedó sin cambios. Detectadas: 12 de 12.
+
+| Mutación | Pruebas que fallan | ¿Detectada? |
+|---|---|---|
+| el rótulo anterior del equipo docente vuelve a la tabla de stakeholders | `test_ningun_archivo_del_zip_incumple_el_criterio_de_texto`; `test_negativas_cada_regla_se_dispara_con_una_reintroduccion`; `test_la_figura_de_stakeholders_sale_de_la_tabla_y_no_dice_profesor` y 1 más | sí |
+| el pie de la declaración vuelve a la evaluación heurística | `test_ningun_archivo_del_zip_incumple_el_criterio_de_texto`; `test_negativas_cada_regla_se_dispara_con_una_reintroduccion` | sí |
+| el nombre del documento aislado vuelve a make_dist.py | `test_ningun_archivo_del_zip_incumple_el_criterio_de_texto`; `test_negativas_cada_regla_se_dispara_con_una_reintroduccion` | sí |
+| la etiqueta del avance anterior vuelve a los criterios del MVP | `test_ningun_archivo_del_zip_incumple_el_criterio_de_texto`; `test_negativas_cada_regla_se_dispara_con_una_reintroduccion` | sí |
+| el vocativo vuelve a una celda de notebook | `test_ningun_archivo_del_zip_incumple_el_criterio_de_texto`; `test_negativas_cada_regla_se_dispara_con_una_reintroduccion` | sí |
+| un segundo documento en mayúsculas en la raíz del zip | `test_el_zip_arma_el_documento_aislado_pero_la_prueba_no_lo_recorre_ni_lo_nombra`; `test_la_raiz_del_zip_es_el_readme_mas_un_unico_documento_aislado` | sí |
+| se edita el documento original de la retroalimentación recibida | `test_ningun_archivo_del_zip_incumple_el_criterio_de_texto`; `test_la_excepcion_del_original_esta_atada_a_su_ruta_y_a_su_sha256` | sí |
+| la tabla de stakeholders cambia un puntaje sin regenerar la figura | `test_la_figura_de_stakeholders_sale_de_la_tabla_y_no_dice_profesor`; `test_negativas_de_la_figura_de_stakeholders` | sí |
+| RAIZ_DOC acepta cualquier .md de la raíz (apuntes.md entraría al zip) | `test_un_archivo_suelto_de_la_raiz_fuera_de_la_lista_no_entra`; `test_las_exclusiones_se_aplican_siempre`; `test_el_ayudante_de_documento_aislado_distingue_la_raiz_y_las_mayusculas` | sí |
+| un nombre de herramienta de elaboración vuelve al README | `test_ningun_archivo_del_zip_incumple_el_criterio_de_texto`; `test_negativas_cada_regla_se_dispara_con_una_reintroduccion`; `test_sin_rastros_de_elaboracion_en_el_resto_del_repo` | sí |
+| la herramienta de igualdad deja de quitar los docstrings | `test_python_un_docstring_o_un_comentario_no_cambian_el_codigo`; `test_notebook_los_textos_no_cambian_el_codigo` | sí |
+| la herramienta de igualdad deja de comparar las salidas de las celdas | `test_notebook_un_cambio_de_codigo_de_salida_o_de_metadatos_se_detecta` | sí |
+
+## Qué NO demuestra
+Que no existan cambios que estas pruebas no vean: solo cubre las mutaciones listadas.

@@ -24,6 +24,7 @@ IMPORT_A_DISTRIBUCION = {
     "fastapi": "fastapi",
     "httpx": "httpx",
     "matplotlib": "matplotlib",
+    "nbformat": "nbformat",
     "numpy": "numpy",
     "openpyxl": "openpyxl",
     "pandas": "pandas",

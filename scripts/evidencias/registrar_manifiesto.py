@@ -191,6 +191,10 @@ FILAS_AUD = {
                "mutación de un archivo en un clon y `python -m pytest -q -p no:cacheprovider` sobre las pruebas de independencia", "EV-091_mutaciones_independencia.txt"),
     "EV-092": ("7.1, 7.2, 7.5", "Tabla de mutaciones de las pruebas de los estados del checklist y de los scripts de verificación en vivo: todas detectadas", "archivo",
                "mutación de un archivo en un clon y `python -m pytest -q -p no:cacheprovider` sobre las pruebas de estados, scripts e independencia", "EV-092_mutaciones_estados_y_scripts.txt"),
+    "EV-093": ("7.1", "Igualdad de código entre la etiqueta inicial de la auditoría y el árbol de trabajo: `src/`, `dags/` y `main.py` sin cambios y los notebooks solo en textos", "archivo",
+               "`python scripts/validacion/igualdad_de_codigo.py --base auditoria-inicio --rutas src dags notebooks main.py`", "EV-093_igualdad_de_codigo.txt"),
+    "EV-094": ("7.1", "Tabla de mutaciones de las pruebas del criterio de texto, el documento aislado, la figura de stakeholders y la herramienta de igualdad: todas detectadas", "archivo",
+               "mutación de un archivo en un clon y `python -m pytest -q -p no:cacheprovider` sobre las pruebas de criterio, empaquetado, estrategia e igualdad", "EV-094_mutaciones_criterio_de_texto.txt"),
 }
 CARPETA_FIN = "docs/finanzas"
 FILAS_FIN = {
