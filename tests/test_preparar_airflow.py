@@ -195,3 +195,11 @@ def test_los_valores_con_espacios_se_escriben_entre_comillas_y_se_leen_igual(tmp
 def test_el_script_reutiliza_la_copia_del_dag_de_sincronizar_dag_sin_duplicarla():
     texto = (RUTA / "preparar_airflow.py").read_text(encoding="utf-8")
     assert "sincronizar_dag.sincronizar(" in texto and "shutil.copy2(dag" not in texto and "hashlib" not in texto
+
+
+def test_el_archivo_de_nombres_del_env_de_airflow_lista_exactamente_las_variables_que_escribe_el_script():
+    """`orquestacion/airflow-env.nombres.txt` viaja en el zip y solo lleva nombres: debe coincidir con `NOMBRES_ENV_AIRFLOW` y no traer caracteres de control (antes tenía un BEL y solo 2 de 7 variables)."""
+    texto = (ROOT / "orquestacion" / "airflow-env.nombres.txt").read_text(encoding="utf-8")
+    assert not any(ord(c) < 32 and c not in "\n\r\t" for c in texto)
+    nombres = [l.strip() for l in texto.splitlines() if l.strip() and not l.startswith("#")]
+    assert nombres == list(pa.NOMBRES_ENV_AIRFLOW)
