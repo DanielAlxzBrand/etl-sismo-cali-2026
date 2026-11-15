@@ -22,7 +22,7 @@ Si solo se quiere reproducir el análisis, el modo mínimo basta: el modo comple
 |---|---|---|
 | Windows 11 | es el sistema donde se probó todo; en otros no lo probamos | — |
 | **Python 3.13**, instalado **en paralelo** | es la única versión soportada: las versiones de `requirements.txt` (por ejemplo pandas 3.0.6 y numpy 2.5.4) se fijaron con ella y con otra las salidas pueden cambiar | `py -0p` debe listar `3.13` |
-| Git (opcional) | clonar el repositorio; con el zip no hace falta, pero 8 pruebas lo usan en repositorios temporales y se omiten con motivo visible si falta (ver la sección 3.1) | `git --version` |
+| Git (opcional) | clonar el repositorio; con el zip no hace falta, pero varias pruebas lo usan en repositorios temporales y, si falta, se omiten 10 con su motivo visible (ver la sección 3.1) | `git --version` |
 | MySQL 8.0 o superior (solo modo completo) | la carga relacional | el servicio `MySQL80` en ejecución |
 | Docker Desktop con WSL2 (solo modo completo) | Airflow y phpMyAdmin | `docker version` y `docker compose version` |
 | Memoria | ver la sección 4 | — |
@@ -59,14 +59,16 @@ Todas las cifras son de una máquina de desarrollo con Windows 11 y 15,7 GB de R
 |---|---|---|
 | Crear el entorno e instalar `requirements.txt` desde cero | 288 y 290 s (unos 5 minutos) | [EV-083](../evidencias/servicios/EV-083_suite_sin_utf8_antes.txt) y [EV-062](../evidencias/endurecimiento/EV-062_instalacion_desde_cero.txt); depende de la conexión |
 | Pipeline completo (`main.py --stage all`) | 3,4 s y 148 MB de pico | [recursos_medidos.csv](../finanzas/recursos_medidos.csv) |
-| Suite de pruebas (sin cobertura) | 227 s (unos 4 minutos) y un pico de 286 MiB del proceso de pytest | [recursos_medidos.csv](../finanzas/recursos_medidos.csv) (fila `memoria_pico_suite_de_pruebas`) |
-| Suite de pruebas medida con `scripts/evidencias/medir_memoria_suite.py` (1007 pruebas) | 323 s y un pico máximo de 319 MiB entre `pytest` y sus procesos hijos (no es comparable con la fila anterior: aquella solo miró al proceso de `pytest`) | [EV-097](../evidencias/auditoria/EV-097_memoria_de_la_suite.txt) |
+| Suite de pruebas (sin cobertura), solo el proceso de `pytest` | 227 s (unos 4 minutos) y un pico de **286 MiB**, con 959 pruebas | [recursos_medidos.csv](../finanzas/recursos_medidos.csv) (fila `memoria_pico_suite_de_pruebas`) |
+| Suite de pruebas, `pytest` y todos los procesos que arranca (medida con `scripts/evidencias/medir_memoria_suite.py`) | 323 s y un pico máximo de **319 MiB**, con 1007 pruebas | [EV-097](../evidencias/auditoria/EV-097_memoria_de_la_suite.txt) |
 | API y panel en reposo (sin ninguna página abierta) | unos 160 MiB entre los procesos de Python del lanzador | [recursos_medidos.csv](../finanzas/recursos_medidos.csv) (fila `memoria_api_mas_panel_en_reposo`) |
 | Airflow en reposo (seis contenedores) | 1.970 MiB | [recursos_medidos.csv](../finanzas/recursos_medidos.csv) (fila `memoria_en_reposo_total_contenedores_de_airflow`) |
 | phpMyAdmin en reposo | 33 MiB | [recursos_medidos.csv](../finanzas/recursos_medidos.csv) (fila `memoria_en_reposo_phpmyadmin`) |
 
+**Dos picos de memoria de la suite, y cuál usamos.** Los 286 MiB miran solo al proceso de `pytest`; los 319 MiB son el mayor pico entre `pytest` y los procesos que las pruebas arrancan (la API y el panel de las pruebas de integración), con otra cantidad de pruebas y otro método, así que no se restan ni se comparan. **Para planear la memoria de un equipo usamos los 319 MiB**, porque es lo que una persona que corre la suite necesita de verdad; los 286 MiB quedan como referencia de la medición anterior.
+
 **Advertencia para 8 GB de RAM.** Con 8 GB no conviene encender todo a la vez: Windows y el navegador ya usan buena parte, WSL2 reserva por defecto la mitad de la memoria para Docker y Airflow ocupa cerca de 2 GB
-en reposo (más al ejecutar el DAG). Lo que hacemos en ese caso es trabajar por tramos: el modo mínimo en reposo usa unos 160 MiB entre API y panel (abrir páginas lo aumenta); para Airflow se apaga el panel (`Ctrl+C`), se levanta Airflow y se
+en reposo (más al ejecutar el DAG). Lo que hacemos en ese caso es trabajar por tramos: el modo mínimo en reposo usa unos 160 MiB entre API y panel (abrir páginas lo aumenta) y la suite pide unos 320 MiB con sus procesos hijos; para Airflow se apaga el panel (`Ctrl+C`), se levanta Airflow y se
 baja con `docker compose down` antes de volver al panel; y se limita WSL2 creando `%USERPROFILE%\.wslconfig` con `[wsl2]`, `memory=4GB` y `swap=2GB`, y luego `wsl --shutdown`. Esto no está probado en una máquina de 8 GB.
 
 ## 5. Documentos de esta carpeta
