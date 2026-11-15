@@ -1,0 +1,20 @@
+# Suite final en un clon con espacios y tildes y sin variables de UTF-8
+- comando: `python -m pytest -q -p no:cacheprovider (clon temporal, intérprete del entorno nuevo, sin PYTHONUTF8 ni PYTHONIOENCODING)`
+- fecha: 2026-11-15T02:02:16-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 0.0 s
+- Python: 3.13.0
+- commit del repositorio: 6c17fbd
+
+Clon del commit 6c17fbd en una carpeta temporal con espacios y tildes (`<CARPETA CON ESPACIOS Y TILDES>`), entorno virtual nuevo de Python 3.13 en esa carpeta y suite completa lanzada **sin PYTHONUTF8 ni PYTHONIOENCODING**, como en EV-083 y EV-084.
+
+## Resultado
+- suite: 964 passed, 1 warning in 131.34s (0:02:11).
+- `git status` del clon al terminar: sin cambios.
+- sha256 de los 19 archivos de `data/` del clon iguales a los del árbol de trabajo: sí.
+- escáner de secretos sobre el clon (árbol e historial): código 0; hallazgos: 0.
+
+## Resultado general
+Todo correcto: con la consola predeterminada, una ruta con espacios y tildes y un entorno nuevo, toda la suite pasa.
+
+Qué NO demuestra: que funcione en cualquier Windows, con otra versión de Python o en una máquina de 8 GB; esta máquina ya tenía Docker, MySQL y las imágenes base, y la ruta del clon es corta (menos de unos 120 caracteres).
