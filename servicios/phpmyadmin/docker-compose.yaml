@@ -1,0 +1,36 @@
+# phpMyAdmin para mirar la base `sismo_cali` en el navegador, solo en este equipo y solo para leer (D91).
+#
+# Qué hace: levanta un único contenedor de phpMyAdmin que se conecta al MySQL del anfitrión (host.docker.internal:3306).
+# Por qué es así: el equipo quería ver las tablas, las claves foráneas y los conteos sin instalar nada más; por eso
+#   - el puerto se publica solo en 127.0.0.1 (otro equipo de la red no lo ve) y es el 8081 salvo que se defina PMA_PUERTO;
+#   - el archivo NO guarda usuario ni contraseña: se teclean en el formulario con la cuenta `sismo_lectura`, que solo tiene SELECT
+#     sobre `sismo_cali` (scripts/mysql/configurar_mysql.py --usuario-lectura), así que una escritura la rechaza MySQL aunque se intente;
+#   - no se admiten servidores arbitrarios (PMA_ARBITRARY en 0): solo el MySQL del anfitrión;
+#   - no reinicia solo (restart "no") y limita la carga de archivos a 2 MiB.
+# Qué NO hace: no crea el usuario ni la base (los crea configurar_mysql.py), no usa almacenamiento de configuración de phpMyAdmin
+#   (por eso el Diseñador gráfico puede no estar disponible) y no es para exponerlo en una red ni en un servidor.
+#
+# Imagen: phpmyadmin 5.2.3 (phpMyAdmin 5.2.3, publicada el 2025-10-07), fijada también por su resumen (digest) para que no cambie sin avisar;
+# el resumen y la fecha de la comprobación están en docs/almacenamiento/phpmyadmin.md.
+#
+# Uso (PowerShell, desde la raíz del proyecto):
+#   docker compose -f servicios/phpmyadmin/docker-compose.yaml up -d
+#   docker compose -f servicios/phpmyadmin/docker-compose.yaml down
+# Con otro puerto:  $env:PMA_PUERTO = "8091"; docker compose -f servicios/phpmyadmin/docker-compose.yaml up -d
+name: sismo-phpmyadmin
+
+services:
+  phpmyadmin:
+    image: phpmyadmin:5.2.3@sha256:e4b3eb5305cd42d21512bb55def2bab52625d56df927ad4ee1864a9354c84d40
+    ports:
+      - "127.0.0.1:${PMA_PUERTO:-8081}:80"
+    environment:
+      PMA_HOST: host.docker.internal
+      PMA_PORT: "3306"
+      PMA_ARBITRARY: "0"
+      UPLOAD_LIMIT: 2M
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: "no"
+    security_opt:
+      - no-new-privileges:true
