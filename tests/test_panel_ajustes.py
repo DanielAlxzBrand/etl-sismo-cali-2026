@@ -98,10 +98,10 @@ def test_tarjetas_reparte_en_filas_del_tamano_pedido():
 
 
 # ---------------------------------------------------------------- F-03 · aviso de tabla ancha
-COLUMNAS_DE_UNA_TABLA_ANCHA = 5      # fijo a propósito: a 390 px se cortaron las tablas de cinco columnas o más; si el umbral del código sube, esta prueba falla
+COLUMNAS_DE_UNA_TABLA_ANCHA = 4      # fijo a propósito: a 390 px se cortaron las tablas de cuatro columnas o más; si el umbral del código sube, esta prueba falla
 
 
-def test_el_umbral_de_tabla_ancha_no_sube_de_cinco_columnas():
+def test_el_umbral_de_tabla_ancha_no_sube_de_cuatro_columnas():
     assert componentes.UMBRAL_COLUMNAS_ANCHAS <= COLUMNAS_DE_UNA_TABLA_ANCHA
 @pytest.mark.parametrize("pagina", PAGINAS)
 def test_cada_tabla_ancha_lleva_su_aviso_de_desplazamiento(paginas, pagina):

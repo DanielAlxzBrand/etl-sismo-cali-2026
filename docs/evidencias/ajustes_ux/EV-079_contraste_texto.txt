@@ -1,10 +1,10 @@
 # Contraste calculado del texto secundario y de los rótulos del panel (después de los ajustes)
 - comando: `python scripts/evidencias/evidencia_capturas_ajustes.py --momento despues`
-- fecha: 2026-11-14T21:36:51-05:00 (America/Bogota)
+- fecha: 2026-11-14T22:02:44-05:00 (America/Bogota)
 - código de salida: 0
-- duración: 433.8 s
+- duración: 434.6 s
 - Python: 3.13.0
-- commit del repositorio: 4ffc5b6
+- commit del repositorio: b7ccdf6
 
 Relación de contraste del texto que dibuja Streamlit (pies, subtítulos, rótulos y valores de tarjetas, texto de tablas, avisos y rótulos de controles), calculada con la fórmula de luminancia relativa de WCAG 2.x (`src/panel/tema.py`) sobre los colores que el navegador calculó para el primer elemento visible de cada categoría en cada página y ancho. Valores calculados: **no se declara un nivel de conformidad**. El texto de los gráficos (rótulos y títulos de ejes, rótulos de leyenda) se midió en los elementos de texto del SVG; el texto de las tablas interactivas se dibuja en un lienzo y no se mide. La opacidad de los elementos y de sus contenedores se aplicó al color.
 
