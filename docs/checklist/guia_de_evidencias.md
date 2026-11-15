@@ -177,12 +177,13 @@ Fichas de los ítems 1.1 a 1.5 (Estrategia), 2.1 a 2.3 (API, fuentes y credencia
 ## Usuarios, UX y finanzas · Evaluación, sesiones y costos (ítems 3.3 y 6.1 a 6.4 del checklist)
 
 ### Ítem 3.3 · Usabilidad, capacidad de respuesta y coherencia visual
-- **(a) Archivo principal:** `docs/usuarios/evaluacion_heuristica.md` (Markdown). Demuestra: evaluación heurística interna con las diez heurísticas de Nielsen sobre las ocho páginas, 14 hallazgos con severidad 0 a 4 y captura, fortalezas y matriz heurística × página. **No demuestra:** que personas reales entiendan el panel; los hallazgos no se corrigieron.
+- **(a) Archivo principal:** `docs/usuarios/evaluacion_heuristica.md` (Markdown). Demuestra: evaluación heurística interna con las diez heurísticas de Nielsen sobre las ocho páginas, 14 hallazgos con severidad 0 a 4 y captura, fortalezas, matriz heurística × página y la reevaluación tras corregir 8 hallazgos (iteración técnica). **No demuestra:** que personas reales entiendan el panel ni que los cambios mejoren su experiencia; la severidad de después es una estimación nuestra.
 - **(b) Apoyo:**
   - `docs/evidencias/usuarios/EV-066_capturas_anchos.txt` (24 capturas automatizadas en 1400, 1024 y 390 px, con desbordamiento y texto recortado), `EV-069_capturas_390_barra_cerrada.txt` (8 capturas más a 390 px).
   - `docs/evidencias/usuarios/EV-067_mediciones_anchos.txt` y su `.csv` (tiempo de dibujo medido en el navegador; medición local de una máquina) y `EV-068_contraste_texto.txt` (contraste calculado, sin declarar un nivel).
-- **(c) Texto sugerido:** «Evaluación heurística interna del panel con 14 hallazgos priorizados, capturas en tres anchos, tiempos de dibujo medidos y contraste calculado; las sesiones con personas usuarias están preparadas y pendientes: `docs/usuarios/evaluacion_heuristica.md`.»
-- **(d) Captura opcional:** la página «Respuesta» a 1024 px, donde se ve el recorte de las tarjetas (F-01). Nombre: `captura_3.3_respuesta_1024.png`.
+  - `docs/evidencias/ajustes_ux/`: EV-073 a EV-076 (antes de los ajustes y verificación del contraste de 1,0, que era una etiqueta oculta), EV-077 a EV-079 (24 capturas, tiempos con su variabilidad y contrastes después), EV-080 (F-11 evaluado y aplazado), EV-081 (mutaciones, todas detectadas) y EV-082 (suite en un clon con el entorno nuevo).
+- **(c) Texto sugerido:** «Evaluación heurística interna del panel con 14 hallazgos priorizados, 8 corregidos y reevaluados con capturas antes y después en tres anchos, tiempos de dibujo medidos y contraste calculado; las sesiones con personas usuarias están preparadas y pendientes: `docs/usuarios/evaluacion_heuristica.md`.»
+- **(d) Captura opcional:** la página «Respuesta» a 1024 px después de los ajustes, con las tarjetas completas (F-01): `docs/evidencias/ajustes_ux/EV-077_captura_respuesta_1024.png`. Nombre sugerido: `captura_3.3_respuesta_1024.png`.
 - **(e) Validar:** `.\.venv\Scripts\python.exe -m pytest tests/test_usuarios_estructura.py -q -p no:cacheprovider`.
 
 ### Ítems 6.1, 6.2 y 6.3 · Sesiones, métricas y fricciones (pendientes por un hecho externo)

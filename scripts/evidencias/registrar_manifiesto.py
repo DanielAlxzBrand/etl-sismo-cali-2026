@@ -142,6 +142,31 @@ for _i, (_ancho, (_pid, _titulo)) in enumerate((a, p) for a in (1400, 1024, 390)
     FILAS_USU[f"EV-066{'bcdefghijklmnopqrstuvwxy'[_i]}"] = ("3.3", f"Captura automatizada del navegador de la página {_titulo} a {_ancho} px", "imagen", _CMD_ANCHOS, f"EV-066_captura_{_pid}_{_ancho}.png")
 for _i, (_pid, _titulo) in enumerate(_PAGINAS):
     FILAS_USU[f"EV-069{'bcdefghi'[_i]}"] = ("3.3", f"Captura automatizada del navegador de la página {_titulo} a 390 px con la barra lateral cerrada", "imagen", _CMD_MOVIL, f"EV-069_captura_{_pid}_390_barra_cerrada.png")
+CARPETA_UX = "docs/evidencias/ajustes_ux"
+_CMD_ANTES = "`python scripts/evidencias/evidencia_capturas_ajustes.py --momento antes`"
+_CMD_DESPUES = "`python scripts/evidencias/evidencia_capturas_ajustes.py --momento despues`"
+FILAS_UX = {
+    "EV-073": ("3.3", "Capturas, desbordamiento y texto recortado de las ocho páginas en tres anchos ANTES de los ajustes de la evaluación heurística", "archivo", _CMD_ANTES, "EV-073_capturas_anchos.txt"),
+    "EV-074": ("3.3", "Tiempos de dibujo de las ocho páginas en tres anchos antes de los ajustes (medición local de una máquina)", "archivo", _CMD_ANTES, "EV-074_mediciones_anchos.txt"),
+    "EV-074b": ("3.3", "Datos de los tiempos de EV-074", "archivo", _CMD_ANTES, "EV-074_mediciones_anchos.csv"),
+    "EV-075": ("3.3", "Contraste calculado del texto del panel antes de los ajustes, midiendo solo texto visible", "archivo", _CMD_ANTES, "EV-075_contraste_texto.txt"),
+    "EV-075b": ("3.3", "Detalle por página y ancho de los contrastes de EV-075", "archivo", _CMD_ANTES, "EV-075_contraste_texto.csv"),
+    "EV-076": ("3.3", "Verificación del contraste de 1,0 de la evaluación original: era una etiqueta de eje oculta por el propio gráfico (opacidad 0)", "archivo", "`python scripts/evidencias/evidencia_contraste_dudoso.py`", "EV-076_contraste_dudoso.txt"),
+    "EV-076b": ("3.3", "Captura del eje de la dispersión de Construcciones a 1024 px que muestra la etiqueta oculta de EV-076", "imagen", "`python scripts/evidencias/evidencia_contraste_dudoso.py`", "EV-076_eje_construcciones_1024.png"),
+    "EV-077": ("3.3", "Capturas, desbordamiento y texto recortado de las ocho páginas en tres anchos DESPUÉS de los ajustes", "archivo", _CMD_DESPUES, "EV-077_capturas_anchos.txt"),
+    "EV-078": ("3.3", "Tiempos de dibujo de las ocho páginas en tres anchos después de los ajustes (medición local de una máquina, con variabilidad)", "archivo", _CMD_DESPUES, "EV-078_mediciones_anchos.txt"),
+    "EV-078b": ("3.3", "Datos de los tiempos de EV-078", "archivo", _CMD_DESPUES, "EV-078_mediciones_anchos.csv"),
+    "EV-079": ("3.3", "Contraste calculado del texto del panel después de los ajustes (valores calculados, sin declarar un nivel de conformidad)", "archivo", _CMD_DESPUES, "EV-079_contraste_texto.txt"),
+    "EV-079b": ("3.3", "Detalle por página y ancho de los contrastes de EV-079", "archivo", _CMD_DESPUES, "EV-079_contraste_texto.csv"),
+    "EV-080": ("3.3", "Evaluación de F-11: los controles en inglés de Streamlit 1.67.0 no se pueden traducir ni ocultar de forma limpia (parámetros, texto en el front y prueba en vivo)", "archivo", "`python scripts/evidencias/evidencia_streamlit_controles.py`", "EV-080_controles_de_streamlit.txt"),
+    "EV-081": ("3.3, 5.6", "Tabla de mutaciones de las pruebas de los ajustes del panel (glosario, barra lateral, tarjetas, contraste, coordenadas, barras, aviso de tabla ancha, pie de intervalos): todas detectadas", "archivo",
+               "mutación de un archivo en un clon y `python -m pytest -q -p no:cacheprovider tests/test_panel_ajustes.py`", "EV-081_mutaciones_ajustes.txt"),
+    "EV-082": ("5.6", "Las pruebas del proyecto pasan en un clon con el entorno nuevo de Python 3.13 en el commit del componente de ajustes del panel, con `data/` idéntico y el escáner de secretos sin hallazgos", "archivo",
+               "`python -m pytest -q -p no:cacheprovider` en un clon temporal con el intérprete del entorno nuevo", "EV-082_suite_en_entorno_nuevo.txt"),
+}
+for _momento, _ev, _cmd in (("antes", "EV-073", _CMD_ANTES), ("despues", "EV-077", _CMD_DESPUES)):
+    for _i, (_ancho, (_pid, _titulo)) in enumerate((a, p) for a in (1400, 1024, 390) for p in _PAGINAS):
+        FILAS_UX[f"{_ev}{'bcdefghijklmnopqrstuvwxy'[_i]}"] = ("3.3", f"Captura automatizada del navegador de la página {_titulo} a {_ancho} px ({'antes' if _momento == 'antes' else 'después'} de los ajustes)", "imagen", _cmd, f"{_ev}_captura_{_pid}_{_ancho}.png")
 CARPETA_FIN = "docs/finanzas"
 FILAS_FIN = {
     "EV-070": ("6.4", "Recursos medidos del pipeline (tiempo y memoria de `main.py --stage all`, tamaños, memoria de Airflow en reposo) y mediciones previas reunidas, con su origen y fecha; sin cifras monetarias", "archivo",
@@ -205,6 +230,11 @@ def main():
             log.warning("falta %s; no se registra %s", archivo, ev)
             continue
         nuevas.append(fila(ev, item, que, tipo, cmd, archivo, CARPETA_USU, FECHA_USU))
+    for ev, (item, que, tipo, cmd, archivo) in FILAS_UX.items():
+        if not (REPO / CARPETA_UX / archivo).exists():
+            log.warning("falta %s; no se registra %s", archivo, ev)
+            continue
+        nuevas.append(fila(ev, item, que, tipo, cmd, archivo, CARPETA_UX, FECHA_USU))
     for ev, (item, que, tipo, cmd, archivo) in FILAS_FIN.items():
         if not (REPO / CARPETA_FIN / archivo).exists():
             log.warning("falta %s; no se registra %s", archivo, ev)
