@@ -53,10 +53,10 @@ Todas las cifras son de una máquina de desarrollo con Windows 11 y 15,7 GB de R
 | Suite de pruebas | ⟦SUITE_TIEMPO⟧ y pico de ⟦SUITE_PICO⟧ MiB del proceso de pytest | [recursos_medidos.csv](../finanzas/recursos_medidos.csv) (fila `memoria_pico_suite_de_pruebas`) |
 | API y panel en reposo (sin ninguna página abierta) | unos 160 MiB entre los procesos de Python del lanzador | [recursos_medidos.csv](../finanzas/recursos_medidos.csv) (fila `memoria_api_mas_panel_en_reposo`) |
 | Airflow en reposo (seis contenedores) | 1.970 MiB | [recursos_medidos.csv](../finanzas/recursos_medidos.csv) (fila `memoria_en_reposo_total_contenedores_de_airflow`) |
-| phpMyAdmin en reposo | ⟦PMA_MEMORIA⟧ MiB | [recursos_medidos.csv](../finanzas/recursos_medidos.csv) (fila `memoria_en_reposo_phpmyadmin`) |
+| phpMyAdmin en reposo | 33 MiB | [recursos_medidos.csv](../finanzas/recursos_medidos.csv) (fila `memoria_en_reposo_phpmyadmin`) |
 
 **Advertencia para 8 GB de RAM.** Con 8 GB no conviene encender todo a la vez: Windows y el navegador ya usan buena parte, WSL2 reserva por defecto la mitad de la memoria para Docker y Airflow ocupa cerca de 2 GB
-en reposo (más al ejecutar el DAG). Lo que hacemos en ese caso es trabajar por tramos: el modo mínimo no pasa de unos 300 MiB entre API y panel; para Airflow se apaga el panel (`Ctrl+C`), se levanta Airflow y se
+en reposo (más al ejecutar el DAG). Lo que hacemos en ese caso es trabajar por tramos: el modo mínimo en reposo usa unos 160 MiB entre API y panel (abrir páginas lo aumenta); para Airflow se apaga el panel (`Ctrl+C`), se levanta Airflow y se
 baja con `docker compose down` antes de volver al panel; y se limita WSL2 creando `%USERPROFILE%\.wslconfig` con `[wsl2]`, `memory=4GB` y `swap=2GB`, y luego `wsl --shutdown`. Esto no está probado en una máquina de 8 GB.
 
 ## 5. Documentos de esta carpeta

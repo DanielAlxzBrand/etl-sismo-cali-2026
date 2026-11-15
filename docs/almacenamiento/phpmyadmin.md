@@ -22,14 +22,30 @@ docker compose -f servicios\phpmyadmin\docker-compose.yaml up -d      # arranca;
 docker compose -f servicios\phpmyadmin\docker-compose.yaml ps         # estado
 docker compose -f servicios\phpmyadmin\docker-compose.yaml down       # para y elimina el contenedor
 ```
-Si el 8081 está ocupado: `$env:PMA_PUERTO = "8091"` antes de `up`. La imagen se descarga la primera vez (unos 820 MB de disco). No se reinicia sola: tras reiniciar el equipo hay que volver a ejecutar `up -d`.
+Memoria: el contenedor ocupó unos 33 MiB en reposo ([recursos_medidos.csv](../finanzas/recursos_medidos.csv)). Si el 8081 está ocupado: `$env:PMA_PUERTO = "8091"` antes de `up`. La imagen se descarga la primera vez (unos 820 MB de disco). No se reinicia sola: tras reiniciar el equipo hay que volver a ejecutar `up -d`.
 
 ## 3. Cómo entrar
 Abrir `http://127.0.0.1:8081`, escribir como usuario `sismo_lectura` y como contraseña el valor de la variable `MYSQL_LECTURA_PASSWORD` del archivo `.env` del proyecto (que Git ignora) y pulsar «Continuar».
 El servidor ya viene fijado (el MySQL de este equipo, por `host.docker.internal`), así que el formulario no pide servidor.
 
 ## 4. Qué mirar
-⟦CAPTURAS⟧
+Las capturas son «capturas automatizadas del navegador» de la verificación en vivo ([EV-085](../evidencias/servicios/EV-085_phpmyadmin_en_vivo.txt)); no las tomó una persona. En ellas no aparece ninguna contraseña.
+
+1. **Las siete tablas de `sismo_cali`.** Al entrar, en la base `sismo_cali` se ven `barrio_estrato`, `comuna`, `construccion`, `corrida`, `corrida_archivo`, `kpi` y `kpi_sensibilidad` con sus filas (estimadas por InnoDB).
+   ![Las siete tablas de sismo_cali](../evidencias/servicios/EV-085_captura_tablas.png)
+2. **La estructura de `construccion`.** Sus 28 columnas con tipo, comentario y los índices; cada columna trae el comentario que escribimos en el esquema (`src/load/sql/esquema_mysql.sql`).
+   ![Estructura de construccion](../evidencias/servicios/EV-085_captura_estructura_construccion.png)
+3. **Las claves foráneas.** En «Estructura → Vista de relaciones» de `construccion` aparecen `fk_construccion_barrio`, `fk_construccion_comuna` y `fk_construccion_corrida`, las tres con `RESTRICT` (no se puede borrar una corrida que tenga datos). Usamos esta vista y no el Diseñador gráfico, porque este necesita el almacenamiento de configuración que no instalamos.
+   ![Relaciones de construccion](../evidencias/servicios/EV-085_captura_relaciones_construccion.png)
+4. **Los conteos.** En la pestaña SQL, una consulta de lectura con un `COUNT(*)` por tabla dio `construccion` 5.146, `kpi` 23 y `kpi_sensibilidad` 107, iguales a las filas de `gold_final.csv`, `kpis_gold.csv` y `kpis_sensibilidad.csv`; `corrida` tiene 1 fila (una sola carga).
+   ![Conteos por tabla](../evidencias/servicios/EV-085_captura_conteos.png)
+5. **La tabla `corrida`.** Una fila por carga con datos distintos: su identificador, la clave (sha256 de las huellas de los archivos de entrada), el momento de la carga y el commit del código.
+   ![Tabla corrida](../evidencias/servicios/EV-085_captura_tabla_corrida.png)
+6. **Lo que no se puede hacer.** Un `INSERT` o un `DROP` en la pestaña SQL recibe de MySQL el error #1142 («comando negado para el usuario `sismo_lectura`»); lo mismo con `UPDATE` y `DELETE`. Los conteos no cambiaron.
+   ![INSERT rechazado](../evidencias/servicios/EV-085_captura_insert_rechazado.png)
+   ![DROP rechazado](../evidencias/servicios/EV-085_captura_drop_rechazado.png)
+
+Esto muestra que lo cargado en MySQL coincide con lo versionado y que la cuenta no puede cambiarlo; no demuestra que los datos sean correctos, solo que la carga concilia con Gold.
 
 ## 5. Imagen y versión
 | Dato | Valor | Cómo se obtuvo |

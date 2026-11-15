@@ -1,0 +1,42 @@
+# phpMyAdmin en vivo con la cuenta de solo lectura
+- comando: `docker compose -p servicios_prueba_pma -f servicios/phpmyadmin/docker-compose.yaml up -d (PMA_PUERTO=8791) y navegador sin ventana por DevTools`
+- fecha: 2026-11-15T00:56:59-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 0.0 s
+- Python: 3.13.0
+- commit del repositorio: 5c6d25a
+
+phpMyAdmin 5.2.3 (`servicios/phpmyadmin/docker-compose.yaml`) levantado con un proyecto de Docker propio (`servicios_prueba_pma`) y el puerto 8791 (el 8081 real no se usó), y controlado con un navegador sin ventana (Edge por el protocolo DevTools). Las credenciales de `sismo_lectura` se leyeron EN MEMORIA del `.env` y se tecleron en el formulario de acceso: no se imprimieron ni aparecen en ninguna captura (se abrieron las ocho una por una). Las consultas se escribieron en la pestaña SQL de phpMyAdmin y se enviaron con el botón «Continuar».
+
+## Resultado
+| Comprobación | Resultado |
+|---|---|
+| página de acceso (`http://127.0.0.1:8791/`) | HTTP 200 en 0,3 s después de `up -d` (1,1 s) |
+| entrada con `sismo_lectura` | correcta |
+| tablas de `sismo_cali` vistas | 7: barrio_estrato, comuna, construccion, corrida, corrida_archivo, kpi, kpi_sensibilidad |
+| claves foráneas de `construccion` (vista de relaciones) | `fk_construccion_barrio`, `fk_construccion_comuna` y `fk_construccion_corrida`, todas con RESTRICT |
+| conteos por tabla (SELECT COUNT desde la pestaña SQL) | barrio_estrato 346, comuna 27, construccion 5146, corrida 1, corrida_archivo 5, kpi 23, kpi_sensibilidad 107 |
+| frente a los archivos de Gold | construccion 5146 = filas de `gold_final.csv` (5146); kpi 23 = `kpis_gold.csv` (23); kpi_sensibilidad 107 = `kpis_sensibilidad.csv` (107): iguales |
+| tabla `corrida` | 1 fila (una sola carga); sin rutas ni nombres de usuario en lo que muestra |
+| conteos después de intentar escribir | iguales a los de antes |
+| ninguna contraseña en el texto de las páginas | sí |
+| memoria del contenedor en reposo (`docker stats`, 30 s después de arrancar, sin sesión abierta) | 28.58MiB |
+| `docker compose down` | código 0 |
+
+## Escrituras: las rechaza MySQL por privilegios
+Cada consulta se escribió en la pestaña SQL y se envió; phpMyAdmin pidió confirmar las de modificación y se aceptó, para que la consulta llegara al servidor. Respuesta de MySQL:
+
+| Intento | Respuesta |
+|---|---|
+| INSERT | #1142 - INSERT comando negado para usuario: 'sismo_lectura'@'localhost' para tabla 'corrida' |
+| DROP | #1142 - DROP comando negado para usuario: 'sismo_lectura'@'localhost' para tabla 'comuna' |
+| UPDATE | #1142 - UPDATE comando negado para usuario: 'sismo_lectura'@'localhost' para tabla 'comuna' |
+| DELETE | #1142 - DELETE comando negado para usuario: 'sismo_lectura'@'localhost' para tabla 'kpi' |
+
+Ninguna se ejecutó: los conteos quedaron iguales. Esto es lo que garantiza que phpMyAdmin sea de solo lectura: la cuenta solo tiene `SELECT`, y el servidor lo hace cumplir aunque la página deje escribir la consulta.
+
+## Capturas (capturas automatizadas del navegador, no las tomó una persona)
+`EV-085_captura_acceso.png` (formulario vacío), `EV-085_captura_tablas.png` (las siete tablas con sus filas estimadas), `EV-085_captura_estructura_construccion.png`, `EV-085_captura_relaciones_construccion.png`,
+`EV-085_captura_conteos.png`, `EV-085_captura_tabla_corrida.png`, `EV-085_captura_insert_rechazado.png` y `EV-085_captura_drop_rechazado.png`. En la vista de relaciones el Diseñador gráfico no se usó: no hay almacenamiento de configuración de phpMyAdmin.
+
+Qué NO demuestra: que otra persona pueda entrar sin crear antes la cuenta (necesita la contraseña de `root` una vez), que phpMyAdmin sea seguro para otros usos o fuera de este equipo, ni el comportamiento con otro origen de conexión distinto de `localhost`. La tabla `comuna` tiene 27 filas porque reúne los códigos de comuna presentes en el CSV de estrato 2015 y en las construcciones (`docs/almacenamiento/modelo_datos.md`), no solo las 7 comunas de la muestra.

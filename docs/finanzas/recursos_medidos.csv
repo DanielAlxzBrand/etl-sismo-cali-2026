@@ -21,3 +21,8 @@ memoria_en_reposo_airflow-scheduler,277,MiB,docker stats --no-stream tras un min
 memoria_en_reposo_postgres,74,MiB,docker stats --no-stream tras un minuto en reposo,2026-11-14
 memoria_en_reposo_redis,11,MiB,docker stats --no-stream tras un minuto en reposo,2026-11-14
 memoria_en_reposo_total_contenedores_de_airflow,1970,MiB,suma de las filas anteriores,2026-11-14
+memoria_en_reposo_phpmyadmin,33,MiB,"docker stats --no-stream a los 30 s de arrancar el contenedor (EV-085; medición local de una máquina)",2026-11-15
+memoria_api_mas_panel_en_reposo,161,MiB,"suma del conjunto de trabajo de los procesos de Python del lanzador del panel, sin ninguna página abierta (medición local de una máquina con PowerShell)",2026-11-15
+tiempo_instalar_requisitos_desde_cero,288,s,"EV-083 (pip install -r requirements.txt en un entorno nuevo; medición local de una máquina; en EV-062 fueron 290 s)",2026-11-15
+tiempo_docker_compose_up_airflow_desde_el_zip,106.4,s,"EV-087 (docker compose up -d con las imágenes ya construidas; medición local de una máquina)",2026-11-15
+duracion_dag_cuatro_tareas_desde_el_zip,49.4,s,"EV-087 (hasta el estado final con sondeo cada 6 s; medición local de una máquina)",2026-11-15
