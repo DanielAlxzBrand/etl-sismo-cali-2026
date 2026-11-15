@@ -1,0 +1,25 @@
+# Suite en un clon con espacios y tildes y sin variables de UTF-8, antes de corregir
+- comando: `python -m pytest -q -p no:cacheprovider (clon temporal, intérprete del entorno nuevo, sin PYTHONUTF8 ni PYTHONIOENCODING)`
+- fecha: 2026-11-14T23:52:38-05:00 (America/Bogota)
+- código de salida: 1
+- duración: 167.6 s
+- Python: 3.13.0
+- commit del repositorio: 7cbc333
+
+Clon del commit 4d97674 en una carpeta temporal cuyo nombre trae espacios y tildes (`<CARPETA CON ESPACIOS Y TILDES>`, con la ñ en «Prueba con espacios y tildes ñ»), entorno virtual nuevo de Python 3.13 en esa misma carpeta, `pip install -r requirements.txt` y suite completa lanzada **sin PYTHONUTF8 ni PYTHONIOENCODING** (la configuración predeterminada de una consola de Windows: la codificación de los archivos y de las tuberías es cp1252).
+
+## Resultado
+- instalación: código 0 en 288 s (medición de una máquina); `pip check`: No broken requirements found.
+- suite: 1 failed, 879 passed, 2 warnings in 167.61s (0:02:47).
+- `git status` del clon al terminar: sin cambios.
+
+## Fallo (1) y causa
+- `tests/test_panel_lanzador.py::test_los_nombres_de_las_variables_de_streamlit_existen_en_su_configuracion`: `TypeError: argument of type 'NoneType' is not iterable`.
+- Causa: la prueba lanza `python -m streamlit config show` y lee su salida con `encoding="utf-8"`, pero el proceso hijo escribe en la codificación predeterminada (cp1252) porque no hay PYTHONIOENCODING; el texto trae una raya larga (byte 0x97 en cp1252, inválido en UTF-8), la lectura falla en un hilo y `stdout` queda en `None`.
+- Dónde está el defecto: en la prueba (no en `src/`).
+
+## Otro hallazgo de portabilidad: rutas largas
+En un primer intento, con una carpeta temporal de unos 170 caracteres de ruta, `git clone` terminó con «Filename too long» al crear el archivo `data/bronze/tabular/estrato_barrio/snap_20261016T001028Z/estratificaci_n_socioecon_mica_seg_n_estrato__por_barrio_en_cali_2015.csv`
+(130 caracteres de ruta relativa, la más larga del repositorio) porque Windows limita la ruta completa a 260 caracteres. La carpeta del proyecto debe quedar en una ruta de menos de unos 120 caracteres, o hay que activar `git config --global core.longpaths true` antes de clonar; el repositorio no puede renombrar ese archivo porque es un original de Bronze.
+
+Qué NO demuestra: que el proyecto funcione en cualquier Windows ni con cualquier versión de Python; solo que, en esta máquina y con la consola predeterminada, la suite falla en una prueba por una causa conocida que se corrige en `tests/`.
