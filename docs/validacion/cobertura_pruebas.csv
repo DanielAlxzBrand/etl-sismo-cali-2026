@@ -1,5 +1,6 @@
 modulo,lineas,sin_ejecutar,cobertura_pct,motivo_si_menor_de_70
 scripts/cargar_mysql.py,40,8,80.0,
+scripts/contar_estados_checklist.py,48,22,54.2,
 scripts/escanear_secretos.py,201,11,94.5,
 scripts/evidencias/saneamiento.py,54,1,98.1,
 scripts/finanzas/costos.py,78,6,92.3,
