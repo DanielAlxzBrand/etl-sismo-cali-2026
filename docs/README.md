@@ -76,6 +76,7 @@
 |---|---|
 | [estado_checklist.md](checklist/estado_checklist.md) | los 30 ítems del checklist con su estado, componente de cierre y cómo validarlos |
 | [guia_de_evidencias.md](checklist/guia_de_evidencias.md) | por ítem: archivo principal, apoyo, texto sugerido, captura opcional y cómo validar |
+| [trazabilidad.md](checklist/trazabilidad.md) y [trazabilidad.csv](checklist/trazabilidad.csv) | ítem → requisito → archivos → pruebas → evidencias → comando de los 30 ítems; el CSV es la única fuente y la tabla se genera con `python scripts/validar_checklist.py --escribir` |
 
 ### `evidencias/` · salidas registradas
 | contenido | para qué sirve |
@@ -126,7 +127,7 @@
 | [errores_comunes.md](instalacion/errores_comunes.md) | síntomas, causa probable y qué hacer al instalar y ejecutar |
 
 ### Decisiones
-[DECISIONES.md](DECISIONES.md): todas las decisiones con alternativas, razón, riesgo y fecha (D1 a D97; las nuevas continúan desde D98).
+[DECISIONES.md](DECISIONES.md): todas las decisiones con alternativas, razón, riesgo y fecha (D1 a D98; las nuevas continúan desde D99).
 
 ### Almacenamiento relacional (MySQL)
 | documento | contenido |

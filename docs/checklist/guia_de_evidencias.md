@@ -13,7 +13,7 @@
 **Comandos de PowerShell.** Todos se ejecutan en la raíz del repositorio con el entorno activado (`.\.venv\Scripts\Activate.ps1`) y no modifican nada. Para comprobar que no cambió nada: `git status --short` no debe imprimir nada.
 
 ## Índice
-Fichas de los ítems 1.1 a 1.5 (Estrategia), 2.1 a 2.3 (API, fuentes y credenciales), 3.1, 3.2 y 5.3 (Panel), 3.3 y 6.1 a 6.4 (Usuarios, UX y finanzas), 4.1 a 4.3 (Carga relacional) y 5.1, 5.2, 5.4, 5.5 y 5.6 (Pruebas y orquestación). **Todavía no tienen ficha** los ítems 6.5 y 7.1 a 7.5 (Documentación y demostración, y Cierre y paquete): se agregan en cada componente con esta misma estructura.
+Fichas de los ítems 1.1 a 1.5 (Estrategia), 2.1 a 2.3 (API, fuentes y credenciales), 3.1, 3.2 y 5.3 (Panel), 3.3 y 6.1 a 6.4 (Usuarios, UX y finanzas), 4.1 a 4.3 (Carga relacional) y 5.1, 5.2, 5.4, 5.5 y 5.6 (Pruebas y orquestación). Las fichas de los ítems 6.5 y 7.1 a 7.5 (Documentación y demostración, y Cierre y paquete) se escribieron en la auditoría intermedia y dicen el estado real de cada uno; ninguno está en «Cumple».
 
 ---
 
@@ -271,8 +271,53 @@ Fichas de los ítems 1.1 a 1.5 (Estrategia), 2.1 a 2.3 (API, fuentes y credencia
 
 ---
 
+## Documentación y demostración, y Cierre y paquete · Ítems 6.5 y 7.1 a 7.5 (con su estado real)
+Estas seis fichas se escribieron en la auditoría intermedia. Ninguna de las seis está en «Cumple»: cada una dice qué hay y qué falta. La tabla ítem → requisito → archivos → pruebas → evidencias → comando de los 30 ítems está en [trazabilidad.md](trazabilidad.md) y se comprueba con `python scripts/validar_checklist.py --item N`.
+
+### Ítem 6.5 · Retroalimentación y verificación de los ajustes (Pendiente por un hecho externo)
+- **(a) Archivo principal:** `docs/usuarios/trazabilidad_de_cambios.md` (Markdown). Demuestra: la tabla fricción → cambio → commit → captura antes y después → prueba está llena con los 8 ajustes de la iteración técnica (D87 a D90). **No demuestra:** que alguien haya dado retroalimentación ni que los ajustes se hayan verificado con personas: salen de una evaluación heurística interna. Estado: Pendiente (hecho externo).
+- **(b) Apoyo:** `tests/test_usuarios_estructura.py` (el estado no marca como cumplido lo que depende de sesiones reales), `tests/test_panel_ajustes.py` (cada ajuste falla si el defecto vuelve) y EV-073 a EV-082 (capturas y mediciones antes y después de los ajustes; son iteración técnica y no cuentan para este ítem).
+- **(c) Texto sugerido:** «Los ajustes al panel salen de una evaluación heurística interna; la retroalimentación de personas usuarias y la verificación posterior están pendientes de las sesiones reales: `docs/usuarios/trazabilidad_de_cambios.md`.»
+- **(d) Captura opcional:** ninguna: no hay sesiones que capturar.
+- **(e) Validar:** `.\.venv\Scripts\python.exe scripts\validar_checklist.py --item 6.5`.
+
+### Ítem 7.1 · Documentación completa y código ejecutable (En curso)
+- **(a) Archivo principal:** `docs/instalacion/README.md` (guía con modo mínimo y modo completo) y `README.md`. Demuestra: el proyecto se instala y pasa su suite en un clon y en el zip descomprimido, en una carpeta sin ninguna otra carpeta del equipo y con una ruta con espacios y tildes; `requirements.txt` tiene todas las versiones exactas; el zip se arma por lista de inclusión sin `.env`. **No demuestra:** la publicación del repositorio en GitHub, el paquete final de Cierre y paquete ni que las otras dos personas del grupo lo hayan probado en sus equipos. Estado: En curso.
+- **(b) Apoyo:** EV-049, EV-062, EV-083, EV-084, EV-087, EV-089 y EV-090 (instalación desde cero, suite sin variables de UTF-8, Airflow desde el zip y los experimentos de independencia); EV-001, EV-002, EV-003 y EV-006 (línea base protegida y estado del entorno); `tests/test_dist.py`, `tests/test_empaquetado_y_revision.py`, `tests/test_independencia_del_repositorio.py`, `tests/test_portabilidad.py`, `tests/test_preparar_entorno.py`, `tests/test_requisitos.py` y `tests/test_servicios_estructura.py`.
+- **(c) Texto sugerido:** «Código y documentación ejecutables desde un clon limpio y desde el zip, con guía de instalación; falta publicar el repositorio y que las otras dos personas lo prueben: `docs/instalacion/README.md`.»
+- **(d) Captura opcional:** ninguna.
+- **(e) Validar:** `.\.venv\Scripts\python.exe scripts\validar_checklist.py --item 7.1 --ejecutar`.
+
+### Ítem 7.2 · README con problema, funcionalidades, instalación, arquitectura y ejecución (En curso)
+- **(a) Archivo principal:** `README.md` (generado por `scripts/make_readme.py`). Demuestra: problema (secciones 2 y 3), funcionalidades (18 a 21), instalación y ejecución (12) y el mapa del flujo de datos (4), con las cifras leídas de los archivos de salida. **No demuestra:** un diagrama de la arquitectura de software completa (API, MySQL, panel y Airflow) ni una sección de primera vez: todavía no existen. Estado: En curso.
+- **(b) Apoyo:** `tests/test_readme_cifras.py` (las cifras del README coinciden con las salidas) y `tests/test_estrategia.py::test_ningun_estado_supera_su_evidencia` (el ítem no puede pasar a «Cumple» sin el diagrama y la sección).
+- **(c) Texto sugerido:** «README con problema, funcionalidades, instalación y ejecución; falta el diagrama de la arquitectura de software completa y la sección de primera vez: `README.md`.»
+- **(d) Captura opcional:** ninguna.
+- **(e) Validar:** `.\.venv\Scripts\python.exe scripts\validar_checklist.py --item 7.2 --ejecutar`.
+
+### Ítem 7.3 · Arquitectura, evidencias de pruebas y feedback del usuario (En curso)
+- **(a) Archivo principal:** `docs/api/arquitectura.md` y `docs/panel/arquitectura_panel.md` (arquitectura por componente, con diagrama) y `docs/validacion/informe_pruebas.md` (evidencia de pruebas técnicas). **No demuestra:** un documento de la arquitectura del sistema completo ni el feedback recibido de personas usuarias, que depende de sesiones reales. Estado: En curso.
+- **(b) Apoyo:** `docs/orquestacion/guia_de_implementacion.md`, `tests/test_informe_pruebas.py` y `tests/test_matriz_casos.py`.
+- **(c) Texto sugerido:** «Arquitectura documentada por componente y evidencias de pruebas técnicas; falta el documento del sistema completo y el feedback de personas usuarias: `docs/api/arquitectura.md`.»
+- **(d) Captura opcional:** ninguna.
+- **(e) Validar:** `.\.venv\Scripts\python.exe scripts\validar_checklist.py --item 7.3 --ejecutar`.
+
+### Ítem 7.4 · Cambios e iteraciones tras las sesiones con usuarios (Pendiente por un hecho externo)
+- **(a) Archivo principal:** `docs/usuarios/trazabilidad_de_cambios.md`. Demuestra: la estructura para registrar cada cambio con su commit y su verificación. **No demuestra:** iteraciones tras sesiones con personas: no hubo sesiones; los cambios registrados son de la evaluación heurística interna. Estado: Pendiente (hecho externo).
+- **(b) Apoyo:** `docs/retroalimentacion/registro_de_cambios.md` (cambios atendidos de la retroalimentación recibida, que no es una sesión con usuarios) y `tests/test_usuarios_estructura.py`.
+- **(c) Texto sugerido:** «Aún no hay iteraciones tras sesiones con personas; la tabla de cambios está lista y hoy solo trae ajustes de una evaluación heurística interna: `docs/usuarios/trazabilidad_de_cambios.md`.»
+- **(d) Captura opcional:** ninguna.
+- **(e) Validar:** `.\.venv\Scripts\python.exe scripts\validar_checklist.py --item 7.4`.
+
+### Ítem 7.5 · Demostración de extremo a extremo (No iniciado)
+- **(a) Archivo principal:** ninguno: en el repositorio no existe un guion de demostración ni un ensayo. Estado: No iniciado.
+- **(b) Apoyo:** `tests/test_estrategia.py::test_ningun_estado_supera_su_evidencia` impide subir el estado sin que aparezca un guion de demostración en `docs/`.
+- **(c) Texto sugerido:** «La demostración de extremo a extremo todavía no se ha preparado.»
+- **(d) Captura opcional:** ninguna.
+- **(e) Validar:** `.\.venv\Scripts\python.exe scripts\validar_checklist.py --item 7.5` (muestra que no hay archivos).
+
 ## Cómo se produjeron las evidencias de la capa de servicio
 `scripts/evidencias/evidencias_api.py` clona el commit a una carpeta temporal fuera del repositorio, ejecuta ahí las pruebas, el servicio, el navegador sin ventana, el escáner y el entorno nuevo, y guarda las salidas **saneadas** (sin rutas de usuario, usuario ni equipo: se sustituyen por `<REPO>`, `<CLON>`, `<TEMP>`, `<VENV>`, `<USUARIO>` y `<EQUIPO>`) en `docs/evidencias/api/`. `scripts/evidencias/registrar_manifiesto.py` calcula el sha256 de cada archivo y lo registra en el manifiesto. Una prueba (`tests/test_evidencias.py`) verifica que ninguna evidencia guardada lleva datos del equipo.
 
 ## Componentes en construcción
-Se agregan en cada componente con la misma estructura de fichas.
+Documentación y demostración y Cierre y paquete siguen en construcción; sus fichas se actualizan con la misma estructura cuando cambie el estado de un ítem.

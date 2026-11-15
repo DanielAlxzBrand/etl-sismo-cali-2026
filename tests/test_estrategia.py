@@ -542,7 +542,7 @@ def errores_de_la_figura(atestado, tabla):
     return errores
 
 
-def test_la_figura_de_stakeholders_sale_de_la_tabla_y_no_dice_profesor(tmp_path):
+def test_la_figura_de_stakeholders_sale_de_la_tabla_y_no_trae_el_rotulo_anterior(tmp_path):
     tabla = _texto("02_stakeholders.md")
     imagen = CARPETA / "img" / "matriz_poder_interes.png"
     assert errores_de_la_figura(atestado_de_la_figura(imagen), tabla) == []
