@@ -47,3 +47,22 @@ Reintentos, tareas adicionales, ejecutor local, carga de ejemplos y las pruebas 
 
 ## 4. Qué decidiría un posible conflicto
 El ítem 5.4 dice «flujos programados (DAGs de Airflow)». La guía llega a `schedule=None` y solo propone programar en el paso 40; por eso aplicamos ese paso (DF-9).
+
+## 5. Diferencias nuevas al entregar el compose adaptado (DF-13 a DF-17)
+Hasta ahora el compose se descargaba y se editaba a mano (pasos 14, 18 y 19 de la guía, DF-12). Para que quien reciba el zip pueda levantar Airflow sin ese procedimiento, el compose adaptado viaja dentro del repositorio (D92) y lo genera
+`scripts/orquestacion/generar_compose.py` desde el oficial de Airflow 3.3.2 (se comprueba su sha256, `99da85d87016…`, el mismo de [EV-037](../evidencias/orquestacion/EV-037_pasos_13_a_19.txt)). Cada cambio es un reemplazo exacto sobre el texto
+oficial y el diff completo está en `orquestacion/docker-compose.diff`. Estas diferencias se suman a la lista cerrada de la sección 1:
+
+| DF | Paso de la guía | Qué cambia | Por qué es necesario |
+|---|---|---|---|
+| DF-13 | 18 | el volumen del proyecto pasa de `../etl_sismo_cali_2026` a `../${PROYECTO_NOMBRE}` (obligatoria, de solo lectura); la ruta interna sigue siendo `/opt/airflow/medallon` | el nombre de la carpeta del proyecto ya no es fijo: quien descomprime el zip puede llamarla como quiera (`preparar_airflow.py` lo detecta y lo escribe en el `.env` de Airflow) |
+| DF-14 | 29 y 31 | el puerto de la interfaz pasa de `127.0.0.1:8080:8080` a `127.0.0.1:${AIRFLOW_PUERTO:-8080}:8080` y el de Flower (servicio opcional) de `5555:5555` a `127.0.0.1:5555:5555` | si el 8080 está ocupado el script acepta otro puerto; y Flower, que el compose oficial publica en todas las interfaces, queda solo en este equipo |
+| DF-15 | 15 y 29 | `AIRFLOW__CORE__FERNET_KEY` pasa de `${FERNET_KEY}` (en blanco con un aviso en cada comando, H-17) a `${FERNET_KEY:?…}`: el compose se niega a arrancar si el `.env` de Airflow no la trae | `preparar_airflow.py` genera una clave Fernet aleatoria y la escribe solo en ese `.env`; así Airflow nunca cifra con una clave vacía |
+| DF-16 | 15 y 31 | `_AIRFLOW_WWW_USER_PASSWORD` pasa de `${…:-airflow}` (contraseña por defecto) a `${…:?…}` (obligatoria) | completa DF-8: la interfaz no puede quedar con la contraseña de ejemplo ni siquiera si se olvida el `.env` |
+| DF-17 | 18 | las imágenes `postgres:16` y `redis:7.2-bookworm` conservan su etiqueta y se fijan además por su resumen (`@sha256:…`) | una etiqueta de Docker se reconstruye con el tiempo; con el resumen todos los equipos usan la misma imagen que probamos |
+
+Lo que **no** cambia (H-18): el compose conserva los valores de ejemplo de Postgres, el JWT y Redis del oficial, que no se publican fuera del contenedor. La imagen de Airflow sigue siendo `apache/airflow:3.3.2` (resumen
+`sha256:e9982ad3f49a60418622e1baf80c34b0daf3fa5091a336cb5ee61f0cdd189371`, comprobado el 2026-11-14), construida con el Dockerfile de `orquestacion/` como en el paso 17. El `orquestacion/README.md` dice «El compose completo no se
+redistribuye»: era cierto antes de D92 y ya no lo es; ese texto se corrige en la revisión final de la documentación.
+
+Qué NO demuestra: que el compose adaptado funcione con otra versión de Airflow; si Airflow cambia su compose, el generador falla en lugar de escribir otra cosa.
