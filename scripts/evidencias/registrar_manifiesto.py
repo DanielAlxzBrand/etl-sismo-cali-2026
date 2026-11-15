@@ -197,6 +197,10 @@ FILAS_AUD = {
                "mutación de un archivo en un clon y `python -m pytest -q -p no:cacheprovider` sobre las pruebas de criterio, empaquetado, estrategia e igualdad", "EV-094_mutaciones_criterio_de_texto.txt"),
     "EV-095": ("7.1", "Tabla de mutaciones de la prueba de coherencia de la trazabilidad del checklist: todas detectadas", "archivo",
                "mutación de un archivo en un clon y `python -m pytest -q -p no:cacheprovider tests/test_trazabilidad.py`", "EV-095_mutaciones_trazabilidad.txt"),
+    "EV-096": ("7.1", "Independencia repetida con el script movido (clon y zip sin hermanas) y número exacto de pruebas omitidas: 0 con Git, 1 en el zip y 10 sin el binario git", "archivo",
+               "`python scripts/evidencias/evidencia_independencia.py clon|zip` y `python -m pytest -q -rs` con el PATH sin git", "EV-096_independencia_repetida_y_omisiones.txt"),
+    "EV-097": ("6.4, 7.1", "Pico de memoria de la suite medido con `scripts/evidencias/medir_memoria_suite.py` en una carpeta temporal", "archivo",
+               "`python scripts/evidencias/medir_memoria_suite.py --salida <carpeta temporal>`", "EV-097_memoria_de_la_suite.txt"),
 }
 CARPETA_FIN = "docs/finanzas"
 FILAS_FIN = {

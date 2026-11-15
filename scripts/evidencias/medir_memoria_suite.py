@@ -9,7 +9,7 @@ intérprete real como hijo), guarda abierto un manejador de cada uno y, al termi
 Por qué es así: sondear solo al hijo con una consulta externa fallaba sin avisar y dejaba el pico en 0; ahora el pico sale del propio contador del sistema y, si no se puede medir, el script falla
 con un mensaje en lugar de escribir 0.
 Qué NO hace: no modifica el proyecto ni `data/`, no mide otros procesos y no sirve para otro sistema operativo. El pico depende de la máquina.
-Última ejecución real: pendiente de registrar (la medición anterior, de la fila `memoria_pico_suite_de_pruebas` de `docs/finanzas/recursos_medidos.csv`, se hizo con el script de la sesión de trabajo).
+Última ejecución real: EV-097 (2026-11-15, con esta versión: 319 MiB de pico máximo con 1007 pruebas).
 """
 import argparse
 import ctypes

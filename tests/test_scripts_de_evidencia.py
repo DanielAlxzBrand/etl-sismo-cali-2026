@@ -4,8 +4,8 @@ Por qué existe: cuatro scripts que se escribieron durante las sesiones de traba
 experimento de independencia) se movieron al repositorio para que cualquiera pueda repetir esas verificaciones. Necesitan Docker, MySQL o minutos de instalación, así que la suite no
 los ejecuta; esta prueba exige lo que sí se puede comprobar leyendo el código: que compilen, que expliquen qué hacen y qué no, que no traigan rutas locales, que lean y escriban texto
 con codificación explícita y que nunca impriman valores de credenciales.
-Qué NO demuestra: que funcionen. Su última ejecución real es la de las evidencias EV-085 (phpMyAdmin), EV-087 (Airflow desde el zip) y EV-090 (independencia), hechas con la versión de la
-sesión de trabajo de la que salen; estas versiones solo se validaron de forma estática (Docker estaba apagado).
+Qué NO demuestra: que funcionen. Su última ejecución real es la de EV-085 (phpMyAdmin) y EV-087 (Airflow desde el zip), hechas con la versión de la sesión de trabajo de la que salen y que solo se validaron de forma
+estática (Docker estaba apagado), y las de EV-096 (independencia) y EV-097 (memoria de la suite), ejecutadas de verdad con estas versiones.
 """
 import ast
 import re
@@ -84,7 +84,7 @@ def test_cada_script_esta_en_el_indice_de_scripts():
 
 def test_los_documentos_dicen_cual_fue_la_ultima_ejecucion_real():
     instalacion = (ROOT / "docs" / "instalacion" / "README.md").read_text(encoding="utf-8")
-    for ev in ("EV-085", "EV-087", "EV-090"):
+    for ev in ("EV-085", "EV-087", "EV-096", "EV-097"):
         assert ev in instalacion, f"docs/instalacion/README.md no menciona {ev} como última ejecución real"
 
 

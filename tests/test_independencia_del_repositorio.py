@@ -25,6 +25,8 @@ EXTENSIONES = {".py", ".md", ".txt", ".csv", ".json", ".jsonl", ".yaml", ".yml",
 CARPETAS_DEL_EQUIPO = re.compile("guia" + "_equipo|archivo" + "_privado")
 UNIDAD_O_USUARIO = re.compile(r"\b[A-Z]:\\[A-Za-z]|/Us" + "ers/|C:/Us" + "ers")
 API_FUERA_DE_LA_RAIZ = re.compile("expand" + r"user|os\.ch" + r"dir|USER" + "PROFILE|APP" + "DATA")
+# Pruebas que se omiten sin el binario git (medido con la suite completa en EV-096); el motivo de la omisión y docs/instalacion/README.md deben decir lo mismo.
+OMITIDAS_SIN_GIT = 10
 NOMBRES_DE_RAIZ = {"ROOT", "REPO", "RAIZ", "R"}
 
 # --- Excepciones mínimas y justificadas -------------------------------------------------------------------------------------------------------------------------------------------------
@@ -192,7 +194,7 @@ def test_las_pruebas_que_usan_git_pasan_en_el_zip_descomprimido_sin_git_y_omiten
     import sys
     import zipfile
     if shutil.which("git") is None:
-        pytest.skip("falta el binario git en el equipo: sin git se omiten 9 pruebas (docs/instalacion/README.md, sección 3.1)")
+        pytest.skip(f"falta el binario git en el equipo: sin git se omiten {OMITIDAS_SIN_GIT} pruebas (docs/instalacion/README.md, sección 3.1)")
     ruta, _ = make_dist.empaquetar(ROOT, tmp_path / "zip")
     destino = tmp_path / "descomprimido"
     with zipfile.ZipFile(ruta) as z:
@@ -202,3 +204,9 @@ def test_las_pruebas_que_usan_git_pasan_en_el_zip_descomprimido_sin_git_y_omiten
                        cwd=destino, capture_output=True, text=True, encoding="utf-8", errors="replace", env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1"})
     assert r.returncode == 0, r.stdout[-1200:]
     assert re.search(r"\b1 skipped\b", r.stdout) and "sin historial de git" in r.stdout, r.stdout[-600:]
+
+
+def test_el_numero_de_pruebas_omitidas_sin_git_documentado_coincide_con_el_de_la_omision():
+    doc = (ROOT / "docs" / "instalacion" / "README.md").read_text(encoding="utf-8")
+    assert f"| **{OMITIDAS_SIN_GIT}** |" in doc and "| **1** |" in doc
+    assert "sin git se omiten {OMITIDAS_SIN_GIT} pruebas" in Path(__file__).read_text(encoding="utf-8")

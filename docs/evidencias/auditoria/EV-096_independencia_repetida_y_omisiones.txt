@@ -1,0 +1,28 @@
+# Independencia repetida con el script movido y número exacto de pruebas omitidas
+- comando: `python scripts/evidencias/evidencia_independencia.py clon|zip; python -m pytest -q -rs con el PATH sin git`
+- fecha: 2026-11-15T17:18:30-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 0.0 s
+- Python: 3.13.0
+- commit del repositorio: d23cb1c
+
+Los experimentos de independencia se repitieron con el script movido a `scripts/evidencias/evidencia_independencia.py` (primera ejecución real de esa versión) y se midieron las omisiones exactas que documenta `docs/instalacion/README.md` (sección 3.1). Todo en carpetas temporales cuyo único contenido es el proyecto (ninguna hermana); el proyecto original no se tocó.
+
+## Resultado
+| Variante | Pruebas | Omitidas | Notas |
+|---|---|---|---|
+| clon del commit `6dedc25` con Git | 1000 pasan | 0 | 9 de 9 hashes iguales; `main.py --stage all` y `ejecutar_panel.py --verificar` con código 0; no escribió fuera de la raíz |
+| zip de `make_dist.empaquetar` (527 archivos, 21,3 MB), commit `68f53ca`, con Git instalado | 1006 pasan | **1** | 9 de 9 hashes iguales; sin `.git`; solo se omite `test_sin_hallazgos_en_el_historial_de_git` |
+| clon de `68f53ca` sin el binario `git` en el `PATH` | 997 pasan | **10** | `shutil.which('git')` devuelve None; las omitidas, por archivo:
+  - 1 en `tests/test_canario_extra.py`
+  - 1 en `tests/test_configurar_mysql.py`
+  - 5 en `tests/test_configurar_mysql.py`
+  - 1 en `tests/test_independencia_del_repositorio.py`
+  - 1 en `tests/test_secretos.py`
+  - 1 en `tests/test_secretos.py`
+
+## Lectura
+- Con la suite actual el número exacto de omisiones es **0** (clon con Git), **1** (zip con Git) y **10** (sin el binario `git`). El documento decía 9 para el último caso: faltaba contar la prueba que arma el zip y corre las demás, que se omite sin git; se corrigió a 10.
+- `preparar_entorno.py --modo completo` y `preparar_airflow.py --verificar` terminaron con código 1 en el clon y en el zip, como se espera sin `.env`, sin Docker encendido y sin carpeta de Airflow (dicen qué falta, sin errores de Python).
+
+Qué NO demuestra: que el proyecto funcione en el equipo de otra persona (Docker y MySQL quedan fuera de este experimento), con otra versión de Python ni que los tiempos valgan para otra máquina.

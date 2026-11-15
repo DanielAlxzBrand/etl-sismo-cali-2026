@@ -49,8 +49,8 @@ La suite completa no omite ninguna prueba en un clon con Git instalado. En el zi
 |---|---|---|
 | clon con Git | 0 | — |
 | zip descomprimido, con Git instalado | **1** | `test_sin_hallazgos_en_el_historial_de_git`: el zip no trae el historial, así que no hay nada que revisar; se omite con su motivo a la vista en lugar de pasar vacía |
-| zip descomprimido, sin Git (o clon sin Git) | **9** | la anterior más 8 que arman un repositorio temporal para comprobar el `.gitignore` y el escáner de secretos y necesitan el binario `git`: `test_env_no_esta_versionado`, `test_el_env_real_esta_ignorado_y_no_versionado`, 5 de `tests/test_configurar_mysql.py` y 1 de `tests/test_canario_extra.py` |
-Ninguna de las demás pruebas usa git. Esto no demuestra que la suite pase en otro equipo, solo cuántas pruebas se omiten por no tener historial o binario de git y por qué.
+| zip descomprimido, sin Git (o clon sin Git) | **10** | la anterior, 8 que arman un repositorio temporal para comprobar el `.gitignore` y el escáner de secretos y necesitan el binario `git` (`test_env_no_esta_versionado`, `test_el_env_real_esta_ignorado_y_no_versionado`, 5 de `tests/test_configurar_mysql.py` y 1 de `tests/test_canario_extra.py`) y la que arma el zip y corre las demás (`test_las_pruebas_que_usan_git_pasan_en_el_zip_descomprimido_sin_git_y_omiten_solo_una`), que también necesita el binario |
+Ninguna de las demás pruebas usa git. Las tres cifras se midieron de nuevo con la suite actual (1007 pruebas) en [EV-096](../evidencias/auditoria/EV-096_independencia_repetida_y_omisiones.txt): 0, 1 y 10; `tests/test_independencia_del_repositorio.py` comprueba que este documento y el motivo de la omisión dicen el mismo número. Esto no demuestra que la suite pase en otro equipo, solo cuántas pruebas se omiten por no tener historial o binario de git y por qué.
 
 ## 4. Tiempos y memoria medidos
 Todas las cifras son de una máquina de desarrollo con Windows 11 y 15,7 GB de RAM; **en otro equipo cambiarán**.
@@ -60,6 +60,7 @@ Todas las cifras son de una máquina de desarrollo con Windows 11 y 15,7 GB de R
 | Crear el entorno e instalar `requirements.txt` desde cero | 288 y 290 s (unos 5 minutos) | [EV-083](../evidencias/servicios/EV-083_suite_sin_utf8_antes.txt) y [EV-062](../evidencias/endurecimiento/EV-062_instalacion_desde_cero.txt); depende de la conexión |
 | Pipeline completo (`main.py --stage all`) | 3,4 s y 148 MB de pico | [recursos_medidos.csv](../finanzas/recursos_medidos.csv) |
 | Suite de pruebas (sin cobertura) | 227 s (unos 4 minutos) y un pico de 286 MiB del proceso de pytest | [recursos_medidos.csv](../finanzas/recursos_medidos.csv) (fila `memoria_pico_suite_de_pruebas`) |
+| Suite de pruebas medida con `scripts/evidencias/medir_memoria_suite.py` (1007 pruebas) | 323 s y un pico máximo de 319 MiB entre `pytest` y sus procesos hijos (no es comparable con la fila anterior: aquella solo miró al proceso de `pytest`) | [EV-097](../evidencias/auditoria/EV-097_memoria_de_la_suite.txt) |
 | API y panel en reposo (sin ninguna página abierta) | unos 160 MiB entre los procesos de Python del lanzador | [recursos_medidos.csv](../finanzas/recursos_medidos.csv) (fila `memoria_api_mas_panel_en_reposo`) |
 | Airflow en reposo (seis contenedores) | 1.970 MiB | [recursos_medidos.csv](../finanzas/recursos_medidos.csv) (fila `memoria_en_reposo_total_contenedores_de_airflow`) |
 | phpMyAdmin en reposo | 33 MiB | [recursos_medidos.csv](../finanzas/recursos_medidos.csv) (fila `memoria_en_reposo_phpmyadmin`) |
@@ -78,14 +79,14 @@ baja con `docker compose down` antes de volver al panel; y se limita WSL2 creand
 | [../almacenamiento/phpmyadmin.md](../almacenamiento/phpmyadmin.md) | phpMyAdmin de solo lectura: cómo arrancarlo y qué mirar |
 
 ## 5.1 Scripts de verificación en vivo y su última ejecución real
-Los pasos que dieron las evidencias de los servicios quedaron como scripts en `scripts/evidencias/`, para que el equipo pueda repetirlos. **En la auditoría intermedia solo se validaron de forma estática** (compilan, tienen su documentación, no traen rutas locales ni imprimen credenciales; `tests/test_scripts_de_evidencia.py`) porque Docker estaba apagado; no se ejecutaron. Su última ejecución real fue con la versión de la sesión de trabajo de la que salen:
+Los pasos que dieron las evidencias de los servicios quedaron como scripts en `scripts/evidencias/`, para que el equipo pueda repetirlos. **En la auditoría intermedia se ejecutaron de verdad dos** (`evidencia_independencia.py`, EV-096, y `medir_memoria_suite.py`, EV-097) y **los dos que necesitan Docker solo se validaron de forma estática** (compilan, tienen su documentación, no traen rutas locales ni imprimen credenciales; `tests/test_scripts_de_evidencia.py`) porque Docker estaba apagado. La última ejecución real de cada uno es:
 
 | Script | Qué verifica | Última ejecución real |
 |---|---|---|
 | `evidencia_phpmyadmin.py` | phpMyAdmin con la cuenta `sismo_lectura`: siete tablas, conteos iguales a Gold y escrituras rechazadas | [EV-085](../evidencias/servicios/EV-085_phpmyadmin_en_vivo.txt) |
 | `evidencia_airflow_desde_zip.py` | Airflow desde el zip descomprimido en una carpeta de otro nombre, con las cuatro tareas del DAG | [EV-087](../evidencias/servicios/EV-087_airflow_desde_el_zip.txt) |
-| `evidencia_independencia.py` | clon y zip en una carpeta sin hermanas: suite, `main.py`, hashes, panel y scripts de servicios | [EV-090](../evidencias/auditoria/EV-090_independencia_clon_y_zip.txt) |
-| `medir_memoria_suite.py` | pico de memoria del proceso de pytest | fila `memoria_pico_suite_de_pruebas` de [recursos_medidos.csv](../finanzas/recursos_medidos.csv) |
+| `evidencia_independencia.py` | clon y zip en una carpeta sin hermanas: suite, `main.py`, hashes, panel y scripts de servicios | [EV-096](../evidencias/auditoria/EV-096_independencia_repetida_y_omisiones.txt) (con esta versión del script; antes, EV-090) |
+| `medir_memoria_suite.py` | pico de memoria del proceso de pytest | [EV-097](../evidencias/auditoria/EV-097_memoria_de_la_suite.txt) (con esta versión del script; antes, la fila `memoria_pico_suite_de_pruebas` de [recursos_medidos.csv](../finanzas/recursos_medidos.csv)) |
 
 Si un equipo vuelve a ejecutar alguno y el resultado difiere, se registra como una evidencia nueva; las anteriores no se editan.
 

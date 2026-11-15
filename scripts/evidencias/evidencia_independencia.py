@@ -9,7 +9,7 @@ carpeta del proyecto; crea un entorno virtual nuevo de Python 3.13 e instala `re
 `preparar_airflow.py --verificar`. Escribe `resultado_<variante>.json` y `registro_<variante>.txt` en `--salida` (por defecto, la carpeta temporal del sistema).
 Por qué es así: solo probando el zip de verdad aparecen las dependencias de `.git` o de carpetas vecinas (D95).
 Qué NO hace: no toca el proyecto original, no escribe fuera de la carpeta temporal y de `--salida`, no usa Docker ni MySQL y no imprime valores de ningún `.env`.
-Última ejecución real: EV-090 (hecha con el script de la sesión del que sale este archivo); esta versión solo se validó de forma estática.
+Última ejecución real: EV-096 (2026-11-15, con esta versión: clon y zip en una carpeta temporal sin hermanas).
 """
 import argparse
 import hashlib

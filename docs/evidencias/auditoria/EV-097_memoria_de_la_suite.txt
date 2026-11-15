@@ -1,0 +1,19 @@
+# Pico de memoria de la suite medido con el script movido
+- comando: `python scripts/evidencias/medir_memoria_suite.py --salida <carpeta temporal>`
+- fecha: 2026-11-15T17:18:30-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 326.0 s
+- Python: 3.13.0
+- commit del repositorio: d23cb1c
+
+`scripts/evidencias/medir_memoria_suite.py` se ejecutó de verdad en la carpeta temporal del sistema (resultado y registro fuera del repositorio): lanza `python -m pytest -q -p no:cacheprovider` sobre el proyecto, sigue a todos los procesos descendientes y toma el mayor pico del conjunto de trabajo.
+
+## Resultado
+- pico máximo del conjunto de trabajo entre `pytest` y sus procesos descendientes: **319 MiB** (84 procesos medidos);
+- duración: 326 s; resumen de `pytest`: 1007 passed, 1 warning in 323.61s (0:05:23).
+
+## Lectura
+- La medición anterior (fila `memoria_pico_suite_de_pruebas` de `docs/finanzas/recursos_medidos.csv`, 286 MiB con 959 pruebas) se hizo con el script de la sesión de trabajo y solo con el proceso de `pytest`; esta, con el script movido, toma el mayor pico entre `pytest` y los procesos que arranca (la API y el panel de las pruebas de integración), así que no es comparable punto por punto. `recursos_medidos.csv` es una evidencia registrada y no se edita.
+- Una primera ejecución con una versión anterior del script (consulta externa al proceso hijo) dejó el pico en 0 sin avisar; por eso la versión actual falla con un mensaje si no puede medir.
+
+Qué NO demuestra: el consumo en otro equipo ni con cobertura; es una medición local de una máquina.
