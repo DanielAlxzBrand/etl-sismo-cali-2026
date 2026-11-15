@@ -21,6 +21,7 @@ Utilidades que generan documentos, empaquetan o comprueban el repositorio. Ningu
 | `panel/contraste.py` | calcula la relación de contraste WCAG de la paleta del panel (`--evidencia` guarda EV-057) |
 | `panel/generar_trazabilidad.py` | genera `docs/panel/trazabilidad_ui.md` desde el registro de componentes; con `--verificar` comprueba que esté al día |
 | `panel/make_arquitectura_panel.py` | dibuja `docs/panel/img/arquitectura_panel.png` con matplotlib |
+| `contar_estados_checklist.py` | cuenta los 30 ítems del checklist por estado desde su tabla y escribe (`--escribir`) o comprueba (`--verificar`) la línea de conteo de `docs/checklist/estado_checklist.md`; el conteo nunca se escribe a mano (D96) |
 | `make_dist.py` | empaqueta el proyecto en `dist/etl_sismo_<fecha>.zip` por **lista de inclusión** (ver abajo) y verifica el zip |
 | `evidencias/` | produce las evidencias en un clon temporal con saneamiento de rutas y datos del equipo: `evidencia.py` (guardado saneado de las salidas), `evidencia_estabilidad.py` (reproducibilidad del pipeline antes de orquestarlo), `evidencia_conector.py` (instalación del conector MySQL), `evidencias_api.py` (corrida completa), `registrar_manifiesto.py` (sha256 en el manifiesto), `integrar_latencias.py` (latencias en los documentos), `make_diagrama_arquitectura.py` (diagrama) y `saneamiento.py` |
 

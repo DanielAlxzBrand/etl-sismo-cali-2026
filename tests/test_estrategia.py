@@ -1,6 +1,7 @@
 """Estrategia (docs/estrategia) y estado del checklist: existencia, rastros de elaboración, cifras, rúbrica R1, avisos de honestidad,
 criterios del MVP (forma general y tabla real, D81) y tabla de los 30 ítems, con pruebas negativas sobre copias alteradas de las tablas."""
 import datetime
+import importlib.util
 import json
 import re
 from decimal import ROUND_HALF_UP, Decimal
@@ -22,7 +23,7 @@ OTROS = ["por validar por el " + "equipo", "[COMPLE" + "TAR", "TO" + "DO"]
 # Lista cerrada de componentes (único lugar de las pruebas donde se define)
 COMPONENTES = ["Base y orden", "Estrategia", "API, fuentes y credenciales", "Carga relacional", "Pruebas y orquestación", "Panel", "Usuarios, UX y finanzas",
                "Documentación y demostración", "Cierre y paquete"]
-ESTADOS_REGLA = ["Cumple", "Cumple con matiz", "Pendiente (hecho externo)", "N/A justificado", "No cumple"]
+ESTADOS_REGLA = ["Cumple", "Cumple con matiz", "En curso", "Pendiente (hecho externo)", "No iniciado", "N/A justificado", "No cumple"]
 ESTADOS_ACTUALES = ESTADOS_REGLA + ["Cumple con documentación", "Requiere desarrollo", "Requiere hecho externo"]
 ETIQUETA_DE_FASE = re.compile(r"\bF[0-" + r"8]\b")  # las etiquetas de fase ya no existen en el repositorio
 SUFIJOS = (".md", ".py", ".txt", ".yaml", ".yml", ".ini", ".ipynb", ".csv", ".json", ".jsonl")
@@ -174,7 +175,7 @@ def revisar_items(texto):
         if actual.strip() not in ESTADOS_ACTUALES:
             errores.append(f"{_id}: estado actual no permitido ({actual.strip()!r})")
         if objetivo.strip() not in ESTADOS_REGLA:
-            errores.append(f"{_id}: estado objetivo no permitido ({objetivo.strip()!r})")
+            errores.append(f"{_id}: estado vigente no permitido ({objetivo.strip()!r})")
         if cierre.strip() not in COMPONENTES:
             errores.append(f"{_id}: componente de cierre no válido ({cierre.strip()!r})")
         comps = [c.strip() for c in re.split(r",\s+(?=(?:" + "|".join(re.escape(c) for c in COMPONENTES) + "))", evidencia.strip())]
@@ -250,11 +251,80 @@ def test_negativas_de_los_30_items(tmp_path):
         "componente de cierre vacío": [(fila, fila.replace(f"| {campos[3]} |", "|  |", 1))],
         "componente de cierre inventado": [(fila, fila.replace(f"| {campos[3]} |", "| Fase uno |", 1))],
         "componente de evidencia inventado": [(fila, fila.replace(f"| {campos[4]} |", "| Fase uno |", 1))],
-        "estado objetivo desconocido": [(fila, fila.replace(f"| {campos[5]} |", "| Casi cumple |", 1))],
+        "estado vigente desconocido": [(fila, fila.replace(f"| {campos[5]} |", "| Casi cumple |", 1))],
         "estado actual desconocido": [(fila, fila.replace(f"| {campos[2]} |", "| Quizá |", 1))],
     }
     for nombre, cambios in alteraciones.items():
         assert revisar_items(_copia(tmp_path, t, cambios)), nombre
+
+
+def _script_de_conteo():
+    espec = importlib.util.spec_from_file_location("contar_estados_checklist", ROOT / "scripts" / "contar_estados_checklist.py")
+    modulo = importlib.util.module_from_spec(espec)
+    espec.loader.exec_module(modulo)
+    return modulo
+
+
+def test_el_conteo_de_estados_lo_calcula_el_script_y_coincide_con_el_documento():
+    contar = _script_de_conteo()
+    texto = ESTADO.read_text(encoding="utf-8")
+    assert contar.revisar(texto) == []
+    assert sum(contar.contar(texto).values()) == 30
+
+
+def test_negativas_del_conteo_de_estados(tmp_path):
+    contar = _script_de_conteo()
+    t = ESTADO.read_text(encoding="utf-8")
+    linea = contar.LINEA_CONTEO.search(t).group(0)
+    assert contar.revisar(_copia(tmp_path, t, [(linea, "Conteo por estado vigente: Cumple con matiz: 8, Cumple: 17, Pendiente (hecho externo): 5.")]))
+    assert contar.revisar(_copia(tmp_path, t, [(linea, "")]))
+    assert contar.revisar(_copia(tmp_path, t, [(linea, linea + "\n" + linea)]))
+    otra = re.search(r"^\| 7\.5 \| «.*$", t, re.M).group(0)
+    assert contar.revisar(_copia(tmp_path, t, [(otra, _con_estado_vigente(otra, "Cumple"))])), "un estado cambia y el conteo no"
+
+
+def _con_estado_vigente(fila, nuevo):
+    campos = fila.split(" | ")
+    campos[5] = nuevo
+    return " | ".join(campos)
+
+
+def _estado_de(texto, item):
+    return re.search(rf"^\| {re.escape(item)} \| «.*?» \| [^|]+ \| [^|]+ \| [^|]+ \| ([^|]+) \|", texto, re.M).group(1).strip()
+
+
+def estados_que_superan_su_evidencia(texto, readme, hay_guion_de_demostracion):
+    """Un estado nunca supera su evidencia (D96): 7.2 no es «Cumple» sin diagrama de arquitectura y sección de primera vez en el README,
+    y 7.5 no pasa de «No iniciado» sin un guion de demostración en `docs/`."""
+    errores = []
+    tiene_diagrama = re.search(r"!\[[^\]]*[Aa]rquitectura[^\]]*\]\(", readme) is not None
+    tiene_primera_vez = re.search(r"^#+ .*[Pp]rimera vez", readme, re.M) is not None
+    if _estado_de(texto, "7.2") == "Cumple" and not (tiene_diagrama and tiene_primera_vez):
+        errores.append("7.2 figura «Cumple» y el README no tiene el diagrama de arquitectura y la sección de primera vez")
+    if _estado_de(texto, "7.5") != "No iniciado" and not hay_guion_de_demostracion:
+        errores.append("7.5 pasa de «No iniciado» y no existe un guion de demostración en docs/")
+    return errores
+
+
+def _hay_guion_de_demostracion():
+    return any("demo" in p.name.lower() for p in (ROOT / "docs").rglob("*.md") if "evidencias" not in p.parts)
+
+
+def test_ningun_estado_supera_su_evidencia():
+    assert estados_que_superan_su_evidencia(ESTADO.read_text(encoding="utf-8"), (ROOT / "README.md").read_text(encoding="utf-8"), _hay_guion_de_demostracion()) == []
+
+
+def test_negativas_de_la_regla_un_estado_nunca_supera_su_evidencia(tmp_path):
+    t = ESTADO.read_text(encoding="utf-8")
+    r = (ROOT / "README.md").read_text(encoding="utf-8")
+    fila72 = re.search(r"^\| 7\.2 \| «.*$", t, re.M).group(0)
+    fila75 = re.search(r"^\| 7\.5 \| «.*$", t, re.M).group(0)
+    sube72 = _copia(tmp_path, t, [(fila72, _con_estado_vigente(fila72, "Cumple"))])
+    sube75 = _copia(tmp_path, t, [(fila75, _con_estado_vigente(fila75, "En curso"))])
+    assert estados_que_superan_su_evidencia(sube72, r, True), "7.2 «Cumple» sin diagrama ni sección de primera vez"
+    assert estados_que_superan_su_evidencia(sube75, r, False), "7.5 avanza sin guion de demostración"
+    assert estados_que_superan_su_evidencia(sube75, r, True) == [], "con guion de demostración, 7.5 puede avanzar"
+    assert estados_que_superan_su_evidencia(sube72, r + "\n## Primera vez\n![Arquitectura del sistema](docs/x.png)\n", False) == [], "con diagrama y sección, 7.2 puede cumplir"
 
 
 def test_ningun_documento_conserva_etiquetas_de_fase_como_fase_de_trabajo():

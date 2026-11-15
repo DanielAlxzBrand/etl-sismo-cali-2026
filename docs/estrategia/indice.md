@@ -11,7 +11,7 @@
 | 1.4 | Canvas, Data Innovation Board y propuesta de valor | [04_canvas_data_innovation_board.md](04_canvas_data_innovation_board.md) | Cumple con matiz: ejercicio de diseño con hipótesis sin validar |
 | 1.5 | Criterios de aceptación del MVP | [05_mvp_criterios_aceptacion.md](05_mvp_criterios_aceptacion.md) | Cumple con matiz: criterios de API, MySQL, Airflow y dashboard se verifican en Carga relacional, Pruebas y orquestación y Panel |
 
-**Regla de estado.** Cumple: evidencia concreta y reproducible para todos los subcriterios. Cumple con matiz: entregable central verificado; algún subcriterio depende de un hecho externo declarado o de una componente posterior. Pendiente (hecho externo). N/A justificado. No cumple (solo si no es técnicamente viable). Nunca «cumple» lo que requiera un evento que no ocurrió.
+**Regla de estado.** Cumple: evidencia concreta y reproducible para todos los subcriterios. Cumple con matiz: entregable central verificado; algún subcriterio depende de un hecho externo declarado o de una componente posterior. En curso: parte del entregable existe y falta trabajo propio. Pendiente (hecho externo). No iniciado: aún no hay material. N/A justificado. No cumple (solo si no es técnicamente viable). Nunca «cumple» lo que requiera un evento que no ocurrió.
 
 ## Supuestos adoptados
 - **S1.** Usuarios objetivo (planteamiento, no un cliente real): una entidad pública territorial de gestión del riesgo (la Secretaría de Gestión del Riesgo de Cali) y la comunidad académica. El proyecto es una investigación aplicada de estudiantes. No hubo contacto con ninguna de ellas.

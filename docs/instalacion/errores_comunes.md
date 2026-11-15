@@ -20,7 +20,7 @@ una solución de una línea, y porque «no funciona» sin el mensaje no sirve pa
 |---|---|---|
 | `UnicodeEncodeError` o letras raras (`Ã³`, `�`) al imprimir | la consola usa cp1252 u otra codificación y no UTF-8 (visto en una prueba que leía la salida de otro proceso) | Los scripts nuevos reemplazan lo que no cabe; para el resto, `$env:PYTHONUTF8 = "1"` en esa ventana antes de ejecutar |
 | Una prueba falla solo en otro equipo con `TypeError: argument of type 'NoneType'` (visto) | lectura de un subproceso con una codificación distinta de la que escribió | Ya corregido en `tests/` (D92); si reaparece en otra prueba, avisar con el nombre de la prueba |
-| Un comando falla con rutas que tienen espacios | falta entrecomillar la ruta | Entre comillas dobles: `cd "..\carpeta con espacios\proyecto"`; los scripts del proyecto sí las admiten (probado con «Prueba con espacios y tildes ñ») |
+| Un comando falla con rutas que tienen espacios | falta entrecomillar la ruta | Entre comillas dobles: `cd "<ruta con espacios>\proyecto"`; los scripts del proyecto sí las admiten (probado con «Prueba con espacios y tildes ñ») |
 
 ## 3. Puertos y servicios
 | Síntoma | Causa probable | Qué hacer |
