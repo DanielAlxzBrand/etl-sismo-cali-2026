@@ -1,0 +1,25 @@
+# Mutaciones sobre las pruebas de los estados del checklist y de los scripts de verificación en vivo
+- comando: `mutación de un archivo en un clon y `python -m pytest -q -p no:cacheprovider` sobre las pruebas de estados, scripts e independencia`
+- fecha: 2026-11-15T12:54:46-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 0.0 s
+- Python: 3.13.0
+- commit del repositorio: 53b505b
+
+Cada mutación se aplicó a un archivo de un clon del commit de trabajo (carpeta temporal fuera del repositorio), se corrieron `tests/test_estrategia.py`, `test_usuarios_estructura.py`, `test_scripts_de_evidencia.py` y `test_independencia_del_repositorio.py` y se restauró el archivo; el clon quedó sin cambios. Detectadas: 10 de 10.
+
+| Mutación | Pruebas que fallan | ¿Detectada? |
+|---|---|---|
+| 7.5 sube a «En curso» sin guion de demostración | `test_el_conteo_de_estados_lo_calcula_el_script_y_coincide_con_el_documento`; `test_ningun_estado_supera_su_evidencia`; `test_negativas_de_la_regla_un_estado_nunca_supera_su_evidencia` | sí |
+| 7.2 sube a «Cumple» sin diagrama ni sección de primera vez | `test_el_conteo_de_estados_lo_calcula_el_script_y_coincide_con_el_documento`; `test_ningun_estado_supera_su_evidencia`; `test_negativas_de_la_regla_un_estado_nunca_supera_su_evidencia` | sí |
+| un estado del vocabulario inexistente («Casi cumple») en 7.1 | `test_los_30_items_del_checklist_estan_completos_y_con_componentes_de_la_lista`; `test_el_conteo_de_estados_lo_calcula_el_script_y_coincide_con_el_documento` | sí |
+| la línea de conteo vuelve a los números escritos a mano (8 y 17) | `test_el_conteo_de_estados_lo_calcula_el_script_y_coincide_con_el_documento` | sí |
+| 6.1 figura «Cumple» sin sesiones reales | `test_el_conteo_de_estados_lo_calcula_el_script_y_coincide_con_el_documento`; `test_el_estado_no_marca_cumplidos_los_items_que_dependen_de_sesiones_reales` | sí |
+| una ruta local en un script de verificación en vivo (evidencia_phpmyadmin.py) | `test_los_scripts_de_verificacion_en_vivo_existen_y_cumplen_su_forma`; `test_ningun_archivo_del_zip_nombra_carpetas_del_equipo_ni_rutas_locales_ni_apis_que_salgan_de_la_raiz` | sí |
+| una función pública sin docstring en evidencia_independencia.py | `test_los_scripts_de_verificacion_en_vivo_existen_y_cumplen_su_forma` | sí |
+| el script del phpMyAdmin imprime una credencial | `test_los_scripts_de_verificacion_en_vivo_existen_y_cumplen_su_forma` | sí |
+| una escritura de texto sin codificación explícita en medir_memoria_suite.py | `test_los_scripts_de_verificacion_en_vivo_existen_y_cumplen_su_forma`; `test_negativas_de_la_forma_de_los_scripts` | sí |
+| el índice de instalación deja de decir cuál fue la última ejecución real (EV-087) | `test_los_documentos_dicen_cual_fue_la_ultima_ejecucion_real`; `test_todo_enlace_de_un_documento_del_zip_apunta_a_un_archivo_que_existe_dentro_de_la_raiz` | sí |
+
+## Qué NO demuestra
+Que no existan cambios que estas pruebas no vean: solo cubre las mutaciones listadas. Tampoco demuestra que los scripts de verificación en vivo funcionen: solo se validaron de forma estática.

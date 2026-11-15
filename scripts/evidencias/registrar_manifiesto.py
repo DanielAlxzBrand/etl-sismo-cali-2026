@@ -189,6 +189,8 @@ FILAS_AUD = {
                "clon o zip de `make_dist.empaquetar` en una carpeta temporal sin hermanas: entorno nuevo, suite, `main.py`, hashes, panel y scripts de servicios", "EV-090_independencia_clon_y_zip.txt"),
     "EV-091": ("7.1", "Tabla de mutaciones de la prueba guardiana de independencia del repositorio: todas detectadas", "archivo",
                "mutación de un archivo en un clon y `python -m pytest -q -p no:cacheprovider` sobre las pruebas de independencia", "EV-091_mutaciones_independencia.txt"),
+    "EV-092": ("7.1, 7.2, 7.5", "Tabla de mutaciones de las pruebas de los estados del checklist y de los scripts de verificación en vivo: todas detectadas", "archivo",
+               "mutación de un archivo en un clon y `python -m pytest -q -p no:cacheprovider` sobre las pruebas de estados, scripts e independencia", "EV-092_mutaciones_estados_y_scripts.txt"),
 }
 CARPETA_FIN = "docs/finanzas"
 FILAS_FIN = {
