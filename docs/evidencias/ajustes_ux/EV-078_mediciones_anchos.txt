@@ -1,38 +1,38 @@
 # Tiempos de dibujo de las ocho páginas en tres anchos (después de los ajustes)
 - comando: `python scripts/evidencias/evidencia_capturas_ajustes.py --momento despues`
-- fecha: 2026-11-14T22:02:44-05:00 (America/Bogota)
+- fecha: 2026-11-14T22:23:10-05:00 (America/Bogota)
 - código de salida: 0
-- duración: 434.5 s
+- duración: 334.8 s
 - Python: 3.13.0
-- commit del repositorio: b7ccdf6
+- commit del repositorio: 8b107d2
 
 Tiempo desde que se pide la página hasta que Streamlit la dibujó (recuadro de alcance visible, sin indicador de ejecución y, si hay gráfico, ya dibujado), medido dentro del navegador con `performance.now()`. 1 carga de calentamiento y 5 medidas por página y ancho. **Medición local de una máquina**: no es una garantía para otro equipo ni para otra red; el panel y la API corren en el mismo equipo y la API usa SQLite.
 
 | Página | Ancho (px) | Mediana (ms) | Mínimo (ms) | Máximo (ms) |
 |---|---|---|---|---|
-| Respuesta | 1400 | 676 | 529 | 761 |
-| Respuesta | 1024 | 777 | 588 | 801 |
-| Respuesta | 390 | 908 | 821 | 1036 |
-| Estratos (K1) | 1400 | 2642 | 1303 | 4482 |
-| Estratos (K1) | 1024 | 1766 | 1668 | 2035 |
-| Estratos (K1) | 390 | 1741 | 1228 | 2262 |
-| Comunas (K6) | 1400 | 1926 | 1609 | 2071 |
-| Comunas (K6) | 1024 | 1945 | 1458 | 1971 |
-| Comunas (K6) | 390 | 1866 | 1674 | 2065 |
-| Sensibilidades (S0 a S5) | 1400 | 1632 | 1560 | 1791 |
-| Sensibilidades (S0 a S5) | 1024 | 1930 | 1374 | 2167 |
-| Sensibilidades (S0 a S5) | 390 | 1905 | 1302 | 2231 |
-| Concentración (K3 y K4) | 1400 | 1714 | 1042 | 1984 |
-| Concentración (K3 y K4) | 1024 | 1130 | 955 | 1783 |
-| Concentración (K3 y K4) | 390 | 1789 | 995 | 2009 |
-| Calidad de la llave | 1400 | 1536 | 995 | 2279 |
-| Calidad de la llave | 1024 | 1761 | 848 | 1767 |
-| Calidad de la llave | 390 | 891 | 807 | 1811 |
-| Construcciones | 1400 | 2140 | 1947 | 2723 |
-| Construcciones | 1024 | 1868 | 1707 | 1934 |
-| Construcciones | 390 | 1851 | 1806 | 2175 |
-| Fuentes y sistema | 1400 | 923 | 844 | 1859 |
-| Fuentes y sistema | 1024 | 1173 | 832 | 1740 |
-| Fuentes y sistema | 390 | 931 | 918 | 1658 |
+| Respuesta | 1400 | 264 | 235 | 469 |
+| Respuesta | 1024 | 598 | 494 | 809 |
+| Respuesta | 390 | 681 | 564 | 737 |
+| Estratos (K1) | 1400 | 1977 | 1411 | 3011 |
+| Estratos (K1) | 1024 | 1734 | 1055 | 1821 |
+| Estratos (K1) | 390 | 1648 | 1119 | 1859 |
+| Comunas (K6) | 1400 | 1691 | 1210 | 2167 |
+| Comunas (K6) | 1024 | 1776 | 1040 | 1918 |
+| Comunas (K6) | 390 | 1708 | 1004 | 2014 |
+| Sensibilidades (S0 a S5) | 1400 | 1539 | 1077 | 2006 |
+| Sensibilidades (S0 a S5) | 1024 | 1759 | 1373 | 1808 |
+| Sensibilidades (S0 a S5) | 390 | 1575 | 1107 | 1814 |
+| Concentración (K3 y K4) | 1400 | 871 | 823 | 962 |
+| Concentración (K3 y K4) | 1024 | 990 | 639 | 1174 |
+| Concentración (K3 y K4) | 390 | 922 | 919 | 1026 |
+| Calidad de la llave | 1400 | 968 | 831 | 979 |
+| Calidad de la llave | 1024 | 899 | 838 | 977 |
+| Calidad de la llave | 390 | 912 | 820 | 962 |
+| Construcciones | 1400 | 1940 | 1816 | 2000 |
+| Construcciones | 1024 | 1877 | 1785 | 2081 |
+| Construcciones | 390 | 1945 | 1843 | 1953 |
+| Fuentes y sistema | 1400 | 822 | 787 | 1016 |
+| Fuentes y sistema | 1024 | 838 | 697 | 896 |
+| Fuentes y sistema | 390 | 737 | 623 | 769 |
 
 Qué NO demuestra: ni la experiencia de una persona real con otra conexión ni el comportamiento con más de una persona a la vez; el tiempo percibido también depende de lo que la persona espera ver primero.

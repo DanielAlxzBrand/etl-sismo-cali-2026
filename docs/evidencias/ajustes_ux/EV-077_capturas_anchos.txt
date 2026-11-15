@@ -1,10 +1,10 @@
 # Capturas, desbordamiento y texto recortado de las ocho páginas en tres anchos (después de los ajustes)
 - comando: `python scripts/evidencias/evidencia_capturas_ajustes.py --momento despues`
-- fecha: 2026-11-14T22:02:44-05:00 (America/Bogota)
+- fecha: 2026-11-14T22:23:10-05:00 (America/Bogota)
 - código de salida: 0
-- duración: 434.7 s
+- duración: 334.8 s
 - Python: 3.13.0
-- commit del repositorio: b7ccdf6
+- commit del repositorio: 8b107d2
 
 Navegador: msedge.exe Edg/157.0.4341.46 sin ventana, por el protocolo DevTools. Panel lanzado con scripts/panel/ejecutar_panel.py (SQLite; API y panel en 127.0.0.1).
 Cada imagen es una «captura automatizada del navegador» (no la toma una persona) de la página ya dibujada. A 390 px se emula un dispositivo móvil con densidad 1; a 1024 y 1400 px, una ventana de escritorio.
@@ -16,7 +16,7 @@ Cada imagen es una «captura automatizada del navegador» (no la toma una person
 | Comunas (K6) | 1400 | `EV-077_captura_comunas_1400.png` | 2306 | 1400 / 1400 | no | 0 | 0 |
 | Sensibilidades (S0 a S5) | 1400 | `EV-077_captura_sensibilidades_1400.png` | 2475 | 1400 / 1400 | no | 0 | 0 |
 | Concentración (K3 y K4) | 1400 | `EV-077_captura_concentracion_1400.png` | 1631 | 1400 / 1400 | no | 0 | 0 |
-| Calidad de la llave | 1400 | `EV-077_captura_calidad_1400.png` | 1756 | 1400 / 1400 | no | 0 | 0 |
+| Calidad de la llave | 1400 | `EV-077_captura_calidad_1400.png` | 1794 | 1400 / 1400 | no | 0 | 0 |
 | Construcciones | 1400 | `EV-077_captura_construcciones_1400.png` | 1798 | 1400 / 1400 | no | 0 | 0 |
 | Fuentes y sistema | 1400 | `EV-077_captura_fuentes_1400.png` | 2662 | 1400 / 1400 | no | 0 | 0 |
 | Respuesta | 1024 | `EV-077_captura_respuesta_1024.png` | 1525 | 1024 / 1024 | no | 0 | 0 |
@@ -24,7 +24,7 @@ Cada imagen es una «captura automatizada del navegador» (no la toma una person
 | Comunas (K6) | 1024 | `EV-077_captura_comunas_1024.png` | 2522 | 1024 / 1024 | no | 0 | 0 |
 | Sensibilidades (S0 a S5) | 1024 | `EV-077_captura_sensibilidades_1024.png` | 2922 | 1024 / 1024 | no | 0 | 0 |
 | Concentración (K3 y K4) | 1024 | `EV-077_captura_concentracion_1024.png` | 1800 | 1024 / 1024 | no | 0 | 0 |
-| Calidad de la llave | 1024 | `EV-077_captura_calidad_1024.png` | 2371 | 1024 / 1024 | no | 0 | 0 |
+| Calidad de la llave | 1024 | `EV-077_captura_calidad_1024.png` | 2410 | 1024 / 1024 | no | 0 | 0 |
 | Construcciones | 1024 | `EV-077_captura_construcciones_1024.png` | 1939 | 1024 / 1024 | no | 0 | 0 |
 | Fuentes y sistema | 1024 | `EV-077_captura_fuentes_1024.png` | 3027 | 1024 / 1024 | no | 0 | 1 |
 | Respuesta | 390 | `EV-077_captura_respuesta_390.png` | 2231 | 390 / 390 | no | 0 | 0 |
@@ -32,7 +32,7 @@ Cada imagen es una «captura automatizada del navegador» (no la toma una person
 | Comunas (K6) | 390 | `EV-077_captura_comunas_390.png` | 2900 | 390 / 390 | no | 0 | 0 |
 | Sensibilidades (S0 a S5) | 390 | `EV-077_captura_sensibilidades_390.png` | 3641 | 390 / 390 | no | 0 | 0 |
 | Concentración (K3 y K4) | 390 | `EV-077_captura_concentracion_390.png` | 2570 | 390 / 390 | no | 0 | 0 |
-| Calidad de la llave | 390 | `EV-077_captura_calidad_390.png` | 3073 | 390 / 390 | no | 0 | 1 |
+| Calidad de la llave | 390 | `EV-077_captura_calidad_390.png` | 3134 | 390 / 390 | no | 0 | 1 |
 | Construcciones | 390 | `EV-077_captura_construcciones_390.png` | 2285 | 390 / 390 | no | 0 | 0 |
 | Fuentes y sistema | 390 | `EV-077_captura_fuentes_390.png` | 3889 | 390 / 390 | no | 0 | 1 |
 
