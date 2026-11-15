@@ -133,6 +133,8 @@ FILAS_USU.update({
     "EV-068": ("3.3", "Contraste calculado del texto secundario y de los rótulos del panel (valores calculados, sin declarar un nivel de conformidad)", "archivo", _CMD_ANCHOS, "EV-068_contraste_texto.txt"),
     "EV-068b": ("3.3", "Detalle por página y ancho de los contrastes de EV-068", "archivo", _CMD_ANCHOS, "EV-068_contraste_texto.csv"),
     "EV-069": ("3.3", "Capturas a 390 px con la barra lateral cerrada, desbordamiento y texto recortado", "archivo", _CMD_MOVIL, "EV-069_capturas_390_barra_cerrada.txt"),
+    "EV-071": ("1.5, 3.3, 6.4", "Tabla de mutaciones de las pruebas guardianas de usuarios y finanzas (sesiones reales, precios, parámetros sin fuente, estado del checklist, fórmula SUS, hallazgos y capturas)", "archivo",
+               "mutación de un archivo en un clon y `python -m pytest -q -p no:cacheprovider tests/test_usuarios.py tests/test_usuarios_estructura.py tests/test_finanzas.py`", "EV-071_mutaciones_usuarios.txt"),
 })
 for _i, (_ancho, (_pid, _titulo)) in enumerate((a, p) for a in (1400, 1024, 390) for p in _PAGINAS):
     FILAS_USU[f"EV-066{'bcdefghijklmnopqrstuvwxy'[_i]}"] = ("3.3", f"Captura automatizada del navegador de la página {_titulo} a {_ancho} px", "imagen", _CMD_ANCHOS, f"EV-066_captura_{_pid}_{_ancho}.png")

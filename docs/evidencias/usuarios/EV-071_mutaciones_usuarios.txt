@@ -1,0 +1,26 @@
+# Mutaciones sobre las pruebas guardianas de usuarios y finanzas
+- comando: `mutación de un archivo en un clon y `python -m pytest -q -p no:cacheprovider tests/test_usuarios.py tests/test_usuarios_estructura.py tests/test_finanzas.py` (cwd: <CLON>)`
+- fecha: 2026-11-14T19:10:28-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 0.0 s
+- Python: 3.13.0
+- commit del repositorio: ea75cdc
+
+Cada mutación se aplicó a un archivo de un clon del commit de trabajo (carpeta temporal fuera del repositorio), se corrieron `tests/test_usuarios.py`, `tests/test_usuarios_estructura.py` y `tests/test_finanzas.py` y se restauró el archivo; el clon quedó sin cambios. Detectadas: 11 de 11.
+
+| Mutación | Pruebas que fallan | ¿Detectada? |
+|---|---|---|
+| una fila `simulado` en sesiones_reales (registro.csv nuevo) | `test_sesiones_reales_solo_tiene_plantillas_o_filas_reales` | sí |
+| una fila `sintetico` mezclada con una `real` en sesiones_reales | `test_sesiones_reales_solo_tiene_plantillas_o_filas_reales` | sí |
+| un precio escrito en docs/finanzas («cuesta $ 50 por hora») | `test_ninguna_cifra_monetaria_en_docs_finanzas_scripts_finanzas_ni_parametros` | sí |
+| un parámetro con valor y sin fuente (precio_hora_computo: 5) | `test_todo_parametro_con_valor_trae_fuente_y_fecha`; `test_negativa_un_parametro_con_valor_y_sin_fuente_se_detecta`; `test_con_los_parametros_reales_vacios_faltan_los_cinco_que_necesita_el_costo_por_ejecucion` y 2 más | sí |
+| 6.1 marcado «Cumple» en estado_checklist.md | `test_el_estado_no_marca_cumplidos_los_items_que_dependen_de_sesiones_reales` | sí |
+| fórmula SUS alterada (2,5 → 2,0) | `test_sus_con_todo_en_3_da_50`; `test_sus_del_mejor_caso_da_100_y_del_peor_da_0`; `test_sus_de_un_caso_mixto_calculado_a_mano` | sí |
+| fórmula SUS alterada (los pares restan 4 y no 5) | `test_sus_con_todo_en_3_da_50`; `test_sus_del_mejor_caso_da_100_y_del_peor_da_0`; `test_sus_de_un_caso_mixto_calculado_a_mano` | sí |
+| un hallazgo sin severidad (F-01) | `test_la_evaluacion_heuristica_tiene_ocho_paginas_diez_heuristicas_severidades_y_capturas_existentes`; `test_el_registro_de_friccion_tiene_los_mismos_hallazgos_que_la_evaluacion` | sí |
+| una captura citada que no existe | `test_la_evaluacion_heuristica_tiene_ocho_paginas_diez_heuristicas_severidades_y_capturas_existentes` | sí |
+| el costo por ejecución con el tiempo en minutos y no en horas | `test_el_costo_por_ejecucion_coincide_con_la_formula_calculada_a_mano`; `test_el_costo_escala_con_el_tiempo_y_con_el_almacenamiento`; `test_con_parametros_completos_calcula` | sí |
+| el registro de fricciones pierde una fila (F-14) | `test_el_registro_de_friccion_tiene_los_mismos_hallazgos_que_la_evaluacion` | sí |
+
+## Qué NO demuestra
+Que no existan cambios que estas pruebas no vean: solo cubre las mutaciones listadas.
