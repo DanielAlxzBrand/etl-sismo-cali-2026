@@ -1,0 +1,18 @@
+# Suite completa en un clon con el entorno nuevo de Python 3.13
+- comando: `python -m pytest -q -p no:cacheprovider (cwd: <CLON>, intérprete del entorno nuevo de EV-062)`
+- fecha: 2026-11-14T19:31:50-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 292.7 s
+- Python: 3.13.0
+- commit del repositorio: d47d073
+
+Clon del commit d47d073 del repositorio en una carpeta temporal fuera de él (`<CLON>`), con el entorno virtual nuevo de Python 3.13 (`<VENV>`) creado con `pip install -r requirements.txt` en EV-062; este archivo repite solo la suite y las comprobaciones del commit actual.
+
+## Suite completa en el clon (intérprete del entorno nuevo, commit d47d073)
+- pytest: código de salida 0; 822 passed, 1 warning in 263.96s (0:04:23)
+- pruebas recolectadas: 822
+- sha256 de los 19 archivos de `data/` del clon iguales a los del árbol de trabajo: sí
+- escáner de secretos sobre el clon (árbol e historial): código 0; hallazgos: 0
+
+## Resultado
+Todo correcto: toda la suite pasa en el entorno nuevo, `data/` del clon es idéntico al del árbol de trabajo y el escáner no halla secretos.
