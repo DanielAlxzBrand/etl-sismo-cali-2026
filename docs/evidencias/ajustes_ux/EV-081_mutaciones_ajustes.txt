@@ -1,0 +1,27 @@
+# Mutaciones sobre las pruebas guardianas de los ajustes del panel
+- comando: `mutación de un archivo en un clon y `python -m pytest -q -p no:cacheprovider tests/test_panel_ajustes.py` (cwd: <CLON>)`
+- fecha: 2026-11-14T22:29:55-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 0.0 s
+- Python: 3.13.0
+- commit del repositorio: 5d7eb1e
+
+Cada mutación se aplicó a un archivo de un clon del commit de trabajo (carpeta temporal fuera del repositorio), se corrieron `tests/test_panel_ajustes.py` y se restauró el archivo; el clon quedó sin cambios. Detectadas: 12 de 12.
+
+| Mutación | Pruebas que fallan | ¿Detectada? |
+|---|---|---|
+| quitar el glosario de las páginas (se borra la llamada en `marco`) | `test_cada_pagina_muestra_su_glosario_completo_y_cerrado[respuesta]`; `test_cada_pagina_muestra_su_glosario_completo_y_cerrado[estratos]`; `test_cada_pagina_muestra_su_glosario_completo_y_cerrado[comunas]` y 5 más | sí |
+| reintroducir la barra lateral abierta (`initial_sidebar_state="expanded"`) | `test_la_barra_lateral_no_se_abre_sola_en_pantallas_estrechas` | sí |
+| volver a cuatro tarjetas por fila en Respuesta (se vuelve a recortar la cifra) | `test_las_tarjetas_de_cifras_largas_van_de_dos_en_dos[respuesta-esperadas0]`; `test_ninguna_pagina_pide_mas_de_tres_columnas_de_tarjetas` | sí |
+| volver a la etiqueta larga de la tarjeta de K3 | `test_ninguna_etiqueta_de_tarjeta_pasa_del_largo_que_cabe[concentracion]` | sí |
+| bajar el color del texto por debajo de 4,5 a 1 (el anterior, #1F2933) | `test_los_textos_de_la_paleta_alcanzan_cuatro_y_medio_a_uno_segun_el_script_de_contraste`; `test_los_pies_que_streamlit_dibuja_al_sesenta_por_ciento_del_texto_alcanzan_cuatro_y_medio_a_uno` | sí |
+| bajar el color del texto de los gráficos por debajo de 4,5 a 1 (#9AA5B1) | `test_los_textos_de_la_paleta_alcanzan_cuatro_y_medio_a_uno_segun_el_script_de_contraste`; `test_el_texto_de_los_graficos_usa_un_color_de_al_menos_cuatro_y_medio_a_uno` | sí |
+| volver al formato de coordenadas con tres decimales | `test_la_latitud_y_la_longitud_llevan_cuatro_decimales_con_coma_y_se_rotulan_grados_decimales` | sí |
+| volver a las barras verticales (se intercambian los ejes de `grafico_tasas`) | `test_las_barras_de_tasa_son_horizontales_y_cada_etiqueta_tiene_su_fila`; `test_las_paginas_de_barras_entregan_el_grafico_horizontal[estratos]`; `test_las_paginas_de_barras_entregan_el_grafico_horizontal[comunas]` | sí |
+| quitar el aviso de tabla ancha (el umbral sube a 99 columnas) | `test_el_umbral_de_tabla_ancha_no_sube_de_cuatro_columnas`; `test_cada_tabla_ancha_lleva_su_aviso_de_desplazamiento[estratos]`; `test_cada_tabla_ancha_lleva_su_aviso_de_desplazamiento[comunas]` y 4 más | sí |
+| borrar de una página un término técnico que usa («intervalo de Wilson» en Estratos) | `test_todo_termino_tecnico_que_usa_la_pagina_esta_en_su_glosario[estratos]` | sí |
+| borrar una entrada del diccionario del glosario («p de permutación») | `test_el_glosario_tiene_entrada_para_cada_termino_declarado_y_cada_pagina_del_panel`; `test_cada_pagina_muestra_su_glosario_completo_y_cerrado[concentracion]` | sí |
+| quitar el pie que explica la línea y las rayas de los intervalos | `test_el_pie_de_los_graficos_de_barras_explica_la_linea_y_las_rayas` | sí |
+
+## Qué NO demuestra
+Que no existan cambios que estas pruebas no vean: solo cubre las mutaciones listadas.
