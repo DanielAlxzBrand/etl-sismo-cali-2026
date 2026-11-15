@@ -88,7 +88,7 @@ def test_cada_pagina_muestra_la_fecha_de_corte_el_estado_de_la_api_y_la_fuente(r
 
 @pytest.mark.parametrize("pagina,fragmentos", [
     ("respuesta", ["Tasa 3-5", "Tasa 1-2 (muestra baja)", "Diferencia (3-5 menos 1-2)", "Razón de tasas (3-5 / 1-2)", "Cobertura de la llave", "Estrato válido", "Nombre validado"]),
-    ("concentracion", ["Correlación de Spearman", "Barrios incluidos", "p de permutación", "Participación de los barrios con más severos"]),
+    ("concentracion", ["Correlación", "Barrios incluidos", "p de permutación", "Severos en barrios líderes", "Peso de esos barrios"]),
     ("calidad", ["Cobertura de la llave", "Estrato válido", "Nombre validado"]),
     ("fuentes", ["Fecha de corte", "Construcciones", "Comunas", "Códigos de barrio"]),
 ])
@@ -141,7 +141,8 @@ def test_comunas_calcula_la_comuna_que_concentra_los_estratos_1_2(renderizadas):
 def test_fuentes_lista_los_ocho_puntos_de_que_no_se_puede_concluir(renderizadas):
     texto = pa.textos(renderizadas["fuentes"])
     assert "Qué no se puede concluir" in texto
-    puntos = [m.value for m in renderizadas["fuentes"].markdown if m.value.startswith("- ")]
+    glosario = {m.value for e in renderizadas["fuentes"].expander for m in e.markdown}       # los puntos del glosario también empiezan con «- »
+    puntos = [m.value for m in renderizadas["fuentes"].markdown if m.value.startswith("- ") and m.value not in glosario]
     assert len(puntos) == 12   # 8 puntos de conclusión + 4 limitaciones del panel
 
 

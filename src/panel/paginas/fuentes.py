@@ -26,21 +26,22 @@ LIMITACIONES = (
 
 
 def render(api):
+    """Dibuja la página «Fuentes y sistema»: fecha de corte y población, fuentes y licencias, estado del sistema y los límites del análisis.
+
+    Las cuatro tarjetas de la población van de dos en dos (F-01, D87): en una fila, a 1024 px, «Fecha de corte» mostraba «202…». Los límites siguen `docs/gold/KPIs.md` y son los mismos de `LIMITES`.
+    """
     def cuerpo():
         meta, fuentes, salud = api("/metadata"), api("/fuentes"), api("/health")
         if componentes.fallo(meta):
             return
         m = meta.datos
         st.subheader("Fecha de corte y población")
-        c1, c2, c3, c4 = st.columns(4)
-        with c1:
-            componentes.tarjeta("Fecha de corte", m["fecha_corte"] or formato.SIN_DATO, "Última edición de la capa de edificaciones.")
-        with c2:
-            componentes.tarjeta("Construcciones", formato.numero(m["poblacion"]["construcciones"]), f"{formato.numero(m['poblacion']['con_datos_satelitales'])} con datos satelitales")
-        with c3:
-            componentes.tarjeta("Comunas", formato.numero(m["poblacion"]["comunas"]))
-        with c4:
-            componentes.tarjeta("Códigos de barrio", formato.numero(m["poblacion"]["codigos_barrio"]))
+        componentes.tarjetas([
+            ("Fecha de corte", m["fecha_corte"] or formato.SIN_DATO, "Última edición de la capa de edificaciones."),
+            ("Construcciones", formato.numero(m["poblacion"]["construcciones"]), f"{formato.numero(m['poblacion']['con_datos_satelitales'])} con datos satelitales"),
+            ("Comunas", formato.numero(m["poblacion"]["comunas"]), None),
+            ("Códigos de barrio", formato.numero(m["poblacion"]["codigos_barrio"]), None),
+        ])
         st.caption(f"Imágenes: antes del evento {m['fecha_imagen_pre']}; después del evento {m['fecha_imagen_post']}. Almacenamiento activo: {m['almacenamiento']}.")
         st.subheader("Fuentes y licencias")
         if not componentes.fallo(fuentes):

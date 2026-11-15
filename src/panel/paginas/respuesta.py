@@ -14,6 +14,10 @@ def _detalle(fila):
 
 
 def render(api):
+    """Dibuja la página «Respuesta»: las cuatro cifras de K2, la frase generada y el resumen de K5.
+
+    Las cuatro tarjetas de K2 van de dos en dos (F-01, D87) porque en una sola fila, a 1024 px, Streamlit recortaba «6,33 %» y «+0,49 pp». No decide ninguna conclusión: la frase la arma `redaccion`.
+    """
     def cuerpo():
         r = api("/kpis")
         if componentes.fallo(r):
@@ -25,17 +29,13 @@ def render(api):
             avisar_falta("el indicador K2 completo")
             return
         st.subheader("Estratos 3-5 frente a 1-2")
-        c1, c2, c3, c4 = st.columns(4)
-        with c1:
-            componentes.tarjeta("Tasa 3-5", formato.porcentaje(t35["valor"]), _detalle(t35))
-        with c2:
-            etiqueta = "Tasa 1-2" + (f" ({componentes.ETIQUETA_BAJA})" if t12["muestra_baja"] else "")
-            componentes.tarjeta(etiqueta, formato.porcentaje(t12["valor"]), _detalle(t12))
-        with c3:
-            componentes.tarjeta("Diferencia (3-5 menos 1-2)", formato.puntos_porcentuales(dif["valor"]),
-                                "Intervalo de Newcombe al 95 %: " + formato.intervalo(dif["ic95_inf"], dif["ic95_sup"], como="pp"))
-        with c4:
-            componentes.tarjeta("Razón de tasas (3-5 / 1-2)", formato.razon(razon["valor"]), "La razón no trae intervalo en Gold.")
+        etiqueta = "Tasa 1-2" + (f" ({componentes.ETIQUETA_BAJA})" if t12["muestra_baja"] else "")
+        componentes.tarjetas([
+            ("Tasa 3-5", formato.porcentaje(t35["valor"]), _detalle(t35)),
+            (etiqueta, formato.porcentaje(t12["valor"]), _detalle(t12)),
+            ("Diferencia (3-5 menos 1-2)", formato.puntos_porcentuales(dif["valor"]), "Intervalo de Newcombe al 95 %: " + formato.intervalo(dif["ic95_inf"], dif["ic95_sup"], como="pp")),
+            ("Razón de tasas (3-5 / 1-2)", formato.razon(razon["valor"]), "La razón no trae intervalo en Gold."),
+        ])
         st.caption(f"Intervalo de la diferencia (Newcombe): {formato.intervalo(dif['ic95_inf'], dif['ic95_sup'], como='pp')}")
         solapan = redaccion.se_solapan(t35["ic95_inf"], t35["ic95_sup"], t12["ic95_inf"], t12["ic95_sup"])
         st.markdown("**Lectura generada.** " + redaccion.conclusion_diferencia(dif["valor"], dif["ic95_inf"], dif["ic95_sup"], solapan, bool(t12["muestra_baja"])))

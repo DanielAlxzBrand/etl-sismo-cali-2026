@@ -42,6 +42,11 @@ def p_permutacion(nota):
 
 
 def render(api):
+    """Dibuja la página «Concentración (K3 y K4)»: los barrios con más severos y la correlación de Spearman entre estrato y tasa por barrio.
+
+    Las etiquetas de las tarjetas son cortas (F-01, D87) porque Streamlit recorta con puntos suspensivos las que no caben en una línea; la descripción completa va en la ayuda de cada tarjeta.
+    Si la nota de K3 no tiene el formato esperado, muestra la nota tal cual en lugar de una tabla a medias (DEF-015).
+    """
     def cuerpo():
         r = api("/kpis")
         if componentes.fallo(r):
@@ -53,13 +58,13 @@ def render(api):
         else:
             c1, c2 = st.columns(2)
             with c1:
-                componentes.tarjeta("Participación de los barrios con más severos", formato.porcentaje(k3["valor"], 1),
-                                    f"{k3['nombre']}: {formato.numero(k3['numerador'])} de {formato.numero(k3['denominador'])} construcciones con cambio satelital severo")
+                componentes.tarjeta("Severos en barrios líderes", formato.porcentaje(k3["valor"], 1),
+                                    f"Participación de los barrios con más severos en el total de severos. {k3['nombre']}: {formato.numero(k3['numerador'])} de {formato.numero(k3['denominador'])} construcciones con cambio satelital severo")
             share = construcciones_de_la_nota(k3["nota"])
             with c2:
                 if share:
-                    componentes.tarjeta("Esos barrios en las construcciones con datos", formato.porcentaje(share[0] / share[1], 1),
-                                        f"{formato.numero(share[0])} de {formato.numero(share[1])} construcciones con datos")
+                    componentes.tarjeta("Peso de esos barrios", formato.porcentaje(share[0] / share[1], 1),
+                                        f"Esos barrios en el total de construcciones con datos: {formato.numero(share[0])} de {formato.numero(share[1])}")
             barrios = barrios_de_la_nota(k3["nota"])
             if barrios:
                 total = k3["denominador"]
@@ -74,7 +79,7 @@ def render(api):
             c1, c2, c3 = st.columns(3)
             p = p_permutacion(k4["nota"])
             with c1:
-                componentes.tarjeta("Correlación de Spearman", formato.numero(k4["valor"], 3), "Entre el estrato moda del barrio y su tasa de severos.")
+                componentes.tarjeta("Correlación", formato.numero(k4["valor"], 3), "Correlación de Spearman entre el estrato moda del barrio y su tasa de severos.")
             with c2:
                 componentes.tarjeta("Barrios incluidos", formato.numero(k4["denominador"]), "Solo barrios con suficientes construcciones con datos.")
             with c3:

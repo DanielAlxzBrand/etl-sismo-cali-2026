@@ -164,8 +164,8 @@ def test_concentracion_coincide_con_k3_y_k4(paginas, datos):
     at = paginas[0]["concentracion"]
     m = _metricas(at)
     k3, k4 = _k(datos, "K3"), _k(datos, "K4")
-    assert m["Participación de los barrios con más severos"].value == formato.porcentaje(_f(k3["valor"]), 1)
-    assert m["Correlación de Spearman"].value == formato.numero(_f(k4["valor"]), 3)
+    assert m["Severos en barrios líderes"].value == formato.porcentaje(_f(k3["valor"]), 1)
+    assert m["Correlación"].value == formato.numero(_f(k4["valor"]), 3)
     assert m["Barrios incluidos"].value == formato.numero(_f(k4["denominador"]))
     tabla = at.dataframe[0].value
     barrios = [p.split(":") for p in k3["nota"].split("severos ")[1].split("; esos")[0].split("; ")]

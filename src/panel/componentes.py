@@ -8,15 +8,22 @@ import pandas as pd
 import streamlit as st
 
 from src.logger import get_logger
-from src.panel import formato, registro, tema
+from src.panel import formato, glosario, registro, tema
 
 log = get_logger(__name__)
 
 ALTO_GRAFICO = 340
 EXPRESION_COMA = "replace(format(datum.value, '.1f'), '.', ',')"
+EXPRESION_GRADOS = "replace(format(datum.value, '.4f'), '.', ',')"   # F-13: cuatro decimales para que «3,440» no se lea como tres mil cuatrocientos cuarenta
+LARGO_MAXIMO_ETIQUETA = 28    # caracteres que caben en una tarjeta de media pantalla a 1024 px sin que Streamlit los recorte con puntos suspensivos (F-01)
+POR_FILA = 2                  # tarjetas por fila: con más, a 1024 px la caja de la cifra se queda corta y la recorta (F-01)
+UMBRAL_COLUMNAS_ANCHAS = 5    # desde cuántas columnas una tabla puede no caber en una pantalla estrecha (F-03)
+AVISO_TABLA_ANCHA = "Tabla ancha: en una pantalla estrecha, deslícela hacia los lados para ver todas las columnas."
+ALTO_POR_BARRA = 52           # píxeles por barra en los gráficos horizontales, para que quepan las etiquetas de dos líneas (F-04)
 ETIQUETA_BAJA = "muestra baja"
 ETIQUETA_SUFICIENTE = "muestra suficiente"
-PIE_INTERVALO = "Las barras de error son el intervalo de confianza de Wilson al 95 %: indican la incertidumbre de la tasa en esta muestra."
+PIE_INTERVALO = ("Cada barra es la tasa. La línea que la cruza va del límite inferior al superior del intervalo de confianza de Wilson al 95 % y las rayas de sus extremos marcan esos dos límites: "
+                 "indican la incertidumbre de la tasa en esta muestra.")
 
 
 def fallo(resultado):
@@ -75,6 +82,7 @@ def marco(api, id_pagina, cuerpo):
             fallo(salud)
         else:
             cuerpo()
+            glosario.desplegable(id_pagina)
         pie(meta.datos if meta.ok else None)
     except (KeyError, TypeError, ValueError, AttributeError, IndexError):
         log.exception("la página %s recibió datos con un formato inesperado", id_pagina)
@@ -82,11 +90,34 @@ def marco(api, id_pagina, cuerpo):
 
 
 def tarjeta(etiqueta, valor, ayuda=None, clave=None):
+    """Una tarjeta con una cifra y su etiqueta; la explicación larga va en `ayuda` (el signo de interrogación), no en la etiqueta (F-01).
+
+    Streamlit recorta con puntos suspensivos una etiqueta que no cabe en una sola línea y no la parte en dos; por eso las etiquetas son cortas (`LARGO_MAXIMO_ETIQUETA`).
+    No abrevia ni recorta la cifra.
+    """
     st.metric(etiqueta, valor, help=ayuda, border=True)
 
 
+def tarjetas(items, por_fila=POR_FILA):
+    """Dibuja tarjetas `(etiqueta, valor, ayuda)` en filas de `por_fila` columnas (F-01, D87).
+
+    Lo hicimos con dos por fila porque con cuatro, a 1024 px, la caja de la cifra medía unos 97 píxeles y Streamlit recortaba «6,33 %» y «2026-09-02». No hace que las columnas se adapten
+    al ancho de la ventana: a menos de unos 640 px Streamlit las apila por su cuenta.
+    """
+    for i in range(0, len(items), por_fila):
+        for columna, (etiqueta, valor, ayuda) in zip(st.columns(por_fila), items[i:i + por_fila]):
+            with columna:
+                tarjeta(etiqueta, valor, ayuda)
+
+
 def tabla(df, clave=None, texto_largo=False):
-    """Tabla con texto ya formateado; sin índice. Con `texto_largo` se dibuja completa (el texto se parte en líneas) en lugar de una cuadrícula con desplazamiento."""
+    """Tabla con texto ya formateado; sin índice. Con `texto_largo` se dibuja completa (el texto se parte en líneas) en lugar de una cuadrícula con desplazamiento.
+
+    Si tiene `UMBRAL_COLUMNAS_ANCHAS` columnas o más, avisa antes de la tabla que puede deslizarse hacia los lados (F-03, D87): a 390 px la tabla se corta en el borde y no se notaba que había más columnas.
+    El aviso no cambia la tabla ni la adapta al ancho; solo dice qué hacer.
+    """
+    if df.shape[1] >= UMBRAL_COLUMNAS_ANCHAS:
+        st.caption(AVISO_TABLA_ANCHA)
     if texto_largo:
         st.table(df.style.hide(axis="index"))
     else:
@@ -94,32 +125,48 @@ def tabla(df, clave=None, texto_largo=False):
 
 
 def _eje_pct(titulo):
+    """Eje cuantitativo con etiquetas de porcentaje con coma decimal."""
     return alt.Axis(title=titulo, labelExpr=EXPRESION_COMA, labelFontSize=12, titleFontSize=12)
 
 
-def grafico_tasas(df, x, titulo, descripcion, alto=ALTO_GRAFICO, titulo_x=None):
-    """Barras de tasa con barras de error (intervalo de Wilson). `df` debe traer: x, tasa_pct, inf_pct, sup_pct, muestra, tasa_txt, ic_txt.
+def _con_texto_oscuro(grafico):
+    """Pinta los rótulos y títulos de ejes y leyendas con el color `texto_secundario` de la configuración (F-12, D89).
 
-    La muestra baja se distingue por texto (en la leyenda y en la etiqueta del eje), no solo por color.
+    El gris por defecto de Streamlit daba 3,72 a 1 sobre el fondo; con este color el texto de los gráficos queda por encima de 4,5 a 1 (el cálculo está en `scripts/panel/contraste.py`).
+    Se llama al final, porque `configure_*` solo se puede aplicar al gráfico completo.
+    """
+    c = tema.colores()["texto_secundario"]
+    return grafico.configure_axis(labelColor=c, titleColor=c).configure_legend(labelColor=c, titleColor=c)
+
+
+def grafico_tasas(df, x, titulo, descripcion, alto=ALTO_GRAFICO, titulo_x=None):
+    """Barras HORIZONTALES de tasa con su intervalo de Wilson (F-04, F-05, D87). `df` debe traer: x, tasa_pct, inf_pct, sup_pct, muestra, tasa_txt, ic_txt.
+
+    Eran verticales y a 390 px Vega solo dibujaba la primera y la última etiqueta; con las barras acostadas, cada etiqueta tiene su propia fila y se ven todas. La muestra baja se distingue
+    por texto (en la leyenda y en la etiqueta de la fila), no solo por color (D74). El alto crece con el número de barras. No ordena los grupos: respeta el orden de `df`.
     """
     col = tema.colores()
     orden = list(df[x])
-    base = alt.Chart(df).encode(x=alt.X(f"{x}:N", sort=orden, title=titulo_x or "", axis=alt.Axis(labelAngle=0, labelFontSize=12, titleFontSize=12, labelLimit=0, labelExpr="split(datum.label, ' · ')")))
+    base = alt.Chart(df).encode(y=alt.Y(f"{x}:N", sort=orden, title=titulo_x or "", axis=alt.Axis(labelFontSize=12, titleFontSize=12, labelLimit=0, labelExpr="split(datum.label, ' · ')")))
     barras = base.mark_bar().encode(
-        y=alt.Y("tasa_pct:Q", axis=_eje_pct("Tasa de cambio satelital severo (%)")),
+        x=alt.X("tasa_pct:Q", axis=_eje_pct("Tasa de cambio satelital severo (%)")),
         color=alt.Color("muestra:N", scale=alt.Scale(domain=[ETIQUETA_SUFICIENTE, ETIQUETA_BAJA], range=[col["principal"], col["secundario"]]),
-                        legend=alt.Legend(title="Tamaño de la muestra", labelFontSize=12, titleFontSize=12)),
+                        legend=alt.Legend(title="Tamaño de la muestra", orient="bottom", labelFontSize=12, titleFontSize=12)),
         tooltip=[alt.Tooltip(f"{x}:N", title="Grupo"), alt.Tooltip("tasa_txt:N", title="Tasa"), alt.Tooltip("ic_txt:N", title="Intervalo de Wilson"), alt.Tooltip("muestra:N", title="Muestra")],
     )
-    error = base.mark_errorbar(color=col["texto"], thickness=2, ticks=True).encode(y=alt.Y("inf_pct:Q", title=""), y2="sup_pct:Q")
-    chart = alt.layer(barras, error).properties(title=alt.TitleParams(titulo, fontSize=14, anchor="start", color=col["texto"]), height=alto, usermeta={"descripcion": descripcion})
-    chart = chart.properties(description=descripcion)
-    st.altair_chart(chart, width="stretch")
+    error = base.mark_errorbar(color=col["texto"], thickness=2, ticks=True).encode(x=alt.X("inf_pct:Q", title=""), x2="sup_pct:Q")
+    chart = alt.layer(barras, error).properties(title=alt.TitleParams(titulo, fontSize=14, anchor="start", color=col["texto"]), height=max(alto, ALTO_POR_BARRA * len(orden)),
+                                                usermeta={"descripcion": descripcion}, description=descripcion)
+    st.altair_chart(_con_texto_oscuro(chart), width="stretch")
     st.caption(PIE_INTERVALO)
 
 
 def grafico_diferencias(df, x, titulo, descripcion, alto=ALTO_GRAFICO):
-    """Puntos con intervalo para la diferencia en puntos porcentuales por escenario. `df`: x, dif_pp, inf_pp, sup_pp, dif_txt, ic_txt."""
+    """Puntos con intervalo de Newcombe para la diferencia en puntos porcentuales por escenario. `df`: x, dif_pp, inf_pp, sup_pp, dif_txt, ic_txt.
+
+    Cada punto es la diferencia observada, la línea vertical que lo cruza va de un límite del intervalo al otro y la línea discontinua marca la ausencia de diferencia (F-05, D87).
+    No ordena los escenarios ni dice cuál es mejor.
+    """
     col = tema.colores()
     orden = list(df[x])
     base = alt.Chart(df).encode(x=alt.X(f"{x}:N", sort=orden, title="Escenario", axis=alt.Axis(labelAngle=0, labelFontSize=12, titleFontSize=12)))
@@ -129,21 +176,26 @@ def grafico_diferencias(df, x, titulo, descripcion, alto=ALTO_GRAFICO):
     error = base.mark_errorbar(color=col["texto"], thickness=2, ticks=True).encode(y=alt.Y("inf_pp:Q", title=""), y2="sup_pp:Q")
     cero = alt.Chart(pd.DataFrame({"y": [0]})).mark_rule(color=col["secundario"], strokeDash=[6, 4], size=2).encode(y="y:Q")
     chart = alt.layer(cero, error, puntos).properties(title=alt.TitleParams(titulo, fontSize=14, anchor="start", color=col["texto"]), height=alto)
-    st.altair_chart(chart.properties(description=descripcion), width="stretch")
-    st.caption("La línea discontinua marca la ausencia de diferencia. Las barras de error son el intervalo de Newcombe al 95 % de la diferencia de tasas.")
+    st.altair_chart(_con_texto_oscuro(chart.properties(description=descripcion)), width="stretch")
+    st.caption("Cada punto es la diferencia observada en ese escenario; la línea vertical que lo cruza va del límite inferior al superior del intervalo de Newcombe al 95 % y las rayas de sus extremos "
+               "marcan esos límites. La línea discontinua marca la ausencia de diferencia.")
 
 
 def dispersion(df, titulo, descripcion, orden_clases, alto=ALTO_GRAFICO):
-    """Dispersión lon/lat por clase de daño. No es un mapa cartográfico: sin fondo, sin teselas y sin recursos externos."""
+    """Dispersión lon/lat por clase de daño. No es un mapa cartográfico: sin fondo, sin teselas y sin recursos externos.
+
+    Las coordenadas se rotulan «grados decimales» y llevan cuatro decimales con coma (F-13, D87): con tres, «3,440» se leía como miles. La leyenda va abajo para dejar ancho al gráfico en pantallas estrechas.
+    No dibuja límites de barrios ni distancias: solo ubica puntos.
+    """
     col = tema.colores()
     colores = [col["neutro"], col["apoyo"], col["secundario"], col["principal"]][: len(orden_clases)]
     formas = ["circle", "square", "triangle-up", "diamond"][: len(orden_clases)]
     chart = alt.Chart(df).mark_point(filled=True, size=50, opacity=0.8).encode(
-        x=alt.X("lon:Q", scale=alt.Scale(zero=False), axis=alt.Axis(title="Longitud (grados)", labelExpr="replace(format(datum.value, '.3f'), '.', ',')")),
-        y=alt.Y("lat:Q", scale=alt.Scale(zero=False), axis=alt.Axis(title="Latitud (grados)", labelExpr="replace(format(datum.value, '.3f'), '.', ',')")),
-        color=alt.Color("clase_dano:N", scale=alt.Scale(domain=list(orden_clases), range=colores), legend=alt.Legend(title="Clase de daño")),
+        x=alt.X("lon:Q", scale=alt.Scale(zero=False), axis=alt.Axis(title="Longitud (grados decimales)", labelExpr=EXPRESION_GRADOS, labelFontSize=12, titleFontSize=12)),
+        y=alt.Y("lat:Q", scale=alt.Scale(zero=False), axis=alt.Axis(title="Latitud (grados decimales)", labelExpr=EXPRESION_GRADOS, labelFontSize=12, titleFontSize=12)),
+        color=alt.Color("clase_dano:N", scale=alt.Scale(domain=list(orden_clases), range=colores), legend=alt.Legend(title="Clase de daño", orient="bottom", labelFontSize=12, titleFontSize=12)),
         shape=alt.Shape("clase_dano:N", scale=alt.Scale(domain=list(orden_clases), range=formas), legend=None),
         tooltip=[alt.Tooltip("objectid:Q", title="Construcción"), alt.Tooltip("clase_dano:N", title="Clase"), alt.Tooltip("barrio:N", title="Barrio")],
     ).properties(title=alt.TitleParams(titulo, fontSize=14, anchor="start", color=col["texto"]), height=alto, description=descripcion)
-    st.altair_chart(chart, width="stretch")
+    st.altair_chart(_con_texto_oscuro(chart), width="stretch")
     st.caption("Dispersión de las construcciones de la página mostrada: no es un mapa cartográfico (sin fondo ni escala de distancia).")

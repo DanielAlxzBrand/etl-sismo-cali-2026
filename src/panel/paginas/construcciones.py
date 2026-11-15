@@ -38,6 +38,10 @@ def _opciones_estrato(api):
 
 
 def render(api):
+    """Dibuja la página «Construcciones»: filtros, tabla paginada que filtra la API, descarga del CSV y ubicación de las construcciones de la página.
+
+    El título del gráfico de ubicación es corto (F-04, D87): a 390 px Vega cortaba el anterior («…, por c…»). Los filtros y la paginación siguen como estaban (F-10 se aplazó, D87).
+    """
     def cuerpo():
         tamano = int(cargar_panel()["tamano_pagina_tabla"])
         f1, f2, f3 = st.columns(3)
@@ -68,7 +72,7 @@ def render(api):
             return
         con_coord["barrio"] = con_coord["barrio"].fillna(formato.SIN_DATO)
         con_coord["clase_dano"] = con_coord["clase_dano"].fillna(formato.SIN_DATO)
-        componentes.dispersion(con_coord, "Ubicación de las construcciones de la página, por clase de daño",
+        componentes.dispersion(con_coord, "Ubicación por clase de daño",
                                "Dispersión de longitud y latitud de las construcciones mostradas, con clase de daño distinguida por color y forma.", claves.CLASES_DANO)
 
     componentes.marco(api, ID, cuerpo)
