@@ -1,6 +1,6 @@
 modulo,lineas,sin_ejecutar,cobertura_pct,motivo_si_menor_de_70
 scripts/cargar_mysql.py,40,8,80.0,
-scripts/escanear_secretos.py,200,11,94.5,
+scripts/escanear_secretos.py,201,11,94.5,
 scripts/evidencias/saneamiento.py,54,1,98.1,
 scripts/finanzas/costos.py,78,6,92.3,
 scripts/informe_pruebas.py,165,38,77.0,
@@ -10,12 +10,16 @@ scripts/make_matriz_casos.py,83,12,85.5,
 scripts/make_modelo_datos.py,126,58,54.0,genera el diccionario y el diagrama; el diccionario se comprueba contra el esquema y el dibujo con matplotlib no se prueba
 scripts/make_readme.py,184,184,0.0,generador del README: su salida se comprueba con test_readme_cifras (se ejecuta fuera de pytest)
 scripts/mysql/benchmark_lotes.py,118,75,36.4,necesita MySQL en vivo; su evidencia es EV-030 y se prueban las reglas de elección y el percentil
-scripts/mysql/configurar_mysql.py,283,36,87.3,
+scripts/mysql/configurar_mysql.py,329,38,88.4,
 scripts/mysql/respaldar_restaurar.py,183,40,78.1,
 scripts/mysql/verificar_mysql.py,208,151,27.4,batería contra MySQL en vivo; su evidencia es EV-028 y se prueban su operación solo sobre la base de prueba y el fallo sin servidor
+scripts/orquestacion/generar_compose.py,76,36,52.6,
+scripts/orquestacion/preparar_airflow.py,216,28,87.0,
+scripts/orquestacion/sincronizar_dag.py,51,31,39.2,
 scripts/panel/contraste.py,34,17,50.0,
 scripts/panel/ejecutar_panel.py,106,8,92.5,
 scripts/panel/generar_trazabilidad.py,32,5,84.4,
+scripts/preparar_entorno.py,163,18,89.0,
 scripts/usuarios/analizar_sesiones.py,116,7,94.0,
 scripts/usuarios/generar_datos_sinteticos.py,43,7,83.7,
 scripts/usuarios/precargar_friccion.py,54,31,42.6,
