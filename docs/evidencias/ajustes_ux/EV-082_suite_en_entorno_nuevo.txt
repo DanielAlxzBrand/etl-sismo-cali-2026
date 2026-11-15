@@ -1,0 +1,33 @@
+# Suite completa en un clon con el entorno nuevo de Python 3.13
+- comando: `python -m pytest -q -p no:cacheprovider (cwd: <CLON>, intérprete del entorno nuevo de EV-062)`
+- fecha: 2026-11-14T22:46:27-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 184.2 s
+- Python: 3.13.0
+- commit del repositorio: 93967ef
+
+Clon del commit 93967ef del repositorio en una carpeta temporal fuera de él (`<CLON>`), con el entorno virtual nuevo de Python 3.13 (`<VENV>`) creado con `pip install -r requirements.txt` en EV-062; este archivo repite solo la suite y las comprobaciones del commit actual.
+
+## Instalación (`python -m pip install -r requirements.txt`)
+- tiempo: 290 s; líneas con advertencia, error o conflicto en la salida de pip: 0
+- `pip check`: No broken requirements found.
+- líneas de `requirements.txt` con versión exacta: 24 de 24
+
+## `pip freeze` del entorno nuevo frente al del `.venv` del proyecto
+- paquetes: 135 en el entorno nuevo y 135 en el `.venv`; diferencias: 1
+  - soupsieve==4.1  →  soupsieve==4.1.1
+  (soupsieve es una dependencia transitiva de beautifulsoup4, que llega con nbconvert; no se fija: una prueba no lo exige)
+
+## Python 3.11 (`pip install --dry-run -r requirements.txt`, solo simulación)
+- ERROR: Ignored the following versions that require a different python version: 1.21.2 Requires-Python >=3.7,<3.11; 1.21.3 Requires-Python >=3.7,<3.11; 1.21.4 Requires-Python >=3.7,<3.11; 1.21.5 Requires-Python >=3.7,<3.11; 1.21.6 
+- ERROR: No matching distribution found for numpy==2.5.4
+- resultado esperado según la política (Python 3.13 soportado): pip no encuentra numpy 2.5.4, que exige Python 3.12 o más.
+
+## Suite completa en el clon (intérprete del entorno nuevo, commit 93967ef)
+- pytest: código de salida 0; 880 passed, 1 warning in 159.45s (0:02:39)
+- pruebas recolectadas: 880
+- sha256 de los 19 archivos de `data/` del clon iguales a los del árbol de trabajo: sí
+- escáner de secretos sobre el clon (árbol e historial): código 0; hallazgos: 0
+
+## Resultado
+Todo correcto: la instalación desde cero deja un entorno equivalente al del proyecto y toda la suite pasa.
