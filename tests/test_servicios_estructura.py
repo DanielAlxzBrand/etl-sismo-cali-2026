@@ -1,6 +1,6 @@
 """Estructura de los servicios locales (phpMyAdmin, Airflow desde el zip y guía de instalación): los archivos existen, viajan en el zip, no llevan credenciales y las guías no dejan enlaces rotos ni marcas sin llenar (D91 a D94).
 
-Por qué existe: lo que se entrega solo sirve si llega completo al equipo de otra persona y sin ningún secreto. Aquí se arma un zip de verdad con `scripts/make_dist.py`, se comprueba que trae lo que debe y nada que no debe,
+Por qué existe: lo que viaja en el zip solo sirve si llega completo al equipo de otra persona y sin ningún secreto. Aquí se arma un zip de verdad con `scripts/make_dist.py`, se comprueba que trae lo que debe y nada que no debe,
 y se leen las guías como texto. Qué NO demuestra: que los servicios arranquen (eso lo comprueban las ejecuciones en vivo, EV-085 y EV-087) ni que el zip sirva en una máquina limpia.
 """
 import importlib.util

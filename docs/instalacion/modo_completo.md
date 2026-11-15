@@ -22,7 +22,7 @@ Con el servicio **MySQL80** activo, se crean las bases `sismo_cali` y `sismo_cal
 | `.\.venv\Scripts\python.exe scripts\mysql\configurar_mysql.py --usuario-docker --origen localhost` | `sismo_airflow`@`localhost` | la tarea de carga del DAG | `SELECT`, `INSERT`, `CREATE`, `INDEX` y `REFERENCES` solo sobre `sismo_cali` |
 | `.\.venv\Scripts\python.exe scripts\mysql\configurar_mysql.py --usuario-lectura` | `sismo_lectura`@`localhost` | mirar los datos en phpMyAdmin | solo `SELECT` sobre `sismo_cali` |
 
-El origen es `localhost` porque Docker Desktop entrega al MySQL del anfitrión las conexiones de los contenedores como si vinieran de este mismo equipo (lo medimos en [EV-040](../evidencias/orquestacion/EV-040_origen_mysql_desde_docker.txt) y lo decidimos en D65);
+El origen es `localhost` porque Docker Desktop hace llegar al MySQL del anfitrión las conexiones de los contenedores como si vinieran de este mismo equipo (lo medimos en [EV-040](../evidencias/orquestacion/EV-040_origen_mysql_desde_docker.txt) y lo decidimos en D65);
 en otro sistema (por ejemplo Docker en Linux nativo) el origen puede ser otro y hay que volver a medirlo. Ningún usuario se crea con `%`. Los tres comandos son idempotentes: si el `.env` ya tiene las credenciales, no
 cambian nada ni piden la contraseña de `root`; `--rotar` cambia la contraseña y `--solo-verificar` comprueba sin modificar. Los valores quedan en `.env` (variables `MYSQL_*`, `MYSQL_DOCKER_*` y `MYSQL_LECTURA_*`); los comandos
 solo imprimen los nombres. Detalle en la [configuración de MySQL](../almacenamiento/mysql_configuracion.md).

@@ -48,7 +48,7 @@ Reintentos, tareas adicionales, ejecutor local, carga de ejemplos y las pruebas 
 ## 4. Qué decidiría un posible conflicto
 El ítem 5.4 dice «flujos programados (DAGs de Airflow)». La guía llega a `schedule=None` y solo propone programar en el paso 40; por eso aplicamos ese paso (DF-9).
 
-## 5. Diferencias nuevas al entregar el compose adaptado (DF-13 a DF-18)
+## 5. Diferencias nuevas al incluir el compose adaptado (DF-13 a DF-18)
 Hasta ahora el compose se descargaba y se editaba a mano (pasos 14, 18 y 19 de la guía, DF-12). Para que quien reciba el zip pueda levantar Airflow sin ese procedimiento, el compose adaptado viaja dentro del repositorio (D92) y lo genera
 `scripts/orquestacion/generar_compose.py` desde el oficial de Airflow 3.3.2 (se comprueba su sha256, `99da85d87016…`, el mismo de [EV-037](../evidencias/orquestacion/EV-037_pasos_13_a_19.txt)). Cada cambio es un reemplazo exacto sobre el texto
 oficial y el diff completo está en `orquestacion/docker-compose.diff` (con la contraseña de ejemplo del oficial oculta: lo dice su primera línea). Estas diferencias se suman a la lista cerrada de la sección 1:

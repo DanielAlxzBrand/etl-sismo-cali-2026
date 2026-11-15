@@ -4,7 +4,7 @@ Uso:  python scripts/orquestacion/generar_compose.py --oficial RUTA_AL_COMPOSE_O
       python scripts/orquestacion/generar_compose.py --descargar                          baja el oficial a una carpeta temporal y comprueba su sha256 antes de adaptarlo
       python scripts/orquestacion/generar_compose.py --oficial RUTA --verificar           solo comprueba que el compose del repositorio es el que sale de ese oficial (código 0 si coincide)
 
-Por qué existe: el compose adaptado se entrega ya hecho dentro del repositorio (D91) porque quien reciba el zip no tiene el compose original ni debe parchearlo a mano. Para que nadie tenga que fiarse de que
+Por qué existe: el compose adaptado viaja ya hecho dentro del repositorio (D91) porque quien reciba el zip no tiene el compose original ni debe parchearlo a mano. Para que nadie tenga que fiarse de que
 «se editó bien», cada cambio es un reemplazo exacto que debe aplicarse una sola vez sobre el texto oficial; si Airflow cambia su compose y un ancla ya no está, el script falla en lugar de escribir otra cosa.
 Qué NO hace: no ejecuta Docker, no toca la carpeta de Airflow del equipo y no escribe contraseñas ni claves (solo referencias `${VARIABLE}` que se leen del `.env` de Airflow).
 La licencia del compose oficial (Apache 2.0) y su aviso se conservan al principio del archivo; el compose adaptado dice qué cambió respecto del oficial.
