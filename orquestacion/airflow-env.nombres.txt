@@ -1,3 +1,8 @@
-# Nombres de las variables de ..irflow-medallon\.env (sin valores; el archivo no se versiona)
+# Nombres de las variables del .env de la carpeta de Airflow que genera scripts/orquestacion/preparar_airflow.py (sin valores; el archivo no se versiona)
 AIRFLOW_UID
 _AIRFLOW_WWW_USER_PASSWORD
+FERNET_KEY
+POSTGRES_PASSWORD
+AIRFLOW__API_AUTH__JWT_SECRET
+PROYECTO_NOMBRE
+AIRFLOW_PUERTO

@@ -34,6 +34,6 @@
 | Panel | Streamlit y Plotly en el `.venv` | `.\.venv\Scripts\python.exe -m pip install streamlit plotly` y añadirlos a `requirements.txt` | No necesita administrador. |
 | Usuarios, UX y finanzas | Nada que instalar | Los materiales de usuarios y el análisis de costos son archivos. | Requiere hechos externos (personas), no instalaciones. |
 | Documentación y demostración | Nada obligatorio; OBS ya está instalado | La demostración se graba con OBS (lo hace el equipo). | — |
-| Cierre y paquete | `python-docx` para rellenar el checklist | `.\.venv\Scripts\python.exe -m pip install python-docx` (o el entorno de `guia_equipo`) | No necesita administrador. |
+| Cierre y paquete | `python-docx` para rellenar el checklist | `.\.venv\Scripts\python.exe -m pip install python-docx` (o en un entorno aparte) | No necesita administrador. |
 
 Consideraciones transversales: la RAM libre actual (3,7 GB) queda justa para WSL2 con Airflow; conviene cerrar aplicaciones antes de Pruebas y orquestación. Todas las instalaciones se hacen solo con aprobación del equipo y nunca sobre el Python global.

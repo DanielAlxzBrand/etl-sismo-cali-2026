@@ -82,7 +82,7 @@ Rama de trabajo `desarrollo` con etiquetas en los puntos seguros; `.gitattribute
 
 ## (h) Dependencias por componente
 - API, fuentes y credenciales: `fastapi`, `uvicorn`, `httpx`. Carga relacional: `pymysql`, `cryptography`. Panel: `streamlit`. **Sin SQLAlchemy** (SQL explícito; esto sustituye lo que decía `entorno.md` para la API y la carga relacional).
-- `python-docx` solo en el entorno de `guia_equipo` (no en el `.venv` del proyecto). Airflow, nunca en `requirements.txt` ni en el `.venv`.
+- `python-docx` solo en un entorno aparte (no en el `.venv` del proyecto). Airflow, nunca en `requirements.txt` ni en el `.venv`.
 - Versiones: se fijan en cada componente tras instalarlas en un entorno limpio y probarlas. Disponibles el 2026-11-12 para Python 3.13: fastapi 0.162.5, uvicorn 0.54.0, httpx 0.28.1, streamlit 1.67.0, pymysql 1.2.4, cryptography 50.0.2 (instaladas hoy en el Python global: fastapi 0.116.2, uvicorn 0.35.0, httpx 0.28.1, streamlit 1.58.0). **Si una versión nueva rompe:** se fija la última que pasa las pruebas.
 
 ## (i) Marco de Data Thinking para el ítem 1.1

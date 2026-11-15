@@ -118,7 +118,7 @@
 | [finanzas/estructura_costos.md](finanzas/estructura_costos.md) | categorías de costo, consumo medido y fórmulas con precios como parámetros vacíos |
 
 ### Decisiones
-[DECISIONES.md](DECISIONES.md): todas las decisiones con alternativas, razón, riesgo y fecha (D1 a D94; las nuevas continúan desde D95).
+[DECISIONES.md](DECISIONES.md): todas las decisiones con alternativas, razón, riesgo y fecha (D1 a D95; las nuevas continúan desde D96).
 
 ### Almacenamiento relacional (MySQL)
 | documento | contenido |

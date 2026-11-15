@@ -8,7 +8,7 @@
 ```powershell
 .\.venv\Scripts\python.exe scripts\cargar_mysql.py --destino mysql              # base real (sismo_cali)
 .\.venv\Scripts\python.exe scripts\cargar_mysql.py --destino mysql --base prueba # base de prueba
-.\.venv\Scripts\python.exe scripts\cargar_mysql.py --destino sqlite --sqlite-ruta ..\prueba.db   # sin servidor (fuera de data/)
+.\.venv\Scripts\python.exe scripts\cargar_mysql.py --destino sqlite --sqlite-ruta $env:TEMP\sismo_prueba.db   # sin servidor (fuera de data/ y de la carpeta del proyecto)
 ```
 Códigos de salida: 0 (cargó o ya estaba cargada), 1 (la carga falló y se revirtió), 2 (parámetros no válidos, por ejemplo una base SQLite dentro de `data/`) y 3 (no hay conexión con MySQL).
 
