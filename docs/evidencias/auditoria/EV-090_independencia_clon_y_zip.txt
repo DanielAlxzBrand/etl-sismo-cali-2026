@@ -1,0 +1,29 @@
+# Experimentos de independencia: clon y zip en carpetas sin hermanas
+- comando: `carpeta temporal sin hermanas con un clon o con el zip de make_dist.empaquetar: entorno nuevo, suite, main.py, hashes, panel y scripts de servicios`
+- fecha: 2026-11-15T12:12:34-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 0.0 s
+- Python: 3.13.0
+- commit del repositorio: 904c8e1
+
+Dos experimentos en carpetas temporales cuyo único contenido es la carpeta del proyecto (ninguna hermana), con el commit `a326e30` del proyecto: (a) un clon y (b) el zip armado con `make_dist.empaquetar` y descomprimido. En cada una: entorno virtual nuevo de Python 3.13, `pip install -r requirements.txt`, suite completa sin PYTHONUTF8 ni PYTHONIOENCODING, `main.py --stage all` con SQLite, los 9 hashes de la línea base, `ejecutar_panel.py --verificar`, `preparar_entorno.py --modo completo` y `preparar_airflow.py --verificar`. El proyecto original no se tocó. Cada experimento se hizo con un script de la sesión de trabajo (que se mueve a `scripts/evidencias/` en la etapa 2 de la auditoría) y la última ejecución real es esta.
+
+## Resultado
+| Paso | Clon | Zip (506 archivos, 21,2 MB) |
+|---|---|---|
+| carpetas que había junto al proyecto | proyecto | proyecto |
+| `pip install` | código 0 en 263,1 s | código 0 en 255,9 s |
+| suite completa | código 0 en 242,2 s: **964 pasan** | código 1 en 241,0 s: **962 pasan y 2 fallan** (`test_secretos.py::test_env_no_esta_versionado` y `test_configurar_mysql.py::test_el_env_real_esta_ignorado_y_no_versionado`, porque el zip no trae `.git`) |
+| `main.py --stage all` | código 0 en 3,4 s | código 0 en 3,4 s |
+| hashes de la línea base | **9 de 9 iguales** | **9 de 9 iguales** |
+| `ejecutar_panel.py --verificar` | código 0 | código 0 |
+| `preparar_entorno.py --modo completo` | código 1 (esperado: sin `.env` y con Docker apagado; sin errores) | código 1 (igual) |
+| `preparar_airflow.py --verificar` | código 1 (esperado: no hay carpeta hermana; dice qué falta; sin errores) | código 1 (igual) |
+| escribió fuera de la raíz del proyecto | no (solo el entorno virtual del propio experimento) | no |
+
+## Lectura
+- El código, los scripts y las pruebas no dependen de ninguna otra carpeta del equipo: el clon pasa las 964 pruebas con los 9 hashes iguales.
+- La única diferencia entre el clon y el zip eran 2 pruebas que usaban el `.git` de la raíz (el zip no lo trae) y una tercera que pasaba vacía; se corrigieron con un repositorio temporal y omisiones con motivo (D95) y ahora una prueba permanente arma el zip y las corre en él.
+- Los dos scripts de servicios fallan con mensajes claros cuando falta Docker, el `.env` o la carpeta de Airflow, sin errores de Python.
+
+Qué NO demuestra: que el proyecto funcione en el equipo de otra persona (Docker y MySQL quedan fuera de este experimento; los comprueba la prueba de instalación del equipo), ni con otra versión de Python, ni que los tiempos valgan para otra máquina.

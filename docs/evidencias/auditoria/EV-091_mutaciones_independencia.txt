@@ -1,0 +1,28 @@
+# Mutaciones sobre la prueba guardiana de independencia del repositorio
+- comando: `mutación de un archivo en un clon y `python -m pytest -q -p no:cacheprovider` sobre las pruebas de independencia`
+- fecha: 2026-11-15T12:12:34-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 0.0 s
+- Python: 3.13.0
+- commit del repositorio: 904c8e1
+
+Cada mutación se aplicó a un archivo de un clon del commit de trabajo (carpeta temporal fuera del repositorio), se corrieron `tests/test_independencia_del_repositorio.py`, `test_preparar_airflow.py`, `test_secretos.py`, `test_portabilidad.py` y `test_evidencias.py` y se restauró el archivo; el clon quedó sin cambios. Detectadas: 12 de 12. En una primera corrida la mutación de `os.chdir` no se detectó porque estaba mal escrita (no llamaba a `os.chdir`); se corrigió la mutación y la prueba la detectó.
+
+| Mutación | Pruebas que fallan | ¿Detectada? |
+|---|---|---|
+| volver a escribir el nombre de la carpeta del equipo en un documento (entorno.md) | `test_ningun_archivo_del_zip_nombra_carpetas_del_equipo_ni_rutas_locales_ni_apis_que_salgan_de_la_raiz` | sí |
+| una ruta hacia la carpeta del equipo en el código (cargar_mysql.py) | `test_ningun_archivo_del_zip_nombra_carpetas_del_equipo_ni_rutas_locales_ni_apis_que_salgan_de_la_raiz`; `test_las_rutas_relativas_a_la_raiz_son_exactas_y_solo_la_hermana_generada_sale_de_ella` | sí |
+| `parents[3]` en un script de scripts/ (make_readme.py) | `test_las_rutas_relativas_a_la_raiz_son_exactas_y_solo_la_hermana_generada_sale_de_ella` | sí |
+| un enlace que sale de la raíz (README de instalación) | `test_todo_enlace_de_un_documento_del_zip_apunta_a_un_archivo_que_existe_dentro_de_la_raiz` | sí |
+| una prueba que se omite según una carpeta vecina | `test_las_rutas_relativas_a_la_raiz_son_exactas_y_solo_la_hermana_generada_sale_de_ella`; `test_ninguna_prueba_se_omite_segun_una_ruta_que_salga_de_la_raiz` | sí |
+| la prueba del `.env` vuelve a depender del `.git` de la raíz (falla en el zip) | `test_las_pruebas_que_usan_git_pasan_en_el_zip_descomprimido_sin_git_y_omiten_solo_una` | sí |
+| la prueba del historial deja de omitirse y falla sin `.git` | `test_las_pruebas_que_usan_git_pasan_en_el_zip_descomprimido_sin_git_y_omiten_solo_una` | sí |
+| una ruta de usuario de Windows en un documento | `test_ningun_archivo_del_zip_nombra_carpetas_del_equipo_ni_rutas_locales_ni_apis_que_salgan_de_la_raiz` | sí |
+| `os.chdir` hacia fuera de la raíz en un script | `test_ningun_archivo_del_zip_nombra_carpetas_del_equipo_ni_rutas_locales_ni_apis_que_salgan_de_la_raiz` | sí |
+| el archivo de nombres del .env de Airflow pierde variables | `test_el_archivo_de_nombres_del_env_de_airflow_lista_exactamente_las_variables_que_escribe_el_script` | sí |
+| un carácter de control (BEL) dentro de un texto del zip | `test_ningun_texto_del_zip_trae_caracteres_de_control_que_estropeen_una_ruta`; `test_el_archivo_de_nombres_del_env_de_airflow_lista_exactamente_las_variables_que_escribe_el_script` | sí |
+| una excepción de evidencia registrada deja de coincidir con su sha256 (se edita EV-014) | `test_las_evidencias_que_son_excepcion_siguen_siendo_las_registradas_en_el_manifiesto` | sí |
+
+
+## Qué NO demuestra
+Que no existan cambios que estas pruebas no vean: solo cubre las mutaciones listadas.

@@ -183,6 +183,13 @@ FILAS_SERV = {
 }
 for _i, _n in enumerate(("acceso", "tablas", "estructura_construccion", "relaciones_construccion", "conteos", "tabla_corrida", "insert_rechazado", "drop_rechazado")):
     FILAS_SERV[f"EV-085{'bcdefghi'[_i]}"] = ("4.1, 4.2", f"Captura automatizada del navegador de phpMyAdmin ({_n.replace('_', ' ')})", "imagen", "mismo comando que EV-085", f"EV-085_captura_{_n}.png")
+CARPETA_AUD = "docs/evidencias/auditoria"
+FILAS_AUD = {
+    "EV-090": ("7.1", "Experimentos de independencia en carpetas sin hermanas: el clon pasa las 964 pruebas y el zip fallaba 2 por no traer .git; 9 de 9 hashes iguales en los dos", "archivo",
+               "clon o zip de `make_dist.empaquetar` en una carpeta temporal sin hermanas: entorno nuevo, suite, `main.py`, hashes, panel y scripts de servicios", "EV-090_independencia_clon_y_zip.txt"),
+    "EV-091": ("7.1", "Tabla de mutaciones de la prueba guardiana de independencia del repositorio: todas detectadas", "archivo",
+               "mutación de un archivo en un clon y `python -m pytest -q -p no:cacheprovider` sobre las pruebas de independencia", "EV-091_mutaciones_independencia.txt"),
+}
 CARPETA_FIN = "docs/finanzas"
 FILAS_FIN = {
     "EV-070": ("6.4", "Recursos medidos del pipeline (tiempo y memoria de `main.py --stage all`, tamaños, memoria de Airflow en reposo) y mediciones previas reunidas, con su origen y fecha; sin cifras monetarias", "archivo",
@@ -256,6 +263,11 @@ def main():
             log.warning("falta %s; no se registra %s", archivo, ev)
             continue
         nuevas.append(fila(ev, item, que, tipo, cmd, archivo, CARPETA_SERV, "2026-11-15"))
+    for ev, (item, que, tipo, cmd, archivo) in FILAS_AUD.items():
+        if not (REPO / CARPETA_AUD / archivo).exists():
+            log.warning("falta %s; no se registra %s", archivo, ev)
+            continue
+        nuevas.append(fila(ev, item, que, tipo, cmd, archivo, CARPETA_AUD, "2026-11-15"))
     for ev, (item, que, tipo, cmd, archivo) in FILAS_FIN.items():
         if not (REPO / CARPETA_FIN / archivo).exists():
             log.warning("falta %s; no se registra %s", archivo, ev)
