@@ -504,7 +504,7 @@ Además: la capa viene de un servicio ArcGIS Online de un tercero y puede cambia
 ## 12. Cómo reproducir
 1. **Entorno** (PowerShell, en la raíz del repositorio):
 ```powershell
-py -3 -m venv .venv
+py -3.13 -m venv .venv
 .\\.venv\\Scripts\\Activate.ps1
 python -m pip install -r requirements.txt
 ```

@@ -114,8 +114,16 @@
 | [usuarios/README.md](usuarios/README.md) | índice del componente: qué está preparado, qué falta y los cinco pasos para las sesiones reales |
 | [evaluacion_heuristica.md](usuarios/evaluacion_heuristica.md) | evaluación heurística interna del panel: hallazgos con severidad y captura, fortalezas y matriz |
 | [protocolo_sesiones.md](usuarios/protocolo_sesiones.md), [guion_sesion.md](usuarios/guion_sesion.md), [consentimiento.md](usuarios/consentimiento.md) e [instrumentos.md](usuarios/instrumentos.md) | material de las sesiones con personas usuarias (preparado; sin sesiones realizadas) |
-| [registro_de_friccion.md](usuarios/registro_de_friccion.md) y [trazabilidad_de_cambios.md](usuarios/trazabilidad_de_cambios.md) | fricciones precargadas desde la evaluación heurística y plantilla de cambios |
+| [registro_de_friccion.md](usuarios/registro_de_friccion.md) y [trazabilidad_de_cambios.md](usuarios/trazabilidad_de_cambios.md) | las 14 fricciones de la evaluación heurística con su decisión y la tabla de cambios llena (iteración técnica, no sesiones con personas) |
 | [finanzas/estructura_costos.md](finanzas/estructura_costos.md) | categorías de costo, consumo medido y fórmulas con precios como parámetros vacíos |
+
+### Servicios locales (`instalacion/`)
+| documento | contenido |
+|---|---|
+| [instalacion/README.md](instalacion/README.md) | guía de instalación: requisitos, qué pruebas se omiten sin Git y cuál modo elegir |
+| [modo_minimo.md](instalacion/modo_minimo.md) | pipeline, API y panel con SQLite, sin Docker ni MySQL |
+| [modo_completo.md](instalacion/modo_completo.md) | MySQL, panel con MySQL, Airflow y phpMyAdmin de solo lectura |
+| [errores_comunes.md](instalacion/errores_comunes.md) | síntomas, causa probable y qué hacer al instalar y ejecutar |
 
 ### Decisiones
 [DECISIONES.md](DECISIONES.md): todas las decisiones con alternativas, razón, riesgo y fecha (D1 a D96; las nuevas continúan desde D97).
@@ -132,10 +140,10 @@
 ## Componentes en construcción
 | componente | estado |
 |---|---|
-| Usuarios y UX | en construcción; se documentará en `docs/ux/` |
-| Costos y finanzas | en construcción; se documentará en `docs/finanzas/` |
+| Documentación y demostración | en construcción: falta el diagrama de la arquitectura del sistema, la sección de primera vez del README y el guion de demostración |
+| Cierre y paquete | en construcción: falta publicar el repositorio y armar el paquete final |
 
-Las evidencias del almacenamiento relacional están en `docs/evidencias/almacenamiento/`; las de la orquestación están en `docs/evidencias/orquestacion/`; las del panel, en `docs/evidencias/panel/`; las del endurecimiento (instalación desde cero, mutaciones y Airflow en vivo), en `docs/evidencias/endurecimiento/`; las de los demás irán en `docs/evidencias/usuarios/`, que se crea cuando haya contenido.
+Las evidencias del almacenamiento relacional están en `docs/evidencias/almacenamiento/`; las de la orquestación están en `docs/evidencias/orquestacion/`; las del panel, en `docs/evidencias/panel/`; las del endurecimiento (instalación desde cero, mutaciones y Airflow en vivo), en `docs/evidencias/endurecimiento/`; las de los servicios locales, en `docs/evidencias/servicios/`; las de la evaluación del panel y sus ajustes, en `docs/evidencias/usuarios/` y `docs/evidencias/ajustes_ux/`; las de la auditoría intermedia (independencia del repositorio), en `docs/evidencias/auditoria/`.
 
 ## Componentes del proyecto y los ítems del checklist que cierran
 | componente | ítems que cierra | estado |
@@ -146,7 +154,8 @@ Las evidencias del almacenamiento relacional están en `docs/evidencias/almacena
 | Carga relacional | 4.1, 4.2, 4.3 | hecho |
 | Pruebas y orquestación | 5.1, 5.2, 5.4, 5.5, 5.6 | hecho |
 | Panel | 1.5, 3.1, 3.2, 5.3 | hecho |
-| Usuarios, UX y finanzas | 3.3, 6.1, 6.2, 6.3, 6.4 | en construcción |
+| Usuarios, UX y finanzas | 3.3, 6.1, 6.2, 6.3, 6.4 | hecho en lo técnico; 6.1, 6.2 y 6.3 esperan sesiones reales (hecho externo) |
+| Servicios locales | avance de 7.1; revalida 4.1, 4.2 y 5.4 | hecho |
 | Documentación y demostración | 6.5, 7.2, 7.3, 7.4, 7.5 | en construcción |
 | Cierre y paquete | 7.1 | en construcción |
 
@@ -156,6 +165,7 @@ El detalle de cada ítem (estado, evidencia y cómo validarlo) está en `docs/ch
 | si buscas… | está en… |
 |---|---|
 | cómo ejecutar el proyecto | `README.md` (raíz) |
+| cómo instalar el proyecto en otro equipo | `docs/instalacion/README.md` |
 | de dónde vienen los datos y qué licencia tienen | `docs/bronze/catalogo_fuentes_metadatos.md` |
 | por qué una regla de limpieza existe | `docs/silver/reglas_silver.md` y `docs/silver/hallazgos_eda.md` |
 | cómo se calcula un indicador | `docs/gold/KPIs.md` |

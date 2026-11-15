@@ -7,7 +7,7 @@
 ## Qué hay en esta carpeta
 | Archivo o carpeta | Para qué sirve | Estado |
 |---|---|---|
-| [evaluacion_heuristica.md](evaluacion_heuristica.md) | Evaluación heurística interna: 14 hallazgos con severidad y captura, fortalezas y matriz heurística × página | hecha (interna); hallazgos sin corregir |
+| [evaluacion_heuristica.md](evaluacion_heuristica.md) | Evaluación heurística interna: 14 hallazgos con severidad y captura, fortalezas y matriz heurística × página | hecha (interna); 8 de 14 corregidos y reevaluados (iteración técnica) |
 | [protocolo_sesiones.md](protocolo_sesiones.md) | Cómo haremos las sesiones: perfiles, número de personas, roles, qué se registra y sesgos | preparado |
 | [guion_sesion.md](guion_sesion.md) | Introducción hablada, seis tareas con criterio de éxito y cierre con SUS, CSAT y tres preguntas | preparado |
 | [consentimiento.md](consentimiento.md) | Texto de consentimiento y reglas de reclutamiento (no es asesoría jurídica) | preparado |
@@ -15,8 +15,8 @@
 | [`sesiones_reales/`](sesiones_reales/README.md) | Donde el equipo guarda los registros reales; hoy solo plantillas | **vacía** |
 | [resultados.md](resultados.md) | Lo genera `scripts/usuarios/analizar_sesiones.py`; hoy dice «no hay sesiones reales» | sin datos |
 | [`simulacion/`](simulacion/README.md) y [resultados_simulacion.md](resultados_simulacion.md) | **Datos sintéticos rotulados** para probar el script; no son personas y no cuentan | ensayo |
-| [registro_de_friccion.md](registro_de_friccion.md) y `.csv` | Fricciones precargadas solo con la evaluación heurística; decisión pendiente | precargado |
-| [trazabilidad_de_cambios.md](trazabilidad_de_cambios.md) | Plantilla fricción → cambio → commit → captura antes y después → prueba | vacía |
+| [registro_de_friccion.md](registro_de_friccion.md) y `.csv` | Las 14 fricciones de la evaluación heurística, cada una con su decisión (D87); ninguna viene de personas usuarias | con decisión |
+| [trazabilidad_de_cambios.md](trazabilidad_de_cambios.md) | Tabla fricción → cambio → commit → captura antes y después → prueba, llena con los 8 ajustes de la iteración técnica (D87 a D90) | llena (iteración técnica) |
 
 ## Qué debe hacer el equipo con las sesiones reales (en cinco pasos)
 1. **Reclutar** de 3 a 5 personas (si solo logran 2 o 3, el análisis mostrará «k de n» sin porcentajes) siguiendo el [protocolo](protocolo_sesiones.md) y el texto de [consentimiento](consentimiento.md); quien construyó el panel no facilita.
@@ -31,4 +31,4 @@ Las capturas, los tiempos y los contrastes salen de `scripts/evidencias/evidenci
 ## Alcance y límites
 - **Qué afirmamos:** el material de las sesiones está preparado, el análisis está probado con datos sintéticos rotulados y la evaluación heurística interna documenta 14 fricciones con su captura.
 - **Con qué evidencia:** esta carpeta, `scripts/usuarios/`, `tests/test_usuarios.py`, `tests/test_usuarios_estructura.py` y EV-065 a EV-069.
-- **Qué NO afirmamos:** que alguien haya usado el panel, que sea usable para personas reales ni que alguna fricción esté corregida.
+- **Qué NO afirmamos:** que alguien haya usado el panel, que sea usable para personas reales ni que los 8 ajustes hechos al panel (iteración técnica, D87 a D90) mejoren la experiencia de personas reales.

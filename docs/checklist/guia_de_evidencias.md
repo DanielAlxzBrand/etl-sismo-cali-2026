@@ -1,6 +1,6 @@
 # Guía de evidencias para la plantilla del checklist
 
-**Fecha:** 2026-11-14 (actualizada con Panel; versión inicial 2026-11-12) · **Política (D35):** el equipo **no graba video**. Para cada ítem del checklist se presentan **archivos adjuntables** (salidas registradas, JSON, XML de pruebas, documentos e imágenes renderizadas) y, **de forma opcional**, capturas de pantalla. Las capturas automatizadas del navegador (rotuladas) y las salidas registradas son evidencia suficiente; una captura manual complementa, no condiciona el cierre de un ítem.
+**Fecha:** 2026-11-15 (actualizada en la auditoría intermedia; versión inicial 2026-11-12) · **Política (D35):** el equipo **no graba video**. Para cada ítem del checklist se presentan **archivos adjuntables** (salidas registradas, JSON, XML de pruebas, documentos e imágenes renderizadas) y, **de forma opcional**, capturas de pantalla. Las capturas automatizadas del navegador (rotuladas) y las salidas registradas son evidencia suficiente; una captura manual complementa, no condiciona el cierre de un ítem.
 
 **Rótulos.** Una captura que tome el equipo se rotula «captura tomada por el equipo» con la fecha. La captura de `/docs` incluida en el repositorio (EV-017) y las del panel (EV-054) se rotulan «captura automatizada del navegador». Las imágenes generadas desde salidas reales (EV-021 a EV-024, EV-045 a EV-048, EV-058 a EV-060, los diagramas de `docs/orquestacion/img/` y `docs/panel/img/` y los de `docs/estrategia/img/`) se rotulan «imagen generada a partir de la salida registrada; no es una captura de pantalla».
 
@@ -11,7 +11,7 @@
 **Comandos de PowerShell.** Todos se ejecutan en la raíz del repositorio con el entorno activado (`.\.venv\Scripts\Activate.ps1`) y no modifican nada. Para comprobar que no cambió nada: `git status --short` no debe imprimir nada.
 
 ## Índice
-Fichas de los ítems 1.1 a 1.5 (Estrategia), 2.1 a 2.3 (API, fuentes y credenciales), 3.1, 3.2 y 5.3 (Panel), 4.1 a 4.3 (Carga relacional) y 5.1, 5.2, 5.4, 5.5 y 5.6 (Pruebas y orquestación). Las de Usuarios, UX y finanzas, Documentación y demostración y Cierre y paquete se agregan en cada componente con esta misma estructura.
+Fichas de los ítems 1.1 a 1.5 (Estrategia), 2.1 a 2.3 (API, fuentes y credenciales), 3.1, 3.2 y 5.3 (Panel), 3.3 y 6.1 a 6.4 (Usuarios, UX y finanzas), 4.1 a 4.3 (Carga relacional) y 5.1, 5.2, 5.4, 5.5 y 5.6 (Pruebas y orquestación). **Todavía no tienen ficha** los ítems 6.5 y 7.1 a 7.5 (Documentación y demostración, y Cierre y paquete): se agregan en cada componente con esta misma estructura.
 
 ---
 
@@ -50,7 +50,7 @@ Fichas de los ítems 1.1 a 1.5 (Estrategia), 2.1 a 2.3 (API, fuentes y credencia
 - **(b) Apoyo:** `docs/evidencias/estrategia/EV-009_determinismo_clon.txt` (dos corridas en un clon con los mismos sha256), `docs/evidencias/api/EV-014_pytest.txt`, `EV-016_respuestas_api.txt` y `EV-015_sin_escritura_hashes.txt` (criterios de la API).
 - **(c) Texto sugerido:** «MVP del proyecto y 29 criterios de aceptación (los 29 verificados con su evidencia; AC26 con la interpretación de D66): `docs/estrategia/05_mvp_criterios_aceptacion.md`.»
 - **(d) Captura opcional:** la tabla de criterios con la columna de estado visible. Nombre: `captura_1.5_criterios.png`.
-- **(e) Validar:** `.\.venv\Scripts\python.exe -m pytest tests/test_estrategia.py::test_1_5_tiene_al_menos_24_criterios_y_no_marca_cumple_sin_verificar -q -p no:cacheprovider`.
+- **(e) Validar:** `.\.venv\Scripts\python.exe -m pytest tests/test_estrategia.py::test_1_5_tiene_al_menos_24_criterios_y_cada_estado_es_coherente -q -p no:cacheprovider`.
 
 ---
 
@@ -189,11 +189,11 @@ Fichas de los ítems 1.1 a 1.5 (Estrategia), 2.1 a 2.3 (API, fuentes y credencia
 - **(e) Validar:** `.\.venv\Scripts\python.exe -m pytest tests/test_usuarios_estructura.py -q -p no:cacheprovider`.
 
 ### Ítems 6.1, 6.2 y 6.3 · Sesiones, métricas y fricciones (pendientes por un hecho externo)
-- **(a) Archivo principal:** `docs/usuarios/README.md` (índice) con `protocolo_sesiones.md`, `guion_sesion.md`, `consentimiento.md` e `instrumentos.md`. Demuestra: material preparado para 2 o 3 sesiones reales (seis tareas con criterio de éxito, consentimiento, SUS y CSAT), un script de análisis probado y un registro de fricciones precargado. **No demuestra:** que se haya hecho alguna sesión; `docs/usuarios/sesiones_reales/` solo tiene plantillas y los ítems siguen «Pendiente (hecho externo)».
+- **(a) Archivo principal:** `docs/usuarios/README.md` (índice) con `protocolo_sesiones.md`, `guion_sesion.md`, `consentimiento.md` e `instrumentos.md`. Demuestra: material preparado para 2 o 3 sesiones reales (seis tareas con criterio de éxito, consentimiento, SUS y CSAT), un script de análisis probado y un registro de las 14 fricciones de la evaluación heurística con su decisión. **No demuestra:** que se haya hecho alguna sesión; `docs/usuarios/sesiones_reales/` solo tiene plantillas y los ítems siguen «Pendiente (hecho externo)».
 - **(b) Apoyo:**
   - `scripts/usuarios/analizar_sesiones.py` y `tests/test_usuarios.py` (SUS con vectores conocidos, cero sesiones, rechazo de filas simuladas, n pequeño y Wilson).
   - `docs/usuarios/simulacion/` y `docs/usuarios/resultados_simulacion.md`: **datos sintéticos rotulados, no son personas; no cuentan**.
-  - `docs/usuarios/registro_de_friccion.md` y `trazabilidad_de_cambios.md` (plantilla vacía).
+  - `docs/usuarios/registro_de_friccion.md` (14 fricciones de la evaluación heurística, con su decisión) y `trazabilidad_de_cambios.md` (llena con los ajustes de la iteración técnica; ninguno viene de sesiones con personas).
 - **(c) Texto sugerido:** «Material de las sesiones con personas usuarias preparado y script de análisis probado con datos sintéticos; las sesiones reales aún no se han realizado: `docs/usuarios/README.md`.»
 - **(d) Captura opcional:** ninguna: no hay sesiones que capturar.
 - **(e) Validar:** `.\.venv\Scripts\python.exe -m pytest tests/test_usuarios.py tests/test_usuarios_estructura.py -q -p no:cacheprovider` y `.\.venv\Scripts\python.exe scripts\usuarios\analizar_sesiones.py` (debe decir «No hay sesiones reales»).
@@ -217,7 +217,7 @@ Fichas de los ítems 1.1 a 1.5 (Estrategia), 2.1 a 2.3 (API, fuentes y credencia
   - `docs/validacion/informe_pruebas.md` y `informe_pruebas.csv` (resultado de cada caso en la última ejecución: 974 de 974).
   - `tests/test_matriz_casos.py` (cada función crítica tiene casos y cada prueba citada existe).
   - `docs/evidencias/orquestacion/EV-048_cobertura_por_modulo.png` (imagen generada a partir de la salida registrada; no es una captura de pantalla).
-  - `docs/evidencias/orquestacion/EV-050_pruebas_clon.txt` (las pruebas de ese momento pasan en un clon limpio) y `docs/evidencias/usuarios/EV-072_suite_en_entorno_nuevo.txt` (974 de 974 en un entorno nuevo con Python 3.13, creado según `docs/evidencias/endurecimiento/EV-062_instalacion_desde_cero.txt`).
+  - `docs/evidencias/orquestacion/EV-050_pruebas_clon.txt` (las pruebas de ese momento pasan en un clon limpio) y `docs/evidencias/usuarios/EV-072_suite_en_entorno_nuevo.txt` (822 de 822 en un entorno nuevo con Python 3.13, en su momento, en un entorno creado según `docs/evidencias/endurecimiento/EV-062_instalacion_desde_cero.txt`); la repetición más reciente, en un clon sin variables de UTF-8, es `docs/evidencias/servicios/EV-089_suite_final_sin_utf8.txt`.
 - **(c) Texto sugerido:** «Matriz de 179 casos de prueba para 27 funciones críticas, cada uno con su resultado esperado y su prueba automática en verde: `docs/validacion/matriz_casos_prueba.md`.»
 - **(d) Captura opcional:** PowerShell con `.\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider`, que debe terminar en `974 passed`. Nombre: `captura_5.1_pytest.png`.
 - **(e) Validar:** `.\.venv\Scripts\python.exe -m pytest tests/test_matriz_casos.py -q -p no:cacheprovider` y `.\.venv\Scripts\python.exe scripts\make_matriz_casos.py` (regenera la matriz; `git status --short` no debe mostrar cambios).
@@ -262,7 +262,7 @@ Fichas de los ítems 1.1 a 1.5 (Estrategia), 2.1 a 2.3 (API, fuentes y credencia
   - `docs/evidencias/orquestacion/EV-036_regresiones_sin_correccion.txt` (nueve reintroducciones en una copia temporal: fallan sin la corrección y pasan con ella) y `docs/evidencias/usuarios/EV-065_regresiones_def015_def016.txt` (dos más, DEF-015 y DEF-016).
   - `docs/evidencias/orquestacion/EV-035_estabilidad_pipeline.txt` y `EV-042_fallo_inducido_y_recuperacion.txt` (DEF-011 y DEF-013).
   - `scripts/validacion/verificar_regresiones.py`.
-  - `docs/evidencias/orquestacion/EV-050_pruebas_clon.txt` (repetición de todas las pruebas en un clon limpio, en su momento) y EV-072 (974 de 974 en un entorno nuevo con Python 3.13, EV-062).
+  - `docs/evidencias/orquestacion/EV-050_pruebas_clon.txt` (repetición de todas las pruebas en un clon limpio, en su momento) y EV-072 (822 de 822 en su momento, en un entorno nuevo con Python 3.13, EV-062).
 - **(c) Texto sugerido:** «Registro de 16 defectos corregidos, cada uno con su prueba de regresión que falla sin la corrección y pasa con ella, y repetición de todas las pruebas: `docs/validacion/registro_defectos.md` y `docs/evidencias/orquestacion/EV-036_regresiones_sin_correccion.txt`.»
 - **(d) Captura opcional:** PowerShell con `.\.venv\Scripts\python.exe scripts\validacion\verificar_regresiones.py`, con cada defecto «falla sin la corrección». Nombre: `captura_5.6_regresiones.png`.
 - **(e) Validar:** `.\.venv\Scripts\python.exe scripts\validacion\verificar_regresiones.py` (código de salida 0) y `.\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider`.
