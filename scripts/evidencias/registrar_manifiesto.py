@@ -122,6 +122,28 @@ FILAS_USU = {
                "`python scripts/evidencias/evidencia_regresiones_nuevas.py`", "EV-065_regresiones_def015_def016.txt"),
 }
 
+_PAGINAS = (("respuesta", "Respuesta"), ("estratos", "Estratos (K1)"), ("comunas", "Comunas (K6)"), ("sensibilidades", "Sensibilidades (S0 a S5)"),
+            ("concentracion", "Concentración (K3 y K4)"), ("calidad", "Calidad de la llave"), ("construcciones", "Construcciones"), ("fuentes", "Fuentes y sistema"))
+_CMD_ANCHOS = "`python scripts/evidencias/evidencia_capturas_anchos.py`"
+_CMD_MOVIL = "`python scripts/evidencias/evidencia_capturas_movil.py`"
+FILAS_USU.update({
+    "EV-066": ("3.3", "Capturas automatizadas, desbordamiento horizontal y texto recortado de las ocho páginas del panel en tres anchos (1400, 1024 y 390 px)", "archivo", _CMD_ANCHOS, "EV-066_capturas_anchos.txt"),
+    "EV-067": ("3.3", "Tiempo hasta que cada página termina de dibujarse en tres anchos, medido en el navegador (medición local de una máquina)", "archivo", _CMD_ANCHOS, "EV-067_mediciones_anchos.txt"),
+    "EV-067b": ("3.3", "Datos de los tiempos de EV-067 (una carga de calentamiento y cinco medidas por página y ancho)", "archivo", _CMD_ANCHOS, "EV-067_mediciones_anchos.csv"),
+    "EV-068": ("3.3", "Contraste calculado del texto secundario y de los rótulos del panel (valores calculados, sin declarar un nivel de conformidad)", "archivo", _CMD_ANCHOS, "EV-068_contraste_texto.txt"),
+    "EV-068b": ("3.3", "Detalle por página y ancho de los contrastes de EV-068", "archivo", _CMD_ANCHOS, "EV-068_contraste_texto.csv"),
+    "EV-069": ("3.3", "Capturas a 390 px con la barra lateral cerrada, desbordamiento y texto recortado", "archivo", _CMD_MOVIL, "EV-069_capturas_390_barra_cerrada.txt"),
+})
+for _i, (_ancho, (_pid, _titulo)) in enumerate((a, p) for a in (1400, 1024, 390) for p in _PAGINAS):
+    FILAS_USU[f"EV-066{'bcdefghijklmnopqrstuvwxy'[_i]}"] = ("3.3", f"Captura automatizada del navegador de la página {_titulo} a {_ancho} px", "imagen", _CMD_ANCHOS, f"EV-066_captura_{_pid}_{_ancho}.png")
+for _i, (_pid, _titulo) in enumerate(_PAGINAS):
+    FILAS_USU[f"EV-069{'bcdefghi'[_i]}"] = ("3.3", f"Captura automatizada del navegador de la página {_titulo} a 390 px con la barra lateral cerrada", "imagen", _CMD_MOVIL, f"EV-069_captura_{_pid}_390_barra_cerrada.png")
+CARPETA_FIN = "docs/finanzas"
+FILAS_FIN = {
+    "EV-070": ("6.4", "Recursos medidos del pipeline (tiempo y memoria de `main.py --stage all`, tamaños, memoria de Airflow en reposo) y mediciones previas reunidas, con su origen y fecha; sin cifras monetarias", "archivo",
+               "`python scripts/finanzas/medir_recursos.py --docker`", "recursos_medidos.csv"),
+}
+
 
 FILAS_ALMACEN = {
     "EV-027": ("4.1", "PyMySQL y cryptography instalados en el .venv, con `pip check` sin conflictos y ruedas para Python 3.13", "archivo", "`python scripts/evidencias/evidencia_conector.py` (pip install pymysql cryptography; pip check)", "EV-027_conector_mysql.txt"),
@@ -179,6 +201,11 @@ def main():
             log.warning("falta %s; no se registra %s", archivo, ev)
             continue
         nuevas.append(fila(ev, item, que, tipo, cmd, archivo, CARPETA_USU, FECHA_USU))
+    for ev, (item, que, tipo, cmd, archivo) in FILAS_FIN.items():
+        if not (REPO / CARPETA_FIN / archivo).exists():
+            log.warning("falta %s; no se registra %s", archivo, ev)
+            continue
+        nuevas.append(fila(ev, item, que, tipo, cmd, archivo, CARPETA_FIN, FECHA_USU))
     ids = {pref for pref, _ in nuevas}
     lineas = [l for l in lineas if not any(l.startswith(i) for i in ids)]
     ultima = max(i for i, l in enumerate(lineas) if l.startswith("| EV-"))   # las filas nuevas van al final de la tabla, antes de la convención

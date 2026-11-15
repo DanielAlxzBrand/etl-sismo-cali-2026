@@ -1,0 +1,154 @@
+pagina,ancho_px,categoria,texto,color_texto,color_fondo,tamano_px,peso,relacion_de_contraste
+respuesta,1400,pie (caption),¿En esta muestra se detecta diferencia e,#797f85,#ffffff,14,400,4.05
+respuesta,1400,subtítulo,Estratos 3-5 frente a 1-2,#1f2933,#ffffff,28,600,14.76
+respuesta,1400,rótulo de tarjeta,Tasa 3-5,#1f2933,#ffffff,14,400,14.76
+respuesta,1400,valor de tarjeta,"6,33 %",#1f2933,#ffffff,36,400,14.76
+respuesta,1400,texto del cuerpo,Respuesta,#1f2933,#d7e2ee,14,600,11.24
+estratos,1400,pie (caption),¿Cuál es la tasa de cambio satelital sev,#797f85,#ffffff,14,400,4.05
+estratos,1400,subtítulo,Detalle por estrato,#1f2933,#ffffff,28,600,14.76
+estratos,1400,texto del cuerpo,Respuesta,#49525a,#f0f4f8,14,400,7.2
+estratos,1400,aviso,El estrato con más construcciones sin da,#1f2933,#ffffff,16,400,14.76
+estratos,1400,rótulo de eje (gráfico),Estrato 1muestra baja,#808495,#ffffff,12,400,3.72
+estratos,1400,título de eje (gráfico),Estrato (por lados de manzana),#808495,#ffffff,12,400,3.72
+estratos,1400,rótulo de leyenda (gráfico),muestra suficiente,#808495,#ffffff,12,400,3.72
+comunas,1400,pie (caption),¿Cómo se reparte la tasa por comuna y en,#797f85,#ffffff,14,400,4.05
+comunas,1400,subtítulo,Detalle por comuna,#1f2933,#ffffff,28,600,14.76
+comunas,1400,texto del cuerpo,Respuesta,#49525a,#f0f4f8,14,400,7.2
+comunas,1400,aviso,"En el grupo de estratos 1-2, la Comuna 2",#1f2933,#ffffff,16,400,14.76
+comunas,1400,rótulo de eje (gráfico),Comuna 03,#808495,#ffffff,12,400,3.72
+comunas,1400,título de eje (gráfico),Comuna,#808495,#ffffff,12,400,3.72
+comunas,1400,rótulo de leyenda (gráfico),muestra suficiente,#808495,#ffffff,12,400,3.72
+sensibilidades,1400,pie (caption),¿Cambia la conclusión si se cambian el f,#797f85,#ffffff,14,400,4.05
+sensibilidades,1400,subtítulo,Escenarios y resultados,#1f2933,#ffffff,28,600,14.76
+sensibilidades,1400,texto del cuerpo,Respuesta,#49525a,#f0f4f8,14,400,7.2
+sensibilidades,1400,aviso,info S0: La razón ajustada por comuna (M,#1f2933,#ffffff,16,400,14.76
+sensibilidades,1400,rótulo de eje (gráfico),S0,#808495,#ffffff,12,400,3.72
+sensibilidades,1400,título de eje (gráfico),Escenario,#808495,#ffffff,12,400,3.72
+concentracion,1400,pie (caption),¿Se concentran los casos en pocos barrio,#797f85,#ffffff,14,400,4.05
+concentracion,1400,subtítulo,K3 · Concentración de los casos,#1f2933,#ffffff,28,600,14.76
+concentracion,1400,rótulo de tarjeta,Participación de los barrios con más sev,#1f2933,#ffffff,14,400,14.76
+concentracion,1400,valor de tarjeta,"56,6 %",#1f2933,#ffffff,36,400,14.76
+concentracion,1400,texto del cuerpo,Respuesta,#49525a,#f0f4f8,14,400,7.2
+calidad,1400,pie (caption),¿Qué tan confiable es la unión entre las,#797f85,#ffffff,14,400,4.05
+calidad,1400,subtítulo,Nombre validado según la coincidencia co,#1f2933,#ffffff,28,600,14.76
+calidad,1400,rótulo de tarjeta,Cobertura de la llave,#1f2933,#ffffff,14,400,14.76
+calidad,1400,valor de tarjeta,"99,883 %",#1f2933,#ffffff,36,400,14.76
+calidad,1400,texto del cuerpo,Respuesta,#49525a,#f0f4f8,14,400,7.2
+calidad,1400,encabezado de tabla,Código,#626970,#ffffff,14,400,5.56
+calidad,1400,celda de tabla,1011,#1f2933,#ffffff,14,400,14.76
+calidad,1400,aviso,Qué NO demuestra: que el estrato asignad,#1f2933,#ffffff,16,400,14.76
+construcciones,1400,pie (caption),¿Qué construcciones hay detrás de las ci,#797f85,#ffffff,14,400,4.05
+construcciones,1400,texto del cuerpo,Respuesta,#49525a,#f0f4f8,14,400,7.2
+construcciones,1400,rótulo de control,Comuna,#1f2933,#ffffff,14,400,14.76
+construcciones,1400,rótulo de eje (gráfico),"−76,564",#808495,#ffffff,12,400,3.72
+construcciones,1400,título de eje (gráfico),Longitud (grados),#808495,#ffffff,14,400,3.72
+construcciones,1400,rótulo de leyenda (gráfico),sin_cambio,#808495,#ffffff,14,400,3.72
+fuentes,1400,pie (caption),"¿De dónde salen los datos, con qué licen",#797f85,#ffffff,14,400,4.05
+fuentes,1400,subtítulo,Fecha de corte y población,#1f2933,#ffffff,28,600,14.76
+fuentes,1400,rótulo de tarjeta,Fecha de corte,#1f2933,#ffffff,14,400,14.76
+fuentes,1400,valor de tarjeta,2026-09-02,#1f2933,#ffffff,36,400,14.76
+fuentes,1400,texto del cuerpo,Respuesta,#49525a,#f0f4f8,14,400,7.2
+fuentes,1400,encabezado de tabla,Fuente,#626970,#ffffff,14,400,5.56
+fuentes,1400,celda de tabla,Impacto Satelital en Edificaciones por T,#1f2933,#ffffff,14,400,14.76
+respuesta,1024,pie (caption),¿En esta muestra se detecta diferencia e,#797f85,#ffffff,14,400,4.05
+respuesta,1024,subtítulo,Estratos 3-5 frente a 1-2,#1f2933,#ffffff,28,600,14.76
+respuesta,1024,rótulo de tarjeta,Tasa 3-5,#1f2933,#ffffff,14,400,14.76
+respuesta,1024,valor de tarjeta,"6,33 %",#1f2933,#ffffff,36,400,14.76
+respuesta,1024,texto del cuerpo,Respuesta,#1f2933,#d7e2ee,14,600,11.24
+estratos,1024,pie (caption),¿Cuál es la tasa de cambio satelital sev,#797f85,#ffffff,14,400,4.05
+estratos,1024,subtítulo,Detalle por estrato,#1f2933,#ffffff,28,600,14.76
+estratos,1024,texto del cuerpo,Respuesta,#49525a,#f0f4f8,14,400,7.2
+estratos,1024,aviso,El estrato con más construcciones sin da,#1f2933,#ffffff,16,400,14.76
+estratos,1024,rótulo de eje (gráfico),Estrato 1muestra baja,#808495,#ffffff,12,400,3.72
+estratos,1024,título de eje (gráfico),Estrato (por lados de manzana),#808495,#ffffff,12,400,3.72
+estratos,1024,rótulo de leyenda (gráfico),muestra suficiente,#808495,#ffffff,12,400,3.72
+comunas,1024,pie (caption),¿Cómo se reparte la tasa por comuna y en,#797f85,#ffffff,14,400,4.05
+comunas,1024,subtítulo,Detalle por comuna,#1f2933,#ffffff,28,600,14.76
+comunas,1024,texto del cuerpo,Respuesta,#49525a,#f0f4f8,14,400,7.2
+comunas,1024,aviso,"En el grupo de estratos 1-2, la Comuna 2",#1f2933,#ffffff,16,400,14.76
+comunas,1024,rótulo de eje (gráfico),Comuna 03,#808495,#ffffff,12,400,3.72
+comunas,1024,título de eje (gráfico),Comuna,#808495,#ffffff,12,400,3.72
+comunas,1024,rótulo de leyenda (gráfico),muestra suficiente,#808495,#ffffff,12,400,3.72
+sensibilidades,1024,pie (caption),¿Cambia la conclusión si se cambian el f,#797f85,#ffffff,14,400,4.05
+sensibilidades,1024,subtítulo,Escenarios y resultados,#1f2933,#ffffff,28,600,14.76
+sensibilidades,1024,texto del cuerpo,Respuesta,#49525a,#f0f4f8,14,400,7.2
+sensibilidades,1024,aviso,info S0: La razón ajustada por comuna (M,#1f2933,#ffffff,16,400,14.76
+sensibilidades,1024,rótulo de eje (gráfico),S0,#808495,#ffffff,12,400,3.72
+sensibilidades,1024,título de eje (gráfico),Escenario,#808495,#ffffff,12,400,3.72
+concentracion,1024,pie (caption),¿Se concentran los casos en pocos barrio,#797f85,#ffffff,14,400,4.05
+concentracion,1024,subtítulo,K3 · Concentración de los casos,#1f2933,#ffffff,28,600,14.76
+concentracion,1024,rótulo de tarjeta,Participación de los barrios con más sev,#1f2933,#ffffff,14,400,14.76
+concentracion,1024,valor de tarjeta,"56,6 %",#1f2933,#ffffff,36,400,14.76
+concentracion,1024,texto del cuerpo,Respuesta,#49525a,#f0f4f8,14,400,7.2
+calidad,1024,pie (caption),¿Qué tan confiable es la unión entre las,#797f85,#ffffff,14,400,4.05
+calidad,1024,subtítulo,Nombre validado según la coincidencia co,#1f2933,#ffffff,28,600,14.76
+calidad,1024,rótulo de tarjeta,Cobertura de la llave,#1f2933,#ffffff,14,400,14.76
+calidad,1024,valor de tarjeta,"99,883 %",#1f2933,#ffffff,36,400,14.76
+calidad,1024,texto del cuerpo,Respuesta,#49525a,#f0f4f8,14,400,7.2
+calidad,1024,encabezado de tabla,Código,#626970,#ffffff,14,400,5.56
+calidad,1024,celda de tabla,1011,#1f2933,#ffffff,14,400,14.76
+calidad,1024,aviso,Qué NO demuestra: que el estrato asignad,#1f2933,#ffffff,16,400,14.76
+construcciones,1024,pie (caption),¿Qué construcciones hay detrás de las ci,#797f85,#ffffff,14,400,4.05
+construcciones,1024,texto del cuerpo,Respuesta,#49525a,#f0f4f8,14,400,7.2
+construcciones,1024,rótulo de control,Comuna,#1f2933,#ffffff,14,400,14.76
+construcciones,1024,rótulo de eje (gráfico),"−76,560",#ffffff,#ffffff,12,400,1.0
+construcciones,1024,título de eje (gráfico),Longitud (grados),#808495,#ffffff,14,400,3.72
+construcciones,1024,rótulo de leyenda (gráfico),sin_cambio,#808495,#ffffff,14,400,3.72
+fuentes,1024,pie (caption),"¿De dónde salen los datos, con qué licen",#797f85,#ffffff,14,400,4.05
+fuentes,1024,subtítulo,Fecha de corte y población,#1f2933,#ffffff,28,600,14.76
+fuentes,1024,rótulo de tarjeta,Fecha de corte,#1f2933,#ffffff,14,400,14.76
+fuentes,1024,valor de tarjeta,2026-09-02,#1f2933,#ffffff,36,400,14.76
+fuentes,1024,texto del cuerpo,Respuesta,#49525a,#f0f4f8,14,400,7.2
+fuentes,1024,encabezado de tabla,Fuente,#626970,#ffffff,14,400,5.56
+fuentes,1024,celda de tabla,Impacto Satelital en Edificaciones por T,#1f2933,#ffffff,14,400,14.76
+respuesta,390,pie (caption),¿En esta muestra se detecta diferencia e,#797f85,#ffffff,14,400,4.05
+respuesta,390,subtítulo,Estratos 3-5 frente a 1-2,#1f2933,#ffffff,28,600,14.76
+respuesta,390,rótulo de tarjeta,Tasa 3-5,#1f2933,#ffffff,14,400,14.76
+respuesta,390,valor de tarjeta,"6,33 %",#1f2933,#ffffff,36,400,14.76
+respuesta,390,texto del cuerpo,Respuesta,#1f2933,#d7e2ee,14,600,11.24
+estratos,390,pie (caption),¿Cuál es la tasa de cambio satelital sev,#797f85,#ffffff,14,400,4.05
+estratos,390,subtítulo,Detalle por estrato,#1f2933,#ffffff,28,600,14.76
+estratos,390,texto del cuerpo,Respuesta,#49525a,#f0f4f8,14,400,7.2
+estratos,390,aviso,El estrato con más construcciones sin da,#1f2933,#ffffff,16,400,14.76
+estratos,390,rótulo de eje (gráfico),Estrato 1muestra baja,#808495,#ffffff,12,400,3.72
+estratos,390,título de eje (gráfico),Estrato (por lados de manzana),#808495,#ffffff,12,400,3.72
+estratos,390,rótulo de leyenda (gráfico),muestra suficiente,#808495,#ffffff,12,400,3.72
+comunas,390,pie (caption),¿Cómo se reparte la tasa por comuna y en,#797f85,#ffffff,14,400,4.05
+comunas,390,subtítulo,Detalle por comuna,#1f2933,#ffffff,28,600,14.76
+comunas,390,texto del cuerpo,Respuesta,#49525a,#f0f4f8,14,400,7.2
+comunas,390,aviso,"En el grupo de estratos 1-2, la Comuna 2",#1f2933,#ffffff,16,400,14.76
+comunas,390,rótulo de eje (gráfico),Comuna 03,#808495,#ffffff,12,400,3.72
+comunas,390,título de eje (gráfico),Comuna,#808495,#ffffff,12,400,3.72
+comunas,390,rótulo de leyenda (gráfico),muestra suficiente,#808495,#ffffff,12,400,3.72
+sensibilidades,390,pie (caption),¿Cambia la conclusión si se cambian el f,#797f85,#ffffff,14,400,4.05
+sensibilidades,390,subtítulo,Escenarios y resultados,#1f2933,#ffffff,28,600,14.76
+sensibilidades,390,texto del cuerpo,Respuesta,#49525a,#f0f4f8,14,400,7.2
+sensibilidades,390,aviso,info S0: La razón ajustada por comuna (M,#1f2933,#ffffff,16,400,14.76
+sensibilidades,390,rótulo de eje (gráfico),S0,#808495,#ffffff,12,400,3.72
+sensibilidades,390,título de eje (gráfico),Escenario,#808495,#ffffff,12,400,3.72
+concentracion,390,pie (caption),¿Se concentran los casos en pocos barrio,#797f85,#ffffff,14,400,4.05
+concentracion,390,subtítulo,K3 · Concentración de los casos,#1f2933,#ffffff,28,600,14.76
+concentracion,390,rótulo de tarjeta,Participación de los barrios con más sev,#1f2933,#ffffff,14,400,14.76
+concentracion,390,valor de tarjeta,"56,6 %",#1f2933,#ffffff,36,400,14.76
+concentracion,390,texto del cuerpo,Respuesta,#49525a,#f0f4f8,14,400,7.2
+calidad,390,pie (caption),¿Qué tan confiable es la unión entre las,#797f85,#ffffff,14,400,4.05
+calidad,390,subtítulo,Nombre validado según la coincidencia co,#1f2933,#ffffff,28,600,14.76
+calidad,390,rótulo de tarjeta,Cobertura de la llave,#1f2933,#ffffff,14,400,14.76
+calidad,390,valor de tarjeta,"99,883 %",#1f2933,#ffffff,36,400,14.76
+calidad,390,texto del cuerpo,Respuesta,#49525a,#f0f4f8,14,400,7.2
+calidad,390,encabezado de tabla,Código,#626970,#ffffff,14,400,5.56
+calidad,390,celda de tabla,1011,#1f2933,#ffffff,14,400,14.76
+calidad,390,aviso,Qué NO demuestra: que el estrato asignad,#1f2933,#ffffff,16,400,14.76
+construcciones,390,pie (caption),¿Qué construcciones hay detrás de las ci,#797f85,#ffffff,14,400,4.05
+construcciones,390,texto del cuerpo,Respuesta,#49525a,#f0f4f8,14,400,7.2
+construcciones,390,rótulo de control,Comuna,#1f2933,#ffffff,14,400,14.76
+construcciones,390,rótulo de eje (gráfico),"−76,560",#808495,#ffffff,12,400,3.72
+construcciones,390,título de eje (gráfico),Longitud (grados),#808495,#ffffff,14,400,3.72
+construcciones,390,rótulo de leyenda (gráfico),sin_cambio,#808495,#ffffff,14,400,3.72
+fuentes,390,pie (caption),"¿De dónde salen los datos, con qué licen",#797f85,#ffffff,14,400,4.05
+fuentes,390,subtítulo,Fecha de corte y población,#1f2933,#ffffff,28,600,14.76
+fuentes,390,rótulo de tarjeta,Fecha de corte,#1f2933,#ffffff,14,400,14.76
+fuentes,390,valor de tarjeta,2026-09-02,#1f2933,#ffffff,36,400,14.76
+fuentes,390,texto del cuerpo,Respuesta,#49525a,#f0f4f8,14,400,7.2
+fuentes,390,encabezado de tabla,Fuente,#626970,#ffffff,14,400,5.56
+fuentes,390,celda de tabla,Impacto Satelital en Edificaciones por T,#1f2933,#ffffff,14,400,14.76

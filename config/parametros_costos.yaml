@@ -1,0 +1,70 @@
+# Parámetros de costo del proyecto (6.4). TODOS están vacíos a propósito: ninguna cifra monetaria sale del código ni de la documentación.
+# Un parámetro solo puede tener valor si el equipo lo aporta con su fuente y su fecha (por ejemplo, la lista de precios de un proveedor y el día en que se consultó).
+# Mientras haya parámetros vacíos, `python scripts/finanzas/costos.py` muestra el consumo medido y «costo no calculado: faltan parámetros».
+# Las fórmulas están en docs/finanzas/estructura_costos.md. Cada parámetro tiene: valor (null o un número), unidad, descripcion, fuente y fecha (estos dos son obligatorios si hay valor).
+moneda:
+  valor: null
+  unidad: "código de moneda (texto)"
+  descripcion: "Moneda en la que están expresados los precios y tarifas de este archivo."
+  fuente: null
+  fecha: null
+precio_hora_computo:
+  valor: null
+  unidad: "moneda por hora de cómputo"
+  descripcion: "Precio de una hora del equipo o servicio donde corre el pipeline (propio o alquilado)."
+  fuente: null
+  fecha: null
+precio_gb_mes_almacenamiento:
+  valor: null
+  unidad: "moneda por GB-mes"
+  descripcion: "Precio de guardar un gigabyte durante un mes (disco propio o servicio de almacenamiento)."
+  fuente: null
+  fecha: null
+precio_gb_transferencia:
+  valor: null
+  unidad: "moneda por GB"
+  descripcion: "Precio de cada gigabyte que sale del servicio, si se desplegara en la nube; no aplica hoy porque todo corre en un equipo."
+  fuente: null
+  fecha: null
+tarifa_hora_equipo:
+  valor: null
+  unidad: "moneda por hora-persona"
+  descripcion: "Valor de una hora de trabajo de una persona del equipo."
+  fuente: null
+  fecha: null
+horas_equipo_por_ejecucion:
+  valor: null
+  unidad: "horas-persona por ejecución"
+  descripcion: "Tiempo de una persona dedicado a lanzar y revisar una ejecución."
+  fuente: null
+  fecha: null
+ejecuciones_por_mes:
+  valor: null
+  unidad: "ejecuciones por mes"
+  descripcion: "Cuántas veces se ejecuta el pipeline en un mes (el DAG programado corre una vez al día si Docker está encendido)."
+  fuente: null
+  fecha: null
+horas_mantenimiento_por_cambio_de_fuente:
+  valor: null
+  unidad: "horas-persona por cambio"
+  descripcion: "Tiempo para adaptar el pipeline cuando una fuente cambia (columnas, códigos, formato)."
+  fuente: null
+  fecha: null
+cambios_de_fuente_por_ano:
+  valor: null
+  unidad: "cambios por año"
+  descripcion: "Cuántas veces al año se espera que cambie alguna fuente."
+  fuente: null
+  fecha: null
+precio_licencias_y_datos_mes:
+  valor: null
+  unidad: "moneda por mes"
+  descripcion: "Licencias de software o datos de pago; las fuentes actuales son abiertas, así que lo esperado es que no haya costo."
+  fuente: null
+  fecha: null
+horas_soporte_por_mes:
+  valor: null
+  unidad: "horas-persona por mes"
+  descripcion: "Tiempo de atención a personas usuarias (preguntas, accesos, correcciones)."
+  fuente: null
+  fecha: null

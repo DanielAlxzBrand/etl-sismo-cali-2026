@@ -1,0 +1,23 @@
+magnitud,valor,unidad,origen,fecha
+tiempo_main_todas_las_etapas,3.4,s,medido en un clon temporal con scripts/finanzas/medir_recursos.py (mediana de 3 repeticiones; medición local de una máquina),2026-11-14
+pico_memoria_main_todas_las_etapas,148,MB,medido en un clon temporal con scripts/finanzas/medir_recursos.py (mediana de 3 repeticiones; medición local de una máquina); conjunto de trabajo máximo del proceso,2026-11-14
+tamano_data_mb,10.6,MB,clon temporal,2026-11-14
+tamano_base_sqlite_mb,1.6,MB,clon temporal,2026-11-14
+tamano_zip_de_prueba_mb,6.9,MB,"clon temporal, scripts/make_dist.py",2026-11-14
+duracion_suite_de_pruebas,168.6,s,docs/validacion/informe_pruebas.md (suite completa con cobertura),2026-11-14
+pruebas_ejecutadas,711,pruebas,docs/validacion/informe_pruebas.md,2026-11-14
+latencia_api_sqlite_mediana_por_ruta,3.6 a 13.9,ms,"EV-055 (medición local, 12 rutas)",2026-11-14
+latencia_api_mysql_mediana_por_ruta,4.8 a 126.9,ms,"EV-055 (medición local, 12 rutas)",2026-11-14
+carga_a_mysql_fila_a_fila_mediana,2.415,s,EV-030 (5622 filas),2026-11-14
+carga_a_mysql_lote_500_mediana,0.787,s,EV-030 (5622 filas),2026-11-14
+carga_a_mysql_lote_1000_mediana,0.788,s,EV-030 (5622 filas),2026-11-14
+carga_a_mysql_lote_2000_mediana,0.715,s,EV-030 (5622 filas),2026-11-14
+duracion_dag_cuatro_tareas,9,s,EV-064 (ejecución manual en Airflow con Docker),2026-11-14
+memoria_en_reposo_airflow-worker,711,MiB,docker stats --no-stream tras un minuto en reposo,2026-11-14
+memoria_en_reposo_airflow-triggerer,242,MiB,docker stats --no-stream tras un minuto en reposo,2026-11-14
+memoria_en_reposo_airflow-apiserver,266,MiB,docker stats --no-stream tras un minuto en reposo,2026-11-14
+memoria_en_reposo_airflow-dag-processor,389,MiB,docker stats --no-stream tras un minuto en reposo,2026-11-14
+memoria_en_reposo_airflow-scheduler,277,MiB,docker stats --no-stream tras un minuto en reposo,2026-11-14
+memoria_en_reposo_postgres,74,MiB,docker stats --no-stream tras un minuto en reposo,2026-11-14
+memoria_en_reposo_redis,11,MiB,docker stats --no-stream tras un minuto en reposo,2026-11-14
+memoria_en_reposo_total_contenedores_de_airflow,1970,MiB,suma de las filas anteriores,2026-11-14

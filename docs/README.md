@@ -108,8 +108,17 @@
 | [pruebas_panel.md](panel/pruebas_panel.md) | pruebas del panel y resultados de las evidencias |
 | [accesibilidad_y_respuesta.md](panel/accesibilidad_y_respuesta.md) | contrastes calculados, mediciones locales y lo pendiente de usuarios |
 
+### Usuarios y finanzas
+| documento | contenido |
+|---|---|
+| [usuarios/README.md](usuarios/README.md) | índice del componente: qué está preparado, qué falta y los cinco pasos para las sesiones reales |
+| [evaluacion_heuristica.md](usuarios/evaluacion_heuristica.md) | evaluación heurística interna del panel: hallazgos con severidad y captura, fortalezas y matriz |
+| [protocolo_sesiones.md](usuarios/protocolo_sesiones.md), [guion_sesion.md](usuarios/guion_sesion.md), [consentimiento.md](usuarios/consentimiento.md) e [instrumentos.md](usuarios/instrumentos.md) | material de las sesiones con personas usuarias (preparado; sin sesiones realizadas) |
+| [registro_de_friccion.md](usuarios/registro_de_friccion.md) y [trazabilidad_de_cambios.md](usuarios/trazabilidad_de_cambios.md) | fricciones precargadas desde la evaluación heurística y plantilla de cambios |
+| [finanzas/estructura_costos.md](finanzas/estructura_costos.md) | categorías de costo, consumo medido y fórmulas con precios como parámetros vacíos |
+
 ### Decisiones
-[DECISIONES.md](DECISIONES.md): todas las decisiones con alternativas, razón, riesgo y fecha (D1 a D81; las nuevas continúan desde D82).
+[DECISIONES.md](DECISIONES.md): todas las decisiones con alternativas, razón, riesgo y fecha (D1 a D86; las nuevas continúan desde D87).
 
 ### Almacenamiento relacional (MySQL)
 | documento | contenido |

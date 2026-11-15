@@ -22,7 +22,7 @@ Lo que existe hoy es el pipeline, sus indicadores y su documentación para 5.146
 | 6. Recursos clave | Código del pipeline, pruebas, documentación, snapshots con sha256 y datos derivados. | repo |
 | 7. Actividades clave | Extraer, limpiar, integrar, calcular indicadores con incertidumbre, verificar, documentar y exponer. | repo |
 | 8. Socios clave | Productores de las fuentes (Fondo Adaptación, DAPM Cali, IDESC): hoy proveedores de datos; como socios, hipótesis. | repo + hipótesis |
-| 9. Estructura de costos | No estimado. Categorías sin cifras: tiempo del equipo, cómputo y almacenamiento, mantenimiento ante cambios de fuentes. | no estimado |
+| 9. Estructura de costos | No estimado. Categorías sin cifras: tiempo del equipo, cómputo y almacenamiento, mantenimiento ante cambios de fuentes. Detalle de categorías y fórmulas con precios como parámetros vacíos: [docs/finanzas/estructura_costos.md](../finanzas/estructura_costos.md). | no estimado |
 
 ![Canvas del modelo de negocio](img/canvas_modelo_negocio.png)
 *Diagrama generado a partir del documento; hipótesis sin validar.*

@@ -172,8 +172,37 @@ Fichas de los ítems 1.1 a 1.5 (Estrategia), 2.1 a 2.3 (API, fuentes y credencia
 - **(d) Captura opcional:** PowerShell con `.\.venv\Scripts\python.exe -m pytest tests/test_panel_humo_extremo_a_extremo.py -q -p no:cacheprovider`, que debe terminar en `5 passed`. Nombre: `captura_5.3_humo.png`.
 - **(e) Validar:** `.\.venv\Scripts\python.exe -m pytest tests/test_panel_paginas.py tests/test_panel_integracion.py tests/test_panel_humo_extremo_a_extremo.py -q -p no:cacheprovider` y, con MySQL, `.\.venv\Scripts\python.exe scripts\evidencias\evidencia_panel_almacenes.py`.
 
-### Nota sobre el ítem 3.3
-El panel aporta mediciones y verificaciones técnicas (contrastes calculados, latencias y tiempos de renderizado de una máquina) en `docs/panel/accesibilidad_y_respuesta.md`. El ítem 3.3 **no se marca**: depende de sesiones con usuarios.
+---
+
+## Usuarios, UX y finanzas · Evaluación, sesiones y costos (ítems 3.3 y 6.1 a 6.4 del checklist)
+
+### Ítem 3.3 · Usabilidad, capacidad de respuesta y coherencia visual
+- **(a) Archivo principal:** `docs/usuarios/evaluacion_heuristica.md` (Markdown). Demuestra: evaluación heurística interna con las diez heurísticas de Nielsen sobre las ocho páginas, 14 hallazgos con severidad 0 a 4 y captura, fortalezas y matriz heurística × página. **No demuestra:** que personas reales entiendan el panel; los hallazgos no se corrigieron.
+- **(b) Apoyo:**
+  - `docs/evidencias/usuarios/EV-066_capturas_anchos.txt` (24 capturas automatizadas en 1400, 1024 y 390 px, con desbordamiento y texto recortado), `EV-069_capturas_390_barra_cerrada.txt` (8 capturas más a 390 px).
+  - `docs/evidencias/usuarios/EV-067_mediciones_anchos.txt` y su `.csv` (tiempo de dibujo medido en el navegador; medición local de una máquina) y `EV-068_contraste_texto.txt` (contraste calculado, sin declarar un nivel).
+- **(c) Texto sugerido:** «Evaluación heurística interna del panel con 14 hallazgos priorizados, capturas en tres anchos, tiempos de dibujo medidos y contraste calculado; las sesiones con personas usuarias están preparadas y pendientes: `docs/usuarios/evaluacion_heuristica.md`.»
+- **(d) Captura opcional:** la página «Respuesta» a 1024 px, donde se ve el recorte de las tarjetas (F-01). Nombre: `captura_3.3_respuesta_1024.png`.
+- **(e) Validar:** `.\.venv\Scripts\python.exe -m pytest tests/test_usuarios_estructura.py -q -p no:cacheprovider`.
+
+### Ítems 6.1, 6.2 y 6.3 · Sesiones, métricas y fricciones (pendientes por un hecho externo)
+- **(a) Archivo principal:** `docs/usuarios/README.md` (índice) con `protocolo_sesiones.md`, `guion_sesion.md`, `consentimiento.md` e `instrumentos.md`. Demuestra: material preparado para 2 o 3 sesiones reales (seis tareas con criterio de éxito, consentimiento, SUS y CSAT), un script de análisis probado y un registro de fricciones precargado. **No demuestra:** que se haya hecho alguna sesión; `docs/usuarios/sesiones_reales/` solo tiene plantillas y los ítems siguen «Pendiente (hecho externo)».
+- **(b) Apoyo:**
+  - `scripts/usuarios/analizar_sesiones.py` y `tests/test_usuarios.py` (SUS con vectores conocidos, cero sesiones, rechazo de filas simuladas, n pequeño y Wilson).
+  - `docs/usuarios/simulacion/` y `docs/usuarios/resultados_simulacion.md`: **datos sintéticos rotulados, no son personas; no cuentan**.
+  - `docs/usuarios/registro_de_friccion.md` y `trazabilidad_de_cambios.md` (plantilla vacía).
+- **(c) Texto sugerido:** «Material de las sesiones con personas usuarias preparado y script de análisis probado con datos sintéticos; las sesiones reales aún no se han realizado: `docs/usuarios/README.md`.»
+- **(d) Captura opcional:** ninguna: no hay sesiones que capturar.
+- **(e) Validar:** `.\.venv\Scripts\python.exe -m pytest tests/test_usuarios.py tests/test_usuarios_estructura.py -q -p no:cacheprovider` y `.\.venv\Scripts\python.exe scripts\usuarios\analizar_sesiones.py` (debe decir «No hay sesiones reales»).
+
+### Ítem 6.4 · Finanzas y costos
+- **(a) Archivo principal:** `docs/finanzas/estructura_costos.md` (Markdown). Demuestra: siete categorías de costo, su relación con el Canvas, el consumo medido y las fórmulas con precios como parámetros vacíos. **No demuestra:** cuánto cuesta operar el panel (ningún precio tiene valor) ni la sostenibilidad del proyecto.
+- **(b) Apoyo:**
+  - `docs/finanzas/recursos_medidos.csv` (EV-070) y `config/parametros_costos.yaml`.
+  - `scripts/finanzas/costos.py` y `tests/test_finanzas.py`.
+- **(c) Texto sugerido:** «Estructura de costos por categorías, consumo de recursos medido y fórmulas de costo por ejecución con los precios como parámetros vacíos (sin cifras monetarias): `docs/finanzas/estructura_costos.md`.»
+- **(d) Captura opcional:** PowerShell con `.\.venv\Scripts\python.exe scripts\finanzas\costos.py`, que debe terminar en «costo no calculado: faltan parámetros». Nombre: `captura_6.4_costos.png`.
+- **(e) Validar:** `.\.venv\Scripts\python.exe -m pytest tests/test_finanzas.py tests/test_usuarios_estructura.py -q -p no:cacheprovider`.
 
 ---
 

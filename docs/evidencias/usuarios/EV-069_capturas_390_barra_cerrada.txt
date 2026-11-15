@@ -1,0 +1,27 @@
+# Capturas a 390 px con la barra lateral cerrada
+- comando: `python scripts/evidencias/evidencia_capturas_movil.py (navegador sin ventana por DevTools)`
+- fecha: 2026-11-14T18:51:09-05:00 (America/Bogota)
+- código de salida: 1
+- duración: 86.1 s
+- Python: 3.13.0
+- commit del repositorio: 10b2d4b
+
+Cada imagen es una «captura automatizada del navegador» a 390 px de ancho (dispositivo móvil emulado, densidad 1) después de cerrar la barra lateral con su botón.
+
+| Página | Archivo | Alto (px) | Barra lateral | Ancho del documento / de la ventana | Desborda | Elementos con texto recortado | Contenedores con desplazamiento horizontal |
+|---|---|---|---|---|---|---|---|
+| Respuesta | `EV-069_captura_respuesta_390_barra_cerrada.png` | 2160 | cerrada | 390 / 390 | no | 0 | 0 |
+| Estratos (K1) | `EV-069_captura_estratos_390_barra_cerrada.png` | 2152 | sin botón | 390 / 390 | no | 0 | 0 |
+| Comunas (K6) | `EV-069_captura_comunas_390_barra_cerrada.png` | 2458 | sin botón | 390 / 390 | no | 0 | 0 |
+| Sensibilidades (S0 a S5) | `EV-069_captura_sensibilidades_390_barra_cerrada.png` | 3464 | sin botón | 390 / 390 | no | 0 | 0 |
+| Concentración (K3 y K4) | `EV-069_captura_concentracion_390_barra_cerrada.png` | 2499 | sin botón | 390 / 390 | no | 0 | 0 |
+| Calidad de la llave | `EV-069_captura_calidad_390_barra_cerrada.png` | 2942 | sin botón | 390 / 390 | no | 0 | 1 |
+| Construcciones | `EV-069_captura_construcciones_390_barra_cerrada.png` | 2153 | sin botón | 390 / 390 | no | 0 | 0 |
+| Fuentes y sistema | `EV-069_captura_fuentes_390_barra_cerrada.png` | 3758 | sin botón | 390 / 390 | no | 0 | 1 |
+
+## Texto recortado y tablas con desplazamiento
+
+- Calidad de la llave: desplazable `<div>`  (552 px en 356 px)
+- Fuentes y sistema: desplazable `<div>`  (718 px en 356 px)
+
+Procesos del panel o de la API que quedan vivos al terminar: 0.
