@@ -1,7 +1,7 @@
 """Los archivos de Docker Compose de los servicios locales (phpMyAdmin y Airflow) se revisan como texto, sin Docker: puertos solo en 127.0.0.1, sin credenciales escritas, imágenes con versión exacta (D91).
 
 Por qué existen: un puerto publicado en 0.0.0.0 dejaría la interfaz abierta a toda la red, una contraseña escrita en un compose acabaría en el repositorio y una imagen `latest` cambiaría sin avisar.
-La comprobación en vivo de que los servicios arrancan y responden está en las evidencias EV-083 y EV-084; aquí solo se vigila que nadie deshaga lo decidido.
+La comprobación en vivo de que los servicios arrancan y responden está en las evidencias EV-085 y EV-087; aquí solo se vigila que nadie deshaga lo decidido.
 """
 import re
 

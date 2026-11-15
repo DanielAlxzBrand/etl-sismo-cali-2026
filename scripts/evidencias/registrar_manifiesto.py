@@ -167,6 +167,22 @@ FILAS_UX = {
 for _momento, _ev, _cmd in (("antes", "EV-073", _CMD_ANTES), ("despues", "EV-077", _CMD_DESPUES)):
     for _i, (_ancho, (_pid, _titulo)) in enumerate((a, p) for a in (1400, 1024, 390) for p in _PAGINAS):
         FILAS_UX[f"{_ev}{'bcdefghijklmnopqrstuvwxy'[_i]}"] = ("3.3", f"Captura automatizada del navegador de la página {_titulo} a {_ancho} px ({'antes' if _momento == 'antes' else 'después'} de los ajustes)", "imagen", _cmd, f"{_ev}_captura_{_pid}_{_ancho}.png")
+CARPETA_SERV = "docs/evidencias/servicios"
+FILAS_SERV = {
+    "EV-083": ("7.1", "Suite completa en un clon con espacios y tildes en el nombre y sin variables de UTF-8, antes de corregir la portabilidad (1 fallo por codificación y el hallazgo de las rutas largas)", "archivo",
+               "`python -m pytest -q -p no:cacheprovider` en un clon temporal con el intérprete del entorno nuevo, sin PYTHONUTF8 ni PYTHONIOENCODING", "EV-083_suite_sin_utf8_antes.txt"),
+    "EV-084": ("7.1", "La misma suite después de corregir la portabilidad: la prueba que fallaba por codificación pasa", "archivo", "mismo comando que EV-083", "EV-084_suite_sin_utf8_despues.txt"),
+    "EV-085": ("4.1, 4.2", "phpMyAdmin en vivo con la cuenta de solo lectura: siete tablas, claves foráneas, conteos iguales a Gold y escrituras rechazadas por MySQL (#1142)", "archivo",
+               "`docker compose -p servicios_prueba_pma -f servicios/phpmyadmin/docker-compose.yaml up -d` y navegador sin ventana por DevTools", "EV-085_phpmyadmin_en_vivo.txt"),
+    "EV-087": ("5.4, 7.1", "Airflow construido y ejecutado desde el zip descomprimido en una carpeta de otro nombre: interfaz, DAG sin errores de importación y cuatro tareas en éxito", "archivo",
+               "`preparar_airflow.py` y `docker compose -p servicios_prueba` (build, up, dags trigger, down) sobre un zip temporal", "EV-087_airflow_desde_el_zip.txt"),
+    "EV-088": ("4.1, 5.6", "Tabla de mutaciones de las pruebas de los servicios locales (puertos, credenciales, privilegios, versiones, canario, `.env` sobrescrito, nombre fijo, zip, codificación): todas detectadas", "archivo",
+               "mutación de un archivo en un clon y `python -m pytest -q -p no:cacheprovider` sobre las pruebas de servicios", "EV-088_mutaciones_servicios.txt"),
+    "EV-089": ("5.6, 7.1", "Suite completa en verde en un clon con espacios y tildes y sin variables de UTF-8, en el commit del componente de servicios, con `data/` idéntico y el escáner de secretos sin hallazgos", "archivo",
+               "`python -m pytest -q -p no:cacheprovider` en un clon temporal con el intérprete del entorno nuevo", "EV-089_suite_final_sin_utf8.txt"),
+}
+for _i, _n in enumerate(("acceso", "tablas", "estructura_construccion", "relaciones_construccion", "conteos", "tabla_corrida", "insert_rechazado", "drop_rechazado")):
+    FILAS_SERV[f"EV-085{'bcdefghi'[_i]}"] = ("4.1, 4.2", f"Captura automatizada del navegador de phpMyAdmin ({_n.replace('_', ' ')})", "imagen", "mismo comando que EV-085", f"EV-085_captura_{_n}.png")
 CARPETA_FIN = "docs/finanzas"
 FILAS_FIN = {
     "EV-070": ("6.4", "Recursos medidos del pipeline (tiempo y memoria de `main.py --stage all`, tamaños, memoria de Airflow en reposo) y mediciones previas reunidas, con su origen y fecha; sin cifras monetarias", "archivo",
@@ -235,6 +251,11 @@ def main():
             log.warning("falta %s; no se registra %s", archivo, ev)
             continue
         nuevas.append(fila(ev, item, que, tipo, cmd, archivo, CARPETA_UX, FECHA_USU))
+    for ev, (item, que, tipo, cmd, archivo) in FILAS_SERV.items():
+        if not (REPO / CARPETA_SERV / archivo).exists():
+            log.warning("falta %s; no se registra %s", archivo, ev)
+            continue
+        nuevas.append(fila(ev, item, que, tipo, cmd, archivo, CARPETA_SERV, "2026-11-15"))
     for ev, (item, que, tipo, cmd, archivo) in FILAS_FIN.items():
         if not (REPO / CARPETA_FIN / archivo).exists():
             log.warning("falta %s; no se registra %s", archivo, ev)

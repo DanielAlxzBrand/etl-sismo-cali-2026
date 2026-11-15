@@ -1,7 +1,7 @@
 """Usuario de MySQL de solo lectura (sismo_lectura) para phpMyAdmin (D91): solo SELECT sobre la base real, origen sin comodines, contraseña solo en .env e idempotencia, con conexiones simuladas.
 
 Por qué existe: phpMyAdmin se usa para mirar los datos y no debe poder cambiarlos; la garantía es que la cuenta no tiene ningún privilegio de escritura, así que MySQL rechaza el intento
-aunque alguien lo teclee en la pestaña SQL. Estas pruebas no necesitan MySQL; la comprobación en vivo (una escritura rechazada) está en EV-083.
+aunque alguien lo teclee en la pestaña SQL. Estas pruebas no necesitan MySQL; la comprobación en vivo (una escritura rechazada) está en EV-085.
 """
 import argparse
 import logging

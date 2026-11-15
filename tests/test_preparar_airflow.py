@@ -1,7 +1,7 @@
 """`scripts/orquestacion/preparar_airflow.py` en carpetas temporales y sin Docker: estructura, `.env` que no se sobrescribe, nombre de carpeta detectado, puerto ocupado y ningún valor secreto en pantalla (D91).
 
 Por qué existe: quien reciba el zip prepara Airflow con este script; si sobrescribiera un `.env` perdería su contraseña, si el nombre de la carpeta fuera fijo el compose montaría el lugar equivocado
-y si imprimiera un valor lo dejaría en la consola. Aquí se comprueba cada cosa con un proyecto de mentira (con espacios en el nombre) y un Docker simulado. La verificación en vivo es EV-084.
+y si imprimiera un valor lo dejaría en la consola. Aquí se comprueba cada cosa con un proyecto de mentira (con espacios en el nombre) y un Docker simulado. La verificación en vivo es EV-087.
 """
 import hashlib
 import importlib.util
