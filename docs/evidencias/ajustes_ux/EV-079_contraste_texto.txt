@@ -1,0 +1,26 @@
+# Contraste calculado del texto secundario y de los rótulos del panel (después de los ajustes)
+- comando: `python scripts/evidencias/evidencia_capturas_ajustes.py --momento despues`
+- fecha: 2026-11-14T21:36:51-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 433.8 s
+- Python: 3.13.0
+- commit del repositorio: 4ffc5b6
+
+Relación de contraste del texto que dibuja Streamlit (pies, subtítulos, rótulos y valores de tarjetas, texto de tablas, avisos y rótulos de controles), calculada con la fórmula de luminancia relativa de WCAG 2.x (`src/panel/tema.py`) sobre los colores que el navegador calculó para el primer elemento visible de cada categoría en cada página y ancho. Valores calculados: **no se declara un nivel de conformidad**. El texto de los gráficos (rótulos y títulos de ejes, rótulos de leyenda) se midió en los elementos de texto del SVG; el texto de las tablas interactivas se dibuja en un lienzo y no se mide. La opacidad de los elementos y de sus contenedores se aplicó al color.
+
+| Categoría | Muestras | Mínimo | Mediana | Máximo | Supera 3 | Supera 4,5 | Supera 7 |
+|---|---|---|---|---|---|---|---|
+| pie (caption) | 24 | 4,86 | 4,86 | 4,86 | sí | sí | no |
+| encabezado de tabla | 6 | 6,9 | 6,9 | 6,9 | sí | sí | no |
+| rótulo de eje (gráfico) | 12 | 7,61 | 7,61 | 7,61 | sí | sí | sí |
+| título de eje (gráfico) | 12 | 7,61 | 7,61 | 7,61 | sí | sí | sí |
+| rótulo de leyenda (gráfico) | 9 | 7,61 | 7,61 | 7,61 | sí | sí | sí |
+| texto del cuerpo | 24 | 9,39 | 9,39 | 14,15 | sí | sí | sí |
+| subtítulo | 21 | 18,57 | 18,57 | 18,57 | sí | sí | sí |
+| rótulo de tarjeta | 12 | 18,57 | 18,57 | 18,57 | sí | sí | sí |
+| valor de tarjeta | 12 | 18,57 | 18,57 | 18,57 | sí | sí | sí |
+| aviso | 12 | 18,57 | 18,57 | 18,57 | sí | sí | sí |
+| celda de tabla | 6 | 18,57 | 18,57 | 18,57 | sí | sí | sí |
+| rótulo de control | 3 | 18,57 | 18,57 | 18,57 | sí | sí | sí |
+
+Detalle por página y ancho en `EV-079_contraste_texto.csv`. Qué NO demuestra: el contraste de cada elemento de la interfaz (solo una muestra por categoría), la legibilidad para personas con baja visión ni la conformidad con ninguna norma.

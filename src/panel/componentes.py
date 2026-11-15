@@ -143,11 +143,11 @@ def grafico_tasas(df, x, titulo, descripcion, alto=ALTO_GRAFICO, titulo_x=None):
     """Barras HORIZONTALES de tasa con su intervalo de Wilson (F-04, F-05, D87). `df` debe traer: x, tasa_pct, inf_pct, sup_pct, muestra, tasa_txt, ic_txt.
 
     Eran verticales y a 390 px Vega solo dibujaba la primera y la última etiqueta; con las barras acostadas, cada etiqueta tiene su propia fila y se ven todas. La muestra baja se distingue
-    por texto (en la leyenda y en la etiqueta de la fila), no solo por color (D74). El alto crece con el número de barras. No ordena los grupos: respeta el orden de `df`.
+    por texto (en la leyenda y en la etiqueta de la fila), no solo por color (D74). Cada barra mide `ALTO_POR_BARRA` píxeles (un paso de Vega) y las etiquetas no se ocultan por solaparse: con un alto fijo, Vega achicaba el área y borraba las etiquetas de las barras de en medio. No ordena los grupos: respeta el orden de `df`.
     """
     col = tema.colores()
     orden = list(df[x])
-    base = alt.Chart(df).encode(y=alt.Y(f"{x}:N", sort=orden, title=titulo_x or "", axis=alt.Axis(labelFontSize=12, titleFontSize=12, labelLimit=0, labelExpr="split(datum.label, ' · ')")))
+    base = alt.Chart(df).encode(y=alt.Y(f"{x}:N", sort=orden, title=titulo_x or "", axis=alt.Axis(labelFontSize=12, titleFontSize=12, labelLimit=0, labelOverlap=False, labelExpr="split(datum.label, ' · ')")))
     barras = base.mark_bar().encode(
         x=alt.X("tasa_pct:Q", axis=_eje_pct("Tasa de cambio satelital severo (%)")),
         color=alt.Color("muestra:N", scale=alt.Scale(domain=[ETIQUETA_SUFICIENTE, ETIQUETA_BAJA], range=[col["principal"], col["secundario"]]),
@@ -155,7 +155,7 @@ def grafico_tasas(df, x, titulo, descripcion, alto=ALTO_GRAFICO, titulo_x=None):
         tooltip=[alt.Tooltip(f"{x}:N", title="Grupo"), alt.Tooltip("tasa_txt:N", title="Tasa"), alt.Tooltip("ic_txt:N", title="Intervalo de Wilson"), alt.Tooltip("muestra:N", title="Muestra")],
     )
     error = base.mark_errorbar(color=col["texto"], thickness=2, ticks=True).encode(x=alt.X("inf_pct:Q", title=""), x2="sup_pct:Q")
-    chart = alt.layer(barras, error).properties(title=alt.TitleParams(titulo, fontSize=14, anchor="start", color=col["texto"]), height=max(alto, ALTO_POR_BARRA * len(orden)),
+    chart = alt.layer(barras, error).properties(title=alt.TitleParams(titulo, fontSize=14, anchor="start", color=col["texto"]), height=alt.Step(ALTO_POR_BARRA),
                                                 usermeta={"descripcion": descripcion}, description=descripcion)
     st.altair_chart(_con_texto_oscuro(chart), width="stretch")
     st.caption(PIE_INTERVALO)
@@ -184,7 +184,7 @@ def grafico_diferencias(df, x, titulo, descripcion, alto=ALTO_GRAFICO):
 def dispersion(df, titulo, descripcion, orden_clases, alto=ALTO_GRAFICO):
     """Dispersión lon/lat por clase de daño. No es un mapa cartográfico: sin fondo, sin teselas y sin recursos externos.
 
-    Las coordenadas se rotulan «grados decimales» y llevan cuatro decimales con coma (F-13, D87): con tres, «3,440» se leía como miles. La leyenda va abajo para dejar ancho al gráfico en pantallas estrechas.
+    Las coordenadas se rotulan «grados decimales» y llevan cuatro decimales con coma (F-13, D87): con tres, «3,440» se leía como miles. La leyenda va abajo y en dos columnas para dejar ancho al gráfico y que no se corte «sin_datos» a 390 px.
     No dibuja límites de barrios ni distancias: solo ubica puntos.
     """
     col = tema.colores()
@@ -193,7 +193,7 @@ def dispersion(df, titulo, descripcion, orden_clases, alto=ALTO_GRAFICO):
     chart = alt.Chart(df).mark_point(filled=True, size=50, opacity=0.8).encode(
         x=alt.X("lon:Q", scale=alt.Scale(zero=False), axis=alt.Axis(title="Longitud (grados decimales)", labelExpr=EXPRESION_GRADOS, labelFontSize=12, titleFontSize=12)),
         y=alt.Y("lat:Q", scale=alt.Scale(zero=False), axis=alt.Axis(title="Latitud (grados decimales)", labelExpr=EXPRESION_GRADOS, labelFontSize=12, titleFontSize=12)),
-        color=alt.Color("clase_dano:N", scale=alt.Scale(domain=list(orden_clases), range=colores), legend=alt.Legend(title="Clase de daño", orient="bottom", labelFontSize=12, titleFontSize=12)),
+        color=alt.Color("clase_dano:N", scale=alt.Scale(domain=list(orden_clases), range=colores), legend=alt.Legend(title="Clase de daño", orient="bottom", columns=2, labelFontSize=12, titleFontSize=12)),
         shape=alt.Shape("clase_dano:N", scale=alt.Scale(domain=list(orden_clases), range=formas), legend=None),
         tooltip=[alt.Tooltip("objectid:Q", title="Construcción"), alt.Tooltip("clase_dano:N", title="Clase"), alt.Tooltip("barrio:N", title="Barrio")],
     ).properties(title=alt.TitleParams(titulo, fontSize=14, anchor="start", color=col["texto"]), height=alto, description=descripcion)

@@ -131,8 +131,8 @@ def test_las_barras_de_tasa_son_horizontales_y_cada_etiqueta_tiene_su_fila():
     barras, error = espec["layer"]
     assert barras["mark"]["type"] == "bar" and barras["encoding"]["y"]["type"] == "nominal" and barras["encoding"]["x"]["type"] == "quantitative"
     assert "x2" in error["encoding"] and error["encoding"]["y"]["field"] == "grupo"
-    assert barras["encoding"]["y"]["axis"]["labelLimit"] == 0
-    assert espec["height"] >= componentes.ALTO_POR_BARRA * len(GRUPOS_SINTETICOS)
+    assert barras["encoding"]["y"]["axis"]["labelLimit"] == 0 and barras["encoding"]["y"]["axis"]["labelOverlap"] is False
+    assert espec["height"] == {"step": componentes.ALTO_POR_BARRA}      # un alto fijo achicaba el área y Vega borraba las etiquetas de en medio
 
 
 def test_la_muestra_baja_sigue_marcada_por_texto_y_por_color():
@@ -170,6 +170,11 @@ def test_la_latitud_y_la_longitud_llevan_cuatro_decimales_con_coma_y_se_rotulan_
         assert ".4f" in e["labelExpr"] and ".3f" not in e["labelExpr"] and "replace(" in e["labelExpr"]
         assert "grados decimales" in e["title"]
     assert componentes.EXPRESION_GRADOS.count(".4f") == 1
+
+
+def test_la_leyenda_de_la_ubicacion_va_abajo_en_dos_columnas_para_no_cortarse(api):
+    leyenda = _graficos_de("construcciones", api)[0]["encoding"]["color"]["legend"]
+    assert leyenda["orient"] == "bottom" and leyenda["columns"] == 2
 
 
 def test_el_titulo_del_grafico_de_ubicacion_cabe_en_una_pantalla_estrecha(api):
