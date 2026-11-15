@@ -126,7 +126,7 @@
 | [errores_comunes.md](instalacion/errores_comunes.md) | síntomas, causa probable y qué hacer al instalar y ejecutar |
 
 ### Decisiones
-[DECISIONES.md](DECISIONES.md): todas las decisiones con alternativas, razón, riesgo y fecha (D1 a D96; las nuevas continúan desde D97).
+[DECISIONES.md](DECISIONES.md): todas las decisiones con alternativas, razón, riesgo y fecha (D1 a D97; las nuevas continúan desde D98).
 
 ### Almacenamiento relacional (MySQL)
 | documento | contenido |

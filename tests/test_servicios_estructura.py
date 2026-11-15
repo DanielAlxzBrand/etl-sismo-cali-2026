@@ -24,7 +24,7 @@ NUEVOS = ["servicios/phpmyadmin/docker-compose.yaml", "orquestacion/docker-compo
 GUIAS = ["docs/instalacion/README.md", "docs/instalacion/modo_minimo.md", "docs/instalacion/modo_completo.md", "docs/instalacion/errores_comunes.md", "docs/almacenamiento/phpmyadmin.md",
          "docs/orquestacion/operacion.md", "docs/orquestacion/diferencias_con_la_guia.md"]
 # las cadenas se parten para que este archivo no se detecte a sí mismo (como hace test_estrategia)
-PROHIBIDAS = re.compile(r"(?i)pro" + r"fe(?:sor)?\b|\bpro" + r"mpt\b|DECLARACION_USO_" + r"IA|C:\\Us" + r"ers|Alex" + r"D|/Us" + r"ers/")
+PROHIBIDAS = re.compile(r"(?i)pro" + r"fe(?:sor)?\b|\bpro" + r"mpt\b|DECLARACION" + r"_USO_IA|C:\\Us" + r"ers|Alex" + r"D|/Us" + r"ers/")
 
 
 @pytest.fixture(scope="module")

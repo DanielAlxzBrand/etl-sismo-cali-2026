@@ -1,0 +1,112 @@
+"""Criterio de texto de los archivos versionados (D97): lo que viaja en el zip no trata de forma personal al equipo docente, no remite a la declaración de uso, no nombra herramientas de elaboración ni
+usa la etiqueta del avance anterior.
+
+Por qué existe: la auditoría intermedia retiró de documentos, notebooks, generadores y pruebas el vocativo al equipo docente, las remisiones al archivo de declaración (que ahora es un documento aislado de la
+raíz, sin nombrarlo), los pies sobre el uso de herramientas, los nombres de herramientas y la etiqueta del avance anterior. Esta prueba recorre exactamente lo que empaqueta `scripts/make_dist.py` y falla si alguno vuelve.
+La única excepción es el documento original de la retroalimentación recibida, que no se edita, y está atada a su sha256 (con los saltos de línea normalizados): si alguien lo edita, la excepción deja
+de valer. Las cadenas buscadas se parten para que este archivo no se detecte a sí mismo.
+Qué NO demuestra: que no existan otras formas de decir lo mismo; solo vigila las listadas. La sigla «IA» como concepto técnico está permitida (D17) y no se vigila aquí.
+"""
+import hashlib
+import importlib.util
+import re
+
+from src.common import ROOT
+
+_spec = importlib.util.spec_from_file_location("make_dist_criterio", ROOT / "scripts" / "make_dist.py")
+make_dist = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(make_dist)
+
+SUFIJOS = {".md", ".py", ".txt", ".yaml", ".yml", ".ini", ".ipynb", ".csv", ".json", ".jsonl", ".diff", ".sha256", ".xml", ".example"}
+# Las cadenas se parten para que este archivo no se detecte a sí mismo.
+REGLAS = {
+    "trato personal al equipo docente": re.compile(r"(?i)\bpro" + r"fe(?:sor(?:es)?)?\b"),
+    "remisión a la declaración de uso": re.compile("DECLARACION" + "_USO"),
+    "pie de declaración de uso": re.compile("(?i)uso de " + r"IA\b"),
+    "etiqueta del avance anterior": re.compile(r"(?i)avance[\s_]?" + r"2(?!\d)"),
+    "nombre de una herramienta de elaboración": re.compile("Cla" + "ude|Anthro" + "pic|Chat" + "GPT|Co" + "pilot|Gem" + "ini|Open" + "AI|(?i:" + r"\bpro" + r"mpt\b)"),
+}
+# Excepciones por ruta y sha256 del contenido con saltos de línea normalizados (LF): el original recibido no se edita.
+EXCEPCIONES = {
+    "docs/retroalimentacion/retroalimentacion_recibida.txt": ("a7fc50952cd84de2a36b5ecc1f6d46c0bf30f59092670f1f20e57d289b6f6839", {"etiqueta del avance anterior"},
+                                                              "documento original recibido, no se edita"),
+}
+# Las salidas crudas registradas conservan lo que tenían al capturarse (igual que la prueba de rastros de elaboración).
+CRUDAS = ("docs/evidencias/base/", "docs/evidencias/estrategia/", "docs/evidencias/api/")
+
+
+def sha_lf(texto):
+    """sha256 del texto con los saltos de línea normalizados a LF."""
+    return hashlib.sha256(texto.replace("\r\n", "\n").encode("utf-8")).hexdigest()
+
+
+def problemas_de_texto(rel, texto):
+    """Reglas que incumple un archivo del zip (lista vacía si cumple); aplica las excepciones atadas a sha256."""
+    permitidas = set()
+    if rel in EXCEPCIONES and sha_lf(texto) == EXCEPCIONES[rel][0]:
+        permitidas = EXCEPCIONES[rel][1]
+    errores = []
+    for nombre, patron in REGLAS.items():
+        if nombre in permitidas:
+            continue
+        if nombre == "nombre de una herramienta de elaboración" and rel.startswith(CRUDAS):
+            continue
+        if patron.search(texto):
+            errores.append(f"{rel}: {nombre}")
+    return errores
+
+
+def _archivos():
+    for p in make_dist.listar(ROOT):
+        rel = p.relative_to(ROOT).as_posix()
+        if p.suffix in SUFIJOS and rel.split("/")[0] != "data" and not make_dist.es_documento_aislado(rel):
+            yield rel, p.read_text(encoding="utf-8", errors="ignore")
+
+
+def test_ningun_archivo_del_zip_incumple_el_criterio_de_texto():
+    hallazgos = []
+    n = 0
+    for rel, texto in _archivos():
+        n += 1
+        hallazgos += problemas_de_texto(rel, texto)
+    assert n > 300
+    assert hallazgos == []
+
+
+def test_la_excepcion_del_original_esta_atada_a_su_ruta_y_a_su_sha256():
+    rel = "docs/retroalimentacion/retroalimentacion_recibida.txt"
+    texto = (ROOT / rel).read_text(encoding="utf-8")
+    assert sha_lf(texto) == EXCEPCIONES[rel][0]
+    assert problemas_de_texto(rel, texto) == []
+    assert problemas_de_texto(rel, texto + "\nuna línea editada") != [], "si se edita el original, la excepción deja de valer"
+    assert problemas_de_texto("docs/otro.txt", texto) != [], "otra ruta no hereda la excepción"
+
+
+def _real(rel):
+    return (ROOT / rel).read_text(encoding="utf-8", errors="ignore")
+
+
+def test_negativas_cada_regla_se_dispara_con_una_reintroduccion():
+    pro, dec = "Pro" + "fesor", "DECLARACION" + "_USO_IA.md"
+    casos = {
+        "trato personal al equipo docente": ("docs/estrategia/02_stakeholders.md", _real("docs/estrategia/02_stakeholders.md").replace("Equipo docente (evaluación del curso)", pro + " del curso")),
+        "remisión a la declaración de uso": ("scripts/make_dist.py", _real("scripts/make_dist.py").replace('".gitattributes")', '".gitattributes", "' + dec + '")', 1)),
+        "pie de declaración de uso": ("docs/usuarios/evaluacion_heuristica.md", _real("docs/usuarios/evaluacion_heuristica.md") + "\nUso de " + "IA: ver " + dec + "\n"),
+        "etiqueta del avance anterior": ("docs/estrategia/05_mvp_criterios_aceptacion.md", _real("docs/estrategia/05_mvp_criterios_aceptacion.md").replace("el zip anterior de `dist/`", "`dist/avance" + "2_etl.zip`", 1)),
+        "nombre de una herramienta de elaboración": ("README.md", _real("README.md") + "\nHecho con Cla" + "ude.\n"),
+    }
+    for nombre, (rel, texto) in casos.items():
+        assert any(nombre in e for e in problemas_de_texto(rel, texto)), nombre
+        assert problemas_de_texto(rel, _real(rel)) == [], f"el archivo real debe cumplir: {rel}"
+    cuaderno = _real("notebooks/02_eda_bronze.ipynb")
+    assert problemas_de_texto("notebooks/02_eda_bronze.ipynb", cuaderno) == []
+    assert problemas_de_texto("notebooks/02_eda_bronze.ipynb", cuaderno.replace('"Aquí cargamos', '"Pro' + 'fe, aquí cargamos', 1)), "una celda de notebook con el vocativo"
+    assert problemas_de_texto("docs/x.md", "una palabra como profesional no cuenta") == []
+    assert problemas_de_texto("docs/x.md", "Avance 1 sí se conserva") == []
+
+
+def test_el_zip_arma_el_documento_aislado_pero_la_prueba_no_lo_recorre_ni_lo_nombra():
+    nombres = [p.relative_to(ROOT).as_posix() for p in make_dist.listar(ROOT)]
+    aislados = [n for n in nombres if make_dist.es_documento_aislado(n)]
+    assert len(aislados) == 1
+    assert aislados[0] not in {rel for rel, _ in _archivos()}

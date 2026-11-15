@@ -6,7 +6,7 @@ Uso, desde la raíz del repositorio:
 Qué hace: lee la tabla de la sección 3 (stakeholder, poder = C1 + C2, interés = C3 + C4) y dibuja un punto numerado por stakeholder en su cuadrante; los puntos que caen en la misma
 casilla se separan un poco en horizontal para poder leerlos. Guarda en el propio PNG, como metadato, la lista de puntos y nombres que dibujó, para que una prueba pueda comprobar que la
 imagen corresponde a la tabla sin necesidad de leer píxeles.
-Por qué es así: la imagen anterior no tenía un script que la generara y decía «Profesor del curso»; ahora sale de la tabla, que es la única fuente de los puntajes, y no se inventa ningún valor.
+Por qué es así: la imagen anterior no tenía un script que la generara y traía un rótulo viejo del equipo docente; ahora sale de la tabla, que es la única fuente de los puntajes, y no se inventa ningún valor.
 Qué NO hace: no calcula ni cambia puntajes, no modifica la tabla ni la rúbrica R1 y no toca `data/`.
 """
 import argparse

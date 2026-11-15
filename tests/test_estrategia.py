@@ -491,7 +491,7 @@ def test_negativa_cada_alteracion_de_la_tabla_real_se_detecta(nombre):
     assert any(esperado in e for e in errores), f"«{nombre}» no produjo el error esperado ({esperado!r}): {errores}"
 
 
-# --- la figura de la matriz poder-interés sale de la tabla de puntajes y no dice «Profesor» ---
+# --- la figura de la matriz poder-interés sale de la tabla de puntajes y no usa el rótulo anterior ---
 def _script_de_la_matriz():
     espec = importlib.util.spec_from_file_location("make_matriz_poder_interes", ROOT / "scripts" / "make_matriz_poder_interes.py")
     modulo = importlib.util.module_from_spec(espec)
@@ -517,7 +517,7 @@ def errores_de_la_figura(atestado, tabla):
     if atestado["puntos"] != esperado:
         errores.append("los puntos o nombres de la figura no coinciden con la tabla")
     if "Pro" + "fesor" in json.dumps(atestado, ensure_ascii=False) or "Pro" + "fesor" in tabla:
-        errores.append("la figura o la tabla dicen «Pro" + "fesor»")
+        errores.append("la figura o la tabla traen el rótulo anterior del equipo docente")
     return errores
 
 
@@ -535,10 +535,10 @@ def test_negativas_de_la_figura_de_stakeholders(tmp_path):
     imagen = CARPETA / "img" / "matriz_poder_interes.png"
     atestado = atestado_de_la_figura(imagen)
     con_profesor = tabla.replace("Equipo docente (evaluación del curso)", "Pro" + "fesor del curso (evaluador de la entrega)")
-    assert con_profesor != tabla and errores_de_la_figura(atestado, con_profesor), "la tabla vuelve a decir «Profesor»"
+    assert con_profesor != tabla and errores_de_la_figura(atestado, con_profesor), "la tabla vuelve a traer el rótulo anterior del equipo docente"
     alterado = json.loads(json.dumps(atestado))
     alterado["puntos"][8][1] = "Pro" + "fesor del curso (evaluador de la entrega)"
-    assert errores_de_la_figura(alterado, tabla), "la figura vuelve a decir «Profesor»"
+    assert errores_de_la_figura(alterado, tabla), "la figura vuelve a traer el rótulo anterior del equipo docente"
     desplazado = json.loads(json.dumps(atestado))
     desplazado["puntos"][0][3] += 1
     assert errores_de_la_figura(desplazado, tabla), "un punto cambia de lugar sin cambiar la tabla"
