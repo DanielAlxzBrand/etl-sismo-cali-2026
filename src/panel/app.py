@@ -28,7 +28,12 @@ def _pagina(id_pagina, api, por_defecto):
 
 
 def principal():
-    st.set_page_config(page_title="Panel · cambio satelital y estrato", layout="wide", initial_sidebar_state="expanded", menu_items={})
+    """Configura la página, arma la navegación entre las ocho páginas del registro y la ejecuta.
+
+    La barra lateral va en «auto» (F-02, D87): Streamlit la deja abierta en pantallas anchas y cerrada en las estrechas, porque abierta a 390 px cubría casi todo el contenido.
+    Esto no cambia el número de páginas ni su orden, y no oculta la navegación: en una pantalla estrecha se abre con el botón de la esquina.
+    """
+    st.set_page_config(page_title="Panel · cambio satelital y estrato", layout="wide", initial_sidebar_state="auto", menu_items={})
     api = _api()
     paginas = [_pagina(p.id, api, i == 0) for i, p in enumerate(registro.PAGINAS)]
     st.navigation(paginas).run()

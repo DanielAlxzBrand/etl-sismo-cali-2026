@@ -97,6 +97,7 @@ panel:   # interfaz de solo lectura sobre la API (Panel); sin secretos
     secundario: "#D55E00"
     apoyo: "#009E73"
     neutro: "#595959"
-    texto: "#1F2933"
+    texto: "#0B141C"             # oscuro a propósito: Streamlit dibuja pies y subtítulos al 60 % de este color y así llegan a 4,5 a 1 (F-12, D89)
+    texto_secundario: "#4A5560"  # texto de los gráficos (ejes y leyendas); contraste calculado en scripts/panel/contraste.py
     fondo: "#FFFFFF"
     fondo_secundario: "#F0F4F8"
