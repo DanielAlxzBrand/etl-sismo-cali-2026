@@ -21,6 +21,9 @@ _spec.loader.exec_module(vc)
 
 ITEMS = [f"{s}.{i}" for s, n in zip(range(1, 8), (5, 3, 3, 3, 6, 5, 5)) for i in range(1, n + 1)]
 CON_RESPALDO = ("Cumple", "Cumple con matiz")
+PREFIJO_PYTEST = "python -m pytest -q -p no:cacheprovider "
+# Comandos que no son pytest y no escriben nada en el repositorio (los demás generan documentos o necesitan MySQL, y no sirven como comando de comprobación).
+COMANDOS_DE_SOLO_LECTURA = {"python scripts/escanear_secretos.py", "python scripts/validacion/verificar_regresiones.py"}
 
 
 def _texto_estado():
@@ -47,6 +50,12 @@ def problemas_del_csv(filas, texto_estado, manifiesto, archivos_de_prueba):
             if f["estado"] != estado:
                 errores.append(f"{item}: el estado {f['estado']!r} no coincide con el vigente {estado!r}")
         errores += [f"{item}: {p}" for p in vc.comprobar_fila(f, manifiesto)]
+        comando = f["comando"]
+        if comando not in COMANDOS_DE_SOLO_LECTURA:
+            if not comando.startswith(PREFIJO_PYTEST):
+                errores.append(f"{item}: el comando no es un pytest ni uno de solo lectura: {comando!r}")
+            elif set(comando[len(PREFIJO_PYTEST):].split()) != set(vc.lista(f["pruebas"])):
+                errores.append(f"{item}: el comando no corre exactamente las pruebas del ítem")
         if f["estado"] in CON_RESPALDO and not (vc.lista(f["pruebas"]) and vc.lista(f["archivos"])):
             errores.append(f"{item}: afirma «{f['estado']}» sin pruebas o sin archivos")
         if f["estado"] == "En curso" and not vc.lista(f["archivos"]):
@@ -121,6 +130,12 @@ def test_negativas_de_la_trazabilidad():
     c = _copia(filas)
     _fila(c, "1.1")["requisito"] = "Otro requisito"
     assert problemas_del_csv(c, texto, man, tests), "un requisito que no es el literal"
+    c = _copia(filas)
+    _fila(c, "7.2")["comando"] = "python scripts/make_readme.py"
+    assert problemas_del_csv(c, texto, man, tests), "un comando que escribe el README"
+    c = _copia(filas)
+    _fila(c, "5.4")["comando"] = PREFIJO_PYTEST + "tests/test_dag_estatico.py"
+    assert problemas_del_csv(c, texto, man, tests), "un comando que no corre todas las pruebas del ítem"
     assert problemas_del_csv(filas[:-1], texto, man, tests), "falta el grupo G"
     assert problemas_del_csv(filas + [dict(filas[0])], texto, man, tests), "un ítem repetido"
     assert vc.a_markdown(c) != vc.MD.read_text(encoding="utf-8"), "la tabla generada cambia si el CSV cambia"
