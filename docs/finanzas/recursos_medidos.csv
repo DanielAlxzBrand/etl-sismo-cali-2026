@@ -26,3 +26,5 @@ memoria_api_mas_panel_en_reposo,161,MiB,"suma del conjunto de trabajo de los pro
 tiempo_instalar_requisitos_desde_cero,288,s,"EV-083 (pip install -r requirements.txt en un entorno nuevo; medición local de una máquina; en EV-062 fueron 290 s)",2026-11-15
 tiempo_docker_compose_up_airflow_desde_el_zip,106.4,s,"EV-087 (docker compose up -d con las imágenes ya construidas; medición local de una máquina)",2026-11-15
 duracion_dag_cuatro_tareas_desde_el_zip,49.4,s,"EV-087 (hasta el estado final con sondeo cada 6 s; medición local de una máquina)",2026-11-15
+memoria_pico_suite_de_pruebas,286,MiB,"conjunto de trabajo máximo del proceso de pytest (sin cobertura; muestreo cada 0,2 s con la API de Windows; medición local de una máquina; 959 pruebas pasaron y 5 fallaron por documentos aún sin regenerar)",2026-11-15
+duracion_suite_sin_cobertura,227,s,"misma medición que memoria_pico_suite_de_pruebas",2026-11-15

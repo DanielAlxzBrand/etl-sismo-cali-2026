@@ -56,5 +56,5 @@ Todas deben pasar; el número vigente y el resultado de cada una están en el [i
 | `.\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider` | todas las pruebas pasan |
 
 ## 8. Alcance y límites
-- **Qué afirmamos:** estos pasos se ejecutaron con Python 3.13 en una carpeta con espacios y tildes, sin variables de UTF-8 y con el entorno creado desde cero: la suite completa pasó ([EV-084](../evidencias/servicios/EV-084_suite_sin_utf8_despues.txt)).
+- **Qué afirmamos:** estos pasos se ejecutaron con Python 3.13 en una carpeta con espacios y tildes, sin variables de UTF-8 y con el entorno creado desde cero: la prueba que fallaba por la codificación pasó ([EV-084](../evidencias/servicios/EV-084_suite_sin_utf8_despues.txt)) y la suite completa pasó en un clon equivalente (EV-089).
 - **Qué NO demuestra:** que funcione con otra versión de Python, en una máquina de 8 GB o sin los datos de Bronze que vienen en el zip.

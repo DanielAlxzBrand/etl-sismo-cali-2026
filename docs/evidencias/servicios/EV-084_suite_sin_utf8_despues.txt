@@ -1,0 +1,20 @@
+# Suite en un clon con espacios y tildes y sin variables de UTF-8, después de corregir
+- comando: `python -m pytest -q -p no:cacheprovider (clon temporal, intérprete del entorno nuevo, sin PYTHONUTF8 ni PYTHONIOENCODING)`
+- fecha: 2026-11-15T01:06:21-05:00 (America/Bogota)
+- código de salida: 1
+- duración: 271.8 s
+- Python: 3.13.0
+- commit del repositorio: e579c19
+
+Mismo clon, misma carpeta con espacios y tildes (`<CARPETA CON ESPACIOS Y TILDES>`), mismo entorno virtual nuevo de Python 3.13 y misma forma de lanzar la suite (sin PYTHONUTF8 ni PYTHONIOENCODING) que en [EV-083](EV-083_suite_sin_utf8_antes.txt), pero actualizado al commit con las correcciones de portabilidad (D94).
+
+## Resultado
+- suite: 1 failed, 955 passed, 1 warning in 271.83s (0:04:31).
+- la prueba que fallaba en EV-083 (`test_los_nombres_de_las_variables_de_streamlit_existen_en_su_configuracion`) **pasa**; no hay ningún fallo de codificación ni de ruta.
+- único fallo: `tests/test_matriz_casos.py::test_los_documentos_generados_coinciden_con_la_definicion`. No tiene que ver con la portabilidad: la matriz de casos generada estaba sin regenerar después de agregar pruebas nuevas; se regenera con `scripts/make_matriz_casos.py` y la suite completa en verde en un clon con la misma configuración está en EV-089.
+- `git status` del clon al terminar: sin cambios.
+
+## Qué se corrigió (D94)
+Salida del hijo en UTF-8 en la prueba de `streamlit config show`, `encoding` explícito en las lecturas de subprocesos de `scripts/` y `tests/`, marcas ✓ y ✗ que no caen en cp1252 y una prueba (`tests/test_portabilidad.py`) que analiza el código y repite la prueba sin variables de UTF-8.
+
+Qué NO demuestra: que el proyecto funcione en cualquier Windows ni con cualquier versión de Python; solo que, en esta máquina y con la consola predeterminada, la suite ya no falla por codificación ni por una ruta con espacios y tildes.

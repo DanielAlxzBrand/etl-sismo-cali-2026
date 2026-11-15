@@ -50,7 +50,7 @@ Todas las cifras son de una máquina de desarrollo con Windows 11 y 15,7 GB de R
 |---|---|---|
 | Crear el entorno e instalar `requirements.txt` desde cero | 288 y 290 s (unos 5 minutos) | [EV-083](../evidencias/servicios/EV-083_suite_sin_utf8_antes.txt) y [EV-062](../evidencias/endurecimiento/EV-062_instalacion_desde_cero.txt); depende de la conexión |
 | Pipeline completo (`main.py --stage all`) | 3,4 s y 148 MB de pico | [recursos_medidos.csv](../finanzas/recursos_medidos.csv) |
-| Suite de pruebas | ⟦SUITE_TIEMPO⟧ y pico de ⟦SUITE_PICO⟧ MiB del proceso de pytest | [recursos_medidos.csv](../finanzas/recursos_medidos.csv) (fila `memoria_pico_suite_de_pruebas`) |
+| Suite de pruebas (sin cobertura) | 227 s (unos 4 minutos) y un pico de 286 MiB del proceso de pytest | [recursos_medidos.csv](../finanzas/recursos_medidos.csv) (fila `memoria_pico_suite_de_pruebas`) |
 | API y panel en reposo (sin ninguna página abierta) | unos 160 MiB entre los procesos de Python del lanzador | [recursos_medidos.csv](../finanzas/recursos_medidos.csv) (fila `memoria_api_mas_panel_en_reposo`) |
 | Airflow en reposo (seis contenedores) | 1.970 MiB | [recursos_medidos.csv](../finanzas/recursos_medidos.csv) (fila `memoria_en_reposo_total_contenedores_de_airflow`) |
 | phpMyAdmin en reposo | 33 MiB | [recursos_medidos.csv](../finanzas/recursos_medidos.csv) (fila `memoria_en_reposo_phpmyadmin`) |
