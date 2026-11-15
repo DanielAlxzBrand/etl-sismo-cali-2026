@@ -87,10 +87,11 @@ def test_las_pruebas_de_subprocesos_pasan_con_la_consola_predeterminada_sin_vari
     assert r.returncode == 0, r.stdout[-1500:] + r.stderr[-500:]
 
 
-@pytest.mark.parametrize("script", ["scripts/orquestacion/preparar_airflow.py"])
-def test_los_scripts_de_servicios_imprimen_sus_marcas_con_la_consola_predeterminada_sin_errores_de_codificacion(script):
+@pytest.mark.parametrize("script,argumentos", [("scripts/orquestacion/preparar_airflow.py", ["--verificar", "--destino", "carpeta-de-airflow-inexistente"]),
+                                                ("scripts/preparar_entorno.py", ["--modo", "completo"])])
+def test_los_scripts_de_servicios_imprimen_sus_marcas_con_la_consola_predeterminada_sin_errores_de_codificacion(script, argumentos):
     """Las marcas ✓ y ✗ no existen en cp1252: con la salida redirigida el script no debe caer con UnicodeEncodeError."""
-    r = subprocess.run([sys.executable, str(ROOT / script), "--verificar", "--destino", str(ROOT.parent / "carpeta de airflow inexistente")],
-                       cwd=ROOT, capture_output=True, env=_entorno_sin_utf8())
+    argumentos = [str(ROOT.parent / a) if a.startswith("carpeta-") else a for a in argumentos]
+    r = subprocess.run([sys.executable, str(ROOT / script), *argumentos], cwd=ROOT, capture_output=True, env=_entorno_sin_utf8())
     assert b"UnicodeEncodeError" not in r.stderr and b"Traceback" not in r.stderr, r.stderr[-800:].decode("utf-8", "replace")
-    assert r.returncode in (0, 1)
+    assert r.returncode in (0, 1) and (b"?" in r.stdout or "✓".encode("utf-8") in r.stdout or "✗".encode("utf-8") in r.stdout)
