@@ -1,0 +1,39 @@
+# Evaluación de los controles en inglés de Streamlit (F-11)
+- comando: `python scripts/evidencias/evidencia_streamlit_controles.py`
+- fecha: 2026-11-14T21:29:28-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 25.8 s
+- Python: 3.13.0
+- commit del repositorio: 6309c79
+
+Versión de Streamlit: 1.67.0 (la fijada en `requirements.txt`).
+
+## 1. Qué ofrece la interfaz de programación
+- `st.dataframe` acepta: data, width, height, use_container_width, hide_index, column_order, column_config, key, on_select, selection_mode, selection_default, row_height, placeholder, lazy, alt. Ninguno controla los botones de la barra de herramientas de la tabla ni su idioma.
+- `st.altair_chart` acepta: altair_chart, width, height, use_container_width, theme, key, on_select, selection_mode, alt. Tampoco hay uno para la barra de herramientas del gráfico.
+- Opciones de configuración que mencionan barra de herramientas o idioma: client.toolbarMode. `client.toolbarMode` solo muestra u oculta las opciones del menú de la aplicación (imprimir, grabar, desplegar…); el panel ya usa «minimal».
+
+## 2. Dónde está escrito cada texto en el front (317 archivos .js)
+| Texto | Archivos que lo contienen |
+|---|---|
+| Download as CSV | 1 |
+| Search | 18 |
+| Fullscreen | 12 |
+| Show/hide columns | 1 |
+| Copy Vega-Lite spec | 1 |
+| Download as PNG | 2 |
+| Show data | 2 |
+| Skip to main content | 1 |
+| Collapse sidebar | 1 |
+
+Los textos están escritos dentro del código del front y no hay una opción de idioma para cambiarlos.
+
+## 3. Prueba en vivo con una aplicación mínima (navegador sin ventana)
+- **tabla (`st.dataframe`)** (stDataFrame): Download as CSV; Fullscreen; Search; Show/hide columns
+- **gráfico con `embedOptions: {actions: False}`** (stVegaLiteChart): Copy Vega-Lite spec; Download as PNG; Fullscreen; Show data; Vega visualization
+- **gráfico por defecto** (stVegaLiteChart): Copy Vega-Lite spec; Download as PNG; Fullscreen; Show data; Vega visualization
+
+## Conclusión (F-11)
+La versión fijada de Streamlit **no permite traducir** estos controles (están dentro del front y no hay opción de idioma) y **no permite ocultar** los de las tablas con ningún parámetro. Pasar `embedOptions` solo cambia el menú propio de Vega, no la barra de herramientas de Streamlit, y sustituir las tablas por `st.table` quitaría el orden, la búsqueda y la descarga que sí sirven. Por eso F-11 queda **aplazado**: no hay una corrección limpia con esta versión.
+
+Qué NO demuestra: que otra versión de Streamlit no lo permita (no se probó ninguna otra) ni que las personas usuarias se confundan con estos textos (eso lo dirán las sesiones).
