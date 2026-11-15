@@ -35,7 +35,7 @@ def main():
     with tempfile.TemporaryDirectory() as tmp:
         clon = Path(tmp) / "clon"
         subprocess.run(["git", "clone", "--quiet", "--no-hardlinks", str(ROOT), str(clon)], check=True, capture_output=True)
-        commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=clon, capture_output=True, text=True).stdout.strip()
+        commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=clon, capture_output=True, text=True, encoding="utf-8", errors="replace").stdout.strip()
         ok_data = huellas(clon / "data") == huellas(ROOT / "data")
         n_data = len(huellas(clon / "data"))
         cod_col, salida_col = ejecutar([sys.executable, "-m", "pytest", "--collect-only", "-q", "-p", "no:cacheprovider"], clon)

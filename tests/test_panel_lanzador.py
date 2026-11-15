@@ -93,7 +93,7 @@ def test_el_entorno_del_panel_no_recibe_credenciales_de_mysql():
 
 def test_los_nombres_de_las_variables_de_streamlit_existen_en_su_configuracion():
     salida = subprocess.run([sys.executable, "-m", "streamlit", "config", "show"], capture_output=True, text=True, encoding="utf-8", cwd=RAIZ,
-                            env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1"}).stdout
+                            env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1", "PYTHONIOENCODING": "utf-8"}).stdout
     for opcion in ("headless", "address", "gatherUsageStats", "showEmailPrompt", "fileWatcherType", "toolbarMode", "primaryColor", "textColor", "secondaryBackgroundColor"):
         assert opcion in salida, opcion
 

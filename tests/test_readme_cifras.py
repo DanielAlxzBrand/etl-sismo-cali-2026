@@ -72,7 +72,7 @@ def test_cifras_de_gold_bronze_y_silver_en_readme():
 def _recolectadas():
     """Pruebas por archivo según `pytest --collect-only` (funciones y métodos de clase)."""
     r = subprocess.run([sys.executable, "-m", "pytest", "--collect-only", "-q", "-p", "no:cacheprovider"], cwd=ROOT, capture_output=True,
-                       text=True, env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1"})
+                       text=True, encoding="utf-8", errors="replace", env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1", "PYTHONIOENCODING": "utf-8"})
     return Counter(l.split("::")[0].split("/")[-1] for l in r.stdout.splitlines() if "::" in l)
 
 

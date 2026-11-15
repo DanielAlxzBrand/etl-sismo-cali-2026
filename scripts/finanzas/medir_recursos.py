@@ -107,19 +107,19 @@ def memoria_docker():
     if subprocess.run(["docker", "info"], capture_output=True).returncode != 0:
         return []
     carpeta = ROOT.parent / "airflow-medallon"
-    corriendo = subprocess.run(["docker", "ps", "-q"], capture_output=True, text=True).stdout.split()
+    corriendo = subprocess.run(["docker", "ps", "-q"], capture_output=True, text=True, encoding="utf-8", errors="replace").stdout.split()
     levantados = False
     if not corriendo:
         subprocess.run(["docker", "compose", "up", "-d"], cwd=carpeta, capture_output=True)
         levantados = True
         fin = time.monotonic() + 240
         while time.monotonic() < fin:
-            estado = subprocess.run(["docker", "ps", "--format", "{{.Status}}"], capture_output=True, text=True).stdout
+            estado = subprocess.run(["docker", "ps", "--format", "{{.Status}}"], capture_output=True, text=True, encoding="utf-8", errors="replace").stdout
             if estado and "starting" not in estado and "unhealthy" not in estado:
                 break
             time.sleep(5)
         time.sleep(60)   # reposo: un minuto sin ejecutar el DAG
-    salida = subprocess.run(["docker", "stats", "--no-stream", "--format", "{{.Name}}|{{.MemUsage}}"], capture_output=True, text=True).stdout
+    salida = subprocess.run(["docker", "stats", "--no-stream", "--format", "{{.Name}}|{{.MemUsage}}"], capture_output=True, text=True, encoding="utf-8", errors="replace").stdout
     if levantados:
         subprocess.run(["docker", "compose", "down"], cwd=carpeta, capture_output=True)
     filas, total = [], 0.0

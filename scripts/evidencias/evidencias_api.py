@@ -117,7 +117,7 @@ def main():
         log_srv = open(raiz_tmp / "servicio.log", "w", encoding="utf-8")
         t0 = time.perf_counter()
         srv = subprocess.Popen([PY, "-m", "uvicorn", "src.api.app:app", "--host", "127.0.0.1", "--port", str(puerto)], cwd=clon, stdout=log_srv, stderr=subprocess.STDOUT,
-                               text=True, env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1"}, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP)
+                               text=True, encoding="utf-8", errors="replace", env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1"}, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP)
         indice, filas_lat = [], []
         try:
             with httpx.Client(base_url=base, timeout=15) as cli:

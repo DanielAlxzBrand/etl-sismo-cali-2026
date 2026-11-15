@@ -42,7 +42,7 @@ def main():
     lineas.append(f"3. Registros de ejecución (`logs/*.log`): {len(logs)} hallazgos en {len(list((ROOT / 'logs').glob('*.log')))} archivos")
     hist = esc.canario_historial(ROOT, can)
     ok &= not hist
-    n_commits = int(subprocess.run(["git", "rev-list", "--all", "--count"], cwd=ROOT, capture_output=True, text=True).stdout.strip() or 0)
+    n_commits = int(subprocess.run(["git", "rev-list", "--all", "--count"], cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace").stdout.strip() or 0)
     lineas.append(f"4. Historial de git completo (todas las ramas y etiquetas, {n_commits} commits, mensajes y cambios): {len(hist)} hallazgos")
     with tempfile.TemporaryDirectory() as tmp:
         clon = Path(tmp) / "clon"

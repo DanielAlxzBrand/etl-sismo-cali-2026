@@ -51,7 +51,7 @@ def leer(p):
 def pruebas_recolectadas():
     """Pruebas por archivo según `pytest --collect-only` (funciones y métodos de clase), ordenadas por nombre de archivo."""
     r = subprocess.run([sys.executable, "-m", "pytest", "--collect-only", "-q", "-p", "no:cacheprovider"], cwd=ROOT, capture_output=True,
-                       text=True, env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1"})
+                       text=True, encoding="utf-8", errors="replace", env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1", "PYTHONIOENCODING": "utf-8"})
     cuenta = Counter(l.split("::")[0].split("/")[-1] for l in r.stdout.splitlines() if "::" in l)
     assert cuenta, f"pytest no recolectó pruebas: {r.stdout[-300:]} {r.stderr[-300:]}"
     return dict(sorted(cuenta.items()))

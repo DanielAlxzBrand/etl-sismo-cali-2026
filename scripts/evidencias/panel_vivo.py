@@ -19,11 +19,11 @@ PUERTO_API, PUERTO_PANEL = 8765, 8766
 def procesos_del_panel():
     """Líneas de comando de los procesos uvicorn o streamlit del panel que sigan vivos (vacío si no queda ninguno)."""
     if os.name != "nt":
-        r = subprocess.run(["pgrep", "-af", "streamlit run src/panel|uvicorn src.api"], capture_output=True, text=True)
+        r = subprocess.run(["pgrep", "-af", "streamlit run src/panel|uvicorn src.api"], capture_output=True, text=True, encoding="utf-8", errors="replace")
         return [l for l in r.stdout.splitlines() if l.strip()]
     consulta = ("Get-CimInstance Win32_Process | Where-Object { $_.Name -like 'python*' -and $_.CommandLine -match 'streamlit run src/panel|uvicorn src.api.app|crear_app' } | "
                 "ForEach-Object { $_.ProcessId }")
-    r = subprocess.run(["powershell", "-NoProfile", "-Command", consulta], capture_output=True, text=True)
+    r = subprocess.run(["powershell", "-NoProfile", "-Command", consulta], capture_output=True, text=True, encoding="utf-8", errors="replace")
     return [l for l in r.stdout.split() if l.isdigit()]
 
 

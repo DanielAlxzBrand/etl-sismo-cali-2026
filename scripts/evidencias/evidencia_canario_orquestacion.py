@@ -53,7 +53,7 @@ def main():
     L.append(f"3. Registros del proyecto (`logs/*.log`, {len(list((ROOT / 'logs').glob('*.log')))} archivos): {len(logs)} hallazgos")
     hist = esc.canario_historial(ROOT, can)
     ok &= not hist
-    n_commits = int(subprocess.run(["git", "rev-list", "--all", "--count"], cwd=ROOT, capture_output=True, text=True).stdout.strip() or 0)
+    n_commits = int(subprocess.run(["git", "rev-list", "--all", "--count"], cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace").stdout.strip() or 0)
     L.append(f"4. Historial de git completo ({n_commits} commits, todas las ramas y etiquetas): {len(hist)} hallazgos")
     if airflow.is_dir():
         propios = {k: v for k, v in can.items() if "@" not in k}   # las del proyecto; las de Airflow viven en su .env, que se excluye como raíz
