@@ -237,7 +237,8 @@ def main():
         ("data/gold/", "`gold_final.csv`, `kpis_gold.csv`, `kpis_sensibilidad.csv`, `etl_sismo.db`"),
         ("notebooks/", "cinco notebooks ejecutados (conexión, EDA, Silver, Gold y validación)"),
         ("dags/", "DAG de Airflow `medallon_etl_dag.py` (copia versionada del DAG vivo de `airflow-medallon`)"),
-        ("orquestacion/", "Dockerfile, requisitos de la imagen de Airflow y hash del DAG"),
+        ("orquestacion/", "Dockerfile, compose adaptado de Airflow 3.3.2, requisitos de la imagen y hash del DAG"),
+        ("servicios/", "compose de phpMyAdmin de solo lectura (`servicios/phpmyadmin/`)"),
         ("src/", "código por capas (ver `src/README.md`): `extract/`, `transform/`, `load/` (SQLite y carga relacional), `api/`, `panel/` (interfaz Streamlit de solo lectura), `common.py` y `logger.py`"),
         ("tests/", f"{n_tests} pruebas automáticas"),
         ("scripts/", "generadores y utilidades (ver `scripts/README.md`): README, catálogo de fuentes, modelo de datos, carga relacional, `mysql/` (configuración y verificación en vivo), matriz de casos de prueba e informe de pruebas, orquestación (`orquestacion/`), escáner de secretos, empaquetado y `evidencias/`"),
@@ -252,6 +253,7 @@ def main():
         ("docs/orquestacion/", "pruebas y orquestación: diferencias con la guía de Airflow, guía de implementación, prácticas de producción y operación"),
         ("docs/panel/", "panel: guía de uso, arquitectura con su diagrama, trazabilidad de la interfaz, pruebas y accesibilidad"),
         ("docs/almacenamiento/", "almacenamiento relacional: modelo de datos con su diagrama, configuración de MySQL y carga y verificación"),
+        ("docs/instalacion/", "guía de instalación: modo mínimo y modo completo, tiempos y memoria medidos y errores comunes"),
         ("docs/seguridad/", "política de credenciales, claves y tokens"),
         ("docs/validacion/", "verificaciones: contra el enunciado, de los servicios, en entorno limpio y del registro de ejecución"),
         ("docs/checklist/", "estado de los 30 ítems del checklist y guía de evidencias por ítem (`docs/checklist/guia_de_evidencias.md`)"),
@@ -291,6 +293,12 @@ def main():
                   "test_panel_humo_extremo_a_extremo.py": "humo de solo lectura: API real en un subproceso, cliente HTTP real y las ocho páginas",
                   "test_panel_lanzador.py": "lanzador del panel con subprocesos simulados: comandos, entorno, puertos, códigos de salida y cierre garantizado",
                   "test_panel_tema.py": "relación de contraste WCAG de la paleta del panel",
+                  "test_usuario_lectura.py": "usuario de MySQL de solo lectura: solo SELECT sobre la base real, origen sin `%`, contraseña solo en `.env`, idempotencia y canario del escáner",
+                  "test_servicios_compose.py": "los compose de phpMyAdmin y de Airflow como texto: puertos solo en 127.0.0.1, sin credenciales, versiones exactas, montaje de solo lectura y generador desde el oficial",
+                  "test_preparar_airflow.py": "preparación de la carpeta de Airflow en carpetas temporales: estructura, `.env` que no se sobrescribe, nombre de carpeta detectado, puerto ocupado y ningún secreto en pantalla",
+                  "test_preparar_entorno.py": "diagnóstico del entorno con simulaciones: Python equivocado, entorno ausente, requisitos, `.env`, MySQL, Docker y puertos; la instalación pide confirmación",
+                  "test_portabilidad.py": "codificación explícita en archivos y subprocesos de `scripts/` y `tests/`, y ejecución sin variables de UTF-8",
+                  "test_servicios_estructura.py": "los archivos de servicios existen y viajan en el zip, sin `.env`; las guías de instalación enlazan lo que existe y no dejan marcas sin llenar",
                   "test_respaldo_y_medicion.py": "respaldo lógico con manifiesto sha256, restauración con conciliación, reglas de la medición de lotes y límites de los scripts en vivo"}
     tests_md = "\n".join(f"- `tests/{n}` ({k}): {desc_tests.get(n, '')}." for n, k in tests.items())
     barrio_ej = str(ej.barrio).zfill(2) if pd.notna(ej.barrio) else ""
@@ -501,6 +509,7 @@ py -3 -m venv .venv
 python -m pip install -r requirements.txt
 ```
 Debe terminar sin errores (Python {platform.python_version()}).
+Para instalar paso a paso en otro equipo (con Python 3.13 en paralelo, `py -3.13` y los dos modos, mínimo y completo) véase la [guía de instalación](docs/instalacion/README.md).
 2. **Variables:** el pipeline no necesita tokens; `HTTP_USER_AGENT` es opcional. Las variables `MYSQL_*` solo se usan en la carga relacional y las crea `scripts/mysql/configurar_mysql.py` (sección 19); `.env` nunca se versiona.
 3. **Pipeline completo:** `python main.py --stage all`. Con Bronze presente no necesita red. Al terminar el registro muestra, entre otras líneas, `Salida: construcciones={miles(len(g))} barrios=346 integrado={miles(len(g))} | cobertura de llave={cob['pct'] * 100:.4f}% (pasa)` y `Salida: gold_final={miles(len(g))} filas | kpis_gold={len(kp)} filas (6 indicadores) | sensibilidades={len(sens)} filas`. Ejecutarlo dos veces seguidas deja los mismos sha256 en `data/silver` y `data/gold`:
 ```powershell
@@ -613,7 +622,7 @@ Además de `etl_sismo.db` (SQLite), los resultados se pueden cargar a **MySQL 8.
 ```
 La verificación en vivo corre solo sobre la base de prueba. Para servir la API desde MySQL se cambia `api.almacenamiento` a `mysql` en `config/config.yaml`. Las pruebas automáticas no necesitan MySQL. La contraseña no se escribe en ningún archivo del repositorio, notebook ni registro; el escáner la busca activamente (`python scripts/escanear_secretos.py --canario-env`).
 
-Documentación: [modelo de datos](docs/almacenamiento/modelo_datos.md), [configuración de MySQL](docs/almacenamiento/mysql_configuracion.md), [carga y verificación](docs/almacenamiento/carga_y_verificacion.md) y [gestión de credenciales](docs/seguridad/gestion_credenciales.md).
+Documentación: [modelo de datos](docs/almacenamiento/modelo_datos.md), [configuración de MySQL](docs/almacenamiento/mysql_configuracion.md), [phpMyAdmin de solo lectura](docs/almacenamiento/phpmyadmin.md), [carga y verificación](docs/almacenamiento/carga_y_verificacion.md) y [gestión de credenciales](docs/seguridad/gestion_credenciales.md).
 
 ## 20. Pruebas y orquestación
 El pipeline se orquesta con **Apache Airflow en Docker**, siguiendo la guía de Airflow de la asignatura (artículo de Juan Manuel Núñez Velasco) con unas pocas diferencias documentadas. El DAG `medallon_etl_sismo` (`dags/medallon_etl_dag.py`) tiene cuatro tareas, `validar_bronze → transformar_a_silver → integrar_a_gold → cargar_datawarehouse`, y trabaja sobre una **copia de trabajo** dentro del contenedor: el repositorio se monta en solo lectura y cada tarea compara lo que produce con los archivos versionados (CSV y JSON byte a byte, `etl_sismo.db` tabla a tabla), así que ni los datos ni las salidas pueden alterarse. La carga a MySQL usa un usuario propio de Docker con permisos mínimos sobre la base real. Para reproducir los archivos de la línea base hay que usar **pandas 3.0.6** (con otra versión cambian celdas del decimal 12; ver D56).
