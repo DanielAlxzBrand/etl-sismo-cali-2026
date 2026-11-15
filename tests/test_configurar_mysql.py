@@ -3,6 +3,7 @@ import argparse
 import importlib.util
 import logging
 import re
+import shutil
 import subprocess
 
 import pytest
@@ -199,8 +200,14 @@ def test_se_niega_a_guardar_credenciales_si_env_no_esta_ignorado(entorno, monkey
         _ejecutar(entorno, ConexionFalsa(), ConexionFalsa())
 
 
-def test_el_env_real_esta_ignorado_y_no_versionado():
-    assert cm.env_ignorado_y_no_versionado(ROOT) is True
+def test_el_env_real_esta_ignorado_y_no_versionado(tmp_path):
+    """Con el `.gitignore` REAL del proyecto en un repositorio temporal: el `.env` queda ignorado y no versionado (no depende de que la raíz tenga `.git`)."""
+    if shutil.which("git") is None:
+        pytest.skip("falta el binario git en el equipo")
+    subprocess.run(["git", "init", "-q"], cwd=tmp_path, check=True)
+    shutil.copy2(ROOT / ".gitignore", tmp_path / ".gitignore")
+    (tmp_path / ".env").write_text("VARIABLE=valor-de-prueba\n", encoding="utf-8")
+    assert cm.env_ignorado_y_no_versionado(tmp_path) is True
 
 
 def test_la_contrasena_generada_es_fuerte_y_distinta_cada_vez():
@@ -250,6 +257,8 @@ VALOR = "Canario-" + "De-Prueba-" + "9f8e7d6c5b"   # valor inventado para sembra
 
 
 def _repo_con_env(tmp_path):
+    if shutil.which("git") is None:
+        pytest.skip("falta el binario git en el equipo")
     subprocess.run(["git", "init", "-q"], cwd=tmp_path, check=True)
     subprocess.run(["git", "config", "user.email", "prueba@ejemplo.invalid"], cwd=tmp_path, check=True)
     subprocess.run(["git", "config", "user.name", "Prueba"], cwd=tmp_path, check=True)

@@ -25,7 +25,11 @@ def ahora():
 
 
 def commit_corto():
-    r = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=REPO, capture_output=True, text=True, encoding="utf-8")
+    """Commit corto del repositorio, o «sin-commit» si no hay `.git` o el equipo no tiene git."""
+    try:
+        r = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=REPO, capture_output=True, text=True, encoding="utf-8")
+    except OSError:
+        return "sin-commit"
     return r.stdout.strip() or "sin-commit"
 
 

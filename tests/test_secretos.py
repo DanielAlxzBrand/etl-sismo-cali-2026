@@ -1,8 +1,11 @@
 """Gestión de secretos: escáner, .env fuera de git, enmascarado del registro y exclusión de .env del zip."""
 import importlib.util
 import logging
+import shutil
 import subprocess
 import zipfile
+
+import pytest
 
 from src.common import ROOT
 from src.logger import EnmascararSecretos
@@ -38,6 +41,7 @@ def test_sin_hallazgos_en_el_arbol_de_trabajo():
     assert esc.escanear_arbol(ROOT) == []
 
 
+@pytest.mark.skipif(not (ROOT / ".git").exists() or shutil.which("git") is None, reason="sin historial de git (el zip no lo trae) o sin el binario git: solo corre en un clon con git")
 def test_sin_hallazgos_en_el_historial_de_git():
     assert esc.escanear_historial(ROOT) == []
 
@@ -83,8 +87,21 @@ def test_el_codigo_de_salida_es_distinto_de_cero_con_hallazgos(tmp_path):
     assert esc.main(["--raiz", str(vacia), "--sin-historial"]) == 0
 
 
-def test_env_no_esta_versionado():
-    r = subprocess.run(["git", "ls-files"], cwd=ROOT, capture_output=True, text=True, encoding="utf-8")
+def repositorio_con_el_gitignore_real(carpeta):
+    """Repositorio temporal con el `.gitignore` REAL del proyecto, un `.env` y un `.env.example`: así la prueba no depende de que exista `.git` en la raíz (el zip no lo trae)."""
+    if shutil.which("git") is None:
+        pytest.skip("falta el binario git en el equipo")
+    subprocess.run(["git", "init", "-q"], cwd=carpeta, check=True)
+    shutil.copy2(ROOT / ".gitignore", carpeta / ".gitignore")
+    (carpeta / ".env").write_text("VARIABLE=valor-de-prueba\n", encoding="utf-8")
+    (carpeta / ".env.example").write_text("VARIABLE=\n", encoding="utf-8")
+    subprocess.run(["git", "add", "-A"], cwd=carpeta, check=True)      # `add -A` respeta el .gitignore
+    return carpeta
+
+
+def test_env_no_esta_versionado(tmp_path):
+    repo = repositorio_con_el_gitignore_real(tmp_path)
+    r = subprocess.run(["git", "ls-files"], cwd=repo, capture_output=True, text=True, encoding="utf-8")
     assert ".env" not in r.stdout.splitlines()
     assert ".env.example" in r.stdout.splitlines()
 

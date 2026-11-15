@@ -22,7 +22,7 @@ Si solo se quiere reproducir el análisis, el modo mínimo basta: el modo comple
 |---|---|---|
 | Windows 11 | es el sistema donde se probó todo; en otros no lo probamos | — |
 | **Python 3.13**, instalado **en paralelo** | es la única versión soportada: las versiones de `requirements.txt` (por ejemplo pandas 3.0.6 y numpy 2.5.4) se fijaron con ella y con otra las salidas pueden cambiar | `py -0p` debe listar `3.13` |
-| Git (opcional) | clonar el repositorio; con el zip no hace falta | `git --version` |
+| Git (opcional) | clonar el repositorio; con el zip no hace falta, pero 8 pruebas lo usan en repositorios temporales y se omiten con motivo visible si falta (ver la sección 3.1) | `git --version` |
 | MySQL 8.0 o superior (solo modo completo) | la carga relacional | el servicio `MySQL80` en ejecución |
 | Docker Desktop con WSL2 (solo modo completo) | Airflow y phpMyAdmin | `docker version` y `docker compose version` |
 | Memoria | ver la sección 4 | — |
@@ -42,6 +42,15 @@ py -3.13 scripts\preparar_entorno.py --instalar       # crea .venv e instala req
 ```
 El script imprime ✓ o ✗ por cada cosa y, si falta algo, la acción sugerida. Sin `--instalar` no escribe nada y nunca muestra un valor del `.env`, solo los nombres de variables que faltan.
 Se puede ejecutar con cualquier Python porque solo usa la biblioteca estándar y `python-dotenv`; si todavía no hay entorno, usar `--instalar` ya lo crea.
+
+### 3.1 Pruebas omitidas esperadas
+La suite completa no omite ninguna prueba en un clon con Git instalado. En el zip descomprimido hay dos casos que medimos armando el zip con `make_dist.empaquetar`, descomprimiéndolo en una carpeta temporal sin `.git` y corriendo las pruebas que usan git (misma máquina, con y sin git en el `PATH`):
+| Dónde se ejecuta | Omitidas | Cuáles y por qué |
+|---|---|---|
+| clon con Git | 0 | — |
+| zip descomprimido, con Git instalado | **1** | `test_sin_hallazgos_en_el_historial_de_git`: el zip no trae el historial, así que no hay nada que revisar; se omite con su motivo a la vista en lugar de pasar vacía |
+| zip descomprimido, sin Git (o clon sin Git) | **9** | la anterior más 8 que arman un repositorio temporal para comprobar el `.gitignore` y el escáner de secretos y necesitan el binario `git`: `test_env_no_esta_versionado`, `test_el_env_real_esta_ignorado_y_no_versionado`, 5 de `tests/test_configurar_mysql.py` y 1 de `tests/test_canario_extra.py` |
+Ninguna de las demás pruebas usa git. Esto no demuestra que la suite pase en otro equipo, solo cuántas pruebas se omiten por no tener historial o binario de git y por qué.
 
 ## 4. Tiempos y memoria medidos
 Todas las cifras son de una máquina de desarrollo con Windows 11 y 15,7 GB de RAM; **en otro equipo cambiarán**.

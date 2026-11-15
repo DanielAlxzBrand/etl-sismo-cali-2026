@@ -1,5 +1,8 @@
 """Comprobación canario con archivos .env extra: busca contraseñas de otra carpeta de trabajo sin imprimirlas."""
+import shutil
 import subprocess
+
+import pytest
 
 from test_configurar_mysql import esc
 
@@ -49,6 +52,8 @@ def test_solo_canario_omite_los_patrones_de_secretos(tmp_path, capsys):
 def test_el_historial_tambien_se_revisa_con_el_env_extra(tmp_path, capsys):
     repo = _carpeta(tmp_path, "proyecto", "HTTP_USER_AGENT=Equipo\n")
     otra = _carpeta(tmp_path, "airflow", "AIRFLOW_" + "WWW_USER_" + f"PASSWORD={VALOR}\n")
+    if shutil.which("git") is None:
+        pytest.skip("falta el binario git en el equipo")
     for orden in (["git", "init", "-q"], ["git", "config", "user.email", "prueba@ejemplo.invalid"], ["git", "config", "user.name", "Prueba"]):
         subprocess.run(orden, cwd=repo, check=True)
     (repo / ".gitignore").write_text(".env\n", encoding="utf-8")
