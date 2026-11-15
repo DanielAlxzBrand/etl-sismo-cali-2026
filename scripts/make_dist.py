@@ -1,18 +1,21 @@
 """Empaqueta el proyecto en dist/etl_sismo_<fecha>.zip con una lista de INCLUSIÓN: solo entra lo permitido.
 
-Primer nivel permitido: archivos `RAIZ_ARCHIVOS` y carpetas `RAIZ_CARPETAS` (`dags/`, `orquestacion/` y `servicios/` solo si existen). Dentro de ellas se excluyen cachés,
+Primer nivel permitido: archivos `RAIZ_ARCHIVOS`, documentos de la raíz en mayúsculas (`RAIZ_DOC`; el aislado no se nombra) y carpetas `RAIZ_CARPETAS` (`dags/`, `orquestacion/` y `servicios/` solo si existen). Dentro de ellas se excluyen cachés,
 `*.pyc`, `logs/`, el `.env` real, toda carpeta oculta (que empiece por punto) y toda carpeta que sea un entorno virtual (por nombre y, sobre todo, por su contenido:
 `pyvenv.cfg`, `site-packages`, `conda-meta`, `python.exe`, `Scripts/python*` o `bin/python*`). En `docs/` solo entran los PDF de
 `docs/proyecto/referencias/` y `docs/retroalimentacion/`. Tras armar el zip se verifica su contenido y falla con un mensaje claro si algo sobra.
 """
 import os
+import re
 import sys
 import zipfile
 from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-RAIZ_ARCHIVOS = ("README.md", "main.py", "requirements.txt", "pytest.ini", ".env.example", ".gitignore", ".gitattributes", "DECLARACION_USO_IA.md")
+RAIZ_ARCHIVOS = ("README.md", "main.py", "requirements.txt", "pytest.ini", ".env.example", ".gitignore", ".gitattributes")
+# Documentos de la raíz en mayúsculas (sin nombrarlos): `README.md` y los documentos aislados, que no se enlazan ni se citan desde el resto del repositorio.
+RAIZ_DOC = re.compile(r"[A-Z][A-Z0-9_]*\.md")
 RAIZ_CARPETAS = ("config", "src", "scripts", "tests", "notebooks", "docs", "data", "dags", "orquestacion", "servicios")
 PDF_PERMITIDOS = ("docs/proyecto/referencias/", "docs/retroalimentacion/")
 EXCLUIR_DIRS = {".git", "dist", "logs", "__pycache__", ".ipynb_checkpoints", ".pytest_cache", "venv", "env", ".env", "site-packages"}
@@ -49,6 +52,7 @@ def listar(root):
     """Archivos a empaquetar: los de primer nivel permitidos y los de las carpetas permitidas (sin entrar a las excluidas)."""
     root = Path(root)
     salida = [root / f for f in RAIZ_ARCHIVOS if (root / f).is_file()]
+    salida += [p for p in sorted(root.glob("*.md")) if RAIZ_DOC.fullmatch(p.name) and p.is_file() and p.name not in RAIZ_ARCHIVOS]
     for nombre in RAIZ_CARPETAS:
         base = root / nombre
         if not base.is_dir() or dir_excluido(base):
@@ -74,7 +78,13 @@ def prohibidos(nombres):
 def fuera_de_la_lista(nombres):
     """Entradas cuyo primer nivel no está en la lista permitida."""
     permitidos = set(RAIZ_ARCHIVOS) | set(RAIZ_CARPETAS)
-    return [n for n in nombres if n.split("/")[0] not in permitidos]
+    return [n for n in nombres if n.split("/")[0] not in permitidos and not ("/" not in n and RAIZ_DOC.fullmatch(n))]
+
+
+def es_documento_aislado(rel):
+    """Un documento de la raíz en mayúsculas distinto de `README.md`: viaja en el zip pero nada del repositorio lo enlaza, lo cita ni lo valida por su nombre."""
+    rel = str(rel).replace("\\", "/")
+    return "/" not in rel and RAIZ_DOC.fullmatch(rel) is not None and rel != "README.md"
 
 
 def pdf_no_permitidos(nombres):

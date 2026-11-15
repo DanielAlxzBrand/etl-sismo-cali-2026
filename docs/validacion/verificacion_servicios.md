@@ -1,6 +1,6 @@
 # Verificación de la sección 2 del checklist: backend, fuentes y credenciales (ítems 2.1, 2.2 y 2.3)
 
-**Fecha:** 2026-11-12 · **Fase:** API, fuentes y credenciales · **Regla de estado:** *Cumple*: evidencia concreta y reproducible para todos los subcriterios y límites declarados. *Cumple con matiz*: entregable central verificado y algún subcriterio depende de un hecho externo o de una componente posterior. Nunca «cumple» lo que requiera un evento que no ocurrió.
+**Fecha:** 2026-11-12 · **Componente:** API, fuentes y credenciales · **Regla de estado:** *Cumple*: evidencia concreta y reproducible para todos los subcriterios y límites declarados. *Cumple con matiz*: entregable central verificado y algún subcriterio depende de un hecho externo o de una componente posterior. Nunca «cumple» lo que requiera un evento que no ocurrió.
 
 **Etiquetas de evidencia:** [Evidencia en el repo: ruta] · [Fuente externa: URL y fecha de consulta] · [Criterio aplicado: descripción] · [Hipótesis de diseño: criterio y experimento, no ejecutado].
 

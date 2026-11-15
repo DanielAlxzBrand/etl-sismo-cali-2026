@@ -46,4 +46,4 @@ Fecha de la verificación: 2026-10-15. Todas las comprobaciones se ejecutaron so
 | Regla `ID_PREDIO = 0` → nulo (H4) sin ejecutar | No se añadió: la columna se descarta por no usarse (R10) y ejecutar la regla no cambia ningún resultado; queda documentado | no corregida (sin efecto en resultados) |
 | La prueba de Excel no está en `tests/` | No se añadió para no cambiar el número de pruebas de la línea base; se documenta el comando de la comprobación en memoria | no corregida |
 | `docs/validacion/prueba_entorno_limpio.md` anterior al código final | Pendiente de repetir con el código final; las salidas no cambian | no corregida |
-| `dist/avance2_etl_20261015.zip` fue generado antes de estos cambios (README, código y documentación posteriores) | No se tocó, por indicación expresa; hay que regenerarlo con `python scripts/make_dist.py` antes de entregar | pendiente del equipo |
+| El zip anterior de `dist/` fue generado antes de estos cambios (README, código y documentación posteriores) | No se tocó, por indicación expresa; hay que regenerarlo con `python scripts/make_dist.py` antes de entregar | pendiente del equipo |

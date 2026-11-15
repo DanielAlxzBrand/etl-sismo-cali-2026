@@ -37,7 +37,7 @@
 | 6 | Fondo Adaptación (entidad que publica la capa satelital) | 1 | 3 | 1 | 2 | 4 | 3 | Mantener satisfechos |
 | 7 | Entidades geológicas nacionales y USGS | 0 | 1 | 0 | 1 | 1 | 1 | Monitorear |
 | 8 | Unidad Nacional para la Gestión del Riesgo de Desastres (UNGRD; fuente original del RUD) | 1 | 2 | 1 | 1 | 3 | 2 | Monitorear |
-| 9 | Profesor del curso (evaluador de la entrega) | 3 | 0 | 2 | 3 | 3 | 5 | Mantener informados |
+| 9 | Equipo docente (evaluación del curso) | 3 | 0 | 2 | 3 | 3 | 5 | Mantener informados |
 | 10 | Comunidad académica y estudiantil | 1 | 0 | 1 | 3 | 1 | 4 | Mantener informados |
 | 11 | Equipo del proyecto | 3 | 3 | 3 | 3 | 6 | 6 | Gestionar de cerca |
 
@@ -68,7 +68,7 @@
 | 6 | Fondo Adaptación (entidad que publica la capa satelital) | Publicadora de la capa «Impacto Satelital en Edificaciones por Terremoto. Cali 2026». [Evidencia en el repo: `README.md §5.1`] | Que el proxy se describa con su método, fechas de imágenes y límites. | Todos los KPI (el severo estricto sale de su clasificación). | Atribuirle conclusiones de daño que la capa no hace. |
 | 7 | Entidades geológicas nacionales y USGS | El Avance 1 las lista como fuente del contexto técnico; el README usa USGS solo como contexto. [Evidencia en el repo: `docs/proyecto/referencias/contexto_y_problema.pdf, p. 4`; `README.md §5.4`] | Que el evento (magnitud, fecha) se cite correctamente. | Ninguna (contexto del evento). | Mezclar la intensidad o la magnitud con nuestros KPI sin llave espacial. |
 | 8 | Unidad Nacional para la Gestión del Riesgo de Desastres (UNGRD; fuente original del RUD) | Fuente original de los datos municipales de daños del plan B; la ruta usada es un monitor de un solo mantenedor. [Evidencia en el repo: `docs/bronze/investigacion_fuentes.md (ficha 8)`] | Que el plan B (municipal) quede documentado y no se confunda con el plan elegido. | Ninguna: el plan elegido no usa esta fuente. | Citar datos del monitor como oficiales. |
-| 9 | Profesor del curso (evaluador de la entrega) | Evalúa la entrega; no es un usuario del análisis. [Evidencia en el repo: `docs/retroalimentacion/retroalimentacion_del_profesor.txt`] | Reproducibilidad, trazabilidad, honestidad sobre límites y evidencia verificable. | KPI de desempeño del proyecto (documento 03) y criterios del MVP (documento 05). | Entender que se validó con usuarios o stakeholders cuando no ocurrió. |
+| 9 | Equipo docente (evaluación del curso) | Evalúa la entrega; no es un usuario del análisis. [Evidencia en el repo: `docs/retroalimentacion/retroalimentacion_recibida.txt`] | Reproducibilidad, trazabilidad, honestidad sobre límites y evidencia verificable. | KPI de desempeño del proyecto (documento 03) y criterios del MVP (documento 05). | Entender que se validó con usuarios o stakeholders cuando no ocurrió. |
 | 10 | Comunidad académica y estudiantil | Tercer grupo de usuarios objetivo del Avance 1. [Evidencia en el repo: `docs/proyecto/referencias/contexto_y_problema.pdf, p. 2`] | Entender con datos, y no solo con narrativas, qué factores explican lo ocurrido. | K1, K2, K4 y sensibilidades. | Leer la ausencia de diferencia como ausencia de efecto del estrato. |
 | 11 | Equipo del proyecto | Diseña, construye y documenta el análisis; responde por sus límites. [Evidencia en el repo: `README.md (autores)`] | Saber qué falta validar antes de afirmarlo. | Todos. | Afirmar sin respaldo lo que es una hipótesis. |
 
@@ -78,7 +78,7 @@
 | Usuario objetivo institucional (gestión del riesgo) | `README.md`, `docs/gold/KPIs.md`, las tablas de `data/gold/` y la API de solo lectura; el dashboard está en construcción [Evidencia en el repo: `README.md`; `docs/gold/KPIs.md`; `data/gold/kpis_gold.csv`] | Población analizada (7 comunas), alcance temporal (estrato 2015), proxy y no evaluación estructural, porcentaje sin datos. |
 | Habitantes | Nada específico hoy; podría ser un resumen en lenguaje sencillo. [Hipótesis de diseño: criterio y experimento de validación propuesto, no ejecutado] Experimento: prueba de comprensión con lectores. | Las tasas no son prevalencias ni la probabilidad de que una construcción concreta esté dañada. |
 | Productores de datos (DAPM, IDESC, Fondo Adaptación, UNGRD, USGS) | Atribución y licencias en `README.md` §17 y trazabilidad por sha256 [Evidencia en el repo: `README.md §17`] | Las limitaciones de sus datos (estrato 2015, polígonos 2026 renumerados) no son un juicio sobre su calidad. |
-| Comunidad académica y profesor | Repositorio ejecutable, 982 pruebas, registro de decisiones y verificación de entrega [Evidencia en el repo: `docs/DECISIONES.md`; `docs/validacion/verificacion_entrega.md`; `tests/`] | No hubo pruebas con usuarios. |
+| Comunidad académica y equipo docente | Repositorio ejecutable, 982 pruebas, registro de decisiones y verificación de entrega [Evidencia en el repo: `docs/DECISIONES.md`; `docs/validacion/verificacion_del_paquete.md`; `tests/`] | No hubo pruebas con usuarios. |
 
 ## 6. Contactos realizados
 **Ninguno:** este mapa se construyó con el Avance 1 y fuentes públicas. Si más adelante ocurre un contacto, se registra aquí con fecha, rol de la persona, qué se habló y dónde está el registro; sin registro no se afirma nada.

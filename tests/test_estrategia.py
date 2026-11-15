@@ -11,6 +11,10 @@ import pytest
 
 from src.common import ROOT
 
+_spec_dist = importlib.util.spec_from_file_location("make_dist_estrategia", ROOT / "scripts" / "make_dist.py")
+make_dist = importlib.util.module_from_spec(_spec_dist)
+_spec_dist.loader.exec_module(make_dist)
+
 CARPETA = ROOT / "docs" / "estrategia"
 ESTADO = ROOT / "docs" / "checklist" / "estado_checklist.md"
 DOCS = ["01_data_thinking.md", "02_stakeholders.md", "03_objetivo_alcance_okr_kpi.md", "04_canvas_data_innovation_board.md", "05_mvp_criterios_aceptacion.md"]
@@ -66,12 +70,12 @@ def test_sin_rastros_de_elaboracion_ni_marcas_pendientes_en_estrategia():
 
 
 def test_sin_rastros_de_elaboracion_en_el_resto_del_repo():
-    """Recorre los archivos de texto versionables (sin .venv, .git, data/, dist/ ni la declaración de uso, que es del equipo)."""
+    """Recorre los archivos de texto versionables (sin .venv, .git, data/, dist/ ni el documento aislado de la raíz, que es del equipo)."""
     saltar = {".venv", ".git", "data", "dist", "logs", "__pycache__", ".pytest_cache", ".ipynb_checkpoints"}
     hallazgos = []
     for p in ROOT.rglob("*"):
         rel = p.relative_to(ROOT)
-        if not p.is_file() or rel.parts[0] in saltar or any(x in saltar for x in rel.parts) or p.suffix not in SUFIJOS or p.name == "DECLARACION_USO_IA.md":
+        if not p.is_file() or rel.parts[0] in saltar or any(x in saltar for x in rel.parts) or p.suffix not in SUFIJOS or make_dist.es_documento_aislado(rel.as_posix()):
             continue
         t = p.read_text(encoding="utf-8", errors="ignore")
         hallazgos += [(rel.as_posix(), x) for x in RASTROS if x in t]
@@ -328,12 +332,12 @@ def test_negativas_de_la_regla_un_estado_nunca_supera_su_evidencia(tmp_path):
 
 
 def test_ningun_documento_conserva_etiquetas_de_fase_como_fase_de_trabajo():
-    """Las salidas crudas de las evidencias, las imágenes, la declaración de uso y los datos se excluyen: conservan lo que tenían al capturarse."""
+    """Las salidas crudas de las evidencias, las imágenes, el documento aislado de la raíz y los datos se excluyen: conservan lo que tenían al capturarse."""
     saltar = {".venv", ".git", "data", "dist", "logs", "__pycache__", ".pytest_cache", ".ipynb_checkpoints"}
     hallazgos = []
     for p in ROOT.rglob("*"):
         rel = p.relative_to(ROOT)
-        if (not p.is_file() or any(x in saltar for x in rel.parts) or p.suffix not in SUFIJOS or p.name == "DECLARACION_USO_IA.md"
+        if (not p.is_file() or any(x in saltar for x in rel.parts) or p.suffix not in SUFIJOS or make_dist.es_documento_aislado(rel.as_posix())
                 or rel.as_posix().startswith(("docs/evidencias/base/", "docs/evidencias/estrategia/", "docs/evidencias/api/", "tests/test_estrategia.py"))):
             continue
         if ETIQUETA_DE_FASE.search(p.read_text(encoding="utf-8", errors="ignore")):
@@ -347,13 +351,13 @@ TERMINOS_DE_PROCESO = [r"Entre" + r"ga 3", r"entre" + r"ga_3", r"Avan" + r"ce 2"
 
 
 def test_ningun_documento_conserva_terminos_de_proceso_ni_rutas_antiguas():
-    """Excluye lo protegido (evidencias crudas, imágenes, PDF, retroalimentación original, declaración de uso y datos) y las listas de cadenas de las pruebas."""
+    """Excluye lo protegido (evidencias crudas, imágenes, PDF, retroalimentación original, documento aislado de la raíz y datos) y las listas de cadenas de las pruebas."""
     saltar = {".venv", ".git", "data", "dist", "logs", "__pycache__", ".pytest_cache", ".ipynb_checkpoints"}
     hallazgos = []
     for p in ROOT.rglob("*"):
         rel = p.relative_to(ROOT)
-        if (not p.is_file() or any(x in saltar for x in rel.parts) or p.suffix not in SUFIJOS or p.name == "DECLARACION_USO_IA.md"
-                or rel.as_posix().startswith(("docs/evidencias/base/", "docs/evidencias/estrategia/", "docs/evidencias/api/", "docs/retroalimentacion/retroalimentacion_del_profesor.txt", "tests/test_estrategia.py"))):
+        if (not p.is_file() or any(x in saltar for x in rel.parts) or p.suffix not in SUFIJOS or make_dist.es_documento_aislado(rel.as_posix())
+                or rel.as_posix().startswith(("docs/evidencias/base/", "docs/evidencias/estrategia/", "docs/evidencias/api/", "docs/retroalimentacion/retroalimentacion_recibida.txt", "tests/test_estrategia.py"))):
             continue
         t = p.read_text(encoding="utf-8", errors="ignore")
         hallazgos += [(rel.as_posix(), x) for x in TERMINOS_DE_PROCESO if re.search(x, t)]
@@ -485,3 +489,60 @@ def test_negativa_cada_alteracion_de_la_tabla_real_se_detecta(nombre):
     assert alterada != original, f"la alteración «{nombre}» no cambió nada: la prueba está mal armada"
     errores = revisar_tabla_real(alterada, ROOT, datetime.date.today())
     assert any(esperado in e for e in errores), f"«{nombre}» no produjo el error esperado ({esperado!r}): {errores}"
+
+
+# --- la figura de la matriz poder-interés sale de la tabla de puntajes y no dice «Profesor» ---
+def _script_de_la_matriz():
+    espec = importlib.util.spec_from_file_location("make_matriz_poder_interes", ROOT / "scripts" / "make_matriz_poder_interes.py")
+    modulo = importlib.util.module_from_spec(espec)
+    espec.loader.exec_module(modulo)
+    return modulo
+
+
+def atestado_de_la_figura(ruta):
+    """Los puntos y nombres que el script dejó como metadato del PNG (None si la imagen no salió del script)."""
+    from PIL import Image
+    with Image.open(ruta) as im:
+        d = im.text.get("Description")
+    return json.loads(d) if d else None
+
+
+def errores_de_la_figura(atestado, tabla):
+    """Diferencias entre lo que dice la figura y la tabla de puntajes (lista vacía si coinciden)."""
+    matriz = _script_de_la_matriz()
+    if atestado is None:
+        return ["la imagen no trae el atestado del script que la genera"]
+    esperado = [list(p) for p in matriz.leer_puntos(tabla)]
+    errores = []
+    if atestado["puntos"] != esperado:
+        errores.append("los puntos o nombres de la figura no coinciden con la tabla")
+    if "Pro" + "fesor" in json.dumps(atestado, ensure_ascii=False) or "Pro" + "fesor" in tabla:
+        errores.append("la figura o la tabla dicen «Pro" + "fesor»")
+    return errores
+
+
+def test_la_figura_de_stakeholders_sale_de_la_tabla_y_no_dice_profesor(tmp_path):
+    tabla = _texto("02_stakeholders.md")
+    imagen = CARPETA / "img" / "matriz_poder_interes.png"
+    assert errores_de_la_figura(atestado_de_la_figura(imagen), tabla) == []
+    matriz = _script_de_la_matriz()
+    regenerada = matriz.dibujar(matriz.leer_puntos(tabla), tmp_path / "otra.png")      # el script reproduce el mismo atestado
+    assert regenerada == atestado_de_la_figura(imagen)
+
+
+def test_negativas_de_la_figura_de_stakeholders(tmp_path):
+    tabla = _texto("02_stakeholders.md")
+    imagen = CARPETA / "img" / "matriz_poder_interes.png"
+    atestado = atestado_de_la_figura(imagen)
+    con_profesor = tabla.replace("Equipo docente (evaluación del curso)", "Pro" + "fesor del curso (evaluador de la entrega)")
+    assert con_profesor != tabla and errores_de_la_figura(atestado, con_profesor), "la tabla vuelve a decir «Profesor»"
+    alterado = json.loads(json.dumps(atestado))
+    alterado["puntos"][8][1] = "Pro" + "fesor del curso (evaluador de la entrega)"
+    assert errores_de_la_figura(alterado, tabla), "la figura vuelve a decir «Profesor»"
+    desplazado = json.loads(json.dumps(atestado))
+    desplazado["puntos"][0][3] += 1
+    assert errores_de_la_figura(desplazado, tabla), "un punto cambia de lugar sin cambiar la tabla"
+    assert errores_de_la_figura(None, tabla), "una imagen que no salió del script (la anterior)"
+    sin_tabla = tabla.replace("| 11 | Equipo del proyecto | 3 | 3 | 3 | 3 | 6 | 6 |", "| 11 | Equipo del proyecto | 3 | 3 | 3 | 3 | 6 | 5 |")
+    with pytest.raises(ValueError):
+        _script_de_la_matriz().leer_puntos(sin_tabla)      # un puntaje que no suma lo que dice la rúbrica

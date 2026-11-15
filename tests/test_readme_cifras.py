@@ -103,7 +103,7 @@ def test_rutas_citadas_en_readme_existen():
     assert faltan == []
 
 
-# --- retroalimentación del avance 2: alcance temporal, población analizada e indicador satelital ---
+# --- retroalimentación recibida: alcance temporal, población analizada e indicador satelital ---
 KPIS_MD = (ROOT / "docs/gold/KPIs.md").read_text(encoding="utf-8")
 
 

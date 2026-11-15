@@ -223,7 +223,7 @@
 
 
 
-**Archivos protegidos.** Las salidas crudas de `base/`, `estrategia/` y `api/`, las imágenes y los PDF, la retroalimentación original del profesor y `DECLARACION_USO_IA.md` no se editan: se movieron con `git mv` y su sha256 es el mismo que tenían al capturarse (por eso las filas de esta tabla siguen vigentes). Por eso las salidas crudas conservan los nombres de pruebas y las rutas que tenían al capturarse (por ejemplo, rutas de la estructura anterior de `docs/` y nombres de pruebas anteriores) y la imagen de la arquitectura conserva sus rótulos de ese momento. Se regeneran en el cierre final con `scripts/evidencias/evidencias_api.py` y `scripts/evidencias/make_diagrama_arquitectura.py`.
+**Archivos protegidos.** Las salidas crudas de `base/`, `estrategia/` y `api/`, las imágenes y los PDF, la retroalimentación original recibida y el documento aislado de la raíz no se editan: se movieron con `git mv` y su sha256 es el mismo que tenían al capturarse (por eso las filas de esta tabla siguen vigentes). Por eso las salidas crudas conservan los nombres de pruebas y las rutas que tenían al capturarse (por ejemplo, rutas de la estructura anterior de `docs/` y nombres de pruebas anteriores) y la imagen de la arquitectura conserva sus rótulos de ese momento. Se regeneran en el cierre final con `scripts/evidencias/evidencias_api.py` y `scripts/evidencias/make_diagrama_arquitectura.py`.
 
 
 

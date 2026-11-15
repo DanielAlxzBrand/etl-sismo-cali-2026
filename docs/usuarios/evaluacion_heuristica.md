@@ -94,5 +94,4 @@ H5 y H9 quedan sin hallazgos porque el panel es de solo lectura y, en las captur
 - **Qué NO afirmamos:** que estos sean todos los problemas, que las severidades coincidan con lo que vería una persona real, que el panel cumpla un nivel de accesibilidad ni que alguien lo haya usado.
 
 ---
-Uso de IA: ver DECLARACION_USO_IA.md
 Revisión del equipo: pendiente

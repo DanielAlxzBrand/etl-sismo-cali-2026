@@ -2,12 +2,12 @@
 
 **Objetivo:** comprobar que un tercero puede instalar y ejecutar el pipeline desde una copia limpia del repositorio, sin `.env`, sin el venv del equipo y reutilizando Bronze (sin red para extraer).
 
-**Equipo:** Windows 11, PowerShell, Python 3.13.0. **Copia:** `%TEMP%\avance2_limpio` (fuera del repositorio), creada con `robocopy` excluyendo `.venv*`, `dist`, `__pycache__`, `.ipynb_checkpoints`, `.pytest_cache` y `.env` (80 archivos; `.env` presente en la copia: False).
+**Equipo:** Windows 11, PowerShell, Python 3.13.0. **Copia:** `%TEMP%\copia_limpia` (fuera del repositorio), creada con `robocopy` excluyendo `.venv*`, `dist`, `__pycache__`, `.ipynb_checkpoints`, `.pytest_cache` y `.env` (80 archivos; `.env` presente en la copia: False).
 
 ## Comandos
 ```powershell
-robocopy <repo> $env:TEMP\avance2_limpio /E /XD .venv .venv_test dist __pycache__ .ipynb_checkpoints .pytest_cache /XF .env
-cd $env:TEMP\avance2_limpio
+robocopy <repo> $env:TEMP\copia_limpia /E /XD .venv .venv_test dist __pycache__ .ipynb_checkpoints .pytest_cache /XF .env
+cd $env:TEMP\copia_limpia
 py -3 -m venv .venv_test
 .\.venv_test\Scripts\Activate.ps1
 python -m pip install -r requirements.txt

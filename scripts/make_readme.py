@@ -258,7 +258,7 @@ def main():
         ("docs/validacion/", "verificaciones: contra el enunciado, de los servicios, en entorno limpio y del registro de ejecución"),
         ("docs/checklist/", "estado de los 30 ítems del checklist y guía de evidencias por ítem (`docs/checklist/guia_de_evidencias.md`)"),
         ("docs/evidencias/", "manifiesto de evidencias y salidas registradas por tema"),
-        ("docs/retroalimentacion/", "retroalimentación del profesor y cómo la atendimos"),
+        ("docs/retroalimentacion/", "retroalimentación recibida y cómo la atendimos"),
     ]
     for ruta, _ in arbol:
         assert (ROOT / ruta).exists(), f"ruta citada inexistente: {ruta}"
@@ -533,7 +533,7 @@ jupyter nbconvert --to notebook --execute --inplace notebooks\\05_validacion_evi
 Hay **{n_tests} pruebas** automáticas, sin red:
 {tests_md}
 
-Además: (1) el **recálculo independiente de los KPI con SQL** sobre SQLite (notebook 04, diferencia máxima inferior a 1e-9), con implementaciones independientes de Wilson, Newcombe, Mantel-Haenszel y Spearman; (2) la **regresión del defecto de Mantel-Haenszel**: ese recálculo detectó que se contaban construcciones sin datos satelitales en los tamaños de grupo; se corrigió y una prueba fija el comportamiento (`docs/DECISIONES.md`); (3) las verificaciones en `docs/validacion/` (`verificacion_entrega.md`, `verificacion_servicios.md`, `prueba_entorno_limpio.md`, `verificacion_logging.md` y los hashes de antes y después del registro) y las salidas registradas en `docs/evidencias/`.
+Además: (1) el **recálculo independiente de los KPI con SQL** sobre SQLite (notebook 04, diferencia máxima inferior a 1e-9), con implementaciones independientes de Wilson, Newcombe, Mantel-Haenszel y Spearman; (2) la **regresión del defecto de Mantel-Haenszel**: ese recálculo detectó que se contaban construcciones sin datos satelitales en los tamaños de grupo; se corrigió y una prueba fija el comportamiento (`docs/DECISIONES.md`); (3) las verificaciones en `docs/validacion/` (`verificacion_del_paquete.md`, `verificacion_servicios.md`, `prueba_entorno_limpio.md`, `verificacion_logging.md` y los hashes de antes y después del registro) y las salidas registradas en `docs/evidencias/`.
 
 ## 15. Decisiones principales y trazabilidad
 El detalle, con alternativas, razón y riesgo de cada decisión, está en [docs/DECISIONES.md](docs/DECISIONES.md).

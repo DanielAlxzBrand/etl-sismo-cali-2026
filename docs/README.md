@@ -62,7 +62,7 @@
 ### `validacion/` · verificaciones
 | documento | para qué sirve |
 |---|---|
-| [verificacion_entrega.md](validacion/verificacion_entrega.md) | verificación del proyecto contra el enunciado |
+| [verificacion_del_paquete.md](validacion/verificacion_del_paquete.md) | verificación del proyecto contra el enunciado |
 | [verificacion_servicios.md](validacion/verificacion_servicios.md) | verificación de la API, las fuentes y las credenciales (subcriterios y estado) |
 | [prueba_entorno_limpio.md](validacion/prueba_entorno_limpio.md) | ejecución en una copia limpia |
 | [verificacion_logging.md](validacion/verificacion_logging.md) | verificación del registro de ejecución |
@@ -83,11 +83,11 @@
 | [manifiesto.md](evidencias/manifiesto.md) | índice de evidencias (EV-nnn) con comando, fecha, ruta y sha256 |
 | `evidencias/base/`, `evidencias/estrategia/`, `evidencias/api/` | salidas crudas registradas por tema (conservan los nombres de pruebas y rutas de su momento de captura) |
 
-### `retroalimentacion/` · profesor
+### `retroalimentacion/` · retroalimentación recibida
 | documento | para qué sirve |
 |---|---|
-| [retroalimentacion_del_profesor.txt](retroalimentacion/retroalimentacion_del_profesor.txt) | retroalimentación original (no se edita) |
-| [registro_de_cambios.md](retroalimentacion/registro_de_cambios.md) | retroalimentación del profesor y cómo la atendimos |
+| [retroalimentacion_recibida.txt](retroalimentacion/retroalimentacion_recibida.txt) | retroalimentación original (no se edita) |
+| [registro_de_cambios.md](retroalimentacion/registro_de_cambios.md) | retroalimentación recibida y cómo la atendimos |
 
 ### Pruebas y orquestación
 | documento | contenido |
@@ -175,7 +175,7 @@ El detalle de cada ítem (estado, evidencia y cómo validarlo) está en `docs/ch
 | el estado de cada ítem del checklist | `docs/checklist/estado_checklist.md` |
 | qué archivo adjuntar como evidencia de un ítem | `docs/checklist/guia_de_evidencias.md` |
 | por qué se decidió algo | `docs/DECISIONES.md` |
-| qué pidió el profesor y cómo respondimos | `docs/retroalimentacion/registro_de_cambios.md` |
+| qué se pidió en la retroalimentación y cómo respondimos | `docs/retroalimentacion/registro_de_cambios.md` |
 
 ## Notas
 - `data/silver/quality_report.json` conserva en el texto de la regla R10 la ruta anterior del documento de hallazgos (`docs/hallazgos_eda.md`): es una salida protegida (su sha256 es parte de la línea base) y el código que la genera conserva ese texto para que regenerar el pipeline dé exactamente los mismos bytes. El documento está hoy en `docs/silver/hallazgos_eda.md`.

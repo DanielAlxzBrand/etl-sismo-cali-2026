@@ -262,7 +262,7 @@ def test_la_matriz_de_la_evaluacion_tiene_una_columna_por_pagina_del_panel():
 def test_la_evaluacion_lleva_su_titulo_y_el_pie_acordados():
     texto = (USUARIOS / "evaluacion_heuristica.md").read_text(encoding="utf-8")
     assert texto.startswith("# Evaluación heurística interna")
-    assert texto.rstrip().endswith("Uso de IA: ver DECLARACION_USO_IA.md\nRevisión del equipo: pendiente")
+    assert texto.rstrip().endswith("Revisión del equipo: pendiente")
     assert "el equipo la revisó" not in texto and "revisada por el equipo" not in texto
 
 

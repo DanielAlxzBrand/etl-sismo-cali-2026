@@ -1,6 +1,6 @@
 # Revisión de los códigos de barrio con diferencias en la validación semántica
 
-**Fecha:** 11-nov-2026 · **Origen:** observación de la retroalimentación del profesor (profundizar la revisión de los códigos con diferencias) · **Alcance:** revisión documental. No modificamos `nombre_validado` ni ninguna otra columna o salida; las cifras de la validación (44 de 51 códigos; 93,52 % de las construcciones con nombre validado) se conservan tal cual.
+**Fecha:** 11-nov-2026 · **Origen:** observación de la retroalimentación recibida (profundizar la revisión de los códigos con diferencias) · **Alcance:** revisión documental. No modificamos `nombre_validado` ni ninguna otra columna o salida; las cifras de la validación (44 de 51 códigos; 93,52 % de las construcciones con nombre validado) se conservan tal cual.
 
 Revisamos los 7 códigos con veredicto «NO coincide» en `docs/silver/validacion_llave.md` (1011, 1802, 1898, 1905, 1922, 1999 y 2098; suman 333 construcciones), el código 1920 (4 construcciones sin pareja en el CSV 2015) y las 2 construcciones sin comuna ni barrio. Leemos `data/silver/silver_integrated.csv`, `data/silver/silver_estrato_barrio.csv` y los polígonos de `data/bronze/geo/` solo en modo lectura. Esta revisión se apoya en los hallazgos H13 y H18.
 
