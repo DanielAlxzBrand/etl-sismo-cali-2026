@@ -4,7 +4,7 @@
 
 > Este texto lo escribimos como estudiantes para explicar con claridad en qué consiste la sesión. **No es asesoría jurídica y no afirmamos que cumpla ninguna norma de protección de datos.** Si el equipo necesita esa seguridad, debe consultarla con quien corresponda antes de hacer sesiones.
 
-## Texto que se lee en voz alta y que, si se firma, se entrega en papel
+## Texto que se lee en voz alta y que, si se firma, se da en papel
 **Para qué es esto.** Somos estudiantes de un curso de ingeniería de datos de la Universidad Autónoma de Occidente. Estamos probando un panel que muestra resultados de un análisis sobre construcciones de Cali después del sismo del 10 de agosto de 2026. La sesión dura de 20 a 25 minutos y sirve para mejorar el panel y para nuestro trabajo del curso.
 
 **Qué le pedimos.** Que haga seis tareas con el panel pensando en voz alta y que responda dos cuestionarios cortos y tres preguntas. Anotamos cuánto se demora, si necesitó ayuda y comentarios breves.

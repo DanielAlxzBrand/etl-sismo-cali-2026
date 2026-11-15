@@ -30,7 +30,7 @@ Una persona queda en el perfil que ella misma diga que describe mejor su relaci�
 - **Sin grabación** de audio, video ni pantalla por defecto: la anotadora o el anotador escribe solo códigos, tiempos y comentarios breves. Si el equipo decidiera grabar, se pide un consentimiento aparte y la grabación **nunca** entra al repositorio.
 
 ## 6. Roles
-- **Facilitador:** lee la introducción y el guion, entrega las tareas una por una, **no explica el panel ni da pistas** (si la persona pide ayuda, anota «ayuda» y responde «¿qué haría usted si yo no estuviera?»), y pasa a la siguiente tarea al llegar al tiempo máximo.
+- **Facilitador:** lee la introducción y el guion, da las tareas una por una, **no explica el panel ni da pistas** (si la persona pide ayuda, anota «ayuda» y responde «¿qué haría usted si yo no estuviera?»), y pasa a la siguiente tarea al llegar al tiempo máximo.
 - **Anotador:** cronometra cada tarea, marca el resultado (éxito, éxito con ayuda o fracaso), cuenta ayudas y errores y escribe un comentario breve sin nombres.
 - **Quién NO debería facilitar:** quien construyó el panel o escribió el texto de una página, porque tiende a corregir a la persona o a defender el diseño sin darse cuenta. Si el equipo es pequeño y no hay alternativa, esa persona solo anota, y se declara.
 
