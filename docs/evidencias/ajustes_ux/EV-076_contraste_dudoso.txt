@@ -1,0 +1,34 @@
+# Verificación del contraste de 1,0 de un rótulo de eje
+- comando: `python scripts/evidencias/evidencia_contraste_dudoso.py`
+- fecha: 2026-11-14T21:06:55-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 41.4 s
+- Python: 3.13.0
+- commit del repositorio: cceb0f7
+
+Textos de los ejes del gráfico «Ubicación de las construcciones de la página» (página Construcciones, 1024 px de ancho), tal como los calculó el navegador:
+
+| Eje | Rótulo | Relleno | Opacidad calculada |
+|---|---|---|---|
+| eje horizontal (longitud) | −76,560 | rgb(128, 132, 149) | 0 |
+| eje horizontal (longitud) | −76,550 | rgb(128, 132, 149) | 0 |
+| eje horizontal (longitud) | −76,540 | rgb(128, 132, 149) | 0 |
+| eje horizontal (longitud) | −76,530 | rgb(128, 132, 149) | 0 |
+| eje horizontal (longitud) | −76,520 | rgb(128, 132, 149) | 0 |
+| eje horizontal (longitud) | −76,565 | rgb(128, 132, 149) | 1 |
+| eje horizontal (longitud) | −76,555 | rgb(128, 132, 149) | 1 |
+| eje horizontal (longitud) | −76,545 | rgb(128, 132, 149) | 1 |
+| eje horizontal (longitud) | −76,535 | rgb(128, 132, 149) | 1 |
+| eje horizontal (longitud) | −76,525 | rgb(128, 132, 149) | 1 |
+| eje vertical (latitud) | 3,390 | rgb(128, 132, 149) | 1 |
+| eje vertical (latitud) | 3,400 | rgb(128, 132, 149) | 1 |
+| eje vertical (latitud) | 3,410 | rgb(128, 132, 149) | 1 |
+| eje vertical (latitud) | 3,420 | rgb(128, 132, 149) | 1 |
+| eje vertical (latitud) | 3,430 | rgb(128, 132, 149) | 1 |
+| eje vertical (latitud) | 3,440 | rgb(128, 132, 149) | 1 |
+
+Rótulos con opacidad cero: 5; con opacidad plena: 11. La imagen `EV-076_eje_construcciones_1024.png` (captura automatizada del navegador) muestra solo los rótulos de opacidad plena: los de opacidad cero no se dibujan porque el gráfico los oculta cuando se solapan con sus vecinos (por eso solo se ve uno de cada dos en el eje horizontal).
+
+Conclusión: el contraste de 1,0 de EV-068 fue un **artefacto de la medición**: el script tomaba el primer texto del eje, que podía ser uno de los ocultos (opacidad cero), y calculaba su contraste como si fuera visible. No hay texto invisible en el gráfico. `evidencia_capturas_ajustes.py` mide solo texto con opacidad plena.
+
+Qué NO demuestra: que todos los rótulos posibles del gráfico se vean en cualquier ancho, ni que la medición cubra otros gráficos fuera de Construcciones.

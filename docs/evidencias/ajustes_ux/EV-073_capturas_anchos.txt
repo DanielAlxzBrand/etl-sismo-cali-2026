@@ -1,0 +1,96 @@
+# Capturas, desbordamiento y texto recortado de las ocho páginas en tres anchos (antes de los ajustes)
+- comando: `python scripts/evidencias/evidencia_capturas_ajustes.py --momento antes`
+- fecha: 2026-11-14T21:05:38-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 405.1 s
+- Python: 3.13.0
+- commit del repositorio: cceb0f7
+
+Navegador: msedge.exe Edg/157.0.4341.46 sin ventana, por el protocolo DevTools. Panel lanzado con scripts/panel/ejecutar_panel.py (SQLite; API y panel en 127.0.0.1).
+Cada imagen es una «captura automatizada del navegador» (no la toma una persona) de la página ya dibujada. A 390 px se emula un dispositivo móvil con densidad 1; a 1024 y 1400 px, una ventana de escritorio.
+
+| Página | Ancho (px) | Archivo | Alto (px) | Ancho del documento / de la ventana | Desborda en horizontal | Elementos con texto recortado | Contenedores con desplazamiento horizontal |
+|---|---|---|---|---|---|---|---|
+| Respuesta | 1400 | `EV-073_captura_respuesta_1400.png` | 1175 | 1400 / 1400 | no | 0 | 0 |
+| Estratos (K1) | 1400 | `EV-073_captura_estratos_1400.png` | 1672 | 1400 / 1400 | no | 0 | 0 |
+| Comunas (K6) | 1400 | `EV-073_captura_comunas_1400.png` | 1946 | 1400 / 1400 | no | 0 | 0 |
+| Sensibilidades (S0 a S5) | 1400 | `EV-073_captura_sensibilidades_1400.png` | 2359 | 1400 / 1400 | no | 0 | 0 |
+| Concentración (K3 y K4) | 1400 | `EV-073_captura_concentracion_1400.png` | 1575 | 1400 / 1400 | no | 0 | 0 |
+| Calidad de la llave | 1400 | `EV-073_captura_calidad_1400.png` | 1661 | 1400 / 1400 | no | 0 | 0 |
+| Construcciones | 1400 | `EV-073_captura_construcciones_1400.png` | 1704 | 1400 / 1400 | no | 0 | 0 |
+| Fuentes y sistema | 1400 | `EV-073_captura_fuentes_1400.png` | 2444 | 1400 / 1400 | no | 0 | 0 |
+| Respuesta | 1024 | `EV-073_captura_respuesta_1024.png` | 1345 | 1024 / 1024 | no | 6 | 0 |
+| Estratos (K1) | 1024 | `EV-073_captura_estratos_1024.png` | 1840 | 1024 / 1024 | no | 0 | 0 |
+| Comunas (K6) | 1024 | `EV-073_captura_comunas_1024.png` | 2162 | 1024 / 1024 | no | 0 | 0 |
+| Sensibilidades (S0 a S5) | 1024 | `EV-073_captura_sensibilidades_1024.png` | 2805 | 1024 / 1024 | no | 0 | 0 |
+| Concentración (K3 y K4) | 1024 | `EV-073_captura_concentracion_1024.png` | 1744 | 1024 / 1024 | no | 3 | 0 |
+| Calidad de la llave | 1024 | `EV-073_captura_calidad_1024.png` | 2277 | 1024 / 1024 | no | 0 | 0 |
+| Construcciones | 1024 | `EV-073_captura_construcciones_1024.png` | 1845 | 1024 / 1024 | no | 0 | 0 |
+| Fuentes y sistema | 1024 | `EV-073_captura_fuentes_1024.png` | 2808 | 1024 / 1024 | no | 4 | 1 |
+| Respuesta | 390 | `EV-073_captura_respuesta_390.png` | 2160 | 390 / 390 | no | 0 | 0 |
+| Estratos (K1) | 390 | `EV-073_captura_estratos_390.png` | 2152 | 390 / 390 | no | 0 | 0 |
+| Comunas (K6) | 390 | `EV-073_captura_comunas_390.png` | 2458 | 390 / 390 | no | 0 | 0 |
+| Sensibilidades (S0 a S5) | 390 | `EV-073_captura_sensibilidades_390.png` | 3464 | 390 / 390 | no | 0 | 0 |
+| Concentración (K3 y K4) | 390 | `EV-073_captura_concentracion_390.png` | 2499 | 390 / 390 | no | 0 | 0 |
+| Calidad de la llave | 390 | `EV-073_captura_calidad_390.png` | 2942 | 390 / 390 | no | 0 | 1 |
+| Construcciones | 390 | `EV-073_captura_construcciones_390.png` | 2153 | 390 / 390 | no | 0 | 0 |
+| Fuentes y sistema | 390 | `EV-073_captura_fuentes_390.png` | 3758 | 390 / 390 | no | 0 | 1 |
+
+## Elementos con texto recortado por el CSS (hasta 8 por página y ancho)
+
+- Respuesta, 1024 px: `<div>` «6,33 %» (contenido 100 px en una caja de 97 px)
+- Respuesta, 1024 px: `<div>` «Tasa 1-2 (muestra baja)» (contenido 135 px en una caja de 75 px)
+- Respuesta, 1024 px: `<div>` «5,84 %» (contenido 100 px en una caja de 97 px)
+- Respuesta, 1024 px: `<div>` «Diferencia (3-5 menos 1-2)» (contenido 152 px en una caja de 75 px)
+- Respuesta, 1024 px: `<div>` «+0,49 pp» (contenido 128 px en una caja de 97 px)
+- Respuesta, 1024 px: `<div>` «Razón de tasas (3-5 / 1-2)» (contenido 145 px en una caja de 75 px)
+- Concentración (K3 y K4), 1024 px: `<div>` «Participación de los barrios con más severos» (contenido 257 px en una caja de 220 px)
+- Concentración (K3 y K4), 1024 px: `<div>` «Esos barrios en las construcciones con datos» (contenido 258 px en una caja de 220 px)
+- Concentración (K3 y K4), 1024 px: `<div>` «Correlación de Spearman» (contenido 148 px en una caja de 123 px)
+- Fuentes y sistema, 1024 px: `<div>` «Fecha de corte» (contenido 85 px en una caja de 75 px)
+- Fuentes y sistema, 1024 px: `<div>` «2026-09-02» (contenido 166 px en una caja de 97 px)
+- Fuentes y sistema, 1024 px: `<div>` «Construcciones» (contenido 90 px en una caja de 75 px)
+- Fuentes y sistema, 1024 px: `<div>` «Códigos de barrio» (contenido 103 px en una caja de 97 px)
+
+## Contenedores con desplazamiento horizontal (tablas anchas)
+
+- Fuentes y sistema, 1024 px: `<div>`  (contenido 718 px en 562 px)
+- Calidad de la llave, 390 px: `<div>`  (contenido 552 px en 356 px)
+- Fuentes y sistema, 390 px: `<div>`  (contenido 718 px en 356 px)
+
+## Tablas interactivas (alto y ancho de la caja)
+
+- calidad, 390 px: 358×142 px
+- calidad, 1024 px: 564×142 px
+- calidad, 1400 px: 940×142 px
+- comunas, 390 px: 358×282 px, 358×282 px
+- comunas, 1024 px: 564×282 px, 564×282 px
+- comunas, 1400 px: 940×282 px, 940×282 px
+- concentracion, 390 px: 358×387 px
+- concentracion, 1024 px: 564×387 px
+- concentracion, 1400 px: 940×387 px
+- construcciones, 390 px: 358×400 px
+- construcciones, 1024 px: 564×400 px
+- construcciones, 1400 px: 940×400 px
+- estratos, 390 px: 358×247 px
+- estratos, 1024 px: 564×247 px
+- estratos, 1400 px: 940×247 px
+- fuentes, 390 px: 358×177 px
+- fuentes, 1024 px: 564×177 px
+- fuentes, 1400 px: 940×177 px
+- sensibilidades, 390 px: 358×247 px
+- sensibilidades, 1024 px: 564×247 px
+- sensibilidades, 1400 px: 940×247 px
+
+## Textos de controles y etiquetas accesibles que dibuja el navegador (por página; sin los de datos)
+
+- **calidad**: a: Calidad de la llave; a: Comunas (K6); a: Concentración (K3 y K4); a: Construcciones; a: Estratos (K1); a: Fuentes y sistema; a: Link to heading; a: Respuesta; a: Sensibilidades (S0 a S5); a: Skip to main content; button: Collapse sidebar; button: Download as CSV; button: Fullscreen; button: Help for Cobertura de la llave; button: Help for Estrato válido; button: Help for Nombre validado; button: Search; button: Show/hide columns; button: keyboard_double_arrow_left; nav: App pages; section: Sidebar
+- **comunas**: a: Calidad de la llave; a: Comunas (K6); a: Concentración (K3 y K4); a: Construcciones; a: Estratos (K1); a: Fuentes y sistema; a: Link to heading; a: Respuesta; a: Sensibilidades (S0 a S5); a: Skip to main content; button: Collapse sidebar; button: Copy Vega-Lite spec; button: Download as CSV; button: Download as PNG; button: Fullscreen; button: Search; button: Show data; button: Show/hide columns; button: keyboard_double_arrow_left; div: Barras de la tasa por comuna con su intervalo de Wilson; las comunas con muestra; g: Symbol legend titled 'Tamaño de la muestra' for fill color with 2 values: muestr; g: Title text 'Tasa de cambio satelital severo por comuna'; g: X-axis titled 'Comuna' for a discrete scale with 7 values: Comuna 03, Comuna 09 ; g: Y-axis titled 'Tasa de cambio satelital severo (%)' for a linear scale with valu; line: Comuna: Comuna 03; lower_inf_pct: 5.2302352954; upper_inf_pct: 9.5468417606; sup; line: Comuna: Comuna 09 · muestra baja; lower_inf_pct: 1.8548108346; upper_inf_pct: 7.; line: Comuna: Comuna 10; lower_inf_pct: 4.6882119975; upper_inf_pct: 8.8646444658; sup; line: Comuna: Comuna 17 · muestra baja; lower_inf_pct: 1.8022396823; upper_inf_pct: 11; line: Comuna: Comuna 18 · muestra baja; lower_inf_pct: 4.2830111461; upper_inf_pct: 15; line: Comuna: Comuna 19; lower_inf_pct: 5.4327539823; upper_inf_pct: 7.1955193848; sup; line: Comuna: Comuna 20 · muestra baja; lower_inf_pct: 3.8171738012; upper_inf_pct: 8.; nav: App pages; path: Comuna: Comuna 03; tasa_pct: 7.0909090909; muestra: muestra suficiente; Grupo: C; path: Comuna: Comuna 09 · muestra baja; tasa_pct: 3.8043478261; muestra: muestra baja;; path: Comuna: Comuna 10; tasa_pct: 6.4695009242; muestra: muestra suficiente; Grupo: C; path: Comuna: Comuna 17 · muestra baja; tasa_pct: 4.5977011494; muestra: muestra baja;; path: Comuna: Comuna 18 · muestra baja; tasa_pct: 8.3333333333; muestra: muestra baja;; path: Comuna: Comuna 19; tasa_pct: 6.2564455139; muestra: muestra suficiente; Grupo: C; path: Comuna: Comuna 20 · muestra baja; tasa_pct: 5.8479532164; muestra: muestra baja;; section: Sidebar
+- **concentracion**: a: Calidad de la llave; a: Comunas (K6); a: Concentración (K3 y K4); a: Construcciones; a: Estratos (K1); a: Fuentes y sistema; a: Link to heading; a: Respuesta; a: Sensibilidades (S0 a S5); a: Skip to main content; button: Collapse sidebar; button: Download as CSV; button: Fullscreen; button: Help for Barrios incluidos; button: Help for Correlación de Spearman; button: Help for Esos barrios en las construcciones con datos; button: Help for Participación de los barrios con más severos; button: Help for p de permutación; button: Search; button: Show/hide columns; button: keyboard_double_arrow_left; nav: App pages; section: Sidebar
+- **construcciones**: a: Calidad de la llave; a: Comunas (K6); a: Concentración (K3 y K4); a: Construcciones; a: Estratos (K1); a: Fuentes y sistema; a: Link to heading; a: Respuesta; a: Sensibilidades (S0 a S5); a: Skip to main content; button: Collapse sidebar; button: Copy Vega-Lite spec; button: Decrement; button: Descargar CSV (filas mostradas); button: Download as CSV; button: Download as PNG; button: Fullscreen; button: Increment; button: Open; button: Search; button: Show data; button: Show/hide columns; button: keyboard_double_arrow_left; div: Dispersión de longitud y latitud de las construcciones mostradas, con clase de d; g: Symbol legend titled 'Clase de daño' for shape and fill color with 4 values: sin; g: Title text 'Ubicación de las construcciones de la página, por clase de daño'; g: X-axis titled 'Longitud (grados)' for a linear scale with values from −76.56 to ; g: Y-axis titled 'Latitud (grados)' for a linear scale with values from 3.38 to 3.4; input: Cambio satelital severo; input: Choose an option; input: Comuna; input: Estrato; input: Página; nav: App pages; path: lon: −76.5245345; lat: 3.4218197; clase_dano: sin_cambio; Construcción: 47; Clas; path: lon: −76.5254775; lat: 3.4218529; clase_dano: escombros; Construcción: 49; Clase; path: lon: −76.527538; lat: 3.4133041; clase_dano: sin_cambio; Construcción: 41; Clase; path: lon: −76.5277253; lat: 3.4071268; clase_dano: techo; Construcción: 40; Clase: te; path: lon: −76.5279459; lat: 3.413884; clase_dano: sin_cambio; Construcción: 32; Clase; path: lon: −76.5280068; lat: 3.4138862; clase_dano: sin_cambio; Construcción: 22; Clas
+- **estratos**: a: Calidad de la llave; a: Comunas (K6); a: Concentración (K3 y K4); a: Construcciones; a: Estratos (K1); a: Fuentes y sistema; a: Link to heading; a: Respuesta; a: Sensibilidades (S0 a S5); a: Skip to main content; button: Collapse sidebar; button: Copy Vega-Lite spec; button: Download as CSV; button: Download as PNG; button: Fullscreen; button: Search; button: Show data; button: Show/hide columns; button: keyboard_double_arrow_left; div: Barras de la tasa por estrato con su intervalo de Wilson; los estratos con muest; g: Symbol legend titled 'Tamaño de la muestra' for fill color with 2 values: muestr; g: Title text 'Tasa de cambio satelital severo por estrato'; g: X-axis titled 'Estrato (por lados de manzana)' for a discrete scale with 6 value; g: Y-axis titled 'Tasa de cambio satelital severo (%)' for a linear scale with valu; line: Estrato (por lados de manzana): Estrato 1 · muestra baja; lower_inf_pct: 4.32758; line: Estrato (por lados de manzana): Estrato 2 · muestra baja; lower_inf_pct: 1.11509; line: Estrato (por lados de manzana): Estrato 3; lower_inf_pct: 5.0548938025; upper_in; line: Estrato (por lados de manzana): Estrato 4; lower_inf_pct: 5.9113467923; upper_in; line: Estrato (por lados de manzana): Estrato 5; lower_inf_pct: 3.9514521885; upper_in; line: Estrato (por lados de manzana): Estrato 6 · muestra baja; lower_inf_pct: 0; uppe; nav: App pages; path: Estrato (por lados de manzana): Estrato 1 · muestra baja; tasa_pct: 6.6225165563; path: Estrato (por lados de manzana): Estrato 2 · muestra baja; tasa_pct: 3.2608695652; path: Estrato (por lados de manzana): Estrato 3; tasa_pct: 6.3086104007; muestra: mues; path: Estrato (por lados de manzana): Estrato 4; tasa_pct: 6.9212410501; muestra: mues; path: Estrato (por lados de manzana): Estrato 5; tasa_pct: 5.1406401552; muestra: mues; path: Estrato (por lados de manzana): Estrato 6 · muestra baja; tasa_pct: 0; muestra: ; section: Sidebar
+- **fuentes**: a: Calidad de la llave; a: Comunas (K6); a: Concentración (K3 y K4); a: Construcciones; a: Estratos (K1); a: Fuentes y sistema; a: Link to heading; a: Respuesta; a: Sensibilidades (S0 a S5); a: Skip to main content; button: Collapse sidebar; button: Download as CSV; button: Fullscreen; button: Help for Construcciones; button: Help for Fecha de corte; button: Search; button: Show/hide columns; button: keyboard_double_arrow_left; nav: App pages; section: Sidebar
+- **respuesta**: a: Calidad de la llave; a: Comunas (K6); a: Concentración (K3 y K4); a: Construcciones; a: Estratos (K1); a: Fuentes y sistema; a: Link to heading; a: Respuesta; a: Sensibilidades (S0 a S5); a: Skip to main content; button: Collapse sidebar; button: Help for Cobertura de la llave; button: Help for Diferencia (3-5 menos 1-2); button: Help for Estrato válido; button: Help for Nombre validado; button: Help for Razón de tasas (3-5 / 1-2); button: Help for Tasa 1-2 (muestra baja); button: Help for Tasa 3-5; button: keyboard_double_arrow_left; nav: App pages; section: Sidebar
+- **sensibilidades**: a: Calidad de la llave; a: Comunas (K6); a: Concentración (K3 y K4); a: Construcciones; a: Estratos (K1); a: Fuentes y sistema; a: Link to heading; a: Respuesta; a: Sensibilidades (S0 a S5); a: Skip to main content; button: Collapse sidebar; button: Copy Vega-Lite spec; button: Download as CSV; button: Download as PNG; button: Fullscreen; button: Search; button: Show data; button: Show/hide columns; button: keyboard_double_arrow_left; div: Diferencia de tasas entre los estratos 3-5 y 1-2 en cada escenario, con su inter; g: Title text 'Diferencia de tasas (3-5 menos 1-2) por escenario'; g: X-axis titled 'Escenario' for a discrete scale with 6 values: S0, S1, S2, S3, S4; g: Y-axis titled 'Diferencia 3-5 menos 1-2 (puntos porcentuales)' for a linear scal; line: Escenario: S0; lower_inf_pp: −2.3644743364; upper_inf_pp: 2.5539919147; sup_pp: ; line: Escenario: S1; lower_inf_pp: −2.8144439758; upper_inf_pp: 2.3236362789; sup_pp: ; line: Escenario: S2; lower_inf_pp: −2.9564839352; upper_inf_pp: 2.5508522624; sup_pp: ; line: Escenario: S3; lower_inf_pp: −4.8795575851; upper_inf_pp: 1.9350478605; sup_pp: ; line: Escenario: S4; lower_inf_pp: −2.7668519332; upper_inf_pp: 6.3723992047; sup_pp: ; line: Escenario: S5; lower_inf_pp: −2.4546598534; upper_inf_pp: 2.4966111142; sup_pp: ; line: y: 0; nav: App pages; path: Escenario: S0; dif_pp: 0.4894893512; Diferencia: +0,49 pp; Intervalo de Newcombe; path: Escenario: S1; dif_pp: 0.1657012365; Diferencia: +0,17 pp; Intervalo de Newcombe; path: Escenario: S2; dif_pp: 0.2752870851; Diferencia: +0,28 pp; Intervalo de Newcombe; path: Escenario: S3; dif_pp: −0.8732834848; Diferencia: −0,87 pp; Intervalo de Newcomb; path: Escenario: S4; dif_pp: 2.0101475612; Diferencia: +2,01 pp; Intervalo de Newcombe; path: Escenario: S5; dif_pp: 0.4186972339; Diferencia: +0,42 pp; Intervalo de Newcombe; section: Sidebar
+
+Procesos del panel o de la API que quedan vivos al terminar: 0.

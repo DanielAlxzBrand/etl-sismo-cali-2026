@@ -1,0 +1,38 @@
+# Tiempos de dibujo de las ocho páginas en tres anchos (antes de los ajustes)
+- comando: `python scripts/evidencias/evidencia_capturas_ajustes.py --momento antes`
+- fecha: 2026-11-14T21:05:38-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 404.9 s
+- Python: 3.13.0
+- commit del repositorio: cceb0f7
+
+Tiempo desde que se pide la página hasta que Streamlit la dibujó (recuadro de alcance visible, sin indicador de ejecución y, si hay gráfico, ya dibujado), medido dentro del navegador con `performance.now()`. 1 carga de calentamiento y 5 medidas por página y ancho. **Medición local de una máquina**: no es una garantía para otro equipo ni para otra red; el panel y la API corren en el mismo equipo y la API usa SQLite.
+
+| Página | Ancho (px) | Mediana (ms) | Mínimo (ms) | Máximo (ms) |
+|---|---|---|---|---|
+| Respuesta | 1400 | 347 | 302 | 443 |
+| Respuesta | 1024 | 725 | 658 | 759 |
+| Respuesta | 390 | 721 | 680 | 1070 |
+| Estratos (K1) | 1400 | 642 | 583 | 679 |
+| Estratos (K1) | 1024 | 1805 | 1632 | 2503 |
+| Estratos (K1) | 390 | 1965 | 1660 | 2050 |
+| Comunas (K6) | 1400 | 641 | 551 | 669 |
+| Comunas (K6) | 1024 | 1851 | 1552 | 1968 |
+| Comunas (K6) | 390 | 1833 | 1591 | 2221 |
+| Sensibilidades (S0 a S5) | 1400 | 588 | 486 | 642 |
+| Sensibilidades (S0 a S5) | 1024 | 1660 | 1611 | 1915 |
+| Sensibilidades (S0 a S5) | 390 | 1678 | 1467 | 2040 |
+| Concentración (K3 y K4) | 1400 | 529 | 386 | 606 |
+| Concentración (K3 y K4) | 1024 | 1041 | 825 | 1904 |
+| Concentración (K3 y K4) | 390 | 949 | 913 | 1137 |
+| Calidad de la llave | 1400 | 602 | 454 | 748 |
+| Calidad de la llave | 1024 | 921 | 834 | 970 |
+| Calidad de la llave | 390 | 1015 | 908 | 1849 |
+| Construcciones | 1400 | 3044 | 2293 | 3672 |
+| Construcciones | 1024 | 1917 | 1783 | 2023 |
+| Construcciones | 390 | 1893 | 1740 | 2031 |
+| Fuentes y sistema | 1400 | 896 | 782 | 1930 |
+| Fuentes y sistema | 1024 | 907 | 902 | 1818 |
+| Fuentes y sistema | 390 | 881 | 828 | 1609 |
+
+Qué NO demuestra: ni la experiencia de una persona real con otra conexión ni el comportamiento con más de una persona a la vez; el tiempo percibido también depende de lo que la persona espera ver primero.
