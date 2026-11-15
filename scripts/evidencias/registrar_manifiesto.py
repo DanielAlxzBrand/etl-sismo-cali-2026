@@ -195,6 +195,8 @@ FILAS_AUD = {
                "`python scripts/validacion/igualdad_de_codigo.py --base auditoria-inicio --rutas src dags notebooks main.py`", "EV-093_igualdad_de_codigo.txt"),
     "EV-094": ("7.1", "Tabla de mutaciones de las pruebas del criterio de texto, el documento aislado, la figura de stakeholders y la herramienta de igualdad: todas detectadas", "archivo",
                "mutación de un archivo en un clon y `python -m pytest -q -p no:cacheprovider` sobre las pruebas de criterio, empaquetado, estrategia e igualdad", "EV-094_mutaciones_criterio_de_texto.txt"),
+    "EV-095": ("7.1", "Tabla de mutaciones de la prueba de coherencia de la trazabilidad del checklist: todas detectadas", "archivo",
+               "mutación de un archivo en un clon y `python -m pytest -q -p no:cacheprovider tests/test_trazabilidad.py`", "EV-095_mutaciones_trazabilidad.txt"),
 }
 CARPETA_FIN = "docs/finanzas"
 FILAS_FIN = {

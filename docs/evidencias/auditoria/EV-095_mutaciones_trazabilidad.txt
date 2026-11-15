@@ -1,0 +1,28 @@
+# Mutaciones sobre la prueba de coherencia de la trazabilidad del checklist
+- comando: `mutación de un archivo en un clon y `python -m pytest -q -p no:cacheprovider tests/test_trazabilidad.py``
+- fecha: 2026-11-15T16:14:52-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 0.0 s
+- Python: 3.13.0
+- commit del repositorio: 14de38a
+
+Cada mutación se aplicó a un archivo de un clon del commit de trabajo (carpeta temporal fuera del repositorio), se corrió `tests/test_trazabilidad.py` y se restauró el archivo; el clon quedó sin cambios. Detectadas: 13 de 13.
+
+| Mutación | Pruebas que fallan | ¿Detectada? |
+|---|---|---|
+| un estado cambia en estado_checklist.md y no en la trazabilidad (5.4 pasa a «Cumple») | `test_la_trazabilidad_coincide_con_el_estado_el_manifiesto_y_las_pruebas`; `test_negativas_de_la_trazabilidad` | sí |
+| una prueba inexistente en la fila de 4.2 | `test_la_trazabilidad_coincide_con_el_estado_el_manifiesto_y_las_pruebas`; `test_la_tabla_markdown_esta_generada_desde_el_csv`; `test_negativas_de_la_trazabilidad` y 1 más | sí |
+| una función inexistente en la fila de 4.2 | `test_la_trazabilidad_coincide_con_el_estado_el_manifiesto_y_las_pruebas`; `test_la_tabla_markdown_esta_generada_desde_el_csv`; `test_negativas_de_la_trazabilidad` y 1 más | sí |
+| un archivo de prueba queda sin ítem (se quita de los guardianes) | `test_la_trazabilidad_coincide_con_el_estado_el_manifiesto_y_las_pruebas`; `test_la_tabla_markdown_esta_generada_desde_el_csv`; `test_el_grupo_de_guardianes_lista_los_guardianes_declarados` y 1 más | sí |
+| una evidencia que el manifiesto asocia a otro ítem (EV-053 en 2.1) | `test_la_trazabilidad_coincide_con_el_estado_el_manifiesto_y_las_pruebas`; `test_la_tabla_markdown_esta_generada_desde_el_csv`; `test_negativas_de_la_trazabilidad` y 1 más | sí |
+| una evidencia que no existe (EV-999 en 2.1) | `test_la_trazabilidad_coincide_con_el_estado_el_manifiesto_y_las_pruebas`; `test_la_tabla_markdown_esta_generada_desde_el_csv`; `test_negativas_de_la_trazabilidad` y 1 más | sí |
+| una evidencia queda sin ítem (se acorta el rango de los guardianes) | `test_la_trazabilidad_coincide_con_el_estado_el_manifiesto_y_las_pruebas`; `test_la_tabla_markdown_esta_generada_desde_el_csv`; `test_el_grupo_de_guardianes_lista_los_guardianes_declarados` y 1 más | sí |
+| 7.5 «No iniciado» pasa a tener un archivo | `test_la_trazabilidad_coincide_con_el_estado_el_manifiesto_y_las_pruebas`; `test_negativas_de_la_trazabilidad`; `test_el_script_muestra_y_comprueba_un_item_y_rechaza_uno_inexistente` | sí |
+| un pendiente por hecho externo se declara «automática» (6.1) | `test_la_trazabilidad_coincide_con_el_estado_el_manifiesto_y_las_pruebas`; `test_la_tabla_markdown_esta_generada_desde_el_csv`; `test_negativas_de_la_trazabilidad` | sí |
+| la tabla generada se edita a mano | `test_la_tabla_markdown_esta_generada_desde_el_csv` | sí |
+| el compresor de rangos vuelve a perder un número | `test_los_rangos_de_evidencias_se_expanden_y_se_comprimen_sin_perder_numeros` | sí |
+| el manifiesto cambia el ítem de EV-028 (deja de ser de 4.1 y 4.2) | `test_la_trazabilidad_coincide_con_el_estado_el_manifiesto_y_las_pruebas`; `test_negativas_de_la_trazabilidad`; `test_el_script_muestra_y_comprueba_un_item_y_rechaza_uno_inexistente` | sí |
+| aparece un archivo de prueba nuevo sin ítem | `test_la_trazabilidad_coincide_con_el_estado_el_manifiesto_y_las_pruebas`; `test_negativas_de_la_trazabilidad` | sí |
+
+## Qué NO demuestra
+Que no existan cambios que esa prueba no vea: solo cubre las mutaciones listadas. Tampoco demuestra que cada prueba asociada pruebe de verdad su requisito.

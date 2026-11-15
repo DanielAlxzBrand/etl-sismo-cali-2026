@@ -78,7 +78,7 @@
 | Usuario objetivo institucional (gestión del riesgo) | `README.md`, `docs/gold/KPIs.md`, las tablas de `data/gold/` y la API de solo lectura; el dashboard está en construcción [Evidencia en el repo: `README.md`; `docs/gold/KPIs.md`; `data/gold/kpis_gold.csv`] | Población analizada (7 comunas), alcance temporal (estrato 2015), proxy y no evaluación estructural, porcentaje sin datos. |
 | Habitantes | Nada específico hoy; podría ser un resumen en lenguaje sencillo. [Hipótesis de diseño: criterio y experimento de validación propuesto, no ejecutado] Experimento: prueba de comprensión con lectores. | Las tasas no son prevalencias ni la probabilidad de que una construcción concreta esté dañada. |
 | Productores de datos (DAPM, IDESC, Fondo Adaptación, UNGRD, USGS) | Atribución y licencias en `README.md` §17 y trazabilidad por sha256 [Evidencia en el repo: `README.md §17`] | Las limitaciones de sus datos (estrato 2015, polígonos 2026 renumerados) no son un juicio sobre su calidad. |
-| Comunidad académica y equipo docente | Repositorio ejecutable, 1000 pruebas, registro de decisiones y verificación de entrega [Evidencia en el repo: `docs/DECISIONES.md`; `docs/validacion/verificacion_del_paquete.md`; `tests/`] | No hubo pruebas con usuarios. |
+| Comunidad académica y equipo docente | Repositorio ejecutable, 1007 pruebas, registro de decisiones y verificación de entrega [Evidencia en el repo: `docs/DECISIONES.md`; `docs/validacion/verificacion_del_paquete.md`; `tests/`] | No hubo pruebas con usuarios. |
 
 ## 6. Contactos realizados
 **Ninguno:** este mapa se construyó con el Avance 1 y fuentes públicas. Si más adelante ocurre un contacto, se registra aquí con fecha, rol de la persona, qué se habló y dónde está el registro; sin registro no se afirma nada.
