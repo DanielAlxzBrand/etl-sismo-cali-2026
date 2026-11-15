@@ -111,6 +111,7 @@ Fichas de los ítems 1.1 a 1.5 (Estrategia), 2.1 a 2.3 (API, fuentes y credencia
   - `docs/evidencias/almacenamiento/EV-027_conector_mysql.txt` (versiones de PyMySQL y `cryptography`).
   - `tests/test_carga_relacional.py` (54 pruebas sin servidor MySQL).
   - `docs/almacenamiento/mysql_configuracion.md` (cómo se crean las bases y el usuario).
+  - `docs/almacenamiento/phpmyadmin.md` y `docs/evidencias/servicios/EV-085_phpmyadmin_en_vivo.txt` con sus ocho capturas automatizadas (phpMyAdmin con la cuenta de solo lectura: tablas, claves foráneas, conteos iguales a Gold y escrituras rechazadas con el error #1142).
 - **(c) Texto sugerido:** «Almacén relacional en MySQL 8.0 con siete tablas, claves primarias y foráneas, restricciones de validación y carga por lotes; la carga real concilia al 100 % con Gold y la API sirve las mismas respuestas desde MySQL y SQLite: `docs/almacenamiento/carga_y_verificacion.md` y `docs/evidencias/almacenamiento/EV-029_carga_real_mysql.txt`.»
 - **(d) Captura opcional** (la toma el equipo; se rotula «captura tomada por el equipo»): PowerShell con `.\.venv\Scripts\python.exe scripts\mysql\verificar_mysql.py`, que debe terminar en «26 de 26 comprobaciones correctas» y no mostrar ninguna contraseña. Nombre: `captura_4.1_verificacion.png`.
 - **(e) Validar:** `.\.venv\Scripts\python.exe scripts\mysql\verificar_mysql.py` (código de salida 0) y `.\.venv\Scripts\python.exe -m pytest tests/test_carga_relacional.py -q -p no:cacheprovider` (debe terminar en `54 passed`).
@@ -122,6 +123,7 @@ Fichas de los ítems 1.1 a 1.5 (Estrategia), 2.1 a 2.3 (API, fuentes y credencia
   - `docs/evidencias/almacenamiento/EV-029_carga_real_mysql.txt` (idempotencia y 0 filas huérfanas en la base real).
   - `docs/evidencias/almacenamiento/EV-031_respaldo_restauracion.txt` (respaldo en CSV con sha256, restauración y conciliación por huella de filas).
   - `tests/test_carga_relacional.py` y `tests/test_respaldo_y_medicion.py`.
+  - `docs/evidencias/servicios/EV-085_captura_relaciones_construccion.png` (las tres claves foráneas de `construccion` con `RESTRICT`, vistas en phpMyAdmin).
 - **(c) Texto sugerido:** «Cada carga distinta es una corrida completa con todas sus filas; la misma entrada no duplica nada, un fallo revierte todo y la base rechaza las filas que violan claves o restricciones: `docs/almacenamiento/modelo_datos.md` y `docs/evidencias/almacenamiento/EV-028_verificacion_mysql.txt`.»
 - **(d) Captura opcional:** el resultado de `.\.venv\Scripts\python.exe scripts\mysql\respaldar_restaurar.py`, con la tabla de huellas «igual» en las siete tablas. Nombre: `captura_4.2_respaldo.png`.
 - **(e) Validar:** `.\.venv\Scripts\python.exe -m pytest tests/test_carga_relacional.py tests/test_respaldo_y_medicion.py -q -p no:cacheprovider` y, con MySQL, `scripts\mysql\verificar_mysql.py` y `scripts\mysql\respaldar_restaurar.py`.
