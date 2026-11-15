@@ -1,0 +1,38 @@
+# Mutaciones sobre las pruebas guardianas de los servicios locales
+- comando: `mutación de un archivo en un clon y `python -m pytest -q -p no:cacheprovider tests/test_panel_ajustes.py` (cwd: <CLON>)`
+- fecha: 2026-11-15T01:16:06-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 0.0 s
+- Python: 3.13.0
+- commit del repositorio: 0352e46
+
+Cada mutación se aplicó a un archivo de un clon del commit de trabajo (carpeta temporal fuera del repositorio), se corrieron `tests/test_servicios_compose.py`, `test_usuario_lectura.py`, `test_usuario_docker.py`, `test_configurar_mysql.py`, `test_preparar_airflow.py`, `test_preparar_entorno.py`, `test_portabilidad.py`, `test_servicios_estructura.py`, `test_panel_lanzador.py` y `test_secretos.py` y se restauró el archivo; el clon quedó sin cambios. Detectadas: 23 de 23.
+
+| Mutación | Pruebas que fallan | ¿Detectada? |
+|---|---|---|
+| puerto de phpMyAdmin en 0.0.0.0 | `test_phpmyadmin_publica_el_puerto_solo_en_127_0_0_1_y_con_8081_por_defecto` | sí |
+| puerto de la interfaz de Airflow en 0.0.0.0 | `test_airflow_publica_todos_sus_puertos_solo_en_127_0_0_1_y_el_de_la_interfaz_es_parametrizable` | sí |
+| puerto de Flower sin 127.0.0.1 | `test_airflow_publica_todos_sus_puertos_solo_en_127_0_0_1_y_el_de_la_interfaz_es_parametrizable` | sí |
+| PMA_PASSWORD escrito en el compose de phpMyAdmin | `test_phpmyadmin_no_guarda_usuario_ni_contrasena_ni_admite_servidores_arbitrarios` | sí |
+| phpMyAdmin con servidores arbitrarios (PMA_ARBITRARY en 1) | `test_phpmyadmin_no_guarda_usuario_ni_contrasena_ni_admite_servidores_arbitrarios` | sí |
+| privilegios de sismo_lectura con INSERT además de SELECT | `test_el_unico_privilegio_es_select_y_la_cuenta_es_distinta_de_las_otras_dos`; `test_el_grant_es_exactamente_select_sobre_la_base_real`; `test_la_contrasena_nunca_va_en_sql_ni_en_el_registro_ni_en_pantalla_y_la_del_admin_no_llega_a_env` y 4 más | sí |
+| origen de sismo_lectura con % (se admite el comodín) | `test_el_unico_privilegio_es_select_y_la_cuenta_es_distinta_de_las_otras_dos`; `test_el_grant_es_exactamente_select_sobre_la_base_real`; `test_un_origen_con_comodin_o_publico_se_rechaza_antes_de_pedir_la_contrasena[%]` y 7 más | sí |
+| imagen de phpMyAdmin con la etiqueta latest | `test_phpmyadmin_usa_una_imagen_con_version_exacta_y_resumen_y_nunca_latest` | sí |
+| imagen de Postgres de Airflow sin resumen | `test_airflow_usa_versiones_exactas_y_no_latest` | sí |
+| contraseña de lectura fuera del canario del escáner | `test_el_escaner_trata_la_contrasena_de_lectura_como_canario_explicito` | sí |
+| preparar_airflow sobrescribe un .env existente | `test_un_env_existente_no_se_sobrescribe`; `test_regenerar_si_sobrescribe_y_completar_solo_agrega_lo_que_falta` | sí |
+| nombre de la carpeta del proyecto fijo en el compose | `test_airflow_monta_el_proyecto_en_solo_lectura_y_con_el_nombre_de_la_carpeta_parametrizado` | sí |
+| montaje del proyecto en Airflow sin solo lectura | `test_airflow_monta_el_proyecto_en_solo_lectura_y_con_el_nombre_de_la_carpeta_parametrizado` | sí |
+| FERNET_KEY escrita en el compose | `test_airflow_no_trae_ninguna_contrasena_ni_clave_escrita_y_exige_las_del_env`; `test_sin_hallazgos_en_el_arbol_de_trabajo` | sí |
+| archivo de servicios fuera del zip (se quita la carpeta del empaquetado) | `test_los_archivos_nuevos_existen_y_viajan_en_el_zip` | sí |
+| preparar_airflow no detecta el nombre de la carpeta (nombre fijo) | `test_el_nombre_de_la_carpeta_del_proyecto_se_detecta_y_no_es_fijo`; `test_verificar_es_de_solo_lectura_e_idempotente_y_detecta_un_nombre_distinto` | sí |
+| preparar_airflow acepta un puerto ocupado | `test_con_el_puerto_ocupado_se_avisa_se_sugiere_otro_y_no_se_escribe_nada` | sí |
+| preparar_airflow imprime un valor del .env | `test_ningun_valor_secreto_se_imprime_ni_se_registra` | sí |
+| preparar_entorno imprime el valor de MYSQL_HOST | `test_mysql_apagado_se_detecta_con_un_socket_y_se_dice_que_servicio_iniciar`; `test_el_informe_no_contiene_ningun_valor_del_env` | sí |
+| preparar_entorno acepta cualquier versión de Python como 3.13 | `test_python_313_se_busca_con_py_0p_aunque_haya_uno_mas_nuevo_y_si_falta_se_dice_que_hacer` | sí |
+| subproceso con text=True sin encoding en un script | `test_ningun_script_ni_prueba_abre_texto_ni_lee_un_subproceso_sin_decir_la_codificacion` | sí |
+| la prueba de streamlit config show sin pedir salida en UTF-8 al hijo | `test_las_pruebas_de_subprocesos_pasan_con_la_consola_predeterminada_sin_variables_de_utf8` | sí |
+| las marcas ✓ y ✗ sin tolerar cp1252 en preparar_entorno | `test_los_scripts_de_servicios_imprimen_sus_marcas_con_la_consola_predeterminada_sin_errores_de_codificacion[scripts/preparar_entorno.py-argumentos1]` | sí |
+
+## Qué NO demuestra
+Que no existan cambios que estas pruebas no vean: solo cubre las mutaciones listadas.
