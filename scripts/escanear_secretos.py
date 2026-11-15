@@ -159,11 +159,14 @@ def escanear_zip(ruta):
 
 
 SENSIBLE = re.compile(r"PASSWORD|TOKEN|SECRET|KEY", re.I)
+# Contraseñas que se buscan siempre como canario, además de lo que encuentre el patrón anterior: la del proyecto, la de Docker y la de la cuenta de solo lectura de phpMyAdmin (D91).
+# La lista es explícita para que una cuenta nueva no quede sin vigilar si algún día cambia el patrón; una prueba exige que estén las tres.
+VARIABLES_CANARIO = ("MYSQL_PASSWORD", "MYSQL_DOCKER_PASSWORD", "MYSQL_LECTURA_PASSWORD")
 
 
 def _sensibles(ruta):
     from dotenv import dotenv_values
-    return {k: v for k, v in dotenv_values(ruta).items() if v and len(v) >= 6 and SENSIBLE.search(k)} if Path(ruta).exists() else {}
+    return {k: v for k, v in dotenv_values(ruta).items() if v and len(v) >= 6 and (SENSIBLE.search(k) or k in VARIABLES_CANARIO)} if Path(ruta).exists() else {}
 
 
 def canarios(raiz, extras=()):

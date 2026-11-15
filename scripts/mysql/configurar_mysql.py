@@ -6,6 +6,8 @@ La contraseña de `sismo_etl` se genera con `secrets` y solo se escribe en `.env
 Es idempotente: si el usuario ya existe y `.env` tiene credenciales válidas no cambia nada (ni pide la contraseña del administrador).
 Con `--usuario-docker --origen PATRON` crea además `sismo_airflow`@PATRON para que el DAG de Airflow (que corre en un contenedor) cargue en `sismo_cali`: PATRON es una IP privada exacta, un nombre exacto
 o una red/máscara privada (nunca `%`); sus variables MYSQL_DOCKER_* se guardan solo en `.env`. Admite `--rotar` y `--solo-verificar`.
+Con `--usuario-lectura` crea `sismo_lectura` con SOLO `SELECT` sobre `sismo_cali` para mirar los datos desde phpMyAdmin (D91); su origen es `localhost` (D65) salvo que se indique `--origen`
+y sus variables MYSQL_LECTURA_USER y MYSQL_LECTURA_PASSWORD se guardan solo en `.env`. Tampoco admite `%`.
 """
 import argparse
 import getpass
@@ -249,20 +251,20 @@ def validar_origen(patron):
     return p
 
 
-def aplicar_docker(admin, base, origen, existe, clave):
-    """Crea el usuario de Docker (o cambia su contraseña) con permisos SOLO sobre `base`. Usuario, origen y contraseña van como parámetros; origen ya validado."""
+def _aplicar_cuenta(admin, usuario, privilegios, base, origen, existe, clave):
+    """Crea la cuenta (o cambia su contraseña) con `privilegios` SOLO sobre `base`. Usuario, origen y contraseña van como parámetros; el origen ya está validado. Lo comparten las cuentas de Docker y de lectura."""
     if existe:
-        _ejecutar(admin, "ALTER USER %s@%s IDENTIFIED BY %s", (USUARIO_DOCKER, origen, clave))
+        _ejecutar(admin, "ALTER USER %s@%s IDENTIFIED BY %s", (usuario, origen, clave))
     else:
-        _ejecutar(admin, "CREATE USER %s@%s IDENTIFIED BY %s", (USUARIO_DOCKER, origen, clave))
-    _ejecutar(admin, f"GRANT {', '.join(PRIVILEGIOS_DOCKER)} ON `{base}`.* TO %s@%s", (USUARIO_DOCKER, origen))
+        _ejecutar(admin, "CREATE USER %s@%s IDENTIFIED BY %s", (usuario, origen, clave))
+    _ejecutar(admin, f"GRANT {', '.join(privilegios)} ON `{base}`.* TO %s@%s", (usuario, origen))
 
 
-def verificar_privilegios_docker(admin, base, origen):
-    """SHOW GRANTS del usuario de Docker: exactamente los privilegios esperados sobre `base`, sin globales ni GRANT OPTION ni otras bases."""
-    concesiones = [f[0] for f in _consultar(admin, "SHOW GRANTS FOR %s@%s", (USUARIO_DOCKER, origen))]
+def _verificar_cuenta(admin, usuario, privilegios, base, origen, nombre):
+    """SHOW GRANTS de la cuenta: exactamente `privilegios` sobre `base`, sin globales, sin GRANT OPTION y sin otras bases. `nombre` solo sirve para redactar el error."""
+    concesiones = [f[0] for f in _consultar(admin, "SHOW GRANTS FOR %s@%s", (usuario, origen))]
     if any("WITH GRANT OPTION" in g.upper() for g in concesiones):
-        raise ConfiguracionError("el usuario de Docker tiene GRANT OPTION")
+        raise ConfiguracionError(f"el usuario {nombre} tiene GRANT OPTION")
     por_base = {}
     for g in concesiones:
         m = re.match(r"GRANT (.+?) ON (.+?) TO ", g, re.I)
@@ -271,12 +273,22 @@ def verificar_privilegios_docker(admin, base, origen):
         priv, objeto = m.group(1).strip(), m.group(2).replace("`", "").strip()
         if objeto == "*.*":
             if priv.upper() != "USAGE":
-                raise ConfiguracionError("el usuario de Docker tiene privilegios globales")
+                raise ConfiguracionError(f"el usuario {nombre} tiene privilegios globales")
             continue
         por_base[objeto.split(".")[0]] = {x.strip().upper() for x in priv.split(",")}
-    if list(por_base) != [base] or por_base[base] != set(PRIVILEGIOS_DOCKER):
-        raise ConfiguracionError(f"los privilegios del usuario de Docker no son los esperados sobre {base}")
+    if list(por_base) != [base] or por_base[base] != set(privilegios):
+        raise ConfiguracionError(f"los privilegios del usuario {nombre} no son los esperados sobre {base}")
     return sorted(por_base[base])
+
+
+def aplicar_docker(admin, base, origen, existe, clave):
+    """Crea el usuario de Docker (o cambia su contraseña) con permisos SOLO sobre `base` (D60)."""
+    _aplicar_cuenta(admin, USUARIO_DOCKER, PRIVILEGIOS_DOCKER, base, origen, existe, clave)
+
+
+def verificar_privilegios_docker(admin, base, origen):
+    """SHOW GRANTS del usuario de Docker: exactamente los privilegios esperados sobre `base`, sin globales ni GRANT OPTION ni otras bases."""
+    return _verificar_cuenta(admin, USUARIO_DOCKER, PRIVILEGIOS_DOCKER, base, origen, "de Docker")
 
 
 def configurar_docker(cfg, args, conectar_admin, pedir_clave=getpass.getpass, ruta_env=ROOT / ".env"):
@@ -317,6 +329,54 @@ def configurar_docker(cfg, args, conectar_admin, pedir_clave=getpass.getpass, ru
             admin.close()
 
 
+USUARIO_LECTURA = "sismo_lectura"
+# Solo mirar: SELECT sobre `sismo_cali` y nada más. Sin INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, INDEX ni REFERENCES, sin GRANT OPTION, sin privilegios globales
+# y sin acceso a `sismo_cali_prueba`: una escritura intentada desde phpMyAdmin la rechaza MySQL por privilegios (D91).
+PRIVILEGIOS_LECTURA = ("SELECT",)
+NOMBRES_ENV_LECTURA = ("MYSQL_LECTURA_USER", "MYSQL_LECTURA_PASSWORD")
+ORIGEN_LECTURA = "localhost"   # el contenedor de phpMyAdmin llega a MySQL como localhost, igual que el de Airflow (D65)
+
+
+def configurar_lectura(cfg, args, conectar_admin, pedir_clave=getpass.getpass, ruta_env=ROOT / ".env"):
+    """Crea (o rota, o solo verifica) la cuenta de solo lectura `sismo_lectura` para phpMyAdmin (D91). Igual que `configurar_docker`: la contraseña del administrador se pide con `getpass`
+    y no se guarda, la de `sismo_lectura` es aleatoria y solo se escribe en `.env` después de comprobar sus permisos con SHOW GRANTS, y se devuelven NOMBRES de variables, nunca valores.
+    Es idempotente: con las dos variables en `.env` y sin `--rotar` no toca nada ni pide la contraseña del administrador. No crea ninguna otra cuenta ni base, y no guarda el origen en `.env`
+    (si se cambia el origen, hay que volver a ejecutar con `--rotar`)."""
+    origen = validar_origen(getattr(args, "origen", None) or ORIGEN_LECTURA)
+    base = cfg["almacenamiento"]["base"]
+    env = dict(dotenv_values(ruta_env)) if Path(ruta_env).exists() else {}
+    if not env_ignorado_y_no_versionado(Path(ruta_env).parent):
+        raise ConfiguracionError(".env no está ignorado por git o está versionado; corrige .gitignore antes de guardar credenciales")
+    completo = all(env.get(n) for n in NOMBRES_ENV_LECTURA) and env.get("MYSQL_LECTURA_USER") == USUARIO_LECTURA
+    if completo and not args.rotar and not args.solo_verificar:
+        log.info("sin cambios: el .env ya tiene las credenciales del usuario de solo lectura")
+        return []
+    clave_admin = pedir_clave(f"Contraseña del administrador de MySQL ({args.usuario_admin}); no se muestra al escribir: ")
+    admin = None
+    nueva = None
+    try:
+        admin = conectar_admin(args.usuario_admin, clave_admin)
+        clave_admin = None
+        comprobar_servidor(admin)
+        existe = _consultar(admin, "SELECT COUNT(*) FROM mysql.user WHERE user = %s AND host = %s", (USUARIO_LECTURA, origen))[0][0] > 0
+        if args.solo_verificar:
+            if not existe or not completo:
+                raise ConfiguracionError("el usuario de solo lectura no existe para ese origen o el .env no tiene sus variables")
+            log.info("verificación correcta: permisos del usuario de solo lectura %s", ", ".join(_verificar_cuenta(admin, USUARIO_LECTURA, PRIVILEGIOS_LECTURA, base, origen, "de solo lectura")))
+            return []
+        nueva = generar_clave()
+        _aplicar_cuenta(admin, USUARIO_LECTURA, PRIVILEGIOS_LECTURA, base, origen, existe, nueva)
+        _verificar_cuenta(admin, USUARIO_LECTURA, PRIVILEGIOS_LECTURA, base, origen, "de solo lectura")
+        valores = {"MYSQL_LECTURA_USER": USUARIO_LECTURA, "MYSQL_LECTURA_PASSWORD": nueva}
+        actualizar_env(ruta_env, valores)   # .env se escribe solo después de comprobar que la cuenta no puede más que leer
+        return list(valores)
+    finally:
+        nueva = None
+        clave_admin = None
+        if admin is not None:
+            admin.close()
+
+
 def _conexiones(cfg):
     import pymysql
     al = cfg["almacenamiento"]
@@ -337,15 +397,20 @@ def main(argv=None):
     grupo.add_argument("--rotar", action="store_true", help="genera una contraseña nueva para sismo_etl y actualiza .env")
     grupo.add_argument("--solo-verificar", action="store_true", help="solo comprueba las credenciales de .env")
     ap.add_argument("--usuario-docker", action="store_true", help="crea el usuario de MySQL para Docker (sismo_airflow) con permisos solo sobre la base real")
-    ap.add_argument("--origen", default=None, help="origen del usuario de Docker: IP privada exacta, nombre exacto o red/máscara privada (nunca %%)")
+    ap.add_argument("--usuario-lectura", action="store_true", help="crea el usuario de solo lectura (sismo_lectura) con SELECT sobre la base real, para phpMyAdmin")
+    ap.add_argument("--origen", default=None, help="origen del usuario de Docker (obligatorio con --usuario-docker) o de lectura (por defecto localhost): IP privada exacta, nombre exacto o red/máscara privada (nunca %%)")
     args = ap.parse_args(argv)
-    if args.usuario_docker != bool(args.origen):
+    if args.usuario_docker and args.usuario_lectura:
+        ap.error("--usuario-docker y --usuario-lectura no se usan juntos")
+    if args.usuario_docker != bool(args.origen) and not args.usuario_lectura:
         ap.error("--usuario-docker y --origen se usan juntos")
     cfg = load_config()
     import pymysql
     admin, usuario = _conexiones(cfg)
     try:
-        if args.usuario_docker:
+        if args.usuario_lectura:
+            escritas = configurar_lectura(cfg, args, admin)
+        elif args.usuario_docker:
             escritas = configurar_docker(cfg, args, admin)
         else:
             escritas = configurar(cfg, args, admin, usuario)
