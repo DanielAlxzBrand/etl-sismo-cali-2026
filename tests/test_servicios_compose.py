@@ -64,3 +64,88 @@ def test_phpmyadmin_no_reinicia_solo_limita_la_carga_y_llega_al_anfitrion():
 def test_phpmyadmin_no_trae_comodines_de_origen():
     texto, _ = _cargar(PMA)
     assert "%" not in texto
+
+
+# ---------------------------------------------------------------- Airflow (compose adaptado)
+AIRFLOW = ROOT / "orquestacion" / "docker-compose.yaml"
+# Ningún valor de ejemplo del compose oficial se conserva (DF-18): ni la contraseña de Postgres ni el secreto JWT ni las de la interfaz y Fernet.
+EJEMPLOS_DEL_OFICIAL = set()
+
+
+def _servicios():
+    return _cargar(AIRFLOW)[1]["services"]
+
+
+def test_airflow_publica_todos_sus_puertos_solo_en_127_0_0_1_y_el_de_la_interfaz_es_parametrizable():
+    puertos = {n: s["ports"] for n, s in _servicios().items() if "ports" in s}
+    assert puertos == {"airflow-apiserver": ["127.0.0.1:${AIRFLOW_PUERTO:-8080}:8080"], "flower": ["127.0.0.1:5555:5555"]}, "solo la interfaz y Flower (opcional) publican un puerto"
+    assert all(p.startswith("127.0.0.1:") and "0.0.0.0" not in p for lista in puertos.values() for p in lista)
+
+
+def test_airflow_monta_el_proyecto_en_solo_lectura_y_con_el_nombre_de_la_carpeta_parametrizado():
+    comun = _cargar(AIRFLOW)[1]["x-airflow-common"]
+    montajes = [v for v in comun["volumes"] if "/opt/airflow/medallon" in v]
+    assert len(montajes) == 1 and montajes[0].endswith(":/opt/airflow/medallon:ro")
+    assert montajes[0].startswith("../${PROYECTO_NOMBRE:?") and "etl_sismo_cali_2026" not in AIRFLOW.read_text(encoding="utf-8")   # el nombre de la carpeta ya no es fijo
+
+
+def test_airflow_no_trae_ninguna_contrasena_ni_clave_escrita_y_exige_las_del_env():
+    texto, c = _cargar(AIRFLOW)
+    entorno = c["x-airflow-common"]["environment"]
+    assert entorno["AIRFLOW__CORE__FERNET_KEY"].startswith("${FERNET_KEY:?")
+    assert c["services"]["airflow-init"]["environment"]["_AIRFLOW_WWW_USER_PASSWORD"].startswith("${_AIRFLOW_WWW_USER_PASSWORD:?")
+    assert c["services"]["postgres"]["environment"]["POSTGRES_PASSWORD"].startswith("${POSTGRES_PASSWORD:?")
+    assert entorno["AIRFLOW__API_AUTH__JWT_SECRET"].startswith("${AIRFLOW__API_AUTH__JWT_SECRET:?")
+    assert "${POSTGRES_PASSWORD:?" in entorno["AIRFLOW__DATABASE__SQL_ALCHEMY_CONN"] and "${POSTGRES_PASSWORD:?" in entorno["AIRFLOW__CELERY__RESULT_BACKEND"]
+    literales = set()
+    for linea in _lineas_sin_comentarios(texto).splitlines():
+        m = re.match(r"\s*([A-Za-z_]\w*)\s*:\s*(\S+)\s*$", linea)
+        if m and re.search(r"(?i)password|secret|fernet|key", m.group(1)) and not m.group(2).startswith("${"):
+            literales.add(m.group(2).strip("'\""))
+    assert literales <= EJEMPLOS_DEL_OFICIAL, f"valores escritos en el compose: {len(literales)}"
+
+
+def test_airflow_usa_versiones_exactas_y_no_latest():
+    texto = AIRFLOW.read_text(encoding="utf-8")
+    servicios = _servicios()
+    assert servicios["postgres"]["image"].startswith("postgres:16@sha256:") and servicios["redis"]["image"].startswith("redis:7.2-bookworm@sha256:")
+    assert all(HEX64.search(servicios[n]["image"]) for n in ("postgres", "redis"))
+    assert "latest" not in _lineas_sin_comentarios(texto).lower()
+    assert "# image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:3.3.2}" in texto and _cargar(AIRFLOW)[1]["x-airflow-common"]["build"] == "."
+    assert (ROOT / "orquestacion" / "Dockerfile").read_text(encoding="utf-8").splitlines()[0] == "FROM apache/airflow:3.3.2"
+
+
+def test_airflow_conserva_el_aviso_de_licencia_y_dice_de_donde_sale_y_que_cambio():
+    texto = AIRFLOW.read_text(encoding="utf-8")
+    assert "Licensed to the Apache Software Foundation" in texto and "Apache License, Version 2.0" in texto
+    assert "AVISO DE ORIGEN Y DE CAMBIOS" in texto and "docker-compose.yaml oficial de Apache Airflow 3.3.2" in texto and "generar_compose.py" in texto
+
+
+def _generador():
+    import importlib.util
+    espec = importlib.util.spec_from_file_location("generar_compose_prueba", ROOT / "scripts" / "orquestacion" / "generar_compose.py")
+    modulo = importlib.util.module_from_spec(espec)
+    espec.loader.exec_module(modulo)
+    return modulo
+
+
+def test_el_generador_aplica_cada_cambio_una_sola_vez_y_falla_si_el_oficial_cambia():
+    g = _generador()
+    oficial = "# under the License.\n#\n" + "".join(ancla for ancla, _ in g.REEMPLAZOS)
+    adaptado = g.adaptar(oficial)
+    assert all(nuevo in adaptado for _, nuevo in g.REEMPLAZOS) and "AVISO DE ORIGEN" in adaptado
+    for ancla, _ in g.REEMPLAZOS:
+        with pytest.raises(g.ComposeError):
+            g.adaptar(oficial.replace(ancla, ""))                 # un ancla que ya no está
+        with pytest.raises(g.ComposeError):
+            g.adaptar(oficial + ancla)                            # un ancla repetida
+    assert len(g.SHA256_OFICIAL) == 64 and g.URL_OFICIAL.startswith("https://airflow.apache.org/docs/apache-airflow/3.3.2/")
+
+
+def test_el_diff_del_repositorio_resume_los_cambios_y_no_contiene_contrasenas_ni_urls_con_credenciales():
+    diff = (ROOT / "orquestacion" / "docker-compose.diff").read_text(encoding="utf-8")
+    for pieza in ("+  build: .", "-  image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:3.3.2}", "${FERNET_KEY:?", "../${PROYECTO_NOMBRE:?", '+      - "127.0.0.1:${AIRFLOW_PUERTO:-8080}:8080"',
+                  "${_AIRFLOW_WWW_USER_PASSWORD:?", "${POSTGRES_PASSWORD:?", "${AIRFLOW__API_AUTH__JWT_SECRET:?", '+      - "127.0.0.1:5555:5555"', "+    image: postgres:16@sha256:", "+    image: redis:7.2-bookworm@sha256:"):
+        assert pieza in diff, pieza
+    # el ejemplo del oficial va oculto para que el escáner de secretos no lo tome por una URL con credenciales
+    assert "<ejemplo del oficial>" in diff and not re.search(r"[a-z][a-z0-9+.-]*://[^/\s:@'\"]+:[^/\s@'\"]{3,}@", diff)

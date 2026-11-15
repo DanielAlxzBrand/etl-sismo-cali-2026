@@ -1,6 +1,25 @@
---- docker-compose.yaml (descargado de la documentación oficial de Airflow 3.3.2)
-+++ docker-compose.yaml (editado: pasos 18 y 19 de la guía y DF-1, DF-8, DF-12)
-@@ -50,6 +50,6 @@
+# En las líneas con <ejemplo del oficial> el compose oficial trae una contraseña de ejemplo; aquí se oculta para no activar el escáner de secretos.
+--- docker-compose.yaml (oficial de Airflow 3.3.2)
++++ docker-compose.yaml (adaptado, D91)
+@@ -16,4 +16,17 @@
+ # under the License.
+ #
++
++# ---------------------------------------------------------------------------------------------------------------------------------------------------
++# AVISO DE ORIGEN Y DE CAMBIOS (proyecto ETL del sismo de Cali, D91)
++# Este archivo se basa en el docker-compose.yaml oficial de Apache Airflow 3.3.2 (https://airflow.apache.org/docs/apache-airflow/3.3.2/docker-compose.yaml),
++# distribuido con la licencia Apache 2.0 cuyo aviso está arriba; aquí se conserva y se indican los cambios hechos. Lo genera scripts/orquestacion/generar_compose.py.
++# Cambios respecto del oficial (lista completa en docs/orquestacion/diferencias_con_la_guia.md, DF-1, DF-8, DF-12 y DF-13 a DF-18):
++#   1. La imagen se construye con el Dockerfile de esta carpeta (`build: .`) en lugar de usar `image:` directamente.
++#   2. El repositorio se monta en /opt/airflow/medallon en SOLO LECTURA desde la carpeta hermana `../${PROYECTO_NOMBRE}`; el nombre de esa carpeta ya no es fijo.
++#   3. El puerto de la interfaz se publica solo en 127.0.0.1 y es el 8080 salvo que se defina AIRFLOW_PUERTO; el de Flower (servicio opcional, solo con `--profile flower`) también queda solo en 127.0.0.1.
++#   4. FERNET_KEY, la contraseña de la interfaz, la contraseña de Postgres y el secreto JWT son obligatorios: se leen del `.env` de esta carpeta (lo crea scripts/orquestacion/preparar_airflow.py) y no tienen valor escrito aquí.
++#   5. Las imágenes de Postgres y Redis conservan su etiqueta del compose oficial y se fijan además por su resumen (digest), para que no cambien sin avisar.
++# Lo demás es el compose oficial sin tocar. Sigue siendo una configuración para desarrollo local, no para producción.
++# ---------------------------------------------------------------------------------------------------------------------------------------------------
+ 
+ # Basic Airflow cluster configuration for CeleryExecutor with Redis and PostgreSQL.
+@@ -50,6 +63,6 @@
    # Comment the image line, place your Dockerfile in the directory where you placed the docker-compose.yaml
    # and uncomment the "build" line below, Then run `docker-compose build` to build the images.
 -  image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:3.3.2}
@@ -9,16 +28,65 @@
 +  build: .
    env_file:
      - ${ENV_FILE_PATH:-.env}
-@@ -82,4 +82,5 @@
+@@ -58,12 +71,12 @@
+     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
+     AIRFLOW__CORE__AUTH_MANAGER: airflow.providers.fab.auth_manager.fab_auth_manager.FabAuthManager
+-    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:<ejemplo del oficial>@postgres/airflow
+-    AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql+psycopg2://airflow:<ejemplo del oficial>@postgres/airflow
++    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:${POSTGRES_PASSWORD:?Falta POSTGRES_PASSWORD en el .env de Airflow; lo crea scripts/orquestacion/preparar_airflow.py}@postgres/airflow
++    AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql+psycopg2://airflow:${POSTGRES_PASSWORD:?Falta POSTGRES_PASSWORD en el .env de Airflow; lo crea scripts/orquestacion/preparar_airflow.py}@postgres/airflow
+     AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
+-    AIRFLOW__CORE__FERNET_KEY: ${FERNET_KEY}
++    AIRFLOW__CORE__FERNET_KEY: ${FERNET_KEY:?Falta FERNET_KEY en el .env de Airflow; lo crea scripts/orquestacion/preparar_airflow.py}
+     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
+     AIRFLOW__CORE__LOAD_EXAMPLES: 'true'
+     AIRFLOW__CORE__EXECUTION_API_SERVER_URL: 'http://airflow-apiserver:8080/execution/'
+-    AIRFLOW__API_AUTH__JWT_SECRET: ${AIRFLOW__API_AUTH__JWT_SECRET:-airflow_jwt_secret}
++    AIRFLOW__API_AUTH__JWT_SECRET: ${AIRFLOW__API_AUTH__JWT_SECRET:?Falta AIRFLOW__API_AUTH__JWT_SECRET en el .env de Airflow; lo crea scripts/orquestacion/preparar_airflow.py}
+     AIRFLOW__API_AUTH__JWT_ISSUER: ${AIRFLOW__API_AUTH__JWT_ISSUER:-airflow}
+     # yamllint disable rule:line-length
+@@ -82,4 +95,5 @@
      - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
      - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
-+    - ../etl_sismo_cali_2026:/opt/airflow/medallon:ro
++    - ../${PROYECTO_NOMBRE:?Falta PROYECTO_NOMBRE en el .env de Airflow; lo crea scripts/orquestacion/preparar_airflow.py}:/opt/airflow/medallon:ro
    user: "${AIRFLOW_UID:-50000}:0"
    depends_on:
-@@ -124,5 +125,5 @@
+@@ -92,8 +106,8 @@
+ services:
+   postgres:
+-    image: postgres:16
++    image: postgres:16@sha256:63e83b5a3dc36a917dccb76fe1bd2ac51f1ec9c1deb47ff20d4f04233bf6eae9
+     environment:
+       POSTGRES_USER: airflow
+-      POSTGRES_PASSWORD: airflow
++      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Falta POSTGRES_PASSWORD en el .env de Airflow; lo crea scripts/orquestacion/preparar_airflow.py}
+       POSTGRES_DB: airflow
+     volumes:
+@@ -109,5 +123,5 @@
+     # Redis is limited to 7.2-bookworm due to licencing change
+     # https://redis.io/blog/redis-adopts-dual-source-available-licensing/
+-    image: redis:7.2-bookworm
++    image: redis:7.2-bookworm@sha256:5b816bb37d9707a70f10ef5002ecf8ee431750d397010fc4314c93dca887962f
+     expose:
+       - 6379
+@@ -124,5 +138,5 @@
      command: api-server
      ports:
 -      - "8080:8080"
-+      - "127.0.0.1:8080:8080"
++      - "127.0.0.1:${AIRFLOW_PUERTO:-8080}:8080"
      healthcheck:
        test: ["CMD", "curl", "--fail", "http://localhost:8080/api/v2/monitor/health"]
+@@ -293,5 +307,5 @@
+       _AIRFLOW_WWW_USER_CREATE: 'true'
+       _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-airflow}
+-      _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow}
++      _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:?Falta _AIRFLOW_WWW_USER_PASSWORD en el .env de Airflow; lo crea scripts/orquestacion/preparar_airflow.py}
+       _PIP_ADDITIONAL_REQUIREMENTS: ''
+     user: "0:0"
+@@ -321,5 +335,5 @@
+       - flower
+     ports:
+-      - "5555:5555"
++      - "127.0.0.1:5555:5555"
+     healthcheck:
+       test: ["CMD", "curl", "--fail", "http://localhost:5555/"]
