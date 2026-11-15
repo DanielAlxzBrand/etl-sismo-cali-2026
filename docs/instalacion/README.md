@@ -77,6 +77,18 @@ baja con `docker compose down` antes de volver al panel; y se limita WSL2 creand
 | [../orquestacion/operacion.md](../orquestacion/operacion.md) | sección «Desde el zip» y «Operación en otra máquina» de Airflow |
 | [../almacenamiento/phpmyadmin.md](../almacenamiento/phpmyadmin.md) | phpMyAdmin de solo lectura: cómo arrancarlo y qué mirar |
 
+## 5.1 Scripts de verificación en vivo y su última ejecución real
+Los pasos que dieron las evidencias de los servicios quedaron como scripts en `scripts/evidencias/`, para que el equipo pueda repetirlos. **En la auditoría intermedia solo se validaron de forma estática** (compilan, tienen su documentación, no traen rutas locales ni imprimen credenciales; `tests/test_scripts_de_evidencia.py`) porque Docker estaba apagado; no se ejecutaron. Su última ejecución real fue con la versión de la sesión de trabajo de la que salen:
+
+| Script | Qué verifica | Última ejecución real |
+|---|---|---|
+| `evidencia_phpmyadmin.py` | phpMyAdmin con la cuenta `sismo_lectura`: siete tablas, conteos iguales a Gold y escrituras rechazadas | [EV-085](../evidencias/servicios/EV-085_phpmyadmin_en_vivo.txt) |
+| `evidencia_airflow_desde_zip.py` | Airflow desde el zip descomprimido en una carpeta de otro nombre, con las cuatro tareas del DAG | [EV-087](../evidencias/servicios/EV-087_airflow_desde_el_zip.txt) |
+| `evidencia_independencia.py` | clon y zip en una carpeta sin hermanas: suite, `main.py`, hashes, panel y scripts de servicios | [EV-090](../evidencias/auditoria/EV-090_independencia_clon_y_zip.txt) |
+| `medir_memoria_suite.py` | pico de memoria del proceso de pytest | fila `memoria_pico_suite_de_pruebas` de [recursos_medidos.csv](../finanzas/recursos_medidos.csv) |
+
+Si un equipo vuelve a ejecutar alguno y el resultado difiere, se registra como una evidencia nueva; las anteriores no se editan.
+
 ## 6. Alcance y límites
 - **Qué afirmamos:** los pasos de esta guía se ejecutaron en una máquina con Windows 11 (instalación en una carpeta con espacios y tildes, suite completa sin variables de UTF-8, Airflow construido desde el zip descomprimido en otra carpeta y phpMyAdmin en vivo).
 - **Qué NO demuestra:** que funcione en una máquina limpia de verdad (la nuestra ya tenía Docker, MySQL y las imágenes descargadas), en una de 8 GB, con una versión de Python distinta de la 3.13 ni en otro sistema operativo.
