@@ -1,0 +1,78 @@
+# Airflow construido y ejecutado desde el zip en una carpeta de otro nombre
+- comando: `preparar_airflow.py y docker compose -p servicios_prueba (build, up, dags list, dags trigger, down) sobre un zip descomprimido en una carpeta temporal`
+- fecha: 2026-11-15T00:21:40-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 0.0 s
+- Python: 3.13.0
+- commit del repositorio: b109dd1
+
+Cómo lo haría una persona que recibe el zip, en carpetas temporales y con un proyecto de Docker propio (`servicios_prueba`) y el puerto 8082 (el 8080 y el 8081 no se tocaron). Se hizo con un script de la sesión de trabajo que sigue, uno por uno, estos pasos:
+1. clon del commit de trabajo en una carpeta temporal y zip con `make_dist.empaquetar` dentro de ese clon (nunca en `dist/`): 492 archivos y 19,9 MB; trae `orquestacion/docker-compose.yaml`, `servicios/phpmyadmin/docker-compose.yaml` y `scripts/orquestacion/preparar_airflow.py`: sí; sin ningún `.env`: sí.
+2. descompresión en una carpeta de nombre distinto de `etl_sismo_cali_2026` y con espacios (`proyecto sismo de prueba`) y copia de un `.env` de prueba tomado del real **solo dentro de esa carpeta temporal** (se borró al final).
+3. `preparar_airflow.py` con un destino temporal hermano y `--puerto 8082`.
+4. `docker compose -p servicios_prueba build`, `up airflow-init`, `up -d`, comprobación de la interfaz, `dags list`, `dags list-import-errors`, `dags unpause`, `dags trigger`, espera de las cuatro tareas, comprobación de `data/` y de MySQL.
+5. `docker compose -p servicios_prueba down -v --rmi local --remove-orphans`: contenedores, red, volúmenes e imágenes construidas desaparecieron; `docker ps -a`, los volúmenes, las redes y las imágenes quedaron como antes (la única diferencia con el inicio fue la imagen de phpMyAdmin que se descargó para otra prueba).
+
+## Resultado
+| Comprobación | Resultado |
+|---|---|
+| `preparar_airflow.py` (código de salida) | 0; nombre de la carpeta del proyecto detectado: «proyecto sismo de prueba» |
+| variables del `.env` de Airflow creado (solo nombres) | AIRFLOW_PUERTO, AIRFLOW_UID, AIRFLOW__API_AUTH__JWT_SECRET, FERNET_KEY, POSTGRES_PASSWORD, PROYECTO_NOMBRE, _AIRFLOW_WWW_USER_PASSWORD |
+| `preparar_airflow.py` no imprimió ningún valor del `.env` | sí |
+| `preparar_airflow.py --verificar` | código 0 |
+| interfaz en `http://127.0.0.1:8082` | HTTP 200 |
+| `dags list-import-errors` | «No data found» |
+| ejecución del DAG `medallon_etl_sismo` | **success**; tareas: validar_bronze = success, transformar_a_silver = success, integrar_a_gold = success, cargar_datawarehouse = success |
+| la tarea de carga dice «ya cargada» | sí |
+| corridas en `sismo_cali` después | 1 (sin duplicar) |
+| `data/` del proyecto descomprimido: 19 archivos | sin cambios durante la ejecución e iguales a los del clon |
+| `.env` que quedaron en las carpetas temporales al terminar | 0 |
+
+## Tiempos (medición de una máquina)
+| Paso | Segundos |
+|---|---|
+| `preparar_airflow.py` | 0,9 |
+| `docker compose build` (**con la caché de construcción de esta máquina**, que ya tenía las capas del Dockerfile) | 5,5 |
+| `docker compose up airflow-init` | 47,7 |
+| `docker compose up -d` (incluye esperar a que los contenedores estén sanos) | 106,4 |
+| interfaz respondiendo después del `up -d` | 0,3 |
+| DAG visible en `dags list` después del `up -d` | 76,6 |
+| DAG: desde que terminó el `trigger` hasta el estado final | 49,4 (sondeo cada 6 s) |
+| DAG: desde que empezó el `trigger` (cuenta los comandos de pausa y disparo) | 61.5 |
+| `docker compose down -v --rmi local` | 11,9 |
+
+## Lo que se vio en el registro (sin secretos)
+`preparar_airflow.py`:
+```
+✓ Docker 29.9.3 y Compose 5.7.0
+✓ carpetas creadas: dags, logs, plugins, config; copiados: docker-compose.yaml, Dockerfile, requirements-airflow.txt, dags/medallon_etl_dag.py
+✓ `.env` de Airflow: creado
+Siguientes pasos (PowerShell):
+  cd "<TEMP>\sv_zip\airflow-prueba"
+  docker compose build
+  docker compose up airflow-init
+  docker compose up -d
+Interfaz: http://127.0.0.1:8082 · usuario: airflow · contraseña: la variable _AIRFLOW_WWW_USER_PASSWORD de airflow-prueba\.env (no se imprime aquí)
+Activar y disparar el DAG:  docker compose exec airflow-scheduler airflow dags unpause medallon_etl_sismo
+Para apagar:  docker compose down
+```
+`preparar_airflow.py --verificar`:
+```
+✓ la carpeta de Airflow es hermana del proyecto
+✓ carpetas dags, logs, plugins y config presentes
+✓ compose, Dockerfile y requisitos iguales a los del proyecto
+✓ DAG igual al del proyecto (sha256)
+✓ `.env` de Airflow con sus 7 variables
+✓ PROYECTO_NOMBRE coincide con la carpeta del proyecto
+✓ `.env` del proyecto con las variables MYSQL_DOCKER_* de la carga
+✓ Docker 29.9.3 y Compose 5.7.0
+✓ puerto 8082 libre
+```
+`dags list-import-errors`:
+```
+$ docker compose -p servicios_prueba exec -T airflow-scheduler airflow dags list-import-errors
+No data found
+```
+Tareas de la ejecución: `{"validar_bronze": "success", "transformar_a_silver": "success", "integrar_a_gold": "success", "cargar_datawarehouse": "success"}`.
+
+Qué NO demuestra: que funcione en una máquina limpia de verdad (esta ya tenía Docker, MySQL, las imágenes base y la caché de construcción, y el tiempo de `build` desde cero es mucho mayor), en un equipo de 8 GB, con un origen de conexión a MySQL distinto de `localhost` ni que el DAG corra a las 06:00 con el equipo apagado.

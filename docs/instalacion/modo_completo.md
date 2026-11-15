@@ -46,7 +46,7 @@ Esta parte es la que antes no se podía hacer con solo el zip: faltaban la carpe
    El script detecta el nombre de la carpeta del proyecto, crea `dags`, `logs`, `plugins` y `config`, copia el compose, el Dockerfile y `requirements-airflow.txt`, copia el DAG comprobando su sha256 y escribe el `.env`
    de Airflow **solo si no existe** (contraseña de la interfaz y `FERNET_KEY` aleatorias, `AIRFLOW_UID`, `PROYECTO_NOMBRE` y `AIRFLOW_PUERTO`). Si el `.env` ya existe no lo toca (con `--completar` agrega solo lo que falte;
    con `--regenerar` lo reescribe con valores nuevos). Nunca imprime un valor. Comprueba también que Docker responde, que el puerto está libre y que el `.env` del proyecto tiene las variables `MYSQL_DOCKER_*`.
-2. **Construir y levantar** (desde la carpeta de Airflow, que el script indica; tarda ⟦BUILD_TIEMPO⟧):
+2. **Construir y levantar** (desde la carpeta de Airflow, que el script indica; con la caché de esta máquina tardó 5,5 s; desde cero será bastante más y no lo medimos):
 ```powershell
 docker compose build
 docker compose up airflow-init
@@ -62,7 +62,7 @@ docker compose exec airflow-scheduler airflow dags trigger medallon_etl_sismo
 docker compose exec airflow-scheduler airflow dags list-runs medallon_etl_sismo
 ```
    La interfaz queda en `http://127.0.0.1:8080` (o el puerto elegido), con el usuario `airflow` y la contraseña de la variable `_AIRFLOW_WWW_USER_PASSWORD` del `.env` de Airflow. Las cuatro tareas del DAG
-   (`validar_bronze`, `transformar_a_silver`, `integrar_a_gold`, `cargar_datawarehouse`) deben terminar en éxito en unos ⟦DAG_TIEMPO⟧ y, como la corrida ya estaba cargada, la carga dice «ya cargada» sin duplicar filas.
+   (`validar_bronze`, `transformar_a_silver`, `integrar_a_gold`, `cargar_datawarehouse`) deben terminar en éxito en unos 50 s y, como la corrida ya estaba cargada, la carga dice «ya cargada» sin duplicar filas.
 4. **Apagar:** `docker compose down` (conserva los volúmenes) o `docker compose down -v` (los borra).
 
 Más sobre operación, registros y problemas en [operacion.md](../orquestacion/operacion.md#desde-el-zip).

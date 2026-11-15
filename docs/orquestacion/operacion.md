@@ -75,11 +75,11 @@ siendo los de los pasos 27 a 43 de la guía; lo único nuevo es de dónde salen 
 
 | Paso | Tiempo |
 |---|---|
-| `preparar_airflow.py` | ⟦T_PREPARAR⟧ |
-| `docker compose build` | ⟦T_BUILD⟧ |
-| `docker compose up airflow-init` | ⟦T_INIT⟧ |
-| `docker compose up -d` hasta que la interfaz responde | ⟦T_UP⟧ |
-| una ejecución del DAG (cuatro tareas) | ⟦T_DAG⟧ |
+| `preparar_airflow.py` | 0,9 s |
+| `docker compose build` | 5,5 s **con la caché de construcción de esta máquina** (desde cero tarda mucho más: no lo medimos) |
+| `docker compose up airflow-init` | 47,7 s |
+| `docker compose up -d` hasta que la interfaz responde | 106,4 s (el DAG apareció en `dags list` unos 77 s después) |
+| una ejecución del DAG (cuatro tareas) | 49,4 s hasta el estado final (61,5 s contando desde el disparo) |
 
 ## Operación en otra máquina
 Lo que cambia al levantar Airflow en el equipo de otra persona, y qué hacemos en cada caso:
