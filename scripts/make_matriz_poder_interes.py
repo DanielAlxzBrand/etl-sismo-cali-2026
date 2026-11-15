@@ -13,6 +13,7 @@ import argparse
 import json
 import re
 import sys
+import textwrap
 from pathlib import Path
 
 import matplotlib
@@ -25,7 +26,7 @@ TABLA = ROOT / "docs" / "estrategia" / "02_stakeholders.md"
 SALIDA = ROOT / "docs" / "estrategia" / "img" / "matriz_poder_interes.png"
 FILA = re.compile(r"^\| (\d+) \| ([^|]+) \| ([0-3]) \| ([0-3]) \| ([0-3]) \| ([0-3]) \| (\d) \| (\d) \| ([^|]+) \|$", re.M)
 UMBRAL = 3.5          # los cuadrantes se parten entre 3 y 4 (poder o interés mayor o igual que 4)
-SEPARACION = 0.18     # desplazamiento horizontal entre puntos que caen en la misma casilla
+SEPARACION = 0.34    # distancia horizontal entre puntos que caen en la misma casilla (mayor que el diámetro del punto: no se tocan)
 
 
 def leer_puntos(texto):
@@ -42,18 +43,19 @@ def leer_puntos(texto):
 
 def posiciones(puntos):
     """[(n, x, y)]: la posición de cada punto, separando en horizontal los que comparten casilla."""
-    vistos, salida = {}, []
+    por_casilla = {}
     for n, _, interes, poder in puntos:
-        k = vistos.get((interes, poder), 0)
-        vistos[(interes, poder)] = k + 1
-        salida.append((n, round(interes + k * SEPARACION, 2), poder))
+        por_casilla.setdefault((interes, poder), []).append(n)
+    salida = []
+    for n, _, interes, poder in puntos:
+        grupo = por_casilla[(interes, poder)]
+        salida.append((n, round(interes + (grupo.index(n) - (len(grupo) - 1) / 2) * SEPARACION, 2), poder))
     return salida
 
 
 def rotulo(n, nombre):
-    """Texto de la leyenda: el nombre se corta en una palabra completa si pasa de 52 caracteres."""
-    corto = nombre if len(nombre) <= 52 else nombre[:52].rsplit(" ", 1)[0] + "…"
-    return f"{n}. {corto}"
+    """Texto de la leyenda: el nombre completo, repartido en líneas de unos 50 caracteres (nunca se corta)."""
+    return "\n".join(textwrap.wrap(f"{n}. {nombre}", width=50, subsequent_indent="    "))
 
 
 def dibujar(puntos, salida):
@@ -75,7 +77,7 @@ def dibujar(puntos, salida):
     ax.set_yticks(range(7))
     ax.tick_params(labelsize=9)
     ax.set_title("Matriz poder-interés de los stakeholders (rúbrica R1)", fontsize=13)
-    fig.text(0.995, 0.5, "\n".join(rotulo(n, nombre) for n, nombre, _, _ in puntos), ha="right", va="center", fontsize=7, linespacing=1.55)
+    fig.text(0.665, 0.5, "\n".join(rotulo(n, nombre) for n, nombre, _, _ in puntos), ha="left", va="center", fontsize=7, linespacing=1.5)
     fig.text(0.01, 0.012, "Diagrama generado a partir de la tabla de puntajes; criterio del equipo", fontsize=8, color="#444444")
     atestado = {"fuente": "docs/estrategia/02_stakeholders.md", "puntos": [[n, nombre, interes, poder] for n, nombre, interes, poder in puntos]}
     Path(salida).parent.mkdir(parents=True, exist_ok=True)

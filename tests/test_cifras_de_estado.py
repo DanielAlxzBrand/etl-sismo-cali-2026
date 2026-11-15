@@ -24,7 +24,7 @@ DOCUMENTOS = {
 # clave: (expresión que encuentra la cifra en el texto, qué verdad compara cada grupo; None = no se compara)
 PATRONES = {
     "pruebas_en_verde": (r"\b(\d+) pruebas (?:sin red ni MySQL )?en verde", ["total"]),
-    "n_de_n": (r"(?<![\d.])(\d{3}) de (\d{3})(?![\d.])", ["total", "total"]),
+    "n_de_n": (r"(?<![\d.])(\d{3,4}) de (\d{3,4})(?![\d.])", ["total", "total"]),
     "passed_de_5_1": (r"`(\d+) passed`\. Nombre: `captura_5\.1_", ["total"]),
     "casos_para_funciones": (r"(\d+) casos para (\d+) funciones críticas", ["casos", "funciones"]),
     "matriz_de_casos_de_prueba": (r"Matriz de (\d+) casos de prueba para (\d+) funciones críticas", ["casos", "funciones"]),

@@ -567,3 +567,30 @@ def test_negativas_de_la_figura_de_stakeholders(tmp_path):
     sin_tabla = tabla.replace("| 11 | Equipo del proyecto | 3 | 3 | 3 | 3 | 6 | 6 |", "| 11 | Equipo del proyecto | 3 | 3 | 3 | 3 | 6 | 5 |")
     with pytest.raises(ValueError):
         _script_de_la_matriz().leer_puntos(sin_tabla)      # un puntaje que no suma lo que dice la rúbrica
+
+
+# --- las subfilas de detalle: etiquetas de subcriterio, que no entran al conteo de los 30 ítems ---
+ETIQUETAS_DE_SUBFILA = ["Preparado", "Probado con datos sintéticos", "No realizada", "Hecho (iteración técnica)"]
+SUBFILA = re.compile(r"^\| (\d\.\d) \| (?!«)([^|]+) \| ([^|]+) \| ", re.M)
+
+
+def estados_de_subfila_no_permitidos(texto):
+    """Estados de las filas de detalle (ítem | subcriterio | estado | …) que no son del vocabulario del repositorio ni una etiqueta de subfila conocida."""
+    permitidos = set(ESTADOS_REGLA) | set(ETIQUETAS_DE_SUBFILA)
+    return sorted({f"{m.group(1)}: {m.group(3).strip().replace('*', '')}" for m in SUBFILA.finditer(texto) if m.group(3).strip().replace("*", "") not in permitidos})
+
+
+def test_las_subfilas_de_detalle_solo_usan_estados_del_vocabulario_o_etiquetas_conocidas():
+    assert estados_de_subfila_no_permitidos(ESTADO.read_text(encoding="utf-8")) == []
+
+
+def test_negativas_de_las_subfilas_de_detalle_y_el_conteo_las_ignora(tmp_path):
+    t = ESTADO.read_text(encoding="utf-8")
+    fila = re.search(r"^\| 6\.3 \| Registro de fricciones con severidad \| [^|]+ \|.*$", t, re.M).group(0)
+    campos = fila.split(" | ")
+    inventado = " | ".join(campos[:2] + ["Casi cumple"] + campos[3:])
+    assert estados_de_subfila_no_permitidos(_copia(tmp_path, t, [(fila, inventado)])) == ["6.3: Casi cumple"]
+    contar = _script_de_conteo()
+    # una etiqueta de subfila no entra al conteo de los 30 ítems: cambiarla no mueve el conteo, y el estado vigente de 6.3 sigue siendo el de la tabla principal
+    assert contar.contar(_copia(tmp_path, t, [(fila, inventado)])) == contar.contar(t)
+    assert contar.estados_por_item(t)["6.3"] == "Pendiente (hecho externo)"

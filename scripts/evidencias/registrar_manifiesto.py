@@ -284,7 +284,8 @@ def main():
     ultima = max(i for i, l in enumerate(lineas) if l.startswith("| EV-"))   # las filas nuevas van al final de la tabla, antes de la convención
     lineas[ultima + 1:ultima + 1] = [fila for _, fila in nuevas]
     MANIFIESTO.write_text("\n".join(lineas) + "\n", encoding="utf-8", newline="\n")
-    log.info("manifiesto: %s filas registradas (capa de servicio y almacenamiento relacional)", len(nuevas))
+    total = sum(1 for linea in lineas if linea.startswith("| EV-"))
+    log.info("manifiesto: este script escribió %s filas (las de las evidencias que registra) y la tabla tiene %s en total; las demás son anteriores y no se tocan", len(nuevas), total)
 
 
 if __name__ == "__main__":
