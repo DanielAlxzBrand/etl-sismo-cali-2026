@@ -39,19 +39,19 @@ Las capturas son del panel real, tomadas por el navegador automatizado del proye
 ## B4. Muévase entre las páginas
 Haga clic en el nombre de una página del menú para abrirla. Las ocho son, en este orden: **Respuesta, Estratos (K1), Comunas (K6), Sensibilidades (S0 a S5), Concentración (K3 y K4), Calidad de la llave, Construcciones y Fuentes y sistema**.
 
-Ahora abra cada una **solo para ver que carga** (no hace falta leerla) y vuelva a la primera, **Respuesta**. Todas deben abrir sin un aviso de error. Al final de cada página hay un desplegable cerrado que se llama «Glosario de esta página»: sirve para consultar un término, y puede usarlo en cualquier momento.
+Ahora abra cada una **solo para ver que carga** (no hace falta leerla) y vuelva a la primera, **Respuesta**. Todas deben abrir sin un aviso de error. **Algunas muestran cuadros azules con texto: no son errores**, son notas de la propia página; un error es un mensaje en rojo o un aviso que dice que la API no responde. Al final de cada página hay un desplegable cerrado que se llama «Glosario de esta página»: sirve para consultar un término, y puede usarlo en cualquier momento.
 
 Los botones de las tablas y los gráficos («Download as CSV», «Fullscreen», «Search») salen en inglés: la versión de Streamlit que fijamos no permite traducirlos (`docs/panel/guia_de_uso.md`).
 
 ## B5. Ciérrelo
-Vuelva a la ventana de PowerShell y presione **Ctrl+C**. El lanzador cierra la API y el panel. Cierre también la pestaña del navegador.
+Vuelva a la ventana de PowerShell y presione **Ctrl+C**. El lanzador cierra la API y el panel (lo probamos: se cerró en 1 s y no quedó ningún proceso). Cierre también la pestaña del navegador.
 
 Si la ventana de PowerShell se cerró y el panel sigue respondiendo, busque qué programa usa el puerto y ciérrelo:
 ```powershell
-Get-NetTCPConnection -LocalPort 8501 | Select-Object OwningProcess
+Get-NetTCPConnection -LocalPort 8501 -State Listen | Select-Object OwningProcess
 Stop-Process -Id <número que aparece>
 ```
-Repita lo mismo con el puerto 8000 si la API también sigue abierta.
+Al cerrar el panel, el lanzador cierra también la API (en nuestra prueba, en menos de 3 s); si el puerto 8000 sigue abierto, repita lo mismo con ese número de puerto.
 
 ## B6. Si algo falla
 {{incluir: docs/panel/guia_de_uso.md#4-avisos-y-errores}}

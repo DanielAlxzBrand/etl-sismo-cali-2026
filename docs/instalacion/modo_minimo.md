@@ -14,7 +14,7 @@ entorno porque así no depende de la política de ejecución de scripts de Power
 ```powershell
 py -3.13 scripts\preparar_entorno.py
 ```
-Si falta Python 3.13 imprime cómo instalarlo en paralelo. **Lo que debe decir depende del momento:** ahora, sin el entorno virtual, tiene que terminar con «Modo minimo: falta lo marcado con ✗» y código 1, con la línea de Python 3.13 en ✓ y las acciones sugeridas para el entorno y los requisitos (es lo esperado, no un error). Después del paso 3, al volver a ejecutarlo, debe terminar con «Modo minimo: todo lo necesario está listo» y código 0. Lo medimos desde un zip en una carpeta con espacios y tildes: tardó menos de 1 s la primera vez y 2,8 s la segunda.
+Si falta Python 3.13 imprime cómo instalarlo en paralelo. **Lo que debe decir depende del momento:** ahora, sin el entorno virtual, tiene que terminar con «Modo minimo: falta lo marcado con ✗» y código 1, con la línea de Python 3.13 en ✓ y las acciones sugeridas para el entorno y los requisitos (es lo esperado, no un error). Después del paso 3, al volver a ejecutarlo, debe terminar con «Modo minimo: todo lo necesario está listo» y código 0. Lo medimos desde un zip en una carpeta con espacios y tildes, siguiendo la guía de las sesiones: tardó menos de 1 s la primera vez y unos 3 s la segunda.
 
 ## 3. Crear el entorno e instalar
 ```powershell
