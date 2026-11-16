@@ -509,7 +509,7 @@ py -3.13 -m venv .venv
 python -m pip install -r requirements.txt
 ```
 Debe terminar sin errores (Python {platform.python_version()}).
-Para instalar paso a paso en otro equipo (con Python 3.13 en paralelo, `py -3.13` y los dos modos, mínimo y completo) véase la [guía de instalación](docs/instalacion/README.md).
+Para instalar paso a paso en otro equipo (con Python 3.13 en paralelo, `py -3.13` y los dos modos, mínimo y completo) véase la [guía de instalación](docs/instalacion/README.md). Para hacer sesiones de uso del panel entre las personas del equipo, con su guía en PDF, véase la [guía de simulación](docs/usuarios/guia_simulacion/README.md).
 2. **Variables:** el pipeline no necesita tokens; `HTTP_USER_AGENT` es opcional. Las variables `MYSQL_*` solo se usan en la carga relacional y las crea `scripts/mysql/configurar_mysql.py` (sección 19); `.env` nunca se versiona.
 3. **Pipeline completo:** `python main.py --stage all`. Con Bronze presente no necesita red. Al terminar el registro muestra, entre otras líneas, `Salida: construcciones={miles(len(g))} barrios=346 integrado={miles(len(g))} | cobertura de llave={cob['pct'] * 100:.4f}% (pasa)` y `Salida: gold_final={miles(len(g))} filas | kpis_gold={len(kp)} filas (6 indicadores) | sensibilidades={len(sens)} filas`. Ejecutarlo dos veces seguidas deja los mismos sha256 en `data/silver` y `data/gold`:
 ```powershell

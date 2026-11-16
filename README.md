@@ -270,14 +270,14 @@ py -3.13 -m venv .venv
 python -m pip install -r requirements.txt
 ```
 Debe terminar sin errores (Python 3.13.0).
-Para instalar paso a paso en otro equipo (con Python 3.13 en paralelo, `py -3.13` y los dos modos, mínimo y completo) véase la [guía de instalación](docs/instalacion/README.md).
+Para instalar paso a paso en otro equipo (con Python 3.13 en paralelo, `py -3.13` y los dos modos, mínimo y completo) véase la [guía de instalación](docs/instalacion/README.md). Para hacer sesiones de uso del panel entre las personas del equipo, con su guía en PDF, véase la [guía de simulación](docs/usuarios/guia_simulacion/README.md).
 2. **Variables:** el pipeline no necesita tokens; `HTTP_USER_AGENT` es opcional. Las variables `MYSQL_*` solo se usan en la carga relacional y las crea `scripts/mysql/configurar_mysql.py` (sección 19); `.env` nunca se versiona.
 3. **Pipeline completo:** `python main.py --stage all`. Con Bronze presente no necesita red. Al terminar el registro muestra, entre otras líneas, `Salida: construcciones=5.146 barrios=346 integrado=5.146 | cobertura de llave=99.8834% (pasa)` y `Salida: gold_final=5.146 filas | kpis_gold=23 filas (6 indicadores) | sensibilidades=107 filas`. Ejecutarlo dos veces seguidas deja los mismos sha256 en `data/silver` y `data/gold`:
 ```powershell
 Get-FileHash -Algorithm SHA256 data\silver\*.csv, data\silver\quality_report.json, data\gold\*.csv
 ```
    **Qué puede mostrar Git después de ejecutarlo.** Aunque los datos sean los mismos, `git status` puede listar dos cambios: `data/gold/etl_sismo.db` (SQLite no escribe el archivo igual byte a byte en cada carga: cambian los bytes, no las tablas) y una línea de `docs/silver/reglas_silver.md` (la regla R10 cita una ruta antigua que el pipeline vuelve a escribir). Lo comprobamos en un clon: los CSV de Silver y de Gold conservan sus sha256, así que no hay pérdida de datos. Para volver a lo versionado: `git checkout -- data/gold/etl_sismo.db docs/silver/reglas_silver.md`. No corregimos esa ruta porque cambiaría `quality_report.json` y con él la línea base (D81).
-4. **Pruebas:** `pytest -q` → `1008 passed`.
+4. **Pruebas:** `pytest -q` → `1047 passed`.
 5. **Notebooks** (cada uno se ejecuta de arriba a abajo sin errores):
 ```powershell
 jupyter nbconvert --to notebook --execute --inplace notebooks\05_validacion_evidencias.ipynb
@@ -303,7 +303,7 @@ jupyter nbconvert --to notebook --execute --inplace notebooks\05_validacion_evid
 - `orquestacion/`: Dockerfile, compose adaptado de Airflow 3.3.2, requisitos de la imagen y hash del DAG
 - `servicios/`: compose de phpMyAdmin de solo lectura (`servicios/phpmyadmin/`)
 - `src/`: código por capas (ver `src/README.md`): `extract/`, `transform/`, `load/` (SQLite y carga relacional), `api/`, `panel/` (interfaz Streamlit de solo lectura), `common.py` y `logger.py`
-- `tests/`: 1008 pruebas automáticas
+- `tests/`: 1047 pruebas automáticas
 - `scripts/`: generadores y utilidades (ver `scripts/README.md`): README, catálogo de fuentes, modelo de datos, carga relacional, `mysql/` (configuración y verificación en vivo), matriz de casos de prueba e informe de pruebas, orquestación (`orquestacion/`), escáner de secretos, empaquetado y `evidencias/`
 - `docs/README.md`: índice de la documentación por capas y tabla «dónde está cada cosa»
 - `docs/DECISIONES.md`: decisiones con alternativas, razón y riesgo
@@ -325,7 +325,7 @@ jupyter nbconvert --to notebook --execute --inplace notebooks\05_validacion_evid
 - `logs/`: archivos de registro diarios (se crean al ejecutar; no se versionan)
 
 ## 14. Pruebas y validación
-Hay **1008 pruebas** automáticas, sin red:
+Hay **1047 pruebas** automáticas, sin red:
 - `tests/test_api.py` (17): API de solo lectura: estructura, validación, coincidencia con las salidas, solo GET y sin escritura en `data/` ni en la base.
 - `tests/test_canario_extra.py` (5): comprobación canario con archivos `.env` extra: detecta contraseñas de otra carpeta sin imprimirlas.
 - `tests/test_carga_relacional.py` (54): esquema relacional (paridad, diccionario al día), conversión estricta, carga con conciliación al 100 %, idempotencia, historial, reversión, integridad referencial y equivalencia de la API entre SQLite y el almacén relacional (sin servidor MySQL).
@@ -345,6 +345,7 @@ Hay **1008 pruebas** automáticas, sin red:
 - `tests/test_evidencias.py` (4): el saneamiento de evidencias sustituye rutas, usuario y equipo, y las evidencias guardadas no llevan datos del equipo.
 - `tests/test_extract.py` (6): manifiesto, sha256, filas y páginas de Bronze (sin red).
 - `tests/test_finanzas.py` (16): .
+- `tests/test_guia_simulacion.py` (39): .
 - `tests/test_igualdad_de_codigo.py` (7): .
 - `tests/test_independencia_del_repositorio.py` (10): .
 - `tests/test_informe_pruebas.py` (6): lectura de JUnit, resultado por caso y recálculo independiente de K1 para el informe de pruebas.
@@ -484,7 +485,7 @@ Documentación: [modelo de datos](docs/almacenamiento/modelo_datos.md), [configu
 ## 20. Pruebas y orquestación
 El pipeline se orquesta con **Apache Airflow en Docker**, siguiendo la guía de Airflow de la asignatura (artículo de Juan Manuel Núñez Velasco) con unas pocas diferencias documentadas. El DAG `medallon_etl_sismo` (`dags/medallon_etl_dag.py`) tiene cuatro tareas, `validar_bronze → transformar_a_silver → integrar_a_gold → cargar_datawarehouse`, y trabaja sobre una **copia de trabajo** dentro del contenedor: el repositorio se monta en solo lectura y cada tarea compara lo que produce con los archivos versionados (CSV y JSON byte a byte, `etl_sismo.db` tabla a tabla), así que ni los datos ni las salidas pueden alterarse. La carga a MySQL usa un usuario propio de Docker con permisos mínimos sobre la base real. Para reproducir los archivos de la línea base hay que usar **pandas 3.0.6** (con otra versión cambian celdas del decimal 12; ver D56).
 
-Hay 1008 pruebas automáticas, una **matriz de casos** por función crítica generada desde una única definición (`python scripts/make_matriz_casos.py`), un **informe de pruebas** con resultado esperado y obtenido por caso y cobertura por módulo (`python scripts/informe_pruebas.py`) y un **registro de defectos** cuyas pruebas de regresión fallan sin su corrección.
+Hay 1047 pruebas automáticas, una **matriz de casos** por función crítica generada desde una única definición (`python scripts/make_matriz_casos.py`), un **informe de pruebas** con resultado esperado y obtenido por caso y cobertura por módulo (`python scripts/informe_pruebas.py`) y un **registro de defectos** cuyas pruebas de regresión fallan sin su corrección.
 ```powershell
 .\.venv\Scripts\python.exe scripts\informe_pruebas.py
 .\.venv\Scripts\python.exe scripts\orquestacion\sincronizar_dag.py --verificar

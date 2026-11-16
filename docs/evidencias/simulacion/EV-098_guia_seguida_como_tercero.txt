@@ -1,0 +1,55 @@
+# La guía de simulación seguida como una tercera persona, desde el zip, en una carpeta con espacios y tilde
+- comando: las partes A, B y E de `docs/usuarios/guia_simulacion/` ejecutadas en el orden y con los comandos de la guía (`py -0p`, `Get-FileHash`, `Expand-Archive`, `py -3.13 -m venv .venv`, `pip install -r requirements.txt`, `pip check`, `preparar_entorno.py`, `main.py --stage all`, comprobación de huellas, `ejecutar_panel.py --verificar`, `pytest -q -p no:cacheprovider`, arranque del panel, Ctrl+C, cierre con `Stop-Process` y el bloque de la parte E)
+- fecha: 2026-11-15 (America/Bogota)
+- equipo: Windows 11 Home, 15,7 GB de RAM, Python 3.13 (también estaba instalado 3.11: la guía pide 3.13 y `preparar_entorno.py` lo dice)
+- commit del repositorio con el que se armó el zip: 8af5bf0
+- zip: `etl_sismo_20261115.zip`, 540 archivos, 22 380 701 bytes, sha256 `106d35260058a24d551a115bb7a30f9a5fea5928d38eadb2fb5138547c57da23` (`Get-FileHash` lo mostró en mayúsculas y coincidió con el calculado al armarlo)
+
+Quien siguió la guía no tuvo a mano nada que la guía no diga: el zip se descomprimió en `<carpeta con espacios y tildes>\proyecto uno` (sin `.git`, sin el `.env`, sin carpetas hermanas) y cada comando se copió de la guía. Los datos de las sesiones de la parte E son SINTÉTICOS y viven fuera del repositorio.
+
+## Parte A · instalación y comprobación (tiempos medidos)
+| Paso de la guía | Código de salida | Tiempo | Qué dijo |
+|---|---|---|---|
+| A1 `py -0p` | 0 | 0,1 s | lista 3.13 y 3.11 |
+| A2 `Get-FileHash` | 0 | 0,2 s | la huella coincide con la enviada |
+| A3 `Expand-Archive` | 0 | 18,5 s | |
+| A4 `preparar_entorno.py` sin entorno | 1 | 0,7 s | «✗ Entorno virtual .venv: no existe», con el comando para crearlo; es lo esperado |
+| A5 `py -3.13 -m venv .venv` | 0 | 14,7 s | |
+| A5 `pip install -r requirements.txt` | 0 | 275,2 s | |
+| A5 `pip check` | 0 | 5,9 s | «No broken requirements found.» |
+| A4 `preparar_entorno.py` con entorno | 0 | 2,9 s | «Modo mínimo: todo lo necesario está listo» |
+| A6.1 `preparar_entorno.py` | 0 | 2,8 s | igual |
+| A6.2 `main.py --stage all` | 0 | 8,4 s | termina sin errores con los datos que trae el zip |
+| A6.3 comprobación de huellas | 0 | 0,2 s | nueve líneas «igual» |
+| A6.4 `ejecutar_panel.py --verificar` | 0 | 7,4 s | imprime las direcciones de la API y del panel |
+| A6.5 `pytest -q -p no:cacheprovider` | 0 | 212,3 s | 1007 pasan, **1 omitida**, 1 aviso (el de `httpx` con Starlette); la omitida es la del historial de Git, porque el zip no trae `.git` |
+
+## Parte B · panel, navegador, cierre
+- El lanzador imprimió las direcciones a los 4,7 s: API en `http://127.0.0.1:8000`, panel en `http://127.0.0.1:8501`, almacenamiento `sqlite`.
+- `GET /` del panel: 200; `GET /health`: 200 con `base_disponible: true`; `GET /docs`: 200; `GET /` de la API: **404** (la API no tiene página en la raíz; la guía manda a `/health` o `/docs`).
+- Con Edge sin ventana, en cuatro pasadas seguidas (una la primera vez y tres repetidas): el menú tiene **8 nombres** (Respuesta, Estratos (K1), Comunas (K6), Sensibilidades (S0 a S5), Concentración (K3 y K4), Calidad de la llave, Construcciones, Fuentes y sistema); la línea de estado dice «API: en línea · almacenamiento: sqlite · fecha de corte: 2026-09-02»; cada página abre con su título y su glosario, y **ninguna muestra el elemento de excepción de Streamlit**. Cuatro páginas (Estratos, Comunas, Sensibilidades y Calidad de la llave) traen cuadros azules con texto: son notas del propio panel, no errores. La primera pasada marcó como «con error» exactamente esas cuatro páginas; en las cuatro pasadas con el criterio de la excepción de Streamlit ninguna lo tiene, así que lo que la primera marcó eran los cuadros, y la guía lo explica.
+- **Ctrl+C**, probado enviando el evento de consola a la ventana del lanzador (`AttachConsole` y `GenerateConsoleCtrlEvent`): los puertos se abrieron a los 4,0 s; el lanzador terminó con código 0 a 1,0 s del Ctrl+C; los puertos quedaron cerrados y **no quedó ningún proceso del proyecto** (API, panel ni lanzador). En una pasada anterior, con otra revisión de procesos, la lista de procesos no se había filtrado bien; la comprobación final es la de esta lista vacía.
+- **Plan B (la ventana del lanzador se cerró y el panel sigue)**: `Get-NetTCPConnection -LocalPort 8501` sin filtro devolvía ocho filas, seis de ellas con el proceso 0 (conexiones cerradas); con `-State Listen` devuelve **un solo número**. `Stop-Process -Id` de ese número cerró el 8501 y el lanzador cerró también la API en menos de 3 s.
+
+## Parte E · juntar y analizar (datos SINTÉTICOS con el formato de la guía)
+- Tres envíos (P01 a P03) con los archivos que pide la parte D: `registro_P0X.csv`, `cuestionarios_P0X.csv`, `friccion_P01.csv` y `hoja_P01.txt`.
+- El bloque de la parte E dejó `registro.csv` con **19** líneas y `cuestionarios.csv` con **4**, como dice la guía; el primer byte del archivo es el de la plantilla copiada (sin BOM).
+- `analizar_sesiones.py`: código 0 y `resultados.md` con «Personas: 3 (P01, P02, P03)», «k de n» y «no se informa (n < 5)», sin porcentajes.
+- Con una fila cuyo resultado se cambió a «bien»: código **2** y el mensaje `registro.csv, fila 4: tarea o resultado no válidos ('T3', 'bien')`.
+
+## Lo que la prueba encontró y se corrigió en la guía
+| Ambigüedad | Corrección |
+|---|---|
+| `Get-FileHash` escribe la huella en mayúsculas y quien manda el zip puede escribirla en minúsculas | A2 dice que se comparan sin distinguir mayúsculas de minúsculas |
+| La guía no decía que con el zip se omite una prueba | A6 dice «una se omite (la del historial de Git)» y que sin Git se omiten 10 |
+| El plan B listaba conexiones cerradas (ocho filas) | el comando lleva `-State Listen` y devuelve un solo número |
+| Los cuadros azules de algunas páginas podían tomarse por errores | B3 dice que no lo son y qué sí lo es |
+| El cierre con Ctrl+C no estaba comprobado | comprobado (1,0 s, sin procesos); la guía lo dice |
+| Los tiempos eran de una medición anterior | se reemplazaron por los de esta prueba |
+| No decía qué pasa con la API al cerrar el panel | B5 dice que el lanzador la cierra (menos de 3 s en esta prueba) |
+
+## Lectura
+- Siguiendo solo lo que dice la guía, los comandos de la parte A sumaron 549,3 s (unos 9 minutos, de ellos 275,2 s de instalación y 212,3 s de la suite) y llevaron a un panel que abre sus ocho páginas y que se cierra de dos maneras.
+- La parte E se puede seguir con los archivos tal como los pide la parte D y el análisis rechaza con el número de fila lo que no cumple el formato.
+
+Qué NO demuestra: que una persona que no conoce el proyecto la entienda (la hizo quien la escribió, como tercero simulado: sin hablar con nadie, pero sabiendo qué buscaba), que funcione en otro equipo (Windows 11 Home, 15,7 GB), con otra versión de Python o con otra velocidad de red, ni nada sobre las sesiones con personas: los datos de la parte E son sintéticos.

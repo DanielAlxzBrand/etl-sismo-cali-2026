@@ -1,0 +1,44 @@
+# Mutaciones sobre las pruebas de la guía de simulación y de su generador de PDF
+- comando: `mutación de un archivo en un clon y `python -m pytest -q -p no:cacheprovider tests/test_guia_simulacion.py``
+- fecha: 2026-11-15 (America/Bogota)
+- código de salida: 0
+- Python: 3.13.0
+- commit del repositorio: c751244
+
+Cada mutación se aplicó a un archivo de un clon del commit de trabajo (carpeta temporal con espacios y tilde, fuera del repositorio), se corrió `tests/test_guia_simulacion.py` y se restauró el archivo; el clon quedó sin cambios. Detectadas: 29 de 29. Quince mutaciones tocan el generador (conversor, inclusiones, perfiles, enlaces, imágenes, índice y pie), trece tocan las fuentes de la guía (avisos de sesgo, cifras, rutas, scripts, perfil de cada parte) y una toca el análisis de las sesiones.
+
+Una primera corrida detectó 28 de 29: la mutación «una barra dentro de código separa celdas» no se detectaba, porque la prueba de tablas solo usaba la barra escapada; se agregó la prueba de la barra sin escapar y se repitió toda la corrida. Otra mutación (la inclusión que se come la línea en blanco siguiente) se agregó al conjunto porque ese error ya había ocurrido al construir el generador.
+
+| Mutación | Pruebas que fallan | ¿Detectada? |
+|---|---|---|
+| generador: el ancla distingue mayúsculas | `test_el_ancla_conserva_las_tildes_y_quita_los_signos`; `test_la_seccion_termina_en_el_proximo_titulo_del_mismo_nivel_y_no_lee_titulos_dentro_de_codigo`; `test_los_titulos_repetidos_reciben_anclas_distintas` y 8 más | sí |
+| generador: la sección lee títulos dentro de bloques de código | `test_la_seccion_termina_en_el_proximo_titulo_del_mismo_nivel_y_no_lee_titulos_dentro_de_codigo` | sí |
+| generador: el filtro de filas deja pasar todas | `test_las_opciones_filas_solo_tablas_y_nivel_filtran_y_desplazan`; `test_una_inclusion_que_no_se_puede_resolver_falla_en_vez_de_dejar_un_hueco[{{incluir: docs/instalacion/README.md#2-requisitos | filas: texto que ninguna fila contiene}}]` | sí |
+| generador: la inclusión se come la línea en blanco siguiente | `test_una_inclusion_no_se_come_la_linea_en_blanco_que_la_separa_del_texto_siguiente` | sí |
+| generador: el perfil del participante incluye lo del facilitador | `test_cada_perfil_trae_solo_las_partes_que_le_corresponden`; `test_el_pdf_del_participante_no_trae_las_tareas_ni_sus_criterios_y_el_del_facilitador_si` | sí |
+| generador: un enlace a algo inexistente no falla | `test_un_enlace_a_algo_que_no_existe_o_que_sale_de_la_raiz_falla` | sí |
+| generador: la imagen ignora el recorte | `test_una_imagen_se_incrusta_y_con_recorte_solo_muestra_esa_parte` | sí |
+| generador: una barra dentro de código separa celdas | `test_una_tabla_se_convierte_en_filas_y_celdas_y_una_barra_dentro_de_codigo_no_separa` | sí |
+| generador: no escapa los signos de HTML | `test_un_bloque_de_codigo_se_escapa_y_las_filas_csv_se_pueden_cortar_despues_de_una_coma`; `test_el_texto_con_signos_de_html_se_escapa_y_el_codigo_en_linea_no_se_interpreta`; `test_el_pie_del_pdf_numera_las_paginas_y_pide_papel_a4` | sí |
+| generador: el índice ignora los títulos con clase | `test_el_documento_trae_portada_indice_con_enlaces_a_cada_parte_y_es_siempre_el_mismo` | sí |
+| generador: el pie no numera las páginas totales | `test_el_pie_del_pdf_numera_las_paginas_y_pide_papel_a4` | sí |
+| generador: una inclusión de archivo inexistente no falla con error de guía | `test_una_inclusion_que_no_se_puede_resolver_falla_en_vez_de_dejar_un_hueco[{{incluir: docs/no_existe.md}}]`; `test_una_inclusion_que_no_se_puede_resolver_falla_en_vez_de_dejar_un_hueco[{{codigo: docs/no_existe.csv | csv}}]` | sí |
+| generador: las filas CSV no se pueden cortar | `test_un_bloque_de_codigo_se_escapa_y_las_filas_csv_se_pueden_cortar_despues_de_una_coma` | sí |
+| generador: las partes del facilitador entran al PDF del participante | `test_cada_perfil_trae_solo_las_partes_que_le_corresponden`; `test_el_pdf_del_participante_no_trae_las_tareas_ni_sus_criterios_y_el_del_facilitador_si` | sí |
+| generador: la casilla marcada se dibuja vacía | `test_las_listas_anidadas_y_las_casillas_se_convierten` | sí |
+| guía: se quita el aviso de no abrir docs/usuarios | `test_la_guia_declara_el_sesgo_de_quien_conoce_las_tareas_y_de_quien_abre_la_carpeta_de_usuarios` | sí |
+| guía: un script del análisis con otro nombre | `test_cada_script_que_la_guia_manda_ejecutar_existe` | sí |
+| guía: ocho líneas de huellas en vez de nueve | `test_las_nueve_huellas_de_la_comprobacion_son_las_del_archivo_de_referencia` | sí |
+| guía: una tarea con su enunciado en el anexo del participante | `test_el_pdf_del_participante_no_trae_las_tareas_ni_sus_criterios_y_el_del_facilitador_si` | sí |
+| guía: 18 líneas en vez de 19 en el conteo de quien junta | `test_el_conteo_de_lineas_que_espera_quien_junta_sale_del_numero_de_tareas_y_de_sesiones` | sí |
+| guía: cita un documento que no existe | `test_la_guia_cita_rutas_y_todas_existen` | sí |
+| guía: se quita la nota de mayúsculas de la huella | `test_las_nueve_huellas_de_la_comprobacion_son_las_del_archivo_de_referencia` | sí |
+| guía: los datos de práctica cuentan como personas | `test_la_guia_declara_el_sesgo_de_quien_conoce_las_tareas_y_de_quien_abre_la_carpeta_de_usuarios` | sí |
+| guía: aparece un cuarto código de sesión | `test_la_guia_declara_el_sesgo_de_quien_conoce_las_tareas_y_de_quien_abre_la_carpeta_de_usuarios` | sí |
+| guía: el plan B busca todas las conexiones | `test_el_plan_b_para_cerrar_el_panel_busca_solo_el_proceso_que_escucha` | sí |
+| guía: dice que sin Git se omiten 9 | `test_las_pruebas_omitidas_que_dice_la_guia_son_las_de_la_guia_de_instalacion` | sí |
+| guía: se quita la alternativa de rotación | `test_la_guia_declara_el_sesgo_de_quien_conoce_las_tareas_y_de_quien_abre_la_carpeta_de_usuarios` | sí |
+| guía: la parte de la sesión (con las tareas) pasa a ser de todos | `test_el_pdf_del_participante_no_trae_las_tareas_ni_sus_criterios_y_el_del_facilitador_si` | sí |
+| análisis: acepta cualquier resultado | `test_una_fila_con_un_resultado_que_no_existe_se_rechaza_con_su_numero_de_fila` | sí |
+
+Qué NO demuestra: que toda alteración posible de la guía o del generador se detecte, solo las 29 probadas; ni que el PDF salga bien impreso (el paso de Edge no tiene prueba automática: se revisó página por página al generar cada PDF).

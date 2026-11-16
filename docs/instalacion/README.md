@@ -77,6 +77,7 @@ baja con `docker compose down` antes de volver al panel; y se limita WSL2 creand
 | [modo_minimo.md](modo_minimo.md) | los pasos del modo mínimo y cómo comprobar que funciona |
 | [modo_completo.md](modo_completo.md) | MySQL (las tres cuentas), panel con MySQL, Airflow desde el zip y phpMyAdmin, con su comprobación |
 | [errores_comunes.md](errores_comunes.md) | tabla de síntomas, causas y qué hacer |
+| [../usuarios/guia_simulacion/README.md](../usuarios/guia_simulacion/README.md) | la instalación del modo mínimo contada para quien lo hace por primera vez, desde el zip, con los tiempos medidos siguiéndola como tercero ([EV-098](../evidencias/simulacion/EV-098_guia_seguida_como_tercero.txt)) |
 | [../orquestacion/operacion.md](../orquestacion/operacion.md) | sección «Desde el zip» y «Operación en otra máquina» de Airflow |
 | [../almacenamiento/phpmyadmin.md](../almacenamiento/phpmyadmin.md) | phpMyAdmin de solo lectura: cómo arrancarlo y qué mirar |
 

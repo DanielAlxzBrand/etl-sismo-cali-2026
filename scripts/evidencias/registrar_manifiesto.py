@@ -226,6 +226,15 @@ FILAS_ALMACEN = {
 }
 
 
+CARPETA_SIM = "docs/evidencias/simulacion"
+FILAS_SIM = {
+    "EV-098": ("6.1", "La guía de simulación seguida como una tercera persona desde el zip, en una carpeta con espacios y tilde: partes A, B y E con los comandos de la guía, tiempos, Ctrl+C, plan B, navegador y análisis de datos sintéticos; ambigüedades halladas y corregidas", "archivo",
+               "los comandos de `docs/usuarios/guia_simulacion/` (partes A, B y E) sobre el zip de `make_dist.empaquetar` descomprimido", "EV-098_guia_seguida_como_tercero.txt"),
+    "EV-099": ("6.1", "Tabla de mutaciones de las pruebas de la guía de simulación y de su generador de PDF: todas detectadas", "archivo",
+               "mutación de un archivo en un clon y `python -m pytest -q -p no:cacheprovider tests/test_guia_simulacion.py`", "EV-099_mutaciones_guia_de_simulacion.txt"),
+}
+
+
 def fila(ev, item, que, tipo, cmd, archivo, carpeta, fecha):
     p = REPO / carpeta / archivo
     return f"| {ev} |", f"| {ev} | {item} | {que} | {tipo} | {cmd} | {fecha} | {carpeta}/{archivo} | {hashlib.sha256(p.read_bytes()).hexdigest()} |"
@@ -285,7 +294,12 @@ def main():
             log.warning("falta %s; no se registra %s", archivo, ev)
             continue
         nuevas.append(fila(ev, item, que, tipo, cmd, archivo, CARPETA_FIN, FECHA_USU))
-    ids = {pref for pref, _ in nuevas}
+    for ev, (item, que, tipo, cmd, archivo) in FILAS_SIM.items():
+        if not (REPO / CARPETA_SIM / archivo).exists():
+            log.warning("falta %s; no se registra %s", archivo, ev)
+            continue
+        nuevas.append(fila(ev, item, que, tipo, cmd, archivo, CARPETA_SIM, "2026-11-15"))
+    ids ={pref for pref, _ in nuevas}
     lineas = [l for l in lineas if not any(l.startswith(i) for i in ids)]
     ultima = max(i for i, l in enumerate(lineas) if l.startswith("| EV-"))   # las filas nuevas van al final de la tabla, antes de la convención
     lineas[ultima + 1:ultima + 1] = [fila for _, fila in nuevas]

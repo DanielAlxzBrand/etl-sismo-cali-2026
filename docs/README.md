@@ -116,6 +116,7 @@
 | [evaluacion_heuristica.md](usuarios/evaluacion_heuristica.md) | evaluación heurística interna del panel: hallazgos con severidad y captura, fortalezas y matriz |
 | [protocolo_sesiones.md](usuarios/protocolo_sesiones.md), [guion_sesion.md](usuarios/guion_sesion.md), [consentimiento.md](usuarios/consentimiento.md) e [instrumentos.md](usuarios/instrumentos.md) | material de las sesiones con personas usuarias (preparado; sin sesiones realizadas) |
 | [registro_de_friccion.md](usuarios/registro_de_friccion.md) y [trazabilidad_de_cambios.md](usuarios/trazabilidad_de_cambios.md) | las 14 fricciones de la evaluación heurística con su decisión y la tabla de cambios llena (iteración técnica, no sesiones con personas) |
+| [guia_simulacion/README.md](usuarios/guia_simulacion/README.md) | guía en PDF (con su generador) para que las tres personas del equipo hagan sesiones de uso del panel en su propio equipo; material preparado, sin sesiones hechas |
 | [finanzas/estructura_costos.md](finanzas/estructura_costos.md) | categorías de costo, consumo medido y fórmulas con precios como parámetros vacíos |
 
 ### Servicios locales (`instalacion/`)
@@ -127,7 +128,7 @@
 | [errores_comunes.md](instalacion/errores_comunes.md) | síntomas, causa probable y qué hacer al instalar y ejecutar |
 
 ### Decisiones
-[DECISIONES.md](DECISIONES.md): todas las decisiones con alternativas, razón, riesgo y fecha (D1 a D98; las nuevas continúan desde D99).
+[DECISIONES.md](DECISIONES.md): todas las decisiones con alternativas, razón, riesgo y fecha (D1 a D100; las nuevas continúan desde D101).
 
 ### Almacenamiento relacional (MySQL)
 | documento | contenido |
