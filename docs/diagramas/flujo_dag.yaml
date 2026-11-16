@@ -1,0 +1,22 @@
+# Flujo del DAG medallon_etl_sismo: cuatro tareas sobre una copia de trabajo; el repositorio se monta en solo lectura.
+# La imagen se dibuja con `python scripts/make_diagramas.py`.
+alto: 54
+grupos:
+  - {id: g_tareas, titulo: "Tareas del DAG, en orden", x: 0.5, y: 22, w: 99, h: 19}
+cajas:
+  - {id: t1, x: 2, y: 24, w: 21, h: 12.5, texto: "validar_bronze\nverifica el manifiesto\ny los sha256 de Bronze"}
+  - {id: t2, x: 27, y: 24, w: 21, h: 12.5, texto: "transformar_a_silver\ngenera Silver y lo\ncompara con lo versionado"}
+  - {id: t3, x: 52, y: 24, w: 21, h: 12.5, texto: "integrar_a_gold\ngenera Gold y lo\ncompara con lo versionado"}
+  - {id: t4, x: 77, y: 24, w: 21, h: 12.5, texto: "cargar_datawarehouse\nSQLite: mismo contenido\nMySQL: carga idempotente"}
+  - {id: repo, x: 2, y: 1.5, w: 21, h: 9, texto: "Repositorio\nmontado en solo lectura\nnunca se escribe"}
+  - {id: copia, x: 27, y: 1.5, w: 46, h: 9, texto: "Copia de trabajo temporal en el contenedor\nsrc, config y data; se borra al terminar la carga o ante un fallo"}
+  - {id: mysql, x: 77, y: 1.5, w: 21, h: 9, texto: "MySQL 8.0\nusuario de Docker con\npermisos mínimos"}
+  - {id: disparo, x: 27, y: 46, w: 46, h: 7, estilo: nota, texto: "Disparo: programación diaria o manual\nparámetro fallo_inducido para probar la recuperación"}
+flechas:
+  - {de: t1, a: t2, lado_de: der, lado_a: izq}
+  - {de: t2, a: t3, lado_de: der, lado_a: izq}
+  - {de: t3, a: t4, lado_de: der, lado_a: izq}
+  - {de: repo, a: copia, lado_de: der, lado_a: izq}
+  - {de: copia, a: g_tareas, lado_de: arriba, lado_a: abajo, estilo: punteada}
+  - {de: t4, a: mysql, lado_de: abajo, lado_a: arriba}
+  - {de: disparo, a: g_tareas, lado_de: abajo, lado_a: arriba, estilo: punteada}

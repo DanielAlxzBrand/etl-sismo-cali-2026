@@ -33,6 +33,7 @@
 | [verificacion_fuentes.md](bronze/verificacion_fuentes.md) | verificación previa de las fuentes (V1 a V14) |
 | [catalogo_fuentes_metadatos.md](bronze/catalogo_fuentes_metadatos.md) | catálogo de fuentes y metadatos, generado desde el manifiesto |
 | [catalogo_fuentes.json](bronze/catalogo_fuentes.json) | el mismo catálogo en JSON; lo sirve `GET /fuentes` |
+| [atribucion_y_terminos_de_datos.md](bronze/atribucion_y_terminos_de_datos.md) | qué declara cada fuente sobre su licencia, cómo tratamos el estrato por barrio y la atribución sugerida |
 | `bronze/muestras/` | muestras de texto de cada fuente probada (no es Bronze) |
 
 ### `silver/` · limpieza, llave y calidad
@@ -47,6 +48,14 @@
 | documento | para qué sirve |
 |---|---|
 | [KPIs.md](gold/KPIs.md) | definición de K1 a K6, sensibilidades S0 a S5 y diccionario de columnas de Gold |
+| [resultados.md](gold/resultados.md) | contexto, fuentes, capas, cómo leer los indicadores, resultados, limitaciones y glosario |
+
+### `diagramas/` y `img/` · imágenes del README
+| carpeta | para qué sirve |
+|---|---|
+| `diagramas/` | fuente en texto (`*.yaml`) de los diagramas de arquitectura y del DAG, y su imagen en escala de grises (`*.svg`, `*.png`) dibujada con `scripts/make_diagramas.py` |
+| `img/insignias/` | insignias del README (SVG), generadas con `scripts/make_insignias.py` |
+| `img/readme/` | copias en escala de grises de las capturas del README; el registro con el origen y el sha256 está en `docs/evidencias/readme/` |
 
 ### `api/` · capa de servicio
 | documento | para qué sirve |

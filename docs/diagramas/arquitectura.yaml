@@ -1,0 +1,37 @@
+# Arquitectura de alto nivel del sistema. Fuente del diagrama; la imagen se dibuja con `python scripts/make_diagramas.py`.
+# Lienzo de 100 unidades de ancho; origen abajo a la izquierda. Las flechas salen y llegan por un lado: izq, der, arriba o abajo.
+alto: 68
+grupos:
+  - {id: g_fuentes, titulo: "Fuentes", x: 0.5, y: 13, w: 16, h: 38}
+  - {id: g_pipeline, titulo: "Pipeline", x: 21.7, y: 13, w: 16, h: 38}
+  - {id: g_destinos, titulo: "Almacenamiento", x: 42.9, y: 13, w: 16, h: 38}
+  - {id: g_servicio, titulo: "Servicio", x: 64.1, y: 13, w: 13, h: 38}
+  - {id: g_consumo, titulo: "Consumo", x: 82.3, y: 13, w: 17, h: 38}
+cajas:
+  - {id: api_arcgis, x: 1.7, y: 36, w: 13.6, h: 9, texto: "API ArcGIS\ncapa satelital de\nconstrucciones"}
+  - {id: csv_estrato, x: 1.7, y: 25, w: 13.6, h: 9, texto: "CSV de estrato\n2015 por barrio"}
+  - {id: wfs, x: 1.7, y: 14.5, w: 13.6, h: 8.5, texto: "WFS de barrios\nsolo para validar\nla llave"}
+  - {id: bronze, x: 22.9, y: 36, w: 13.6, h: 9, texto: "Bronze\ncrudo inmutable\ncon sha256"}
+  - {id: silver, x: 22.9, y: 25, w: 13.6, h: 9, texto: "Silver\nlimpieza, llave,\nJOIN y huérfanos"}
+  - {id: gold, x: 22.9, y: 14.5, w: 13.6, h: 8.5, texto: "Gold\nKPI, intervalos y\nsensibilidades"}
+  - {id: sqlite, x: 44.1, y: 29, w: 13.6, h: 9, texto: "SQLite\netl_sismo.db"}
+  - {id: mysql, x: 44.1, y: 15, w: 13.6, h: 10, texto: "MySQL 8.0\ncarga idempotente\ny con historial"}
+  - {id: api, x: 65.1, y: 22, w: 11, h: 10, texto: "API FastAPI\nsolo lectura\n(solo GET)"}
+  - {id: panel, x: 83.5, y: 30, w: 14.6, h: 9, texto: "Panel Streamlit\nhabla solo con\nla API"}
+  - {id: pma, x: 83.5, y: 15, w: 14.6, h: 10, texto: "phpMyAdmin\ncuenta de solo\nSELECT"}
+  - {id: airflow, x: 21.7, y: 56, w: 37.2, h: 9.5, texto: "Airflow 3.3.2 en Docker\nDAG medallon_etl_sismo\ncuatro tareas, programación diaria"}
+  - {id: calidad, x: 0.5, y: 1.5, w: 99, h: 7.5, estilo: nota, texto: "Calidad y monitoreo\nreporte de calidad de Silver, pruebas automáticas, escáner de secretos, registro de ejecución (logs) y estados de Airflow"}
+flechas:
+  - {de: api_arcgis, a: bronze, lado_de: der, lado_a: izq}
+  - {de: csv_estrato, a: bronze, lado_de: der, lado_a: izq}
+  - {de: wfs, a: bronze, lado_de: der, lado_a: izq}
+  - {de: bronze, a: silver, lado_de: abajo, lado_a: arriba}
+  - {de: silver, a: gold, lado_de: abajo, lado_a: arriba}
+  - {de: gold, a: sqlite, lado_de: der, lado_a: izq, curva: 0.0}
+  - {de: gold, a: mysql, lado_de: der, lado_a: izq}
+  - {de: sqlite, a: api, lado_de: der, lado_a: izq}
+  - {de: mysql, a: api, lado_de: der, lado_a: izq}
+  - {de: api, a: panel, lado_de: der, lado_a: izq}
+  - {de: mysql, a: pma, lado_de: der, lado_a: izq}
+  - {de: airflow, a: g_pipeline, lado_de: abajo, lado_a: arriba, estilo: punteada}
+  - {de: airflow, a: g_destinos, lado_de: abajo, lado_a: arriba, estilo: punteada}

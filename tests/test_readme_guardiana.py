@@ -13,6 +13,12 @@ from src.common import ROOT
 ARCHIVO_DECLARACION = "DECLARACION" + "_USO_IA.md"
 LINEA_AUTORIZADA = f"Todo el contenido generado con ayuda " + f"de IA en este proyecto está declarado en [{ARCHIVO_DECLARACION}]({ARCHIVO_DECLARACION})."
 
+# El único crédito de una fuente externa de método: el artículo en que se basa la orquestación (título y autor; sin enlace porque no está verificado).
+LINEA_CITA_AIRFLOW = ("Orquestación: el DAG y el compose de Airflow siguen el artículo de Juan Manuel Núñez Velasco, «Apache Airflow en Windows con WSL2 y Docker: "
+                      "tutorial paso a paso para orquestar un pipeline ETL 2026», con las diferencias documentadas en "
+                      "[docs/orquestacion/diferencias_con_la_guia.md](docs/orquestacion/diferencias_con_la_guia.md).")
+NOMBRES_LICENCIA = ("Daniel Alexander Brand García", "Diego Fernando Gordillo Londoño", "Jhoan Sebastián Castellanos Mayor")
+
 EMOJIS = re.compile("[\U0001F000-\U0001FAFF\u2600-\u27BF\u2B00-\u2BFF\u2300-\u23FF\uFE0F\u200D]")
 GUIONES = re.compile("[\u2012\u2013\u2014\u2015]")
 CORREO = re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+")
@@ -27,6 +33,7 @@ TERMINOS = {
     "asignatura": re.compile(r"(?i)\basignaturas?\b"),
     "carpeta del equipo": re.compile(r"(?i)gu[ií]a[_ ]equipo"),
     "generador retirado": re.compile("make" + "_readme"),
+    "cita externa fuera de su línea": re.compile(r"Núñez|tutorial paso a paso|Apache Airflow en Windows"),
     "marca pendiente": re.compile(r"\bTODO\b|\[COMPLETAR"),
     "nombre de una herramienta": re.compile("Cla" + "ude|Anthro" + "pic|Chat" + "GPT|Co" + "pilot|Gem" + "ini|Open" + "AI"),
 }
@@ -58,7 +65,11 @@ def problemas_del_readme(texto, base):
     n_autorizada = sum(1 for l in lineas if l == LINEA_AUTORIZADA)
     if n_autorizada != 1:
         errores.append(f"la línea autorizada sobre la declaración de IA debe aparecer una vez y aparece {n_autorizada}")
-    resto = "\n".join(l for i, l in enumerate(lineas) if not (l == LINEA_AUTORIZADA and i == lineas.index(LINEA_AUTORIZADA)))
+    n_cita = sum(1 for l in lineas if l == LINEA_CITA_AIRFLOW)
+    if n_cita != 1:
+        errores.append(f"la línea de crédito del artículo de Airflow debe aparecer una vez y aparece {n_cita}")
+    primera_ia, primera_cita = (lineas.index(x) if x in lineas else -1 for x in (LINEA_AUTORIZADA, LINEA_CITA_AIRFLOW))
+    resto = "\n".join(l for i, l in enumerate(lineas) if i not in (primera_ia, primera_cita))
     if EMOJIS.search(resto):
         errores.append("hay emojis o símbolos gráficos")
     if GUIONES.search(resto):
@@ -81,6 +92,10 @@ def problemas_del_readme(texto, base):
             errores.append("la línea autorizada no está en la sección de licencia y créditos")
         if not (base / ARCHIVO_DECLARACION).is_file():
             errores.append("la línea autorizada apunta a un archivo que no existe")
+    if n_cita == 1:
+        titulos_cita = re.findall(r"(?m)^## (.+)$", texto.split(LINEA_CITA_AIRFLOW)[0])
+        if not titulos_cita or not re.match(r"(?i)(\d+\.\s*)?licencia", titulos_cita[-1]):
+            errores.append("la línea de crédito no está en la sección de licencia y créditos")
     # enlaces e imágenes relativos
     encabezados = _encabezados(texto)
     anclas = {_ancla(t) for _, t in encabezados}
@@ -118,7 +133,7 @@ def _bueno():
         "# Proyecto\n\nUna frase de propósito.\n\n## 1. Descripción\nTexto, con comas.\n\n## 2. Insignias\n![Pruebas](README.md)\n\n"
         "## 3. Tabla de contenidos\n- [1. Descripción](#1-descripción)\n- [2. Insignias](#2-insignias)\n- [4. Arquitectura](#4-arquitectura)\n- [20. Licencia y créditos](#20-licencia-y-créditos)\n\n"
         "## 4. Arquitectura\nVer [requisitos](requirements.txt) y [la sección](#4-arquitectura).\n\n"
-        f"## 20. Licencia y créditos\nMIT.\n\n{LINEA_AUTORIZADA}\n"
+        f"## 20. Licencia y créditos\nMIT.\n\n{LINEA_CITA_AIRFLOW}\n\n{LINEA_AUTORIZADA}\n"
     )
 
 
@@ -192,3 +207,36 @@ def test_anclas_inexistentes_se_detectan():
 def test_la_tabla_de_contenidos_debe_enlazar_cada_seccion():
     assert problemas_del_readme(_con("- [4. Arquitectura](#4-arquitectura)\n", ""), BASE_FALSA)
     assert problemas_del_readme(_bueno().replace("## 3. Tabla de contenidos", "## 3. Índice"), BASE_FALSA), "sin tabla de contenidos"
+
+
+def test_la_cita_del_articulo_debe_existir_una_vez_y_en_la_seccion_de_licencia():
+    assert problemas_del_readme(_bueno().replace(LINEA_CITA_AIRFLOW, ""), BASE_FALSA), "sin la cita"
+    assert problemas_del_readme(_bueno() + "\n" + LINEA_CITA_AIRFLOW + "\n", BASE_FALSA), "dos veces"
+    fuera = _bueno().replace(LINEA_CITA_AIRFLOW, "").replace("## 4. Arquitectura\n", "## 4. Arquitectura\n" + LINEA_CITA_AIRFLOW + "\n")
+    assert any("crédito no está" in e for e in problemas_del_readme(fuera, BASE_FALSA))
+
+
+def test_la_cita_del_articulo_no_admite_variantes_ni_otras_menciones():
+    assert problemas_del_readme(_bueno().replace("Juan Manuel", "J. M."), BASE_FALSA), "cita editada"
+    assert problemas_del_readme(_con("Texto, con comas.", "Basado en Núñez Velasco."), BASE_FALSA), "otra mención del autor"
+    assert problemas_del_readme(_con("Texto, con comas.", "Ver el tutorial paso a paso."), BASE_FALSA), "otra mención del tutorial"
+
+
+def aviso_de_licencia_correcto(texto):
+    """True si la licencia es MIT y su aviso de derechos dice el año 2026 y los tres nombres completos, en ese orden."""
+    lineas = texto.split("\n")
+    return (lineas[0] == "MIT License" and len(lineas) > 2 and lineas[2] == "Copyright (c) 2026 " + ", ".join(NOMBRES_LICENCIA)
+            and 'THE SOFTWARE IS PROVIDED "AS IS"' in texto and "Permission is hereby granted, free of charge" in texto)
+
+
+def test_el_aviso_de_licencia_nombra_a_las_tres_personas_y_el_anio():
+    assert aviso_de_licencia_correcto((ROOT / "LICENSE").read_text(encoding="utf-8"))
+
+
+def test_un_aviso_de_licencia_alterado_se_detecta():
+    real = (ROOT / "LICENSE").read_text(encoding="utf-8")
+    assert aviso_de_licencia_correcto(real)
+    assert not aviso_de_licencia_correcto(real.replace("2026", "2025", 1)), "otro año"
+    assert not aviso_de_licencia_correcto(real.replace(", Jhoan Sebastián Castellanos Mayor", "", 1)), "falta un nombre"
+    assert not aviso_de_licencia_correcto(real.replace("Diego Fernando Gordillo Londoño", "el equipo", 1)), "un nombre cambiado"
+    assert not aviso_de_licencia_correcto(real.replace("MIT License", "Otra licencia", 1)), "otra licencia"

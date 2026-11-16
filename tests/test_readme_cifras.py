@@ -79,3 +79,84 @@ def test_rutas_citadas_en_readme_existen():
 def test_el_readme_cita_el_documento_de_resultados():
     assert "docs/gold/resultados.md" in README
     assert (ROOT / "docs" / "gold" / "resultados.md").is_file()
+
+
+# --- una ruta citada con un nombre que no existe se detecta aunque la misma ruta aparezca bien escrita en otro lugar ---
+RUTAS_QUE_NO_SON_DE_LA_API = ("/opt/", "/tmp/", "/entrypoint", "/usr/", "/var/", "/api/", "/execution/", "/docs", "/redoc", "/openapi.json")
+
+
+def rutas_de_api_mal_citadas(texto, validas):
+    """Fragmentos en línea que parecen una ruta de la API (empiezan por «/») y no son una ruta real ni una ruta conocida de otro servicio."""
+    citadas = re.findall(r"`(/[a-z_][a-z_/{}.]*)`", texto)
+    return sorted({c for c in citadas if c not in validas and not c.startswith(RUTAS_QUE_NO_SON_DE_LA_API)})
+
+
+def test_ninguna_ruta_citada_en_el_readme_es_inexistente():
+    from src.api.app import app
+
+    validas = {r.path for r in app.routes if getattr(r, "methods", None)}
+    assert rutas_de_api_mal_citadas(README, validas) == []
+
+
+def test_una_ruta_mal_escrita_se_detecta_aunque_otra_aparicion_este_bien():
+    validas = {"/llave/revision", "/kpis"}
+    assert rutas_de_api_mal_citadas("`/llave/revision` y luego `/llave/revisar`", validas) == ["/llave/revisar"]
+    assert rutas_de_api_mal_citadas("`/kpis` y `/opt/airflow/x` y `/docs`", validas) == []
+
+
+# --- insignias: cada una dice lo que miden los archivos del repositorio ---
+INSIGNIAS = ROOT / "docs" / "img" / "insignias"
+
+
+def texto_de_insignia(ruta):
+    """(etiqueta, valor) de una insignia SVG, leído de su `<title>`."""
+    m = re.search(r"<title>([^<:]+): ([^<]+)</title>", ruta.read_text(encoding="utf-8"))
+    return m.group(1), m.group(2)
+
+
+def valor_medido_de_cobertura():
+    """Porcentaje de cobertura de `src/` registrado en la evidencia de la medición (línea «Cobertura de src/: N %»)."""
+    for ev in sorted((ROOT / "docs" / "evidencias" / "readme").glob("EV-109_*.txt")):
+        m = re.search(r"(?m)^Cobertura de src/: (\d+ %)", ev.read_text(encoding="utf-8"))
+        if m:
+            return m.group(1)
+    return None
+
+
+def test_las_insignias_dicen_lo_que_miden_los_archivos_del_repositorio():
+    esperadas = {
+        "python.svg": ("Python", re.search(r"(?m)^# Python soportado: (\d+\.\d+)", (ROOT / "requirements.txt").read_text(encoding="utf-8")).group(1)),
+        "airflow.svg": ("Airflow", re.search(r"(?m)^FROM apache/airflow:(\d+\.\d+\.\d+)", (ROOT / "orquestacion" / "Dockerfile").read_text(encoding="utf-8")).group(1)),
+        "pruebas.svg": ("pruebas", str(sum(_recolectadas().values()))),
+        "licencia.svg": ("licencia", (ROOT / "LICENSE").read_text(encoding="utf-8").splitlines()[0].replace(" License", "")),
+        "madurez.svg": ("madurez", "MVP académico"),
+        "mysql.svg": ("MySQL", "8.0"),
+    }
+    for archivo, esperado in esperadas.items():
+        assert texto_de_insignia(INSIGNIAS / archivo) == esperado, archivo
+    assert "MySQL 8.0" in (ROOT / "docs" / "instalacion" / "modo_completo.md").read_text(encoding="utf-8")
+    cobertura = INSIGNIAS / "cobertura.svg"
+    if cobertura.exists():
+        assert texto_de_insignia(cobertura) == ("cobertura de src", valor_medido_de_cobertura())
+
+
+def test_una_insignia_desactualizada_se_detecta(tmp_path):
+    from scripts.make_insignias import insignia
+    f = tmp_path / "pruebas.svg"
+    f.write_text(insignia("pruebas", "999999"), encoding="utf-8")
+    assert texto_de_insignia(f) == ("pruebas", "999999") != ("pruebas", str(sum(_recolectadas().values())))
+
+
+# --- el documento de atribución de datos coincide con el catálogo de fuentes ---
+def test_el_documento_de_atribucion_dice_lo_que_declara_el_catalogo():
+    import json
+
+    doc = (ROOT / "docs" / "bronze" / "atribucion_y_terminos_de_datos.md").read_text(encoding="utf-8")
+    catalogo = {f["id"]: f["licencia"].lower() for f in json.loads((ROOT / "docs" / "bronze" / "catalogo_fuentes.json").read_text(encoding="utf-8"))["fuentes"]}
+    esperado = {"edificaciones": ("cc by 4.0", "CC BY 4.0"), "estrato_barrio": ("creative commons attribution share-alike", "Creative Commons Attribution Share-Alike"),
+                "poligonos_barrios": ("no declarada", "No declarada"), "usgs": ("no declarada", "No declarada")}
+    for fuente, (en_catalogo, en_documento) in esperado.items():
+        assert en_catalogo in catalogo[fuente], fuente
+        assert f"`{fuente}`" in doc and en_documento in doc, fuente
+    assert "CC0" in doc and "más restrictiva" in doc and "por prudencia" in doc
+    assert "no es asesoría jurídica" in doc.lower()

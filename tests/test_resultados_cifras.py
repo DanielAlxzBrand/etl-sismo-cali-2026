@@ -147,3 +147,35 @@ def test_cobertura_de_estrato_valido_igual_en_todo_el_documento_y_en_el_reporte(
     assert len(apariciones) >= 2 and set(apariciones) == {esperado}, (apariciones, esperado)
     assert esperado == "99,845 %"
 
+
+
+# --- una cifra repetida no puede quedar desactualizada en un solo lugar ---
+def apariciones(patron, texto):
+    """Valores capturados por `patron` en todo el texto, en orden."""
+    return re.findall(patron, texto)
+
+
+def test_toda_aparicion_de_una_cifra_repetida_coincide_con_la_medida():
+    k5 = KP[KP.kpi_id == "K5"].set_index("grupo").valor
+    d = KP[KP.grupo == "diferencia_3-5_menos_1-2"].iloc[0]
+    esperadas = {
+        "cobertura de llave": (r"[Cc]obertura de llave:? \*{0,2}(\d+,\d+ %)", _pc(k5["cobertura_llave"])),
+        "nombre validado": (r"[Nn]ombre validado:? \*{0,2}(\d+,\d+ %)", _pc(k5["pct_nombre_validado"])),
+        "diferencia de K2 en el texto": (r"diferencia ([+-]?\d+,\d+) p", _pp(d.valor)),
+        "diferencia de K2 en S0": (r"\| S0 \|[^\n]*? \| ([+-]\d+,\d+) \[", _pp(d.valor)),
+    }
+    for nombre, (patron, esperado) in esperadas.items():
+        halladas = apariciones(patron, RESULTADOS)
+        assert len(halladas) >= 2 or nombre.endswith("en S0"), (nombre, halladas)
+        assert halladas and set(halladas) == {esperado}, (nombre, halladas, esperado)
+
+
+def test_toda_cifra_de_predios_de_la_evaluacion_estructural_es_la_misma_en_los_dos_documentos():
+    for nombre, texto in (("resultados", RESULTADOS), ("KPIs.md", KPIS_MD)):
+        halladas = apariciones(r"\b(\d\.\d{3}) predios", texto)
+        assert len(halladas) >= 2 and set(halladas) == {"3.403"}, (nombre, halladas)
+
+
+def test_una_aparicion_desactualizada_se_detecta_con_el_mismo_criterio():
+    texto = "Cobertura de llave: 99,883 % y luego cobertura de llave 99,884 %"
+    assert set(apariciones(r"[Cc]obertura de llave:? \*{0,2}(\d+,\d+ %)", texto)) == {"99,883 %", "99,884 %"}

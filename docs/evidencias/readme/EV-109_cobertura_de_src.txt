@@ -1,0 +1,66 @@
+EV-109 · Cobertura de src/ medida con coverage el 2026-11-16
+
+Cobertura de src/: 78 %
+
+Alcance: solo el código de `src/` (2.365 líneas; 531 sin ejecutar), medido sobre la suite completa de pytest, sin red. No incluye `scripts/` ni `dags/`.
+Comando (en una copia del repositorio sin `.git`, con el archivo de datos de coverage fuera del repositorio):
+  COVERAGE_FILE=<carpeta temporal>/.coverage python -m coverage run --source=src -m pytest -q -p no:cacheprovider
+  python -m coverage report
+Herramienta: coverage 7.17.3 (la de requirements.txt). Resultado de la suite en esa copia: 1279 passed, 1 skipped (la que necesita `.git`) y 1 failed
+(test_los_documentos_generados_coinciden_con_la_definicion: la matriz de casos, que cuenta las pruebas de primer nivel, se regeneró después con make_matriz_casos.py; no afecta a src/).
+
+Qué NO demuestra: que las líneas ejecutadas estén bien comprobadas (mide ejecución, no calidad de las aserciones). Los módulos en 0 % no son código sin probar: `src/transform/clean_api.py` y
+`src/transform/integrate.py` se ejecutan en un subproceso (`tests/test_pipeline_reproducible.py` y el recálculo byte a byte contra la línea base), que coverage no mide aquí;
+`src/extract/extract_api.py` y gran parte de `extract_excel.py` descargan de la red y las pruebas no tocan la red (se verifican los archivos ya descargados con el manifiesto).
+Por eso la cifra es una cota inferior de lo que la suite ejercita.
+
+Informe completo de coverage (líneas, sin ejecutar y porcentaje por módulo):
+
+Name                                  Stmts   Miss  Cover
+---------------------------------------------------------
+src/__init__.py                           0      0   100%
+src/api/__init__.py                       0      0   100%
+src/api/app.py                          109      2    98%
+src/api/errores.py                       25      0   100%
+src/api/esquemas.py                     108      0   100%
+src/api/repositorio.py                  185     14    92%
+src/common.py                            61     22    64%
+src/extract/__init__.py                   0      0   100%
+src/extract/extract_api.py              108    108     0%
+src/extract/extract_excel.py             57     39    32%
+src/load/__init__.py                      0      0   100%
+src/load/conciliacion.py                 84      3    96%
+src/load/conexion.py                     43     26    40%
+src/load/esquema.py                      76      2    97%
+src/load/load_database.py                31      0   100%
+src/load/relacional.py                  164      4    98%
+src/logger.py                            48      0   100%
+src/panel/__init__.py                     0      0   100%
+src/panel/app.py                         22      0   100%
+src/panel/claves.py                      14      0   100%
+src/panel/cliente_api.py                 86      0   100%
+src/panel/componentes.py                101      0   100%
+src/panel/configuracion.py               22      1    95%
+src/panel/formato.py                     51      1    98%
+src/panel/glosario.py                    13      1    92%
+src/panel/paginas/__init__.py             0      0   100%
+src/panel/paginas/_comun.py              17      0   100%
+src/panel/paginas/calidad.py             40      3    92%
+src/panel/paginas/comunas.py             44      3    93%
+src/panel/paginas/concentracion.py       56      0   100%
+src/panel/paginas/construcciones.py      51      3    94%
+src/panel/paginas/estratos.py            31      0   100%
+src/panel/paginas/fuentes.py             34      1    97%
+src/panel/paginas/respuesta.py           36      1    97%
+src/panel/paginas/sensibilidades.py      45      1    98%
+src/panel/redaccion.py                  108      0   100%
+src/panel/registro.py                    36      0   100%
+src/panel/tema.py                        13      0   100%
+src/transform/__init__.py                 0      0   100%
+src/transform/build_gold.py             168     84    50%
+src/transform/clean_api.py               84     84     0%
+src/transform/clean_excel.py             51      2    96%
+src/transform/integrate.py              126    126     0%
+src/transform/keys.py                    17      0   100%
+---------------------------------------------------------
+TOTAL                                  2365    531    78%
