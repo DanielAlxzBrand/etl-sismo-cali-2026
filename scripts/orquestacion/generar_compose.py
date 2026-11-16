@@ -32,7 +32,7 @@ AVISO = """# -------------------------------------------------------------------
 # AVISO DE ORIGEN Y DE CAMBIOS (proyecto ETL del sismo de Cali, D91)
 # Este archivo se basa en el docker-compose.yaml oficial de Apache Airflow 3.3.2 (https://airflow.apache.org/docs/apache-airflow/3.3.2/docker-compose.yaml),
 # distribuido con la licencia Apache 2.0 cuyo aviso está arriba; aquí se conserva y se indican los cambios hechos. Lo genera scripts/orquestacion/generar_compose.py.
-# Cambios respecto del oficial (lista completa en docs/orquestacion/diferencias_con_la_guia.md, DF-1, DF-8, DF-12 y DF-13 a DF-19):
+# Cambios respecto del oficial (lista completa en docs/orquestacion/diferencias_con_la_guia.md, DF-1, DF-8, DF-12 y DF-13 a DF-20):
 #   1. La imagen se construye con el Dockerfile de esta carpeta (`build: .`) en lugar de usar `image:` directamente.
 #   2. El repositorio se monta en /opt/airflow/medallon en SOLO LECTURA desde la carpeta hermana `../${PROYECTO_NOMBRE}`; el nombre de esa carpeta ya no es fijo.
 #   3. El puerto de la interfaz se publica solo en 127.0.0.1 y es el 8080 salvo que se defina AIRFLOW_PUERTO; el de Flower (servicio opcional, solo con `--profile flower`) también queda solo en 127.0.0.1.
@@ -40,6 +40,8 @@ AVISO = """# -------------------------------------------------------------------
 #   5. Las imágenes de Postgres y Redis conservan su etiqueta del compose oficial y se fijan además por su resumen (digest), para que no cambien sin avisar.
 #   6. En `airflow-init`, el `chown -R` de /opt/airflow/ se reemplaza por un `find` que salta /opt/airflow/medallon (el proyecto montado en solo lectura): antes recorría el `.venv` del proyecto y
 #      dejaba muchas líneas «Read-only file system».
+#   7. En `airflow-init`, tras `airflow version` se comprueba la conexión con la base de metadatos (`airflow db check`): si falla, el contenedor termina con código 1 y los servicios que dependen de él no arrancan.
+#      En el oficial un fallo de la migración (por ejemplo, la contraseña de un volumen de Postgres de otra instalación) no cambiaba el código de salida y quedaba en 0.
 # Lo demás es el compose oficial sin tocar. Sigue siendo una configuración para desarrollo local, no para producción.
 # ---------------------------------------------------------------------------------------------------------------------------------------------------
 """
@@ -59,6 +61,20 @@ AVISO_PROYECTO = "${PROYECTO_NOMBRE:?Falta PROYECTO_NOMBRE en el .env de Airflow
 CHOWN_OFICIAL = '        chown -R "${AIRFLOW_UID:-50000}:0" /opt/airflow/\n'
 CHOWN_NUEVO = ("        # El proyecto montado en solo lectura se salta: no se puede ni se debe cambiar su dueño, y recorrerlo (con su .venv) llenaba la salida de «Read-only file system»\n"
                '        find /opt/airflow -path /opt/airflow/medallon -prune -o -exec chown -h "${AIRFLOW_UID:-50000}:0" {} +\n')
+# DF-20: en el oficial, `airflow-init` termina con código 0 aunque la imagen no pueda migrar la base (el script no usa `set -e`, su último comando es un `ls` y el propio `/entrypoint airflow version` también sale con 0).
+# Con un volumen de Postgres de otra instalación el servidor de Airflow quedaba «unhealthy» minutos después. `airflow db check` sale con 1 si no se conecta (medido con el volumen viejo) y con 0 con uno bueno; de su salida solo se muestran
+# las dos primeras líneas de error (sin la traza ni la dirección de conexión). `/entrypoint` es necesario: el `airflow` suelto no encuentra el módulo con el usuario root del contenedor.
+DB_OFICIAL = "        /entrypoint airflow version\n"
+DB_NUEVO = (DB_OFICIAL
+            + "        echo\n"
+            + '        echo "Checking the connection to the metadata database:"\n'
+            + "        if /entrypoint airflow db check > /tmp/db_check.log 2>&1; then\n"
+            + '          echo "Connection successful."\n'
+            + "        else\n"
+            + '          echo "ERROR: could not connect to the metadata database (a Postgres volume from another installation has another password; see docs/orquestacion/operacion.md):"\n'
+            + "          grep -E 'FATAL|OperationalError' /tmp/db_check.log | head -n 2 | cut -c1-200\n"
+            + "          exit 1\n"
+            + "        fi\n")
 
 # (ancla del texto oficial, texto nuevo); cada ancla debe aparecer exactamente una vez
 REEMPLAZOS = [
@@ -75,6 +91,7 @@ REEMPLAZOS = [
     ("    image: postgres:16\n", f"    image: postgres:16@{RESUMEN_POSTGRES}\n"),
     ("    image: redis:7.2-bookworm\n", f"    image: redis:7.2-bookworm@{RESUMEN_REDIS}\n"),
     (CHOWN_OFICIAL, CHOWN_NUEVO),
+    (DB_OFICIAL, DB_NUEVO),
 ]
 
 

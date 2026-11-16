@@ -48,9 +48,9 @@ def test_lo_que_se_salta_es_exactamente_donde_se_monta_el_proyecto_y_las_carpeta
 def test_el_generador_lleva_el_reemplazo_y_el_aviso_y_el_diff_lo_muestran():
     g = _generador()
     assert (g.CHOWN_OFICIAL, g.CHOWN_NUEVO) in g.REEMPLAZOS and g.CHOWN_OFICIAL.count("chown -R") == 1 and PRUNE in g.CHOWN_NUEVO
-    assert "DF-13 a DF-19" in g.AVISO and "find" in g.AVISO and "Read-only file system" in g.AVISO
+    assert "DF-13 a DF-20" in g.AVISO and "find" in g.AVISO and "Read-only file system" in g.AVISO
     texto = COMPOSE.read_text(encoding="utf-8")
-    assert "DF-13 a DF-19" in texto and "Read-only file system" in texto
+    assert "DF-13 a DF-20" in texto and "Read-only file system" in texto
     diff = (ROOT / "orquestacion" / "docker-compose.diff").read_text(encoding="utf-8")
     assert '-        chown -R "${AIRFLOW_UID:-50000}:0" /opt/airflow/' in diff and "+        " + PRUNE in diff
 
@@ -70,7 +70,7 @@ def test_el_compose_del_repositorio_es_exactamente_lo_que_sale_del_oficial_sin_n
 
 def test_las_diferencias_con_la_guia_dicen_lo_mismo_que_el_compose():
     texto = (ROOT / "docs" / "orquestacion" / "diferencias_con_la_guia.md").read_text(encoding="utf-8")
-    assert "(DF-13 a DF-19)" in texto and re.search(r"^\| DF-19 \|", texto, re.M)
+    assert "(DF-13 a DF-20)" in texto and re.search(r"^\| DF-19 \|", texto, re.M)
     fila = [l for l in texto.splitlines() if l.startswith("| DF-19 |")][0]
     assert "Read-only file system" in fila and "-prune" in fila and "/opt/airflow/medallon" in fila and "logs" in fila
 
