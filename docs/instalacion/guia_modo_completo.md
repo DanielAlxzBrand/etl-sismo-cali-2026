@@ -306,30 +306,52 @@ El script **no usa `set -e` y su último comando es un `ls`**, así que, como en
 
 **Qué debe verse (visto):**
 ```text
+ Network airflow-zip_default Creating
+ Volume airflow-zip_postgres-db-volume Creating
+ Volume airflow-zip_postgres-db-volume Creating
+ Network airflow-zip_default Creating
+ Volume airflow-zip_postgres-db-volume Created
+ Volume airflow-zip_postgres-db-volume Created
+ Network airflow-zip_default Created
+ Network airflow-zip_default Created
+ Container airflow-zip-postgres-1 Creating
+ Container airflow-zip-redis-1 Creating
+ Container airflow-zip-redis-1 Created
+ Container airflow-zip-postgres-1 Created
+ Container airflow-zip-airflow-init-1 Creating
+ Container airflow-zip-airflow-init-1 Created
 Attaching to airflow-init-1
+ Container airflow-zip-postgres-1 Starting
+ Container airflow-zip-redis-1 Starting
+ Container airflow-zip-postgres-1 Started
+ Container airflow-zip-postgres-1 Waiting
+ Container airflow-zip-redis-1 Started
+ Container airflow-zip-redis-1 Waiting
+ Container airflow-zip-postgres-1 Healthy
+ Container airflow-zip-redis-1 Healthy
+ Container airflow-zip-airflow-init-1 Starting
+ Container airflow-zip-airflow-init-1 Started
 airflow-init-1  |
 airflow-init-1  | Creating missing opt dirs if missing:
 airflow-init-1  |
 airflow-init-1  |
 airflow-init-1  | Airflow version:
-airflow-init-1  | 2026-11-16T17:11:43.709538Z [info     ] Performing upgrade to the metadata database [airflow.cli.commands.db_command] loc=db_command.py:134 url=<contraseña>
-airflow-init-1  | 2026-11-16T17:11:44.115158Z [info     ] Context impl PostgresqlImpl.   [alembic.runtime.migration] loc=migration.py:205
-airflow-init-1  | 2026-11-16T17:11:44.115403Z [info     ] Will assume transactional DDL. [alembic.runtime.migration] loc=migration.py:208
-airflow-init-1  | 2026-11-16T17:11:46.321586Z [warning  ] starlette.middleware.wsgi is deprecated and will be removed in a future release. Please refer to https://github.com/abersheeran/a2wsgi as a replacement. [py.warnings] category=StarletteDeprecationWarning filename=/home/airflow/.local/lib/python3.13/site-packages/fastapi/middleware/wsgi.py lineno=1
-[… 597 líneas más …]
-airflow-init-1  | drwxrwxr-x 1 airflow root 4096 Nov 16 17:11 ..
-airflow-init-1  | drwxrwxr-x 1 airflow root 4096 Nov 16 17:08 dag_id=medallon_etl_sismo
+airflow-init-1  | The container is run as root user. For security, consider using a regular user account.
+airflow-init-1  | 2026-11-16T19:57:48.586914Z [info     ] Performing upgrade to the metadata database [airflow.cli.commands.db_command] loc=db_command.py:134 url=<contraseña>
+[… 611 líneas más …]
+airflow-init-1  | drwxrwxr-x 1 airflow root 4096 Nov 16 19:57 ..
+airflow-init-1  | drwxrwxr-x 1 airflow root 4096 Nov 16 17:14 dag_id=medallon_etl_sismo
 airflow-init-1  | drwxrwxr-x 1 airflow root 4096 Nov 16 16:17 dag_processor
 airflow-init-1  |
 airflow-init-1  | /opt/airflow/plugins:
 airflow-init-1  | total 4
 airflow-init-1  | drwxrwxrwx 1 airflow root 4096 Nov 16 16:15 .
-airflow-init-1  | drwxrwxr-x 1 airflow root 4096 Nov 16 17:11 ..
+airflow-init-1  | drwxrwxr-x 1 airflow root 4096 Nov 16 19:57 ..
 
 airflow-init-1 exited with code 0
 ```
-**Varía:** las horas, los identificadores y el orden de las líneas de Airflow; el número de líneas (unas 620); la dirección de la base, que Airflow imprime con la clave ya tapada, aparece aquí como `<contraseña>`. Se abrevió: faltan las líneas de en medio. Debe verse «Checking the connection to the metadata database:» seguido de «Connection successful.» y ninguna línea «Read-only file system».
-**Tiempo:** 63,3 s con un volumen de Postgres nuevo.
+**Varía:** las horas, los identificadores y el orden de las líneas de Airflow; el número de líneas (unas 650); la dirección de la base, que Airflow imprime con la clave ya tapada, aparece aquí como `<contraseña>`. Se capturó con `docker compose up airflow-init` y las salidas estándar y de errores juntas (`cmd /c "… > archivo 2>&1"`) sobre un volumen nuevo, por eso empieza con las líneas de progreso de Compose del primer arranque (`Network`, `Volume` y `Container` con `Creating`, `Created`, `Starting`, `Started`, `Waiting`, `Healthy`); en PowerShell interactivo Docker dibuja ese progreso en vivo. El nombre del proyecto de Compose es el que se elige con `--nombre-compose` (en la captura fue otro; aquí se muestra `airflow-zip`). Se abrevió: faltan las líneas de en medio. Debe verse «Checking the connection to the metadata database:» seguido de «Connection successful.» y ninguna línea «Read-only file system»; sobre su código de salida, vea la advertencia de arriba.
+**Tiempo:** 59,6 s con un volumen de Postgres nuevo (primer arranque).
 
 **Para qué sirve:** arrancar todos los contenedores de Airflow en segundo plano.
 ```powershell

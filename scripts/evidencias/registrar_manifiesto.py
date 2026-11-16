@@ -254,6 +254,8 @@ FILAS_MC = {
                "`python -m pytest -q -p no:cacheprovider` desde PowerShell con el entorno virtual nuevo, en un clon (con .git) y en el zip descomprimido (sin .git)", "EV-105_suite_en_clon_y_zip_antes_y_despues.txt"),
     "EV-106": ("4.1, 7.1", "Sección 11 de la guía del modo completo probada por Daniel en su proyecto real (el `.env` anterior ya no entra, resincronización de las tres cuentas con `--rotar`, verificación final) y la discrepancia del bloque de `--solo-verificar` (DEF-023)", "archivo",
                "`configurar_mysql.py --solo-verificar`, `--rotar`, `--usuario-docker --origen localhost --rotar` y `--usuario-lectura --rotar` en la terminal de Daniel; la contraseña de `root` la tecleó él", "EV-106_resincronizar_un_env_anterior.txt"),
+    "EV-107": ("5.4, 7.1", "Recaptura de `docker compose up airflow-init` con la salida estándar y la de errores juntas sobre un volumen nuevo (DEF-024), comando exacto de captura, comparación con el bloque de la guía, auditoría de los demás bloques, escáner y canario sobre la captura, y fe de erratas de EV-100 y EV-101", "archivo",
+               "`cmd /c \"docker compose up airflow-init > archivo 2>&1\"` (y `build` y `up -d`) en la carpeta de Airflow con el nombre de proyecto `airflow-zip3`", "EV-107_recaptura_de_airflow_init_con_2_y_1.txt"),
 }
 
 

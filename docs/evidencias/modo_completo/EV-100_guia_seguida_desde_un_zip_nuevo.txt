@@ -665,3 +665,5 @@ Al terminar: `docker ps` vacío.
 
 Qué NO demuestra: que funcione en otro equipo, con otra versión de Docker Desktop o de MySQL, con menos de 8 GB de memoria, ni que el DAG corra a las 06:00 sin que nadie lo vea
 (se disparó a mano). Los tiempos son de una máquina y de una vez.
+
+Fe de erratas (2026-11-16): donde dice «la carpeta de Airflow con los tres .env» (comando c26) fueron dos .env, el de Airflow (el de la carpeta analizada) y el del proyecto; y los bloques c08, c13 y c14 de esta transcripción perdieron líneas de la salida de errores (DEF-023, DEF-024 y EV-107).

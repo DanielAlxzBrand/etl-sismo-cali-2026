@@ -52,3 +52,5 @@ imprime durante `/entrypoint airflow version`; es anterior a DF-20 y no la impri
 Por eso en estos archivos de evidencia esa dirección se sustituye por «<URL de la base con la clave tapada por Airflow>». No es un secreto, pero tampoco se escribe «0 hallazgos» sin este matiz.
 
 Qué NO demuestra: que DF-20 detecte una migración que falle con la base alcanzable (`airflow db check` solo comprueba la conexión), ni el comportamiento con otra versión de Airflow o de Docker.
+
+Fe de erratas (2026-11-16): donde dice «Canario con los tres .env», el programa nombra los valores por la carpeta de cada .env y las dos carpetas de Airflow se llaman igual, así que solo contó uno de los dos .env de Airflow. Se repitió con uno por corrida sobre estas mismas salidas: 0 hallazgos (EV-107).
