@@ -151,6 +151,12 @@ def test_incluir_codigo_trae_solo_las_lineas_pedidas_dentro_de_un_bloque():
     assert gen.resolver_inclusiones("{{codigo: docs/usuarios/sesiones_reales/plantilla_registro.csv | csv | lineas: 1-1}}") == f"```csv\n{plantilla}\n```"
 
 
+def test_una_inclusion_no_se_come_la_linea_en_blanco_que_la_separa_del_texto_siguiente():
+    directiva = "{{codigo: docs/usuarios/sesiones_reales/plantilla_registro.csv | csv | lineas: 1-1}}"
+    texto = gen.resolver_inclusiones(f"{directiva}\n\nSigue un párrafo.\n\n{directiva}\n- y una lista\n")
+    assert "```\n\nSigue un párrafo.\n\n```csv" in texto and texto.rstrip().endswith("```\n- y una lista")
+
+
 @pytest.mark.parametrize("directiva", [
     "{{incluir: docs/no_existe.md}}",
     "{{incluir: docs/instalacion/modo_minimo.md#no-existe}}",
