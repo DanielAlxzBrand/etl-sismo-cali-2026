@@ -5,6 +5,7 @@
 Este modo suma los servicios que el proyecto usa para la carga relacional y la orquestación. Lo dejamos aparte porque necesita contraseñas y programas que el modo mínimo no pide, y porque cada pieza se puede
 levantar por separado. Los comandos son de PowerShell, desde la raíz del proyecto. **Ninguna contraseña pasa por esta guía ni por el equipo que escribió el código:** la de `root` de MySQL la teclea la persona que
 la conoce, y las demás las genera el proyecto con `secrets` y quedan solo en archivos `.env`, que Git ignora.
+**La versión paso a paso, con lo que debe verse en cada comando y la tabla de errores, está en la [guía del modo completo](guia_modo_completo.md).** El zip no trae `.git`: no hace falta `git init`, porque los scripts que guardan contraseñas aceptan una carpeta sin repositorio si su `.gitignore` ignora `.env`; descomprima el zip fuera de cualquier repositorio de Git.
 
 ## 1. Comprobar el equipo
 ```powershell
@@ -48,6 +49,7 @@ Esta parte es la que antes no se podía hacer con solo el zip: faltaban la carpe
    con `--regenerar` lo reescribe con valores nuevos). Nunca imprime un valor. Comprueba también que Docker responde, que el puerto está libre y que el `.env` del proyecto tiene las variables `MYSQL_DOCKER_*`.
 2. **Construir y levantar** (desde la carpeta de Airflow, que el script indica; con la caché de esta máquina tardó 5,5 s; desde cero será bastante más y no lo medimos):
 ```powershell
+Set-Location ..\airflow-medallon                 # los comandos de docker compose de Airflow se ejecutan AQUÍ, no en la carpeta del proyecto
 docker compose build
 docker compose up airflow-init
 docker compose up -d
