@@ -7,12 +7,12 @@ Qué NO demuestra: lo que hace Docker (que el contenedor termine bien y que `log
 """
 import importlib.util
 import re
-import shutil
 import subprocess
 
 import pytest
 import yaml
 
+from bash_para_pruebas import bash_que_lee_rutas
 from src.common import ROOT
 
 COMPOSE = ROOT / "orquestacion" / "docker-compose.yaml"
@@ -77,9 +77,9 @@ def test_las_diferencias_con_la_guia_dicen_lo_mismo_que_el_compose():
 
 def test_el_comando_salta_de_verdad_el_montaje_y_cubre_el_resto(tmp_path):
     """Ejecuta el mismo `find … -prune -o -exec` (con `echo` en lugar de `chown`) sobre un árbol de mentira con el programa `bash` si el equipo lo tiene (Git para Windows lo trae); sin él no hay nada que ejecutar."""
-    bash = shutil.which("bash")
+    bash = bash_que_lee_rutas(tmp_path)
     if bash is None:
-        return
+        pytest.skip("no hay un bash que lea rutas de Windows (Git para Windows lo trae; el de WSL no sirve)")
     raiz = tmp_path / "airflow"
     for rel in ("logs/a.log", "dags/d.py", "medallon/.venv/lib/x.py", "medallon/README.md"):
         (raiz / rel).parent.mkdir(parents=True, exist_ok=True)

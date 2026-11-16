@@ -8,11 +8,12 @@ Qué NO demuestra: lo que hace Docker. Que con el volumen viejo `airflow-init` t
 """
 import importlib.util
 import re
-import shutil
 import subprocess
 
+import pytest
 import yaml
 
+from bash_para_pruebas import bash_que_lee_rutas
 from src.common import ROOT
 
 COMPOSE = ROOT / "orquestacion" / "docker-compose.yaml"
@@ -78,9 +79,9 @@ def test_las_diferencias_con_la_guia_dicen_lo_mismo_que_el_compose():
 
 def test_el_mismo_if_else_exit_1_da_1_si_la_comprobacion_falla_y_0_si_no(tmp_path):
     """Ejecuta el bloque del compose con `bash` y un `/entrypoint` de mentira que falla o no; sin `bash` no hay nada que ejecutar."""
-    bash = shutil.which("bash")
+    bash = bash_que_lee_rutas(tmp_path)
     if bash is None:
-        return
+        pytest.skip("no hay un bash que lea rutas de Windows (Git para Windows lo trae; el de WSL no sirve)")
     orden, _ = _orden()
     bloque = _bloque(orden)
     for sale, esperado in ((1, 1), (0, 0)):
