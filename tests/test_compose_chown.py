@@ -12,7 +12,7 @@ import subprocess
 import pytest
 import yaml
 
-from bash_para_pruebas import bash_que_lee_rutas
+from bash_para_pruebas import bash_que_lee_rutas, entorno_con_el_bash_delante
 from src.common import ROOT
 
 COMPOSE = ROOT / "orquestacion" / "docker-compose.yaml"
@@ -86,7 +86,7 @@ def test_el_comando_salta_de_verdad_el_montaje_y_cubre_el_resto(tmp_path):
         (raiz / rel).write_text("x", encoding="utf-8")
     base = raiz.as_posix()
     comando = f'find {base} -path {base}/medallon -prune -o -exec echo {{}} +'
-    r = subprocess.run([bash, "-c", comando], capture_output=True, text=True, encoding="utf-8")
+    r = subprocess.run([bash, "-c", comando], capture_output=True, text=True, encoding="utf-8", env=entorno_con_el_bash_delante(bash))
     rutas = set(r.stdout.split())
     assert r.returncode == 0 and f"{base}/logs/a.log" in rutas and f"{base}/dags/d.py" in rutas and base in rutas
     assert not any("/medallon" in p for p in rutas)

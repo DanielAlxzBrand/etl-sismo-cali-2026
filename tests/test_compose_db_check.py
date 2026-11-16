@@ -13,7 +13,7 @@ import subprocess
 import pytest
 import yaml
 
-from bash_para_pruebas import bash_que_lee_rutas
+from bash_para_pruebas import bash_que_lee_rutas, entorno_con_el_bash_delante
 from src.common import ROOT
 
 COMPOSE = ROOT / "orquestacion" / "docker-compose.yaml"
@@ -89,7 +89,7 @@ def test_el_mismo_if_else_exit_1_da_1_si_la_comprobacion_falla_y_0_si_no(tmp_pat
         entrada.write_text(f"#!/bin/sh\necho 'FATAL:  password authentication failed for user \"airflow\"' >&2\necho 'Traceback (most recent call last): url=muy-larga'\nexit {sale}\n", encoding="utf-8", newline="\n")
         guion = tmp_path / f"init{sale}.sh"
         guion.write_text(bloque.replace("/entrypoint", entrada.as_posix()).replace("/tmp/db_check.log", (tmp_path / f"c{sale}.log").as_posix()) + "\necho FIN\n", encoding="utf-8", newline="\n")
-        r = subprocess.run([bash, guion.as_posix()], capture_output=True, text=True, encoding="utf-8", errors="replace")
+        r = subprocess.run([bash, guion.as_posix()], capture_output=True, text=True, encoding="utf-8", errors="replace", env=entorno_con_el_bash_delante(bash))
         assert r.returncode == esperado, r.stdout + r.stderr
         if esperado == 1:
             assert "ERROR: could not connect" in r.stdout and "FATAL:  password authentication failed" in r.stdout and "Traceback" not in r.stdout and "FIN" not in r.stdout

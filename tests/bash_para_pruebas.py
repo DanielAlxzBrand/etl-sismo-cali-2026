@@ -3,6 +3,8 @@
 Por qué existe: dos pruebas llamaban al primer `bash` del PATH. En un PowerShell normal ese `bash` puede ser el de WSL (`bash.exe` de System32), que no entiende rutas con letra de unidad y hacía fallar las pruebas con
 «No such file or directory» (visto al correr la suite completa en un clon y en el zip con el entorno nuevo). Aquí se prueba cada candidato con un guion de verdad y se devuelve el primero que lo ejecuta; si ninguno puede,
 la prueba se omite con un motivo visible en lugar de pasar sin comprobar nada.
+Además, `entorno_con_el_bash_delante` pone la carpeta de ese `bash` al principio del PATH: lanzado desde PowerShell, el `bash` de Git encuentra primero el `find.exe` de Windows (que no es el de GNU y sale con 2)
+y no su propio `find`; con su carpeta delante usa sus herramientas (visto en la suite del clon y del zip).
 Qué NO hace: instalar nada ni elegir un `bash` por su nombre.
 """
 import os
@@ -31,3 +33,10 @@ def bash_que_lee_rutas(tmp_path):
         except (OSError, subprocess.SubprocessError):
             continue
     return None
+
+
+def entorno_con_el_bash_delante(bash):
+    """Copia del entorno con la carpeta del `bash` elegido al principio del PATH, para que `find`, `grep`, `head` y `cut` sean los suyos y no los de Windows."""
+    entorno = dict(os.environ)
+    entorno["PATH"] = str(Path(bash).parent) + os.pathsep + entorno.get("PATH", "")
+    return entorno

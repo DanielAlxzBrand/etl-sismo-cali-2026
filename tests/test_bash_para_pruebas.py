@@ -4,6 +4,7 @@ Por qué existe: en un PowerShell normal el primer `bash` del PATH puede ser el 
 Aquí se comprueba, sin Docker, que un candidato que no ejecuta el guion de sonda se descarta, que los candidatos vacíos o inexistentes se ignoran y que, si hay un `bash` bueno detrás de uno malo, se devuelve el bueno.
 Qué NO demuestra: que el equipo tenga un `bash` (si no lo tiene, las pruebas que lo usan se omiten con un motivo visible).
 """
+import os
 import sys
 
 import pytest
@@ -28,3 +29,11 @@ def test_si_hay_un_bash_bueno_detras_de_uno_malo_se_devuelve_el_bueno(tmp_path, 
         pytest.skip("el equipo no tiene un bash que lea rutas de Windows")
     monkeypatch.setattr(bp, "_candidatos", lambda: [sys.executable, bueno])
     assert bp.bash_que_lee_rutas(tmp_path) == bueno
+
+
+def test_el_entorno_pone_la_carpeta_del_bash_al_principio_del_path_sin_perder_lo_demas(monkeypatch):
+    monkeypatch.setenv("PATH", "una_carpeta" + os.pathsep + "otra_carpeta")
+    entorno = bp.entorno_con_el_bash_delante(os.path.join("una_ruta", "bin", "bash.exe"))
+    piezas = entorno["PATH"].split(os.pathsep)
+    assert piezas[0] == os.path.join("una_ruta", "bin") and piezas[1:] == ["una_carpeta", "otra_carpeta"]
+    assert os.environ["PATH"] == "una_carpeta" + os.pathsep + "otra_carpeta"   # el entorno real no se modifica
