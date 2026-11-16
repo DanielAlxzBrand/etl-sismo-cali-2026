@@ -79,6 +79,9 @@ def test_sin_rastros_de_elaboracion_en_el_resto_del_repo():
         if not p.is_file() or rel.parts[0] in saltar or any(x in saltar for x in rel.parts) or p.suffix not in SUFIJOS or make_dist.es_documento_aislado(rel.as_posix()):
             continue
         t = p.read_text(encoding="utf-8", errors="ignore")
+        if rel.as_posix() == "README.md":
+            from tests.test_criterio_de_texto import sin_la_linea_autorizada   # D105: la única línea que remite a la declaración, exacta y una vez
+            t = sin_la_linea_autorizada("README.md", t)
         hallazgos += [(rel.as_posix(), x) for x in RASTROS if x in t]
     assert hallazgos == []
 

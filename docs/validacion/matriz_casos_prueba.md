@@ -3,7 +3,7 @@
 Este documento se genera con `scripts/make_matriz_casos.py` desde una única definición; no se edita a mano. Cada caso lleva un identificador **CP-nnn**, su tipo (correcto, incorrecto o límite), el resultado esperado y la prueba de `pytest` que lo ejecuta. El resultado obtenido de cada prueba está en [informe_pruebas.md](informe_pruebas.md).
 
 - **Funciones críticas:** 27. **Casos:** 179 (78 correctos, 61 incorrectos y 40 límite).
-- **Pruebas de primer nivel en `tests/`:** 727; 177 de ellas están vinculadas a un caso (otras pruebas parametrizadas o de apoyo cubren variantes de los mismos casos).
+- **Pruebas de primer nivel en `tests/`:** 747; 177 de ellas están vinculadas a un caso (otras pruebas parametrizadas o de apoyo cubren variantes de los mismos casos).
 - **Regla:** cada función crítica tiene al menos un caso correcto y uno incorrecto o límite; una prueba lo comprueba y comprueba que cada prueba citada exista.
 
 ## FC-01 · Extracción y verificación de Bronze (manifiesto con sha256)
@@ -220,7 +220,7 @@ Módulos: `README.md, docs/, scripts/evidencias/`
 
 | CP | Caso | Tipo | Resultado esperado | Prueba |
 |---|---|---|---|---|
-| CP-097 | Cifras del README iguales a las salidas | correcto | K5, K2 y Gold coinciden | `tests/test_readme_cifras.py::test_cifras_de_gold_bronze_y_silver_en_readme` |
+| CP-097 | Cifras del análisis iguales a las salidas | correcto | K5, K2 y Gold coinciden | `tests/test_resultados_cifras.py::test_cifras_de_gold_bronze_y_silver_en_resultados` |
 | CP-098 | Conteo de pruebas del README | correcto | igual a la recolección | `tests/test_readme_cifras.py::test_numero_de_pruebas_en_readme` |
 | CP-099 | Estados de los 30 ítems | correcto | completos y con componentes válidos | `tests/test_estrategia.py::test_los_30_items_del_checklist_estan_completos_y_con_componentes_de_la_lista` |
 | CP-100 | Alteraciones de los 30 ítems | incorrecto | cada alteración se detecta | `tests/test_estrategia.py::test_negativas_de_los_30_items` |

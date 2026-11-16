@@ -131,8 +131,8 @@ def test_negativas_de_la_trazabilidad():
     _fila(c, "1.1")["requisito"] = "Otro requisito"
     assert problemas_del_csv(c, texto, man, tests), "un requisito que no es el literal"
     c = _copia(filas)
-    _fila(c, "7.2")["comando"] = "python scripts/make_readme.py"
-    assert problemas_del_csv(c, texto, man, tests), "un comando que escribe el README"
+    _fila(c, "7.2")["comando"] = "python scripts/make_dist.py"
+    assert problemas_del_csv(c, texto, man, tests), "un comando que escribe archivos en lugar de correr las pruebas del ítem"
     c = _copia(filas)
     _fila(c, "5.4")["comando"] = PREFIJO_PYTEST + "tests/test_dag_estatico.py"
     assert problemas_del_csv(c, texto, man, tests), "un comando que no corre todas las pruebas del ítem"

@@ -40,11 +40,28 @@ def sha_lf(texto):
     return hashlib.sha256(texto.replace("\r\n", "\n").encode("utf-8")).hexdigest()
 
 
+# D106: el README remite a la declaración de uso con una única línea; la excepción es de ese archivo y de esa línea exacta, una sola vez (D97 sigue valiendo para todo lo demás).
+RUTA_CON_LINEA_AUTORIZADA = "README.md"
+
+
+def sin_la_linea_autorizada(rel, texto):
+    """El texto sin la línea autorizada si es el README (una sola aparición); cualquier otro archivo o cualquier variante de la línea conserva todo su texto."""
+    from tests.test_readme_guardiana import LINEA_AUTORIZADA
+
+    if rel != RUTA_CON_LINEA_AUTORIZADA:
+        return texto
+    lineas = texto.split("\n")
+    if LINEA_AUTORIZADA in lineas:
+        lineas.remove(LINEA_AUTORIZADA)
+    return "\n".join(lineas)
+
+
 def problemas_de_texto(rel, texto):
-    """Reglas que incumple un archivo del zip (lista vacía si cumple); aplica las excepciones atadas a sha256."""
+    """Reglas que incumple un archivo del zip (lista vacía si cumple); aplica las excepciones atadas a sha256 y la línea autorizada del README."""
     permitidas = set()
     if rel in EXCEPCIONES and sha_lf(texto) == EXCEPCIONES[rel][0]:
         permitidas = EXCEPCIONES[rel][1]
+    texto = sin_la_linea_autorizada(rel, texto)
     errores = []
     for nombre, patron in REGLAS.items():
         if nombre in permitidas:
@@ -103,6 +120,18 @@ def test_negativas_cada_regla_se_dispara_con_una_reintroduccion():
     assert problemas_de_texto("notebooks/02_eda_bronze.ipynb", cuaderno.replace('"Aquí cargamos', '"Pro' + 'fe, aquí cargamos', 1)), "una celda de notebook con el vocativo"
     assert problemas_de_texto("docs/x.md", "una palabra como profesional no cuenta") == []
     assert problemas_de_texto("docs/x.md", "Avance 1 sí se conserva") == []
+
+
+def test_la_linea_autorizada_del_readme_es_la_unica_excepcion_a_la_remision_a_la_declaracion():
+    from tests.test_readme_guardiana import LINEA_AUTORIZADA
+
+    base = "# Título\n\n## 20. Licencia y créditos\nMIT.\n\n"
+    assert problemas_de_texto("README.md", base + LINEA_AUTORIZADA + "\n") == [], "la línea exacta, una vez, en el README"
+    assert problemas_de_texto("README.md", base + LINEA_AUTORIZADA + "\n" + LINEA_AUTORIZADA + "\n"), "la misma línea dos veces"
+    assert problemas_de_texto("README.md", base + LINEA_AUTORIZADA.replace("Todo", "Casi todo") + "\n"), "la línea editada"
+    assert problemas_de_texto("README.md", base + LINEA_AUTORIZADA + "\nVer " + "DECLARACION" + "_USO_IA.md.\n"), "otra remisión en el README"
+    assert problemas_de_texto("docs/otro.md", base + LINEA_AUTORIZADA + "\n"), "la línea en otro archivo"
+    assert problemas_de_texto("scripts/make_dist.py", LINEA_AUTORIZADA), "la línea en un script"
 
 
 def test_el_zip_arma_el_documento_aislado_pero_la_prueba_no_lo_recorre_ni_lo_nombra():

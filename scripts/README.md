@@ -4,7 +4,6 @@ Utilidades que generan documentos, empaquetan o comprueban el repositorio. Ningu
 
 | script | qué hace |
 |---|---|
-| `make_readme.py` | genera `README.md` leyendo los archivos de salida y la documentación (las cifras salen de los archivos, no se escriben a mano) |
 | `make_catalogo_fuentes.py` | genera el catálogo de fuentes y metadatos (`docs/bronze/catalogo_fuentes_metadatos.md` y `.json`) desde el manifiesto de Bronze; es determinista |
 | `escanear_secretos.py` | busca secretos en el árbol, el historial de git, los notebooks, los logs y un zip; reporta archivo, línea y patrón, nunca el valor |
 | `cargar_mysql.py` | carga relacional por lotes con historial a MySQL (o a un SQLite fuera de `data/` para pruebas); idempotente y de una sola transacción |

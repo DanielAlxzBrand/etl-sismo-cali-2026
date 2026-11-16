@@ -132,7 +132,7 @@ FUNCIONES = [
         ("dags y orquestacion presentes o ausentes", L, "entran si existen y no fallan si faltan", "test_dist.py::test_orquestacion_entra_cuando_existe_y_no_falla_cuando_no_existe"),
         ("El repositorio real", C, "solo primer nivel permitido, con dags y orquestacion", "test_dist.py::test_el_repo_real_empaqueta_el_dag_y_la_carpeta_de_orquestacion")]),
     ("FC-17", "Documentación, cifras y evidencias", "README.md, docs/, scripts/evidencias/", [
-        ("Cifras del README iguales a las salidas", C, "K5, K2 y Gold coinciden", "test_readme_cifras.py::test_cifras_de_gold_bronze_y_silver_en_readme"),
+        ("Cifras del análisis iguales a las salidas", C, "K5, K2 y Gold coinciden", "test_resultados_cifras.py::test_cifras_de_gold_bronze_y_silver_en_resultados"),
         ("Conteo de pruebas del README", C, "igual a la recolección", "test_readme_cifras.py::test_numero_de_pruebas_en_readme"),
         ("Estados de los 30 ítems", C, "completos y con componentes válidos", "test_estrategia.py::test_los_30_items_del_checklist_estan_completos_y_con_componentes_de_la_lista"),
         ("Alteraciones de los 30 ítems", I, "cada alteración se detecta", "test_estrategia.py::test_negativas_de_los_30_items"),

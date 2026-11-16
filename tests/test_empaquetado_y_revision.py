@@ -45,7 +45,7 @@ def test_revision_de_codigos_cubre_los_casos_pedidos():
 
 
 def test_categorias_de_la_revision_suman_las_construcciones_sin_nombre_validado():
-    """a + b + c de docs/silver/revision_codigos_barrio.md = construcciones sin nombre validado calculadas desde Silver; y el README las cita."""
+    """a + b + c de docs/silver/revision_codigos_barrio.md = construcciones sin nombre validado calculadas desde Silver; y el documento de resultados las cita."""
     import re
 
     import pandas as pd
@@ -55,6 +55,6 @@ def test_categorias_de_la_revision_suman_las_construcciones_sin_nombre_validado(
     resumen = (ROOT / "docs" / "silver" / "revision_codigos_barrio.md").read_text(encoding="utf-8").split("## Resumen")[1].split("\n## ")[0]
     cats = {m[0]: int(m[1]) for m in re.findall(r"^\| \((\w)\) \| \d+ \| [^|]+ \| (\d+) \|", resumen, re.M)}
     assert sorted(cats) == ["a", "b", "c"] and sum(cats.values()) == n
-    readme = (ROOT / "README.md").read_text(encoding="utf-8")
-    assert f"De las {n} construcciones sin nombre validado, {cats['a']} (" in readme
-    assert "conservamos 93,52 %" in readme and "sigue pendiente" in readme
+    resultados = (ROOT / "docs" / "gold" / "resultados.md").read_text(encoding="utf-8")
+    assert f"De las {n} construcciones sin nombre validado, {cats['a']} (" in resultados
+    assert "conservamos 93,52 %" in resultados and "sigue pendiente" in resultados

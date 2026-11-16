@@ -29,7 +29,6 @@ import make_matriz_casos as matriz  # noqa: E402
 # Motivo por el que un módulo queda con cobertura baja (menos de 70 %): la cobertura mide líneas ejecutadas dentro del proceso de pytest
 UMBRAL_EXPLICACION = 70
 MOTIVOS = {
-    "scripts/make_readme.py": "generador del README: su salida se comprueba con test_readme_cifras (se ejecuta fuera de pytest)",
     "scripts/make_modelo_datos.py": "genera el diccionario y el diagrama; el diccionario se comprueba contra el esquema y el dibujo con matplotlib no se prueba",
     "scripts/mysql/benchmark_lotes.py": "necesita MySQL en vivo; su evidencia es EV-030 y se prueban las reglas de elección y el percentil",
     "scripts/mysql/verificar_mysql.py": "batería contra MySQL en vivo; su evidencia es EV-028 y se prueban su operación solo sobre la base de prueba y el fallo sin servidor",

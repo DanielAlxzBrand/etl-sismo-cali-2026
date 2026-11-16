@@ -289,8 +289,8 @@ Estas seis fichas se escribieron en la auditoría intermedia. Ninguna de las sei
 - **(e) Validar:** `.\.venv\Scripts\python.exe scripts\validar_checklist.py --item 7.1 --ejecutar`.
 
 ### Ítem 7.2 · README con problema, funcionalidades, instalación, arquitectura y ejecución (En curso)
-- **(a) Archivo principal:** `README.md` (generado por `scripts/make_readme.py`). Demuestra: problema (secciones 2 y 3), funcionalidades (18 a 21), instalación y ejecución (12) y el mapa del flujo de datos (4), con las cifras leídas de los archivos de salida. **No demuestra:** un diagrama de la arquitectura de software completa (API, MySQL, panel y Airflow) ni una sección de primera vez: todavía no existen. Estado: En curso.
-- **(b) Apoyo:** `tests/test_readme_cifras.py` (las cifras del README coinciden con las salidas) y `tests/test_estrategia.py::test_ningun_estado_supera_su_evidencia` (el ítem no puede pasar a «Cumple» sin el diagrama y la sección).
+- **(a) Archivo principal:** `README.md` (escrito a mano desde D105; el análisis está en `docs/gold/resultados.md`). Demuestra: problema (secciones 2 y 3), funcionalidades (18 a 21), instalación y ejecución (12) y el mapa del flujo de datos (4), con las cifras leídas de los archivos de salida. **No demuestra:** un diagrama de la arquitectura de software completa (API, MySQL, panel y Airflow) ni una sección de primera vez: todavía no existen. Estado: En curso.
+- **(b) Apoyo:** `tests/test_readme_cifras.py` (las cifras del README coinciden con lo medido), `tests/test_resultados_cifras.py` (las del análisis coinciden con las salidas), `tests/test_readme_guardiana.py` (forma y redacción del README) y `tests/test_estrategia.py::test_ningun_estado_supera_su_evidencia` (el ítem no puede pasar a «Cumple» sin el diagrama y la sección).
 - **(c) Texto sugerido:** «README con problema, funcionalidades, instalación y ejecución; falta el diagrama de la arquitectura de software completa y la sección de primera vez: `README.md`.»
 - **(d) Captura opcional:** ninguna.
 - **(e) Validar:** `.\.venv\Scripts\python.exe scripts\validar_checklist.py --item 7.2 --ejecutar`.

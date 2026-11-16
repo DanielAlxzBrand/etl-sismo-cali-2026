@@ -45,8 +45,15 @@ def test_lista_incluye_referencias_y_documentos_del_proyecto():
     assert "docs/README.md" in nombres and any(n.startswith("docs/retroalimentacion/") for n in nombres)
 
 
+def test_la_licencia_de_la_raiz_viaja_en_el_zip_y_sus_variantes_no():
+    """D105: `LICENSE` es un archivo permitido de la raíz; un archivo de licencia con otro nombre no entra."""
+    nombres = [p.relative_to(ROOT).as_posix() for p in make_dist.listar(ROOT)]
+    assert "LICENSE" in nombres and (ROOT / "LICENSE").read_text(encoding="utf-8").startswith("MIT License")
+    assert "LICENSE" in make_dist.RAIZ_ARCHIVOS and "LICENCIA.txt" not in make_dist.RAIZ_ARCHIVOS
+
+
 # --- lista de inclusión ---
-PERMITIDOS = ["main.py", "requirements.txt", "README.md", "pytest.ini", ".env.example", ".gitignore", ".gitattributes", "AVISO.md",
+PERMITIDOS = ["main.py", "requirements.txt", "README.md", "LICENSE", "pytest.ini", ".env.example", ".gitignore", ".gitattributes", "AVISO.md",
               "config/c.yaml", "src/a.py", "scripts/s.py", "tests/t.py", "notebooks/n.ipynb", "docs/README.md", "data/gold/etl_sismo.db"]
 
 
@@ -64,8 +71,8 @@ def test_lo_permitido_entra_y_el_zip_pasa_la_verificacion(tmp_path):
 
 
 def test_un_archivo_suelto_de_la_raiz_fuera_de_la_lista_no_entra(tmp_path):
-    nombres = _empaquetar(tmp_path, ["notas.txt", "apuntes.md", "suelto.py", "datos.csv"])
-    assert not {"notas.txt", "apuntes.md", "suelto.py", "datos.csv"} & set(nombres)
+    nombres = _empaquetar(tmp_path, ["notas.txt", "apuntes.md", "suelto.py", "datos.csv", "LICENCIA.txt"])
+    assert not {"notas.txt", "apuntes.md", "suelto.py", "datos.csv", "LICENCIA.txt"} & set(nombres)
     assert make_dist.fuera_de_la_lista(nombres) == []
 
 

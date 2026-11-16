@@ -10,3 +10,4 @@ data/** -text
 *.md text eol=lf
 *.yaml text eol=lf
 *.txt text eol=lf
+LICENSE text eol=lf

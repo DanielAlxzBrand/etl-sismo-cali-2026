@@ -95,7 +95,7 @@ CP-093,FC-16,Empaquetado (make_dist),Lo permitido entra y el zip se verifica,cor
 CP-094,FC-16,Empaquetado (make_dist),Entornos virtuales y carpetas ocultas,incorrecto,no entran,tests/test_dist.py::test_entorno_sin_pyvenv_cfg_no_entra_al_zip
 CP-095,FC-16,Empaquetado (make_dist),dags y orquestacion presentes o ausentes,límite,entran si existen y no fallan si faltan,tests/test_dist.py::test_orquestacion_entra_cuando_existe_y_no_falla_cuando_no_existe
 CP-096,FC-16,Empaquetado (make_dist),El repositorio real,correcto,"solo primer nivel permitido, con dags y orquestacion",tests/test_dist.py::test_el_repo_real_empaqueta_el_dag_y_la_carpeta_de_orquestacion
-CP-097,FC-17,"Documentación, cifras y evidencias",Cifras del README iguales a las salidas,correcto,"K5, K2 y Gold coinciden",tests/test_readme_cifras.py::test_cifras_de_gold_bronze_y_silver_en_readme
+CP-097,FC-17,"Documentación, cifras y evidencias",Cifras del análisis iguales a las salidas,correcto,"K5, K2 y Gold coinciden",tests/test_resultados_cifras.py::test_cifras_de_gold_bronze_y_silver_en_resultados
 CP-098,FC-17,"Documentación, cifras y evidencias",Conteo de pruebas del README,correcto,igual a la recolección,tests/test_readme_cifras.py::test_numero_de_pruebas_en_readme
 CP-099,FC-17,"Documentación, cifras y evidencias",Estados de los 30 ítems,correcto,completos y con componentes válidos,tests/test_estrategia.py::test_los_30_items_del_checklist_estan_completos_y_con_componentes_de_la_lista
 CP-100,FC-17,"Documentación, cifras y evidencias",Alteraciones de los 30 ítems,incorrecto,cada alteración se detecta,tests/test_estrategia.py::test_negativas_de_los_30_items

@@ -13,7 +13,7 @@ from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-RAIZ_ARCHIVOS = ("README.md", "main.py", "requirements.txt", "pytest.ini", ".env.example", ".gitignore", ".gitattributes")
+RAIZ_ARCHIVOS = ("README.md", "LICENSE", "main.py", "requirements.txt", "pytest.ini", ".env.example", ".gitignore", ".gitattributes")
 # Documentos de la raíz en mayúsculas (sin nombrarlos): `README.md` y los documentos aislados, que no se enlazan ni se citan desde el resto del repositorio.
 RAIZ_DOC = re.compile(r"[A-Z][A-Z0-9_]*\.md")
 RAIZ_CARPETAS = ("config", "src", "scripts", "tests", "notebooks", "docs", "data", "dags", "orquestacion", "servicios")
