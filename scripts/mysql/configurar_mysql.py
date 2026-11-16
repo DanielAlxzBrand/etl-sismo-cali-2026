@@ -10,6 +10,7 @@ Con `--usuario-lectura` crea `sismo_lectura` con SOLO `SELECT` sobre `sismo_cali
 y sus variables MYSQL_LECTURA_USER y MYSQL_LECTURA_PASSWORD se guardan solo en `.env`. Tampoco admite `%`.
 """
 import argparse
+import fnmatch
 import getpass
 import os
 import re
@@ -78,11 +79,81 @@ def actualizar_env(ruta, valores):
         raise
 
 
+MENSAJE_ENV_CON_GIT = ".env no está ignorado por git o está versionado; corrige .gitignore antes de guardar credenciales"
+BARRA_INVERTIDA = chr(92)      # escapa el primer carácter de una línea de `.gitignore` (por ejemplo, para ignorar un archivo que empieza con # o !)
+
+
+def gitignore_ignora_env(texto):
+    """True si, aplicando las líneas de un `.gitignore` en orden (gana la última que coincide, como en Git), el archivo `.env` de la raíz queda ignorado.
+
+    Por qué existe: sin repositorio (por ejemplo, el zip descomprimido) Git no puede responder, pero `.env` tampoco puede estar versionado; lo único que protege entonces es que el `.gitignore` lo ignore de
+    verdad si más adelante se usa Git. Una línea `!.env` posterior lo reincorpora, un patrón de carpeta (`.env/`) no vale para un archivo y `.env.example` no es `.env`."""
+    ignorado = False
+    for cruda in texto.lstrip("﻿").splitlines():
+        linea = cruda.rstrip()
+        if not linea or linea.startswith("#"):
+            continue
+        niega = linea.startswith("!")
+        patron = linea[1:] if niega else linea
+        if patron.startswith(BARRA_INVERTIDA):
+            patron = patron[1:]
+        if patron.endswith("/"):
+            continue                       # un patrón con barra final solo vale para carpetas: nunca para el archivo `.env`
+        patron = patron.lstrip("/")        # anclado a la raíz: la raíz es la única carpeta donde vive `.env`
+        while patron.startswith("**/"):
+            patron = patron[3:]
+        if "/" in patron:
+            continue                       # un patrón con carpetas intermedias no puede coincidir con un archivo de la raíz
+        if fnmatch.fnmatchcase(".env", patron):
+            ignorado = not niega
+    return ignorado
+
+
+def _hay_repositorio(raiz):
+    """(hay_repositorio, git_disponible). Hay repositorio si Git lo dice o si existe un `.git` en la carpeta o por encima (así un Git que falla, por ejemplo por propiedad dudosa de la carpeta,
+    nunca abre la puerta a la comprobación más laxa); sin el programa git no se puede preguntar y se mira solo la presencia de `.git`."""
+    raiz = Path(raiz).resolve()
+    hay_git_en_disco = any((p / ".git").exists() for p in (raiz, *raiz.parents))
+    try:
+        r = subprocess.run(["git", "rev-parse", "--is-inside-work-tree"], cwd=raiz, capture_output=True, text=True)
+    except OSError:
+        return hay_git_en_disco, False
+    return hay_git_en_disco or (r.returncode == 0 and r.stdout.strip() == "true"), True
+
+
+def evaluar_env(raiz=ROOT):
+    """(ok, mensaje) sobre si se pueden guardar credenciales en el `.env` de `raiz`.
+
+    Con repositorio de Git la comprobación es la estricta de siempre: git debe ignorar `.env` y no versionarlo. Sin repositorio (el zip) se acepta solo si el `.gitignore` de la carpeta ignora `.env`
+    de forma efectiva, y se avisa. Si hay un repositorio pero el programa git no está, se rechaza con un mensaje claro en lugar de adivinar. `mensaje` es el aviso (si ok) o el motivo (si no)."""
+    raiz = Path(raiz)
+    hay, git_disponible = _hay_repositorio(raiz)
+    if hay:
+        if not git_disponible:
+            return False, "hay un repositorio de Git en esta carpeta (o encima de ella) pero el programa git no está instalado o no está en el PATH, así que no se puede comprobar que .env esté ignorado; instale Git y repita"
+        ign = subprocess.run(["git", "check-ignore", "-q", ".env"], cwd=raiz, capture_output=True).returncode == 0
+        ver = subprocess.run(["git", "ls-files", "--error-unmatch", ".env"], cwd=raiz, capture_output=True).returncode != 0
+        return (True, "") if ign and ver else (False, MENSAJE_ENV_CON_GIT)
+    gi = raiz / ".gitignore"
+    if not gi.is_file():
+        return False, "esta carpeta no es un repositorio de Git (por ejemplo, viene de un zip) y no tiene .gitignore, así que .env no queda ignorado; copie el .gitignore del proyecto, que lo ignora, y repita"
+    if not gitignore_ignora_env(gi.read_text(encoding="utf-8", errors="replace")):
+        return False, "esta carpeta no es un repositorio de Git y su .gitignore no deja ignorado el archivo .env (falta la línea .env, solo ignora otro nombre o una línea posterior lo reincorpora con «!»); corríjalo y repita"
+    return True, "esta carpeta no es un repositorio de Git (por ejemplo, viene de un zip); su .gitignore ignora .env, así que no se versionará si más adelante se usa Git"
+
+
 def env_ignorado_y_no_versionado(raiz=ROOT):
-    """True si git ignora `.env` y no lo versiona."""
-    ign = subprocess.run(["git", "check-ignore", "-q", ".env"], cwd=raiz, capture_output=True).returncode == 0
-    ver = subprocess.run(["git", "ls-files", "--error-unmatch", ".env"], cwd=raiz, capture_output=True).returncode != 0
-    return ign and ver
+    """True si se puede guardar `.env` sin riesgo de versionarlo: con Git, que lo ignore y no lo versione; sin repositorio, que el `.gitignore` lo ignore (se avisa en el registro)."""
+    ok, mensaje = evaluar_env(raiz)
+    if ok and mensaje:
+        log.info("%s", mensaje)
+    return ok
+
+
+def exigir_env_protegido(raiz):
+    """Lanza ConfiguracionError con el motivo si no se pueden guardar credenciales en el `.env` de `raiz`."""
+    if not env_ignorado_y_no_versionado(raiz):
+        raise ConfiguracionError(evaluar_env(raiz)[1] or MENSAJE_ENV_CON_GIT)
 
 
 def _consultar(conn, sql, params=()):
@@ -170,8 +241,7 @@ def configurar(cfg, args, conectar_admin, conectar_usuario, pedir_clave=getpass.
     al = cfg["almacenamiento"]
     bases = (al["base"], al["base_prueba"])
     env = dict(dotenv_values(ruta_env)) if Path(ruta_env).exists() else {}
-    if not env_ignorado_y_no_versionado(Path(ruta_env).parent):
-        raise ConfiguracionError(".env no está ignorado por git o está versionado; corrige .gitignore antes de guardar credenciales")
+    exigir_env_protegido(Path(ruta_env).parent)
     validas = credenciales_validas(conectar_usuario, env, bases)
     if args.solo_verificar:
         if not validas:
@@ -297,8 +367,7 @@ def configurar_docker(cfg, args, conectar_admin, pedir_clave=getpass.getpass, ru
     origen = validar_origen(args.origen)
     base = cfg["almacenamiento"]["base"]
     env = dict(dotenv_values(ruta_env)) if Path(ruta_env).exists() else {}
-    if not env_ignorado_y_no_versionado(Path(ruta_env).parent):
-        raise ConfiguracionError(".env no está ignorado por git o está versionado; corrige .gitignore antes de guardar credenciales")
+    exigir_env_protegido(Path(ruta_env).parent)
     completo = all(env.get(n) for n in NOMBRES_ENV_DOCKER) and env.get("MYSQL_DOCKER_ORIGEN") == origen
     if completo and not args.rotar and not args.solo_verificar:
         log.info("sin cambios: el .env ya tiene las credenciales del usuario de Docker para este origen")
@@ -345,8 +414,7 @@ def configurar_lectura(cfg, args, conectar_admin, pedir_clave=getpass.getpass, r
     origen = validar_origen(getattr(args, "origen", None) or ORIGEN_LECTURA)
     base = cfg["almacenamiento"]["base"]
     env = dict(dotenv_values(ruta_env)) if Path(ruta_env).exists() else {}
-    if not env_ignorado_y_no_versionado(Path(ruta_env).parent):
-        raise ConfiguracionError(".env no está ignorado por git o está versionado; corrige .gitignore antes de guardar credenciales")
+    exigir_env_protegido(Path(ruta_env).parent)
     completo = all(env.get(n) for n in NOMBRES_ENV_LECTURA) and env.get("MYSQL_LECTURA_USER") == USUARIO_LECTURA
     if completo and not args.rotar and not args.solo_verificar:
         log.info("sin cambios: el .env ya tiene las credenciales del usuario de solo lectura")
