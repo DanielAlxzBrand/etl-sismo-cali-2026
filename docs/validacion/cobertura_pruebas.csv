@@ -1,9 +1,10 @@
 modulo,lineas,sin_ejecutar,cobertura_pct,motivo_si_menor_de_70
 scripts/cargar_mysql.py,40,8,80.0,
 scripts/contar_estados_checklist.py,48,22,54.2,
-scripts/escanear_secretos.py,201,11,94.5,
+scripts/escanear_secretos.py,215,9,95.8,
 scripts/evidencias/saneamiento.py,54,1,98.1,
 scripts/finanzas/costos.py,78,6,92.3,
+scripts/gitignore_env.py,28,1,96.4,
 scripts/informe_pruebas.py,168,40,76.2,
 scripts/make_catalogo_fuentes.py,113,6,94.7,
 scripts/make_dist.py,87,8,90.8,
@@ -12,11 +13,11 @@ scripts/make_matriz_poder_interes.py,69,8,88.4,
 scripts/make_modelo_datos.py,126,58,54.0,genera el diccionario y el diagrama; el diccionario se comprueba contra el esquema y el dibujo con matplotlib no se prueba
 scripts/make_readme.py,184,184,0.0,generador del README: su salida se comprueba con test_readme_cifras (se ejecuta fuera de pytest)
 scripts/mysql/benchmark_lotes.py,118,75,36.4,necesita MySQL en vivo; su evidencia es EV-030 y se prueban las reglas de elección y el percentil
-scripts/mysql/configurar_mysql.py,329,38,88.4,
+scripts/mysql/configurar_mysql.py,348,38,89.1,
 scripts/mysql/respaldar_restaurar.py,183,40,78.1,
 scripts/mysql/verificar_mysql.py,208,151,27.4,batería contra MySQL en vivo; su evidencia es EV-028 y se prueban su operación solo sobre la base de prueba y el fallo sin servidor
-scripts/orquestacion/generar_compose.py,76,36,52.6,
-scripts/orquestacion/preparar_airflow.py,216,28,87.0,
+scripts/orquestacion/generar_compose.py,80,35,56.2,
+scripts/orquestacion/preparar_airflow.py,291,28,90.4,
 scripts/orquestacion/sincronizar_dag.py,51,31,39.2,
 scripts/panel/contraste.py,34,17,50.0,
 scripts/panel/ejecutar_panel.py,106,8,92.5,
