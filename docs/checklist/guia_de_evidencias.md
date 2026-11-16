@@ -216,12 +216,12 @@ Fichas de los ítems 1.1 a 1.5 (Estrategia), 2.1 a 2.3 (API, fuentes y credencia
 ### Ítem 5.1 · Casos de prueba por función crítica
 - **(a) Archivo principal:** `docs/validacion/matriz_casos_prueba.md` (Markdown, con su `.csv`). Demuestra: 27 funciones críticas con 179 casos (78 correctos, 61 incorrectos y 40 límite), cada uno con su resultado esperado y la prueba que lo ejecuta, generados desde una única definición. **No demuestra:** que no existan fallos fuera de los casos definidos.
 - **(b) Apoyo:**
-  - `docs/validacion/informe_pruebas.md` y `informe_pruebas.csv` (resultado de cada caso en la última ejecución: 1248 de 1248).
+  - `docs/validacion/informe_pruebas.md` y `informe_pruebas.csv` (resultado de cada caso en la última ejecución: 1251 de 1251).
   - `tests/test_matriz_casos.py` (cada función crítica tiene casos y cada prueba citada existe).
   - `docs/evidencias/orquestacion/EV-048_cobertura_por_modulo.png` (imagen generada a partir de la salida registrada; no es una captura de pantalla).
   - `docs/evidencias/orquestacion/EV-050_pruebas_clon.txt` (las pruebas de ese momento pasan en un clon limpio) y `docs/evidencias/usuarios/EV-072_suite_en_entorno_nuevo.txt` (en su momento pasaron 822 pruebas en un entorno nuevo con Python 3.13, creado según `docs/evidencias/endurecimiento/EV-062_instalacion_desde_cero.txt`); la repetición más reciente, en un clon sin variables de UTF-8, es `docs/evidencias/servicios/EV-089_suite_final_sin_utf8.txt`.
 - **(c) Texto sugerido:** «Matriz de 179 casos de prueba para 27 funciones críticas, cada uno con su resultado esperado y su prueba automática en verde: `docs/validacion/matriz_casos_prueba.md`.»
-- **(d) Captura opcional:** PowerShell con `.\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider`, que debe terminar en `1248 passed`. Nombre: `captura_5.1_pytest.png`.
+- **(d) Captura opcional:** PowerShell con `.\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider`, que debe terminar en `1251 passed`. Nombre: `captura_5.1_pytest.png`.
 - **(e) Validar:** `.\.venv\Scripts\python.exe -m pytest tests/test_matriz_casos.py -q -p no:cacheprovider` y `.\.venv\Scripts\python.exe scripts\make_matriz_casos.py` (regenera la matriz; `git status --short` no debe mostrar cambios).
 
 ### Ítem 5.2 · Datos correctos, incorrectos y casos límite

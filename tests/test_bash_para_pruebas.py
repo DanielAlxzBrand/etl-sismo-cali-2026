@@ -1,6 +1,6 @@
 """El ayudante que elige un `bash` capaz de leer rutas de Windows (`tests/bash_para_pruebas.py`) devuelve uno que sirve y no uno que solo se llama «bash».
 
-Por qué existe: en un PowerShell normal el primer `bash` del PATH puede ser el de WSL, que no lee rutas como `C:/Users/...`; dos pruebas del compose de Airflow fallaban con ese `bash` (DEF-022).
+Por qué existe: en un PowerShell normal el primer `bash` del PATH puede ser el de WSL, que no lee rutas con letra de unidad; dos pruebas del compose de Airflow fallaban con ese `bash` (DEF-022).
 Aquí se comprueba, sin Docker, que un candidato que no ejecuta el guion de sonda se descarta, que los candidatos vacíos o inexistentes se ignoran y que, si hay un `bash` bueno detrás de uno malo, se devuelve el bueno.
 Qué NO demuestra: que el equipo tenga un `bash` (si no lo tiene, las pruebas que lo usan se omiten con un motivo visible).
 """

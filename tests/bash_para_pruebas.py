@@ -1,6 +1,6 @@
 """Un `bash` que lea rutas de Windows, para las pruebas que ejecutan un trozo de script del compose de Airflow.
 
-Por qué existe: dos pruebas llamaban al primer `bash` del PATH. En un PowerShell normal ese `bash` puede ser el de WSL (`bash.exe` de System32), que no entiende rutas como `C:/Users/...` y hacía fallar las pruebas con
+Por qué existe: dos pruebas llamaban al primer `bash` del PATH. En un PowerShell normal ese `bash` puede ser el de WSL (`bash.exe` de System32), que no entiende rutas con letra de unidad y hacía fallar las pruebas con
 «No such file or directory» (visto al correr la suite completa en un clon y en el zip con el entorno nuevo). Aquí se prueba cada candidato con un guion de verdad y se devuelve el primero que lo ejecuta; si ninguno puede,
 la prueba se omite con un motivo visible en lugar de pasar sin comprobar nada.
 Qué NO hace: instalar nada ni elegir un `bash` por su nombre.
