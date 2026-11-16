@@ -112,7 +112,7 @@ def _hay_repositorio(raiz):
     raiz = Path(raiz).resolve()
     hay_git_en_disco = any((p / ".git").exists() for p in (raiz, *raiz.parents))
     try:
-        r = subprocess.run(["git", "rev-parse", "--is-inside-work-tree"], cwd=raiz, capture_output=True, text=True)
+        r = subprocess.run(["git", "rev-parse", "--is-inside-work-tree"], cwd=raiz, capture_output=True, text=True, encoding="utf-8", errors="replace")
     except OSError:
         return hay_git_en_disco, False
     return hay_git_en_disco or (r.returncode == 0 and r.stdout.strip() == "true"), True
