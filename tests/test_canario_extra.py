@@ -13,6 +13,7 @@ def _carpeta(tmp_path, nombre, contenido_env):
     c = tmp_path / nombre
     c.mkdir()
     (c / ".env").write_text(contenido_env, encoding="utf-8")
+    (c / ".gitignore").write_text(".env\n", encoding="utf-8")      # una carpeta de trabajo protegida: sin repositorio, el escáner exige que el .gitignore ignore el .env que existe
     return c
 
 

@@ -14,6 +14,9 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import gitignore_env  # noqa: E402  (la comprobación de .env sin repositorio vive en un solo módulo, que viaja en el zip)
+
 EXCLUIR_DIRS = {".git", "__pycache__", ".pytest_cache", ".ipynb_checkpoints", "dist", "site-packages"}
 EXCLUIR_PREFIJOS = (".venv",)
 EXTENSIONES_BINARIAS = {".png", ".jpg", ".jpeg", ".gif", ".pdf", ".db", ".zip", ".pyc", ".docx", ".xlsx", ".ico", ".woff", ".woff2"}
@@ -235,13 +238,21 @@ def canario_zip(ruta, can):
 
 
 def estado_de_env(raiz):
-    """`.env` debe estar ignorado por git y no versionado; devuelve los hallazgos (vacío si todo está bien)."""
+    """`.env` debe estar ignorado por git y no versionado; devuelve los hallazgos (vacío si todo está bien).
+
+    Con repositorio (en la carpeta o por encima) decide Git. Sin repositorio (por ejemplo, el zip descomprimido) Git no puede responder y `.env` no puede estar versionado: si el archivo existe, el `.gitignore`
+    de la carpeta debe ignorarlo de forma efectiva (antes, sin `.git`, no se comprobaba nada y un `.gitignore` sin la línea `.env` pasaba en silencio)."""
     raiz = Path(raiz)
-    if not (raiz / ".git").exists():
+    hay, _ = gitignore_env.hay_repositorio(raiz)
+    if hay:
+        ign = subprocess.run(["git", "check-ignore", "-q", ".env"], cwd=raiz, capture_output=True).returncode == 0
+        ver = subprocess.run(["git", "ls-files", "--error-unmatch", ".env"], cwd=raiz, capture_output=True).returncode == 0
+        return ([(".env", 0, "env_no_ignorado")] if not ign else []) + ([(".env", 0, "env_versionado")] if ver else [])
+    if not (raiz / ".env").exists():
         return []
-    ign = subprocess.run(["git", "check-ignore", "-q", ".env"], cwd=raiz, capture_output=True).returncode == 0
-    ver = subprocess.run(["git", "ls-files", "--error-unmatch", ".env"], cwd=raiz, capture_output=True).returncode == 0
-    return ([(".env", 0, "env_no_ignorado")] if not ign else []) + ([(".env", 0, "env_versionado")] if ver else [])
+    gi = raiz / ".gitignore"
+    efectivo = gi.is_file() and gitignore_env.gitignore_ignora_env(gi.read_text(encoding="utf-8", errors="replace"))
+    return [] if efectivo else [(".env", 0, "env_no_ignorado")]
 
 
 def main(argv=None):
@@ -254,6 +265,14 @@ def main(argv=None):
     ap.add_argument("--solo-canario", action="store_true", help="solo la comprobación canario (omite los patrones de secretos; sirve para carpetas ajenas con valores por defecto conocidos)")
     a = ap.parse_args(argv)
     raiz = Path(a.raiz).resolve()
+    hay, git_disponible = gitignore_env.hay_repositorio(raiz)
+    repo_propio = (raiz / ".git").exists()
+    if ((repo_propio and not a.sin_historial) or (hay and not a.solo_canario)) and not git_disponible:
+        print("error: hay un repositorio de Git en esta carpeta (o encima de ella) pero el programa git no está instalado o no está en el PATH, así que no se puede revisar el historial ni el estado de .env; "
+              "instale Git y repita", file=sys.stderr)
+        return 2
+    if not a.sin_historial and not repo_propio:
+        print("historial de git: no revisado (esta carpeta no es un repositorio de Git)")      # sin esto, «hallazgos: 0» parecería haber revisado un historial que no existe
     hallazgos = [] if a.solo_canario else escanear_arbol(raiz) + estado_de_env(raiz)
     if a.canario_env or a.env_extra or a.solo_canario:
         can = canarios(raiz, a.env_extra)

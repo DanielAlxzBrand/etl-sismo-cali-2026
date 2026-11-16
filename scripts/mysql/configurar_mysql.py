@@ -10,7 +10,6 @@ Con `--usuario-lectura` crea `sismo_lectura` con SOLO `SELECT` sobre `sismo_cali
 y sus variables MYSQL_LECTURA_USER y MYSQL_LECTURA_PASSWORD se guardan solo en `.env`. Tampoco admite `%`.
 """
 import argparse
-import fnmatch
 import getpass
 import os
 import re
@@ -27,6 +26,9 @@ from dotenv import dotenv_values  # noqa: E402
 
 from src.common import load_config  # noqa: E402
 from src.logger import get_logger  # noqa: E402
+
+sys.path.insert(0, str(ROOT / "scripts"))
+from gitignore_env import gitignore_ignora_env, hay_repositorio as _hay_repositorio  # noqa: E402,F401  (la regla vive en un solo módulo, que viaja en el zip)
 
 log = get_logger(__name__)
 USUARIO, HOST_USUARIO = "sismo_etl", "localhost"   # nunca '%': solo conexiones desde este equipo
@@ -80,44 +82,6 @@ def actualizar_env(ruta, valores):
 
 
 MENSAJE_ENV_CON_GIT = ".env no está ignorado por git o está versionado; corrige .gitignore antes de guardar credenciales"
-BARRA_INVERTIDA = chr(92)      # escapa el primer carácter de una línea de `.gitignore` (por ejemplo, para ignorar un archivo que empieza con # o !)
-
-
-def gitignore_ignora_env(texto):
-    """True si, aplicando las líneas de un `.gitignore` en orden (gana la última que coincide, como en Git), el archivo `.env` de la raíz queda ignorado.
-
-    Por qué existe: sin repositorio (por ejemplo, el zip descomprimido) Git no puede responder, pero `.env` tampoco puede estar versionado; lo único que protege entonces es que el `.gitignore` lo ignore de
-    verdad si más adelante se usa Git. Una línea `!.env` posterior lo reincorpora, un patrón de carpeta (`.env/`) no vale para un archivo y `.env.example` no es `.env`."""
-    ignorado = False
-    for cruda in texto.lstrip(chr(0xFEFF)).splitlines():
-        linea = cruda.rstrip()
-        if not linea or linea.startswith("#"):
-            continue
-        niega = linea.startswith("!")
-        patron = linea[1:] if niega else linea
-        if patron.startswith(BARRA_INVERTIDA):
-            patron = patron[1:]
-        patron = patron.lstrip("/")        # anclado a la raíz: la raíz es la única carpeta donde vive `.env`
-        while patron.startswith("**/"):
-            patron = patron[3:]
-        # un patrón con «/» (de carpeta, como `.env/`, o con carpetas intermedias) nunca coincide con el nombre `.env`: fnmatch ya lo descarta
-        if fnmatch.fnmatchcase(".env", patron):
-            ignorado = not niega
-    return ignorado
-
-
-def _hay_repositorio(raiz):
-    """(hay_repositorio, git_disponible). Hay repositorio si Git lo dice o si existe un `.git` en la carpeta o por encima (así un Git que falla, por ejemplo por propiedad dudosa de la carpeta,
-    nunca abre la puerta a la comprobación más laxa); sin el programa git no se puede preguntar y se mira solo la presencia de `.git`."""
-    raiz = Path(raiz).resolve()
-    hay_git_en_disco = any((p / ".git").exists() for p in (raiz, *raiz.parents))
-    try:
-        r = subprocess.run(["git", "rev-parse", "--is-inside-work-tree"], cwd=raiz, capture_output=True, text=True, encoding="utf-8", errors="replace")
-    except OSError:
-        return hay_git_en_disco, False
-    return hay_git_en_disco or (r.returncode == 0 and r.stdout.strip() == "true"), True
-
-
 def evaluar_env(raiz=ROOT):
     """(ok, mensaje) sobre si se pueden guardar credenciales en el `.env` de `raiz`.
 
