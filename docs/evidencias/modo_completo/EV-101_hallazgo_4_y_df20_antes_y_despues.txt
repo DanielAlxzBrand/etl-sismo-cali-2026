@@ -1,0 +1,54 @@
+EV-101 · Hallazgo 4 y DF-20: volumen de Postgres de otra instalación, antes y después de comprobar la conexión en `airflow-init`
+
+Qué es: lo que pasó al levantar Airflow con el nombre de proyecto de Compose por defecto sobre un volumen de Postgres de otra instalación (airflow-medallon_postgres-db-volume,
+creado el 2026-11-13 con otra contraseña), primero con el compose del zip sellado y después con el compose con DF-20 (commit cafd740). Siempre se apagó con `docker compose down`,
+sin `-v`: los volúmenes de prueba y los de Daniel siguen. No requiere contraseña de root.
+
+== ANTES (compose del zip sellado; DF-19 aún no aplicado y sin comprobación de la base)
+`docker compose up airflow-init`: código de salida 0 (44 s); 623 líneas «Read-only file system» (hallazgo 3); la migración falló con
+«FATAL:  password authentication failed for user "airflow"» y el contenedor terminó con «exited with code 0». `docker compose ps -a`: airflow-init Exited (0); postgres y redis (healthy).
+`docker compose up -d` (código de salida 1): tras 50 s, airflow-apiserver, airflow-dag-processor, airflow-scheduler y airflow-triggerer «Up … (health: starting)»,
+el registro del servidor con «password authentication failed for user airflow». Sin esperar los ~340 s de «unhealthy» se apagó con `docker compose down`.
+Mediciones dentro del contenedor, con el volumen viejo (una sola vez, sin escribir):
+  /entrypoint airflow version          -> código 0     (por eso `set -e` NO habría detectado el fallo)
+  /entrypoint airflow db check         -> código 1     (455 líneas de salida; 9 con la palabra «password», todas del mensaje de error, sin ningún valor)
+  airflow db check (sin /entrypoint)   -> código 1     «ModuleNotFoundError: No module named 'airflow'» (con el usuario root del contenedor, en los dos volúmenes)
+Con el volumen nuevo: /entrypoint airflow db check -> código 0 (19 líneas; la última «Connection successful.»).
+
+== DESPUÉS (compose con DF-20: tras `airflow version`, `if /entrypoint airflow db check > /tmp/db_check.log 2>&1 … else … exit 1`)
+Volumen NUEVO (dos pasadas, una con el volumen ya migrado y otra desde cero): `docker compose up airflow-init` código 0 y las líneas «Checking the connection to the metadata database:»
+y «Connection successful.»; `docker compose up -d` código 0; `docker compose ps -a` con todo «(healthy)» y airflow-init Exited (0); la interfaz respondió 200 en /api/v2/monitor/health;
+las cuatro tareas del DAG en success.
+Volumen VIEJO: `airflow-init` imprimió «ERROR: could not connect to the metadata database …» con las dos líneas de error y terminó con «exited with code 1».
+  El comando `docker compose up airflow-init` tuvo código de salida 0 aunque el contenedor quedó en Exited (1): ese código NO es una señal fiable (lo dice la guía).
+  `docker compose up -d` terminó con código 1: «service "airflow-init" didn't complete successfully: exit 1» y, para airflow-worker, airflow-scheduler, airflow-triggerer,
+  airflow-apiserver y airflow-dag-processor: «not started: condition "service_completed_successfully" of service "airflow-init" not met».
+  `docker compose ps -a`: esos cinco servicios en «Created», airflow-init en «Exited (1)», postgres y redis (healthy). `docker compose down` sin -v; `docker ps` vacío.
+
+Fin de la salida de `docker compose up airflow-init` con el volumen viejo y DF-20 (las 311 líneas se abrevian a las últimas):
+
+airflow-init-1  | ERROR: could not connect to the metadata database (a Postgres volume from another installation has another password; see docs/orquestacion/operacion.md):
+airflow-init-1  | 2026-11-16T17:09:54.109404Z [warning  ] Failed to log action (psycopg2.OperationalError) connection to server at "postgres" (172.18.0.3), port 5432 failed: FATAL:  password authentication failed for u
+airflow-init-1  | psycopg2.OperationalError: connection to server at "postgres" (172.18.0.3), port 5432 failed: FATAL:  password authentication failed for user "airflow"
+airflow-init-1 exited with code 1
+
+Salida de `docker compose up -d` con init fallando (final):
+
+ Container airflow-medallon-airflow-init-1 Waiting 
+ Container airflow-medallon-airflow-init-1 Error service "airflow-init" didn't complete successfully: exit 1
+ Container airflow-medallon-airflow-worker-1 not started: condition "service_completed_successfully" of service "airflow-init" not met 
+ Container airflow-medallon-airflow-scheduler-1 not started: condition "service_completed_successfully" of service "airflow-init" not met 
+ Container airflow-medallon-airflow-triggerer-1 not started: condition "service_completed_successfully" of service "airflow-init" not met 
+ Container airflow-medallon-airflow-apiserver-1 not started: condition "service_completed_successfully" of service "airflow-init" not met 
+ Container airflow-medallon-airflow-dag-processor-1 not started: condition "service_completed_successfully" of service "airflow-init" not met 
+service "airflow-init" didn't complete successfully: exit 1
+
+== Escáner de secretos y canario sobre las salidas de `docker compose up airflow-init` (nuevo y viejo) y de `docker compose up -d`
+Canario con los tres .env (el del proyecto, el de Airflow nuevo y el de Airflow viejo): «hallazgos: 0»; los valores de las contraseñas no aparecen.
+Patrones de secretos: 2 hallazgos CONOCIDOS Y EXPLICADOS, del patrón `url_con_credenciales` (la expresión regular `[a-z][a-z0-9+.-]*://[^/\s:@'"]+:[^/\s@'"]{3,}@`, que marca una dirección
+con usuario y clave): una línea del registro de airflow-init con el nuevo volumen (línea 12 de la salida) y otra con el viejo (línea 31). Es la línea
+«Performing upgrade to the metadata database … url=postgresql+psycopg2://airflow:[tres asteriscos]@postgres/airflow» (en la línea real la clave ya sale tapada por Airflow) que la imagen oficial
+imprime durante `/entrypoint airflow version`; es anterior a DF-20 y no la imprime el bloque nuevo (de «Checking the connection…» hasta el final del bloque no hay ninguna dirección con «://»).
+Por eso en estos archivos de evidencia esa dirección se sustituye por «<URL de la base con la clave tapada por Airflow>». No es un secreto, pero tampoco se escribe «0 hallazgos» sin este matiz.
+
+Qué NO demuestra: que DF-20 detecte una migración que falle con la base alcanzable (`airflow db check` solo comprueba la conexión), ni el comportamiento con otra versión de Airflow o de Docker.

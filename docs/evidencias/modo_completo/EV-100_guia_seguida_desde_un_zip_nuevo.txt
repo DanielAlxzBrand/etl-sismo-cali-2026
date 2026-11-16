@@ -1,0 +1,667 @@
+EV-100 · La guía del modo completo seguida desde un zip nuevo (Windows, PowerShell, Docker Desktop y MySQL 8.0.45 locales)
+
+Qué es: la transcripción enmascarada de los comandos de docs/instalacion/guia_modo_completo.md ejecutados sobre el zip del commit 90bd057, descomprimido en una carpeta nueva
+con espacios y ñ (ruta de 122 caracteres), sin .git ni .env, con un entorno virtual propio y con Docker apagado al empezar (`docker ps` vacío). La guía copia de aquí sus bloques
+«Qué debe verse» (los que están abreviados se marcan; el número de líneas es el real). Cada bloque trae el comando, su código de salida y su tiempo.
+Máscaras: <ruta> (carpeta de la prueba), <usuario> (usuario de Windows), <hash> (resumen de una imagen) y <URL de la base con la clave tapada por Airflow>. Ninguna contraseña
+aparece: los comandos de MySQL imprimen solo los nombres de las variables que escriben en el .env.
+Contraseña de root: la tecleó Daniel tres veces, una por comando de las cuentas, en pestañas del panel Terminal que se abrieron para ello; nunca pasó por el código ni por un registro.
+El tiempo de esos tres comandos incluye la espera de la persona; el tiempo del script (de la contraseña a «Listo») fue de 1 s, menos de 1 s y menos de 1 s.
+
+Versiones: Python 3.13, Docker 29.9.3, Compose 5.7.0, MySQL 8.0.45, Airflow 3.3.2, phpMyAdmin 5.2.3.
+Zip nuevo (commit 90bd057): etl_sismo_20261116.zip · 22435898 bytes · 550 archivos · sha256 6d64fae39245d02ab9aac1610883b0e621e2c02a53e4b6025fbfaff9d3b72d9a
+Zip sellado que usan los compañeros (no se tocó): etl_sismo_20261115.zip, sha256 b87fea7946dda7b42cdf6477965c32ccc89660ab187a64a4060ec52aced5e087 (solo se leyó para los «antes»).
+Entorno virtual nuevo: instalación de requirements.txt y pip check en 251 s, «No broken requirements found».
+
+PRIMERA PASADA (commit 90bd057, compose sin DF-20)
+
+--- Hallazgo 1 (antes, zip sellado, sin .git): configurar_mysql.py termina con código 1 y el mensaje de abajo; no se creó ningún .env
+$ py -X utf8 scripts\mysql\configurar_mysql.py     (zip sellado, intérprete del repositorio)
+# código de salida: 1
+ERROR etl.__main__ .env no está ignorado por git o está versionado; corrige .gitignore antes de guardar credenciales
+
+--- Hallazgo 2 (antes, zip sellado, sin .git, con un .env falso que el .gitignore NO ignora; valor inventado, nunca impreso)
+$ py -X utf8 scripts\escanear_secretos.py
+# código de salida: 0
+hallazgos: 0
+
+--- Hallazgo 2 (después, zip nuevo, mismo montaje; el .env falso se borró después)
+(a) .env presente, .gitignore SIN la línea .env, sin .git:
+    historial de git: no revisado (esta carpeta no es un repositorio de Git)
+    .env:0: env_no_ignorado
+    hallazgos: 1            # código de salida 1
+(b) .env presente, .gitignore CON la línea .env, sin .git:
+    historial de git: no revisado (esta carpeta no es un repositorio de Git)
+    hallazgos: 0            # código de salida 0
+(c) sin .env, sin .git:
+    historial de git: no revisado (esta carpeta no es un repositorio de Git)
+    hallazgos: 0            # código de salida 0
+
+--- Hallazgo 1 (después): en los tres comandos de las cuentas aparece el aviso de que la carpeta no es un repositorio y de que su .gitignore ignora .env
+
+$ .\.venv\Scripts\python.exe -m pip check
+# código de salida: 0 · segundos: 1.4 · [c01]
+No broken requirements found.
+
+$ Select-String -Path .gitignore -Pattern '^\.env$'
+# código de salida: 0 · segundos: 0 · [c02]
+<ruta>\etl_zip\.gitignore:1:.env
+
+$ docker ps
+# código de salida: 0 · segundos: 0.2 · [c03]
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+$ py -3.13 scripts\preparar_entorno.py --modo completo
+# código de salida: 1 · segundos: 3 · [c04]
+✓ Python 3.13: encontrado (también hay 3.11: no se usa)
+✓ Entorno virtual .venv: Python 3.13
+✓ Requisitos instalados: 25 paquetes con versión exacta y `pip check` sin conflictos
+✗ .env del proyecto: no existe (solo lo necesita el modo completo)
+    → Copie .env.example a .env y cree las cuentas con scripts\mysql\configurar_mysql.py (ver docs/instalacion/).
+✓ MySQL: responde en 127.0.0.1:3306
+✓ Docker: Docker 29.9.3 y Compose 5.7.0
+✓ Puerto 8000 (API): libre
+✓ Puerto 8501 (panel): libre
+✓ Puerto 8080 (Airflow): libre
+✓ Puerto 8081 (phpMyAdmin): libre
+
+Modo completo: falta lo marcado con ✗; siga las acciones sugeridas y vuelva a ejecutar.
+
+$ .\.venv\Scripts\python.exe scripts\mysql\configurar_mysql.py 
+# código de salida: 0 · el tiempo incluye la espera de la contraseña · [c05]
+2026-11-16 11:02:49 INFO etl.__main__ esta carpeta no es un repositorio de Git (por ejemplo, viene de un zip); su .gitignore ignora .env, así que no se versionará si más adelante se usa Git
+2026-11-16 11:12:48 INFO etl.__main__ servidor MySQL 8.0.45; lower_case_table_names=1; character_set_server=utf8mb4
+2026-11-16 11:12:49 INFO etl.__main__ variables escritas en .env: MYSQL_HOST, MYSQL_PORT, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE, MYSQL_DATABASE_PRUEBA
+2026-11-16 11:12:49 INFO etl.__main__ Listo
+
+$ .\.venv\Scripts\python.exe scripts\mysql\configurar_mysql.py --usuario-docker --origen localhost
+# código de salida: 0 · el tiempo incluye la espera de la contraseña · [c06]
+2026-11-16 11:13:04 INFO etl.__main__ esta carpeta no es un repositorio de Git (por ejemplo, viene de un zip); su .gitignore ignora .env, así que no se versionará si más adelante se usa Git
+2026-11-16 11:14:50 INFO etl.__main__ servidor MySQL 8.0.45; lower_case_table_names=1; character_set_server=utf8mb4
+2026-11-16 11:14:50 INFO etl.__main__ variables escritas en .env: MYSQL_DOCKER_USER, MYSQL_DOCKER_PASSWORD, MYSQL_DOCKER_ORIGEN
+2026-11-16 11:14:50 INFO etl.__main__ Listo
+
+$ .\.venv\Scripts\python.exe scripts\mysql\configurar_mysql.py --usuario-lectura
+# código de salida: 0 · el tiempo incluye la espera de la contraseña · [c07]
+2026-11-16 11:14:56 INFO etl.__main__ esta carpeta no es un repositorio de Git (por ejemplo, viene de un zip); su .gitignore ignora .env, así que no se versionará si más adelante se usa Git
+2026-11-16 11:15:08 INFO etl.__main__ servidor MySQL 8.0.45; lower_case_table_names=1; character_set_server=utf8mb4
+2026-11-16 11:15:08 INFO etl.__main__ variables escritas en .env: MYSQL_LECTURA_USER, MYSQL_LECTURA_PASSWORD
+2026-11-16 11:15:08 INFO etl.__main__ Listo
+
+$ .\.venv\Scripts\python.exe scripts\mysql\configurar_mysql.py --solo-verificar
+# código de salida: 0 · segundos: 0.6 · [c08]
+(sin salida)
+
+$ .\.venv\Scripts\python.exe scripts\orquestacion\preparar_airflow.py --verificar
+# código de salida: 1 · segundos: 1.1 · [c09]
+✓ la carpeta de Airflow es hermana del proyecto
+✗ faltan las carpetas dags, logs, plugins, config
+✗ distintos o ausentes: docker-compose.yaml, Dockerfile, requirements-airflow.txt
+✗ el DAG de la carpeta de Airflow falta o es distinto del del proyecto
+✗ al `.env` de Airflow le faltan: AIRFLOW_UID, _AIRFLOW_WWW_USER_PASSWORD, FERNET_KEY, POSTGRES_PASSWORD, AIRFLOW__API_AUTH__JWT_SECRET, PROYECTO_NOMBRE, AIRFLOW_PUERTO (use --completar)
+✓ nombre de proyecto de Compose: airflow-medallon (el de la carpeta de Airflow, por defecto)
+✓ `.env` del proyecto con las variables MYSQL_DOCKER_* de la carga
+✓ Docker 29.9.3 y Compose 5.7.0
+! ya existe el volumen airflow-medallon_postgres-db-volume (creado 2026-11-13 22:03) y se va a crear un `.env` nuevo con una contraseña de Postgres nueva: si es de otra instalación, el apiserver quedará «unhealthy» con «password authentication failed for user airflow». Para empezar con una base nueva sin tocar ese volumen, repita con --nombre-compose <otro nombre>; borrarlo (docker compose down -v) elimina esa instalación de Airflow
+✓ puerto 8080 libre
+
+$ .\.venv\Scripts\python.exe scripts\orquestacion\preparar_airflow.py --nombre-compose airflow-zip
+# código de salida: 0 · segundos: 1 · [c10]
+✓ Docker 29.9.3 y Compose 5.7.0
+✓ carpetas creadas: dags, logs, plugins, config; copiados: docker-compose.yaml, Dockerfile, requirements-airflow.txt, dags/medallon_etl_dag.py
+✓ `.env` de Airflow: creado
+✓ nombre de proyecto de Compose: airflow-zip (guardado en el `.env` de Airflow)
+Siguientes pasos (PowerShell):
+  cd "<ruta>\airflow-medallon"
+  docker compose build
+  docker compose up airflow-init
+  docker compose up -d
+Interfaz: http://127.0.0.1:8080 · usuario: airflow · contraseña: la variable _AIRFLOW_WWW_USER_PASSWORD de airflow-medallon\.env (no se imprime aquí)
+Activar y disparar el DAG:  docker compose exec airflow-scheduler airflow dags unpause medallon_etl_sismo
+Para apagar:  docker compose down
+
+$ .\.venv\Scripts\python.exe scripts\orquestacion\preparar_airflow.py --verificar
+# código de salida: 0 · segundos: 0.9 · [c11]
+✓ la carpeta de Airflow es hermana del proyecto
+✓ carpetas dags, logs, plugins y config presentes
+✓ compose, Dockerfile y requisitos iguales a los del proyecto
+✓ DAG igual al del proyecto (sha256)
+✓ `.env` de Airflow con sus 7 variables
+✓ PROYECTO_NOMBRE coincide con la carpeta del proyecto
+✓ nombre de proyecto de Compose: airflow-zip (guardado en el `.env` de Airflow)
+✓ `.env` del proyecto con las variables MYSQL_DOCKER_* de la carga
+✓ Docker 29.9.3 y Compose 5.7.0
+✓ puerto 8080 libre
+
+$ Set-Location ..\airflow-medallon
+# código de salida: 0 · segundos: 0 · [c12]
+(sin salida)
+
+$ docker compose build
+# código de salida: 0 · segundos: 8.9 · [c13]
+#1 [internal] load local bake definitions
+#1 reading from stdin 4.29kB 0.1s done
+#1 DONE 0.1s
+
+#2 [airflow-dag-processor internal] load build definition from Dockerfile
+#2 transferring dockerfile: 239B 0.0s done
+#2 DONE 0.0s
+
+#3 [airflow-dag-processor internal] load metadata for docker.io/apache/airflow:3.3.2
+#3 DONE 0.1s
+
+#4 [airflow-dag-processor internal] load .dockerignore
+#4 transferring context: 2B done
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [airflow-apiserver 1/3] FROM docker.io/apache/airflow:3.3.2@sha256:<hash>
+#5 resolve docker.io/apache/airflow:3.3.2@sha256:<hash> 0.0s done
+#5 DONE 0.0s
+
+#6 [airflow-triggerer internal] load build context
+#6 transferring context: 183B done
+#6 DONE 0.0s
+
+#7 [airflow-scheduler 2/3] COPY requirements-airflow.txt /requirements-airflow.txt
+[… 62 líneas más (la salida completa tiene 112) …]
+#14 exporting manifest sha256:65f288a74376f1f05bfd3c986c02b5f465e78808c1728ebdceacc05477d2eb45 0.1s done
+#14 exporting config sha256:a52bba0a90be32abcd4355d9712139448eeae044795bd93fd82db657771ad84d 0.1s done
+#14 exporting attestation manifest sha256:f3c4eb57d623e0d7b7d2eb1e6237d21dadbbe95db11f9f4eb9241b09b4ba57a3 0.2s done
+#14 exporting manifest list sha256:5a566e68155f79ed232dce39167fc059e105c54e84478552e1a2ca90790fe276 0.2s done
+#14 naming to docker.io/library/airflow-zip-airflow-scheduler:latest 0.0s done
+#14 unpacking to docker.io/library/airflow-zip-airflow-scheduler:latest 0.0s done
+#14 DONE 0.9s
+
+#15 [airflow-worker] resolving provenance for metadata file
+#15 DONE 0.4s
+
+#16 [airflow-init] resolving provenance for metadata file
+#16 DONE 0.0s
+
+#17 [airflow-apiserver] resolving provenance for metadata file
+#17 DONE 0.4s
+
+#18 [airflow-dag-processor] resolving provenance for metadata file
+#18 DONE 0.2s
+
+#19 [airflow-triggerer] resolving provenance for metadata file
+#19 DONE 0.1s
+
+#20 [airflow-scheduler] resolving provenance for metadata file
+#20 DONE 0.3s
+
+$ docker compose up airflow-init
+# código de salida: 0 · segundos: 42.2 · [c14]
+Attaching to airflow-init-1
+airflow-init-1  |
+airflow-init-1  | Creating missing opt dirs if missing:
+airflow-init-1  |
+airflow-init-1  |
+airflow-init-1  | Airflow version:
+airflow-init-1  | 2026-11-16T16:15:58.808690Z [info     ] Performing upgrade to the metadata database [airflow.cli.commands.db_command] loc=db_command.py:134 url=<URL de la base con la clave tapada por Airflow>
+airflow-init-1  | 2026-11-16T16:15:59.214328Z [info     ] Context impl PostgresqlImpl.   [alembic.runtime.migration] loc=migration.py:205
+airflow-init-1  | 2026-11-16T16:15:59.214541Z [info     ] Will assume transactional DDL. [alembic.runtime.migration] loc=migration.py:208
+airflow-init-1  | 2026-11-16T16:16:01.556637Z [warning  ] starlette.middleware.wsgi is deprecated and will be removed in a future release. Please refer to https://github.com/abersheeran/a2wsgi as a replacement. [py.warnings] category=StarletteDeprecationWarning filename=/home/airflow/.local/lib/python3.13/site-packages/fastapi/middleware/wsgi.py lineno=1
+airflow-init-1  | 2026-11-16T16:16:01.630850Z [info     ] Context impl PostgresqlImpl.   [alembic.runtime.migration] loc=migration.py:205
+airflow-init-1  | 2026-11-16T16:16:01.631035Z [info     ] Will assume transactional DDL. [alembic.runtime.migration] loc=migration.py:208
+airflow-init-1  | 2026-11-16T16:16:01.632254Z [info     ] Creating Airflow database tables from the ORM [airflow.utils.db] loc=db.py:749
+airflow-init-1  | 2026-11-16T16:16:01.632432Z [info     ] Creating global lock context   [airflow.utils.db] loc=db.py:730
+airflow-init-1  | 2026-11-16T16:16:01.640158Z [info     ] Pool status: Pool size: 5  Connections in pool: 0 Current Overflow: -3 Current Checked out connections: 2 [airflow.utils.db] loc=db.py:733
+airflow-init-1  | 2026-11-16T16:16:01.640329Z [info     ] Creating metadata              [airflow.utils.db] loc=db.py:735
+airflow-init-1  | 2026-11-16T16:16:02.589742Z [info     ] Getting alembic config         [airflow.utils.db] loc=db.py:738
+airflow-init-1  | 2026-11-16T16:16:02.592210Z [info     ] Stamping migration head        [airflow.utils.db] loc=db.py:741
+airflow-init-1  | 2026-11-16T16:16:02.598567Z [info     ] Context impl PostgresqlImpl.   [alembic.runtime.migration] loc=migration.py:205
+airflow-init-1  | 2026-11-16T16:16:02.598804Z [info     ] Will assume transactional DDL. [alembic.runtime.migration] loc=migration.py:208
+airflow-init-1  | 2026-11-16T16:16:02.760358Z [info     ] Running stamp_revision  -> d2f4e1b3c5a7 [alembic.runtime.migration] loc=migration.py:611
+airflow-init-1  | 2026-11-16T16:16:02.765052Z [info     ] Airflow database tables created [airflow.utils.db] loc=db.py:744
+airflow-init-1  | 2026-11-16T16:16:02.765587Z [info     ] Context impl PostgresqlImpl.   [alembic.runtime.migration] loc=migration.py:205
+airflow-init-1  | 2026-11-16T16:16:02.765721Z [info     ] Will assume transactional DDL. [alembic.runtime.migration] loc=migration.py:208
+airflow-init-1  | 2026-11-16T16:16:02.767328Z [info     ] Creating FABDBManager tables from the ORM [airflow.providers.fab.auth_manager.models.db.FABDBManager] loc=db_manager.py:137
+[… 441 líneas más (la salida completa tiene 491) …]
+airflow-init-1  | Files in shared volumes:
+airflow-init-1  |
+airflow-init-1  | /opt/airflow/config:
+airflow-init-1  | total 180
+airflow-init-1  | drwxrwxrwx 1 airflow root   4096 Nov 16 16:15 .
+airflow-init-1  | drwxrwxr-x 1 airflow root   4096 Nov 16 16:15 ..
+airflow-init-1  | -rw------- 1 airflow root 176256 Nov 16 16:15 airflow.cfg
+airflow-init-1  |
+airflow-init-1  | /opt/airflow/dags:
+airflow-init-1  | total 16
+airflow-init-1  | drwxrwxrwx 1 airflow root 4096 Nov 16 16:15 .
+airflow-init-1  | drwxrwxr-x 1 airflow root 4096 Nov 16 16:15 ..
+airflow-init-1  | -rwxrwxrwx 1 airflow root 8896 Nov 16 15:51 medallon_etl_dag.py
+airflow-init-1  |
+airflow-init-1  | /opt/airflow/logs:
+airflow-init-1  | total 4
+airflow-init-1  | drwxrwxrwx 1 airflow root 4096 Nov 16 16:15 .
+airflow-init-1  | drwxrwxr-x 1 airflow root 4096 Nov 16 16:15 ..
+airflow-init-1  |
+airflow-init-1  | /opt/airflow/plugins:
+airflow-init-1  | total 4
+airflow-init-1  | drwxrwxrwx 1 airflow root 4096 Nov 16 16:15 .
+airflow-init-1  | drwxrwxr-x 1 airflow root 4096 Nov 16 16:15 ..
+
+airflow-init-1 exited with code 0
+
+$ docker compose up -d
+# código de salida: 0 · segundos: 55 · [c15]
+ Container airflow-zip-redis-1 Running
+ Container airflow-zip-postgres-1 Running
+ Container airflow-zip-airflow-scheduler-1 Creating
+ Container airflow-zip-airflow-apiserver-1 Creating
+ Container airflow-zip-airflow-dag-processor-1 Creating
+ Container airflow-zip-airflow-triggerer-1 Creating
+ Container airflow-zip-airflow-triggerer-1 Created
+ Container airflow-zip-airflow-apiserver-1 Created
+ Container airflow-zip-airflow-worker-1 Creating
+ Container airflow-zip-airflow-scheduler-1 Created
+ Container airflow-zip-airflow-dag-processor-1 Created
+ Container airflow-zip-airflow-worker-1 Created
+ Container airflow-zip-redis-1 Waiting
+ Container airflow-zip-postgres-1 Waiting
+ Container airflow-zip-redis-1 Healthy
+ Container airflow-zip-postgres-1 Healthy
+ Container airflow-zip-airflow-init-1 Starting
+ Container airflow-zip-airflow-init-1 Started
+ Container airflow-zip-airflow-init-1 Waiting
+ Container airflow-zip-airflow-init-1 Exited
+ Container airflow-zip-airflow-dag-processor-1 Starting
+ Container airflow-zip-airflow-scheduler-1 Starting
+ Container airflow-zip-airflow-triggerer-1 Starting
+ Container airflow-zip-airflow-apiserver-1 Starting
+ Container airflow-zip-airflow-dag-processor-1 Started
+ Container airflow-zip-airflow-scheduler-1 Started
+ Container airflow-zip-airflow-triggerer-1 Started
+ Container airflow-zip-airflow-apiserver-1 Started
+ Container airflow-zip-airflow-apiserver-1 Waiting
+ Container airflow-zip-airflow-apiserver-1 Healthy
+ Container airflow-zip-airflow-worker-1 Starting
+ Container airflow-zip-airflow-worker-1 Started
+
+$ docker compose ps -a
+# código de salida: 0 · segundos: 0.7 · [c16]
+NAME                                  IMAGE                                                                                        COMMAND                  SERVICE                 CREATED              STATUS                          PORTS
+airflow-zip-airflow-apiserver-1       airflow-zip-airflow-apiserver                                                                "/usr/bin/dumb-init …"   airflow-apiserver       About a minute ago   Up About a minute (healthy)     127.0.0.1:8080->8080/tcp
+airflow-zip-airflow-dag-processor-1   airflow-zip-airflow-dag-processor                                                            "/usr/bin/dumb-init …"   airflow-dag-processor   About a minute ago   Up About a minute (healthy)     8080/tcp
+airflow-zip-airflow-init-1            airflow-zip-airflow-init                                                                     "/bin/bash -c 'if [[…"   airflow-init            2 minutes ago        Exited (0) About a minute ago
+airflow-zip-airflow-scheduler-1       airflow-zip-airflow-scheduler                                                                "/usr/bin/dumb-init …"   airflow-scheduler       About a minute ago   Up About a minute (healthy)     8080/tcp
+airflow-zip-airflow-triggerer-1       airflow-zip-airflow-triggerer                                                                "/usr/bin/dumb-init …"   airflow-triggerer       About a minute ago   Up About a minute (healthy)     8080/tcp
+airflow-zip-airflow-worker-1          airflow-zip-airflow-worker                                                                   "/usr/bin/dumb-init …"   airflow-worker          About a minute ago   Up 45 seconds (healthy)         8080/tcp
+airflow-zip-postgres-1                postgres:16@sha256:<hash>          "docker-entrypoint.s…"   postgres                2 minutes ago        Up 2 minutes (healthy)          5432/tcp
+airflow-zip-redis-1                   redis:7.2-bookworm@sha256:<hash>   "docker-entrypoint.s…"   redis                   2 minutes ago        Up 2 minutes (healthy)          6379/tcp
+
+$ (Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8080/api/v2/monitor/health).StatusCode
+# código de salida: 0 · segundos: 0.2 · [c17]
+200
+
+$ (Select-String -Path .env -Pattern '^_AIRFLOW_WWW_USER_PASSWORD=').Line.Split('=', 2)[1] | Set-Clipboard
+# código de salida: 0 · segundos: 0.1 · [c18]
+(sin salida)
+
+$ Set-Clipboard -Value $null
+# código de salida: 0 · segundos: 0 · [c19]
+(sin salida)
+
+$ docker compose exec airflow-scheduler airflow dags list-import-errors
+# código de salida: 0 · segundos: 4.2 · [c20]
+No data found
+
+$ docker compose exec airflow-scheduler airflow dags unpause medallon_etl_sismo
+# código de salida: 0 · segundos: 4.1 · [c21]
+dag_id             | is_paused
+===================+==========
+medallon_etl_sismo | True
+
+$ docker compose exec airflow-scheduler airflow dags trigger medallon_etl_sismo
+# código de salida: 0 · segundos: 4.7 · [c22]
+2026-11-16T16:18:51.218038Z [info     ] creating dag run               [airflow.serialization.definitions.dag] loc=dag.py:615 logical_date=None partition_key=None run_after=datetime.datetime(2026, 11, 16, 16, 18, 51, 184161, tzinfo=Timezone('UTC')) run_id=manual__2026-11-16T16:18:51.184161+00:00
+     |                    |                        |                     |                   |          | last_scheduling_decisio |              |          |            |        |
+conf | dag_id             | dag_run_id             | data_interval_start | data_interval_end | end_date | n                       | logical_date | run_type | start_date | state  | triggering_user_name
+=====+====================+========================+=====================+===================+==========+=========================+==============+==========+============+========+=====================
+{}   | medallon_etl_sismo | manual__2026-11-16T16: | None                | None              | None     | None                    | None         | manual   | None       | queued | airflow
+     |                    | 18:51.184161+00:00     |                     |                   |          |                         |              |          |            |        |
+
+$ docker compose exec airflow-scheduler airflow dags list-runs medallon_etl_sismo
+# código de salida: 0 · segundos: 4 · [c23]
+dag_id             | run_id                               | state   | run_after                        | logical_date              | start_date                       | end_date
+===================+======================================+=========+==================================+===========================+==================================+=================================
+medallon_etl_sismo | manual__2026-11-16T16:18:51.184161+0 | success | 2026-11-16T16:18:51.184161+00:00 |                           | 2026-11-16T16:18:52.300187+00:00 | 2026-11-16T16:19:04.878922+00:00
+                   | 0:00                                 |         |                                  |                           |                                  |
+medallon_etl_sismo | scheduled__2026-11-16T11:00:00+00:00 | success | 2026-11-16T11:00:00+00:00        | 2026-11-16T11:00:00+00:00 | 2026-11-16T16:18:47.483307+00:00 | 2026-11-16T16:19:04.896181+00:00
+
+$ docker compose exec airflow-scheduler airflow tasks states-for-dag-run medallon_etl_sismo manual__2026-11-16T16:18:51.184161+00:00
+# código de salida: 0 · segundos: 3.8 · [c24]
+dag_id             | logical_date | task_id              | state   | start_date                       | end_date
+===================+==============+======================+=========+==================================+=================================
+medallon_etl_sismo |              | validar_bronze       | success | 2026-11-16T16:18:52.778161+00:00 | 2026-11-16T16:18:55.827005+00:00
+medallon_etl_sismo |              | transformar_a_silver | success | 2026-11-16T16:18:56.012170+00:00 | 2026-11-16T16:18:58.891568+00:00
+medallon_etl_sismo |              | integrar_a_gold      | success | 2026-11-16T16:18:59.748331+00:00 | 2026-11-16T16:19:01.641074+00:00
+medallon_etl_sismo |              | cargar_datawarehouse | success | 2026-11-16T16:19:02.550478+00:00 | 2026-11-16T16:19:04.809056+00:00
+
+$ .\.venv\Scripts\python.exe scripts\escanear_secretos.py --canario-env
+# código de salida: 0 · segundos: 28.5 · [c25]
+historial de git: no revisado (esta carpeta no es un repositorio de Git)
+canarios leídos de .env (variables): MYSQL_DOCKER_PASSWORD, MYSQL_LECTURA_PASSWORD, MYSQL_PASSWORD
+hallazgos: 0
+
+$ .\.venv\Scripts\python.exe scripts\escanear_secretos.py --raiz ..\airflow-medallon --env-extra .env --solo-canario
+# código de salida: 0 · segundos: 1.7 · [c26]
+historial de git: no revisado (esta carpeta no es un repositorio de Git)
+canarios leídos de .env (variables): AIRFLOW__API_AUTH__JWT_SECRET, FERNET_KEY, MYSQL_DOCKER_PASSWORD@etl_zip, MYSQL_LECTURA_PASSWORD@etl_zip, MYSQL_PASSWORD@etl_zip, POSTGRES_PASSWORD, _AIRFLOW_WWW_USER_PASSWORD
+hallazgos: 0
+
+$ Set-Location ..\etl_zip
+# código de salida: 0 · segundos: 0 · [c27]
+(sin salida)
+
+$ docker compose -f servicios\phpmyadmin\docker-compose.yaml up -d
+# código de salida: 0 · segundos: 1 · [c28]
+ Network sismo-phpmyadmin_default Creating
+ Network sismo-phpmyadmin_default Creating
+ Network sismo-phpmyadmin_default Created
+ Network sismo-phpmyadmin_default Created
+ Container sismo-phpmyadmin-phpmyadmin-1 Creating
+ Container sismo-phpmyadmin-phpmyadmin-1 Created
+ Container sismo-phpmyadmin-phpmyadmin-1 Starting
+ Container sismo-phpmyadmin-phpmyadmin-1 Started
+
+$ docker compose -f servicios\phpmyadmin\docker-compose.yaml ps
+# código de salida: 0 · segundos: 0.5 · [c29]
+NAME                            IMAGE                                                                                      COMMAND                  SERVICE      CREATED        STATUS                  PORTS
+sismo-phpmyadmin-phpmyadmin-1   phpmyadmin:5.2.3@sha256:<hash>   "/docker-entrypoint.…"   phpmyadmin   1 second ago   Up Less than a second   127.0.0.1:8081->80/tcp
+
+$ (Select-String -Path .env -Pattern '^MYSQL_LECTURA_PASSWORD=').Line.Split('=', 2)[1] | Set-Clipboard
+# código de salida: 0 · segundos: 0 · [c30]
+(sin salida)
+
+$ Set-Clipboard -Value $null
+# código de salida: 0 · segundos: 0 · [c31]
+(sin salida)
+
+$ docker compose -f servicios\phpmyadmin\docker-compose.yaml down
+# código de salida: 0 · segundos: 2.1 · [c32]
+ Container sismo-phpmyadmin-phpmyadmin-1 Stopping
+ Container sismo-phpmyadmin-phpmyadmin-1 Stopped
+ Container sismo-phpmyadmin-phpmyadmin-1 Removing
+ Container sismo-phpmyadmin-phpmyadmin-1 Removed
+ Network sismo-phpmyadmin_default Removing
+ Network sismo-phpmyadmin_default Removed
+
+$ Set-Location ..\airflow-medallon
+# código de salida: 0 · segundos: 0 · [c33]
+(sin salida)
+
+$ docker compose down
+# código de salida: 0 · segundos: 6.8 · [c34]
+ Container airflow-zip-airflow-triggerer-1 Stopping
+ Container airflow-zip-airflow-dag-processor-1 Stopping
+ Container airflow-zip-airflow-worker-1 Stopping
+ Container airflow-zip-airflow-scheduler-1 Stopping
+ Container airflow-zip-airflow-dag-processor-1 Stopped
+ Container airflow-zip-airflow-dag-processor-1 Removing
+ Container airflow-zip-airflow-dag-processor-1 Removed
+ Container airflow-zip-airflow-scheduler-1 Stopped
+ Container airflow-zip-airflow-scheduler-1 Removing
+ Container airflow-zip-airflow-scheduler-1 Removed
+ Container airflow-zip-airflow-triggerer-1 Stopped
+ Container airflow-zip-airflow-triggerer-1 Removing
+ Container airflow-zip-airflow-triggerer-1 Removed
+ Container airflow-zip-airflow-worker-1 Stopped
+ Container airflow-zip-airflow-worker-1 Removing
+ Container airflow-zip-airflow-worker-1 Removed
+ Container airflow-zip-airflow-apiserver-1 Stopping
+ Container airflow-zip-airflow-apiserver-1 Stopped
+ Container airflow-zip-airflow-apiserver-1 Removing
+ Container airflow-zip-airflow-apiserver-1 Removed
+ Container airflow-zip-airflow-init-1 Stopping
+ Container airflow-zip-airflow-init-1 Stopped
+ Container airflow-zip-airflow-init-1 Removing
+ Container airflow-zip-airflow-init-1 Removed
+ Container airflow-zip-postgres-1 Stopping
+ Container airflow-zip-redis-1 Stopping
+ Container airflow-zip-postgres-1 Stopped
+ Container airflow-zip-postgres-1 Removing
+ Container airflow-zip-postgres-1 Removed
+ Container airflow-zip-redis-1 Stopped
+ Container airflow-zip-redis-1 Removing
+ Container airflow-zip-redis-1 Removed
+ Network airflow-zip_default Removing
+ Network airflow-zip_default Removed
+
+$ docker ps
+# código de salida: 0 · segundos: 0.2 · [c35]
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+--- Escáner de secretos con canario (c25 sobre el proyecto, c26 sobre la carpeta de Airflow con los tres .env)
+Resultado de los dos comandos: «hallazgos: 0» y los canarios leídos son solo los NOMBRES de las variables (MYSQL_*, FERNET_KEY, POSTGRES_PASSWORD,
+_AIRFLOW_WWW_USER_PASSWORD y AIRFLOW__API_AUTH__JWT_SECRET): ningún valor de ningún .env aparece en el árbol ni en 84 archivos de registros de Airflow.
+
+--- Permisos dentro del contenedor tras `airflow-init` (ls -ldn): logs, dags, plugins y config con dueño 50000:0; /opt/airflow/medallon (el proyecto) con dueño 0:0;
+el intento de crear un archivo en el proyecto montado respondió «Read-only file system». El archivo airflow.cfg quedó con dueño 50000:0.
+Carpetas del zip nuevo tras la prueba: solo se añadieron .env (el que escribió configurar_mysql.py) y logs/etl_20261116.log (de los scripts que se corrieron en el equipo); Docker no
+escribió nada en el proyecto.
+
+--- Ejecución del DAG (primera pasada): dos ejecuciones en success (la que se disparó a mano y la programada de las 06:00 de hoy, que Airflow lanzó sola al activar el DAG);
+las cuatro tareas validar_bronze, transformar_a_silver, integrar_a_gold y cargar_datawarehouse terminaron en success en unos 12 s.
+La contraseña de la interfaz se comprobó con un POST a /auth/token (código 201) leyéndola del .env EN MEMORIA, sin imprimirla (ver la declaración al final).
+
+SEGUNDA PASADA (commit cafd740, compose con DF-20, volumen de Postgres nuevo `airflow-zip2`)
+
+$ docker compose build
+# código de salida: 0 · segundos: 6.5 · [c13]
+#1 [internal] load local bake definitions
+#1 reading from stdin 4.31kB 0.1s done
+#1 DONE 0.1s
+
+#2 [airflow-triggerer internal] load build definition from Dockerfile
+#2 transferring dockerfile: 239B 0.0s done
+#2 DONE 0.0s
+
+#3 [airflow-init internal] load metadata for docker.io/apache/airflow:3.3.2
+#3 DONE 0.1s
+
+#4 [airflow-triggerer internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [airflow-triggerer internal] load build context
+#5 DONE 0.0s
+
+#6 [airflow-triggerer 1/3] FROM docker.io/apache/airflow:3.3.2@sha256:<hash>
+#6 resolve docker.io/apache/airflow:3.3.2@sha256:<hash> 0.1s done
+#6 resolve docker.io/apache/airflow:3.3.2@sha256:<hash> 0.1s done
+#6 DONE 0.1s
+
+#5 [airflow-worker internal] load build context
+#5 transferring context: 46B done
+[… 68 líneas más (la salida completa tiene 118) …]
+#14 exporting manifest sha256:2fb91ed68d1d633f29b95d7253e39ad30fe858295dcda356cf61868c35980273 0.3s done
+#14 exporting config sha256:4b635653eeba568e36c71bc297cab48d4e16694ded0b7f7323a4be9f147ec06a 0.3s done
+#14 exporting attestation manifest sha256:bf1a1c5762eccd1027d9c1f0372ad3f4d5d60086c1582ddb10d2472d8984814b 0.3s done
+#14 exporting manifest list sha256:8aaa34c2f389e6e4f1cf4a9d7a9c6969e25d2779cc042891c88bef6691741fad 0.2s done
+#14 naming to docker.io/library/airflow-zip2-airflow-scheduler:latest 0.1s done
+#14 unpacking to docker.io/library/airflow-zip2-airflow-scheduler:latest 0.1s done
+#14 DONE 1.9s
+
+#15 [airflow-apiserver] resolving provenance for metadata file
+#15 DONE 0.6s
+
+#16 [airflow-dag-processor] resolving provenance for metadata file
+#16 DONE 0.1s
+
+#17 [airflow-triggerer] resolving provenance for metadata file
+#17 DONE 0.6s
+
+#18 [airflow-init] resolving provenance for metadata file
+#18 DONE 0.4s
+
+#19 [airflow-worker] resolving provenance for metadata file
+#19 DONE 0.3s
+
+#20 [airflow-scheduler] resolving provenance for metadata file
+#20 DONE 0.0s
+
+$ docker compose up airflow-init
+# código de salida: 0 · segundos: 63.3 · [c14]
+Attaching to airflow-init-1
+airflow-init-1  |
+airflow-init-1  | Creating missing opt dirs if missing:
+airflow-init-1  |
+airflow-init-1  |
+airflow-init-1  | Airflow version:
+airflow-init-1  | 2026-11-16T17:11:43.709538Z [info     ] Performing upgrade to the metadata database [airflow.cli.commands.db_command] loc=db_command.py:134 url=<URL de la base con la clave tapada por Airflow>
+airflow-init-1  | 2026-11-16T17:11:44.115158Z [info     ] Context impl PostgresqlImpl.   [alembic.runtime.migration] loc=migration.py:205
+airflow-init-1  | 2026-11-16T17:11:44.115403Z [info     ] Will assume transactional DDL. [alembic.runtime.migration] loc=migration.py:208
+airflow-init-1  | 2026-11-16T17:11:46.321586Z [warning  ] starlette.middleware.wsgi is deprecated and will be removed in a future release. Please refer to https://github.com/abersheeran/a2wsgi as a replacement. [py.warnings] category=StarletteDeprecationWarning filename=/home/airflow/.local/lib/python3.13/site-packages/fastapi/middleware/wsgi.py lineno=1
+airflow-init-1  | 2026-11-16T17:11:46.391463Z [info     ] Context impl PostgresqlImpl.   [alembic.runtime.migration] loc=migration.py:205
+airflow-init-1  | 2026-11-16T17:11:46.391657Z [info     ] Will assume transactional DDL. [alembic.runtime.migration] loc=migration.py:208
+airflow-init-1  | 2026-11-16T17:11:46.392879Z [info     ] Creating Airflow database tables from the ORM [airflow.utils.db] loc=db.py:749
+airflow-init-1  | 2026-11-16T17:11:46.393075Z [info     ] Creating global lock context   [airflow.utils.db] loc=db.py:730
+airflow-init-1  | 2026-11-16T17:11:46.401504Z [info     ] Pool status: Pool size: 5  Connections in pool: 0 Current Overflow: -3 Current Checked out connections: 2 [airflow.utils.db] loc=db.py:733
+airflow-init-1  | 2026-11-16T17:11:46.401674Z [info     ] Creating metadata              [airflow.utils.db] loc=db.py:735
+airflow-init-1  | 2026-11-16T17:11:47.903131Z [info     ] Getting alembic config         [airflow.utils.db] loc=db.py:738
+airflow-init-1  | 2026-11-16T17:11:47.905138Z [info     ] Stamping migration head        [airflow.utils.db] loc=db.py:741
+airflow-init-1  | 2026-11-16T17:11:47.908587Z [info     ] Context impl PostgresqlImpl.   [alembic.runtime.migration] loc=migration.py:205
+airflow-init-1  | 2026-11-16T17:11:47.908763Z [info     ] Will assume transactional DDL. [alembic.runtime.migration] loc=migration.py:208
+airflow-init-1  | 2026-11-16T17:11:48.045682Z [info     ] Running stamp_revision  -> d2f4e1b3c5a7 [alembic.runtime.migration] loc=migration.py:611
+airflow-init-1  | 2026-11-16T17:11:48.053096Z [info     ] Airflow database tables created [airflow.utils.db] loc=db.py:744
+airflow-init-1  | 2026-11-16T17:11:48.054086Z [info     ] Context impl PostgresqlImpl.   [alembic.runtime.migration] loc=migration.py:205
+airflow-init-1  | 2026-11-16T17:11:48.054292Z [info     ] Will assume transactional DDL. [alembic.runtime.migration] loc=migration.py:208
+airflow-init-1  | 2026-11-16T17:11:48.056641Z [info     ] Creating FABDBManager tables from the ORM [airflow.providers.fab.auth_manager.models.db.FABDBManager] loc=db_manager.py:137
+[… 567 líneas más (la salida completa tiene 617) …]
+airflow-init-1  | total 180
+airflow-init-1  | drwxrwxrwx 1 airflow root   4096 Nov 16 16:15 .
+airflow-init-1  | drwxrwxr-x 1 airflow root   4096 Nov 16 17:11 ..
+airflow-init-1  | -rw------- 1 airflow root 176256 Nov 16 16:15 airflow.cfg
+airflow-init-1  |
+airflow-init-1  | /opt/airflow/dags:
+airflow-init-1  | total 16
+airflow-init-1  | drwxrwxrwx 1 airflow root 4096 Nov 16 16:17 .
+airflow-init-1  | drwxrwxr-x 1 airflow root 4096 Nov 16 17:11 ..
+airflow-init-1  | drwxrwxr-x 1 airflow root 4096 Nov 16 16:17 __pycache__
+airflow-init-1  | -rwxrwxrwx 1 airflow root 8896 Nov 16 15:51 medallon_etl_dag.py
+airflow-init-1  |
+airflow-init-1  | /opt/airflow/logs:
+airflow-init-1  | total 4
+airflow-init-1  | drwxrwxrwx 1 airflow root 4096 Nov 16 16:18 .
+airflow-init-1  | drwxrwxr-x 1 airflow root 4096 Nov 16 17:11 ..
+airflow-init-1  | drwxrwxr-x 1 airflow root 4096 Nov 16 17:08 dag_id=medallon_etl_sismo
+airflow-init-1  | drwxrwxr-x 1 airflow root 4096 Nov 16 16:17 dag_processor
+airflow-init-1  |
+airflow-init-1  | /opt/airflow/plugins:
+airflow-init-1  | total 4
+airflow-init-1  | drwxrwxrwx 1 airflow root 4096 Nov 16 16:15 .
+airflow-init-1  | drwxrwxr-x 1 airflow root 4096 Nov 16 17:11 ..
+
+airflow-init-1 exited with code 0
+
+$ docker compose up -d
+# código de salida: 0 · segundos: 77.3 · [c15]
+ Container airflow-zip2-postgres-1 Running
+ Container airflow-zip2-redis-1 Running
+ Container airflow-zip2-airflow-scheduler-1 Creating
+ Container airflow-zip2-airflow-dag-processor-1 Creating
+ Container airflow-zip2-airflow-triggerer-1 Creating
+ Container airflow-zip2-airflow-apiserver-1 Creating
+ Container airflow-zip2-airflow-scheduler-1 Created
+ Container airflow-zip2-airflow-dag-processor-1 Created
+ Container airflow-zip2-airflow-triggerer-1 Created
+ Container airflow-zip2-airflow-apiserver-1 Created
+ Container airflow-zip2-airflow-worker-1 Creating
+ Container airflow-zip2-airflow-worker-1 Created
+ Container airflow-zip2-postgres-1 Waiting
+ Container airflow-zip2-redis-1 Waiting
+ Container airflow-zip2-redis-1 Healthy
+ Container airflow-zip2-postgres-1 Healthy
+ Container airflow-zip2-airflow-init-1 Starting
+ Container airflow-zip2-airflow-init-1 Started
+ Container airflow-zip2-airflow-init-1 Waiting
+ Container airflow-zip2-airflow-init-1 Exited
+ Container airflow-zip2-airflow-apiserver-1 Starting
+ Container airflow-zip2-airflow-dag-processor-1 Starting
+ Container airflow-zip2-airflow-scheduler-1 Starting
+ Container airflow-zip2-airflow-triggerer-1 Starting
+ Container airflow-zip2-airflow-apiserver-1 Started
+ Container airflow-zip2-airflow-apiserver-1 Waiting
+ Container airflow-zip2-airflow-dag-processor-1 Started
+ Container airflow-zip2-airflow-scheduler-1 Started
+ Container airflow-zip2-airflow-triggerer-1 Started
+ Container airflow-zip2-airflow-apiserver-1 Healthy
+ Container airflow-zip2-airflow-worker-1 Starting
+ Container airflow-zip2-airflow-worker-1 Started
+
+$ docker compose ps -a
+# código de salida: 0 · segundos: 0.6 · [c16]
+NAME                                   IMAGE                                                                                        COMMAND                  SERVICE                 CREATED         STATUS                          PORTS
+airflow-zip2-airflow-apiserver-1       airflow-zip2-airflow-apiserver                                                               "/usr/bin/dumb-init …"   airflow-apiserver       2 minutes ago   Up About a minute (healthy)     127.0.0.1:8080->8080/tcp
+airflow-zip2-airflow-dag-processor-1   airflow-zip2-airflow-dag-processor                                                           "/usr/bin/dumb-init …"   airflow-dag-processor   2 minutes ago   Up About a minute (healthy)     8080/tcp
+airflow-zip2-airflow-init-1            airflow-zip2-airflow-init                                                                    "/bin/bash -c 'if [[…"   airflow-init            3 minutes ago   Exited (0) About a minute ago
+airflow-zip2-airflow-scheduler-1       airflow-zip2-airflow-scheduler                                                               "/usr/bin/dumb-init …"   airflow-scheduler       2 minutes ago   Up About a minute (healthy)     8080/tcp
+airflow-zip2-airflow-triggerer-1       airflow-zip2-airflow-triggerer                                                               "/usr/bin/dumb-init …"   airflow-triggerer       2 minutes ago   Up About a minute (healthy)     8080/tcp
+airflow-zip2-airflow-worker-1          airflow-zip2-airflow-worker                                                                  "/usr/bin/dumb-init …"   airflow-worker          2 minutes ago   Up 45 seconds (healthy)         8080/tcp
+airflow-zip2-postgres-1                postgres:16@sha256:<hash>          "docker-entrypoint.s…"   postgres                3 minutes ago   Up 3 minutes (healthy)          5432/tcp
+airflow-zip2-redis-1                   redis:7.2-bookworm@sha256:<hash>   "docker-entrypoint.s…"   redis                   3 minutes ago   Up 3 minutes (healthy)          6379/tcp
+
+$ (Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8080/api/v2/monitor/health).StatusCode
+# código de salida: 0 · segundos: 0.1 · [c17]
+200
+
+$ docker compose down
+# código de salida: 0 · segundos: 7 · [c34]
+ Container airflow-zip2-airflow-scheduler-1 Stopping
+ Container airflow-zip2-airflow-triggerer-1 Stopping
+ Container airflow-zip2-airflow-worker-1 Stopping
+ Container airflow-zip2-airflow-dag-processor-1 Stopping
+ Container airflow-zip2-airflow-scheduler-1 Stopped
+ Container airflow-zip2-airflow-scheduler-1 Removing
+ Container airflow-zip2-airflow-triggerer-1 Stopped
+ Container airflow-zip2-airflow-triggerer-1 Removing
+ Container airflow-zip2-airflow-scheduler-1 Removed
+ Container airflow-zip2-airflow-triggerer-1 Removed
+ Container airflow-zip2-airflow-worker-1 Stopped
+ Container airflow-zip2-airflow-worker-1 Removing
+ Container airflow-zip2-airflow-dag-processor-1 Stopped
+ Container airflow-zip2-airflow-dag-processor-1 Removing
+ Container airflow-zip2-airflow-worker-1 Removed
+ Container airflow-zip2-airflow-apiserver-1 Stopping
+ Container airflow-zip2-airflow-dag-processor-1 Removed
+ Container airflow-zip2-airflow-apiserver-1 Stopped
+ Container airflow-zip2-airflow-apiserver-1 Removing
+ Container airflow-zip2-airflow-apiserver-1 Removed
+ Container airflow-zip2-airflow-init-1 Stopping
+ Container airflow-zip2-airflow-init-1 Stopped
+ Container airflow-zip2-airflow-init-1 Removing
+ Container airflow-zip2-airflow-init-1 Removed
+ Container airflow-zip2-postgres-1 Stopping
+ Container airflow-zip2-redis-1 Stopping
+ Container airflow-zip2-redis-1 Stopped
+ Container airflow-zip2-redis-1 Removing
+ Container airflow-zip2-redis-1 Removed
+ Container airflow-zip2-postgres-1 Stopped
+ Container airflow-zip2-postgres-1 Removing
+ Container airflow-zip2-postgres-1 Removed
+ Network airflow-zip2_default Removing
+ Network airflow-zip2_default Removed
+
+Ejecución del DAG (segunda pasada, tras activarlo y dispararlo): tres comprobaciones sobre el volumen nuevo, todas en success:
+  manual__2026-11-16T17:14:54.376269+00:00 | success      (ejecución disparada a mano)
+  scheduled__2026-11-16T11:00:00+00:00     | success      (la programada de las 06:00 de Bogotá)
+  validar_bronze | transformar_a_silver | integrar_a_gold | cargar_datawarehouse : las cuatro en success.
+
+--- phpMyAdmin (puerto 8081, cuenta sismo_lectura)
+Las tres capturas que tomó Daniel (imágenes existentes, EV-102b a EV-102d) muestran: las siete tablas de sismo_cali con sus filas, y el rechazo del INSERT con el error
+#1142 - INSERT command denied to user 'sismo_lectura'@'localhost' for table 'corrida'.
+
+--- Declaración sobre el .env leído en memoria
+Para comprobar que la contraseña de la interfaz de Airflow funcionaba (POST a /auth/token, código 201), un script de la sesión leyó UN valor del .env de la carpeta de Airflow
+en memoria y no lo imprimió ni lo guardó. Es la contraseña de una instalación de prueba, en una copia temporal fuera del repositorio. Se declara aquí; en adelante la comprobación
+se hace con comandos dentro del contenedor o con el chequeo de salud (`/api/v2/monitor/health`, código 200).
+
+--- Volúmenes de prueba (se conservan hasta que Daniel indique; no se usó `down -v` en ningún momento)
+airflow-medallon_postgres-db-volume (el de Daniel, del 2026-11-13), airflowzip_postgres-db-volume (el de Daniel), airflow-zip_postgres-db-volume y airflow-zip2_postgres-db-volume (de esta prueba).
+Al terminar: `docker ps` vacío.
+
+Qué NO demuestra: que funcione en otro equipo, con otra versión de Docker Desktop o de MySQL, con menos de 8 GB de memoria, ni que el DAG corra a las 06:00 sin que nadie lo vea
+(se disparó a mano). Los tiempos son de una máquina y de una vez.

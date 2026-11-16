@@ -42,6 +42,17 @@ MUTACIONES = [
      "tests/test_panel_textos.py::test_si_la_nota_de_k3_cambia_de_separador_no_se_muestra_una_tabla_a_medias"),
     ("DEF-016", "src/panel/paginas/concentracion.py", r'r"p_permutacion=(\d+(?:\.\d+)?)(?!\.?\d)"', r'r"p_permutacion=([0-9.]+)"',
      "tests/test_panel_textos.py::test_p_permutacion_nunca_falla_con_un_texto_mal_formado"),
+    ("DEF-017", "scripts/mysql/configurar_mysql.py", '    return True, "esta carpeta no es un repositorio de Git (por ejemplo, viene de un zip); su .gitignore ignora .env, así que no se versionará si más adelante se usa Git"',
+     "    return False, MENSAJE_ENV_CON_GIT",
+     "tests/test_env_sin_repositorio.py::test_sin_repositorio_y_con_gitignore_bueno_se_acepta_y_se_avisa"),
+    ("DEF-018", "scripts/escanear_secretos.py", '    return [] if efectivo else [(".env", 0, "env_no_ignorado")]', "    return []",
+     "tests/test_escaner_sin_repositorio.py::test_sin_repositorio_un_env_sin_gitignore_efectivo_es_un_hallazgo"),
+    ("DEF-019", "orquestacion/docker-compose.yaml", 'find /opt/airflow -path /opt/airflow/medallon -prune -o -exec chown -h "${AIRFLOW_UID:-50000}:0" {} +', 'chown -R "${AIRFLOW_UID:-50000}:0" /opt/airflow/',
+     "tests/test_compose_chown.py::test_el_init_salta_el_montaje_del_proyecto_y_ya_no_hace_chown_recursivo_de_todo_opt_airflow"),
+    ("DEF-020", "scripts/orquestacion/preparar_airflow.py", "            a_escribir[NOMBRE_COMPOSE] = nombre_compose or previo", "            a_escribir[NOMBRE_COMPOSE] = previo",
+     "tests/test_nombre_compose_y_volumen.py::test_con_la_opcion_se_guarda_una_octava_variable_opcional_que_no_cuenta_como_obligatoria"),
+    ("DEF-021", "orquestacion/docker-compose.yaml", "          exit 1\n        fi\n", "          exit 0\n        fi\n",
+     "tests/test_compose_db_check.py::test_la_comprobacion_va_despues_de_airflow_version_y_antes_del_ls_final_y_falla_con_exit_1"),
 ]
 COPIAR = ("src", "scripts", "tests", "data", "dags", "orquestacion", "config")
 ARCHIVOS = ("pytest.ini", ".env.example", ".gitignore", "requirements.txt")

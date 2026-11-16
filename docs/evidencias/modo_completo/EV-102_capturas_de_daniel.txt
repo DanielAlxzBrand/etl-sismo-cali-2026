@@ -1,0 +1,11 @@
+EV-102 · Tres capturas manuales de Daniel durante la prueba de la guía del modo completo (imágenes existentes, no generadas por una herramienta)
+
+Tomadas el 2026-11-16 en el navegador de Daniel, recortadas por él, sin usuario de Windows ni claves (se revisaron una por una antes de guardarlas):
+  EV-102b · la cuadrícula del DAG medallon_etl_sismo con las cuatro tareas (validar_bronze, transformar_a_silver, integrar_a_gold, cargar_datawarehouse) en verde en las dos ejecuciones
+            (interfaz de Airflow en 127.0.0.1:8080, usuario airflow). Archivo: EV-102_captura_airflow_cuatro_tareas.png
+  EV-102c · phpMyAdmin (127.0.0.1:8081, cuenta sismo_lectura): las siete tablas de sismo_cali con sus filas (barrio_estrato 346, comuna 27, construccion 5.146, corrida 1,
+            corrida_archivo 5, kpi 23, kpi_sensibilidad 107; 7 tablas, 5.655 filas). Archivo: EV-102_captura_phpmyadmin_siete_tablas.png
+  EV-102d · phpMyAdmin: `INSERT INTO corrida (id) VALUES (999999);` rechazado con «#1142 - INSERT command denied to user 'sismo_lectura'@'localhost' for table 'corrida'».
+            Archivo: EV-102_captura_phpmyadmin_insert_rechazado.png
+Las dos últimas coinciden byte a byte con los archivos originales que Daniel guardó (Screenshot 2026-11-16 113530.png y 113745.png); la primera es la imagen que Daniel envió pegada.
+Qué NO demuestra: nada que no se vea en la imagen (no prueban el comportamiento del DAG a las 06:00 ni que otras cuentas no puedan escribir).

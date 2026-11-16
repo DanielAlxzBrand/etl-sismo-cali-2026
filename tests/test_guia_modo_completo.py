@@ -36,7 +36,8 @@ COPIA_AL_PORTAPAPELES = re.compile(r"\|\s*Set-Clipboard$")
 CONTEO = re.compile(r"trae \*\*(\d+) comandos\*\*: \*\*(\d+)\*\* con su salida vista y \*\*(\d+)\*\* sin probar")
 FRASES = ("fuera de cualquier repositorio de Git", "fuera de carpetas sincronizadas con OneDrive", "no la palabra `root`", "Contraseña del administrador de MySQL (root); no se muestra al escribir:", "sismo_etl", "sismo_airflow", "sismo_lectura",
           "`docker compose down -v`", "--nombre-compose", "**cada cuenta tiene una sola contraseña vigente**", "deducida", "Set-Location ..\\airflow-medallon", "cambian las contraseñas de `sismo_etl`, `sismo_airflow` y `sismo_lectura`",
-          LIMPIAR, "1.970 MiB", "8 GB de RAM", "no trae pasos para instalarlos", "no garantiza una base correcta", "docker compose ps -a", "**Reemplace", "Orden de los pasos")
+          LIMPIAR, "1.970 MiB", "8 GB de RAM", "no trae pasos para instalarlos", "no garantiza una base correcta", "docker compose ps -a", "**Reemplace", "Orden de los pasos",
+          "no es una señal fiable", "con todo «(healthy)» y el código de salida de `docker compose up -d` (0)", "/entrypoint airflow db check", "siempre a través de `/entrypoint`")
 PROHIBIDAS = (r"(?<!no )garantiza una base correcta",)
 
 
@@ -217,6 +218,12 @@ def p_scripts_y_opciones(texto, leer_fuente):
     return out
 
 
+def p_db_check_solo_con_entrypoint(texto):
+    """`airflow db check` no se recomienda suelto: ningún comando de la guía lo trae y toda mención en la prosa es `/entrypoint airflow db check`."""
+    out = [f"línea {linea}: el comando ejecuta airflow db check suelto: {c[:50]}" for linea, c, _, _ in _comandos(texto) if "db check" in c]
+    return out + [f"línea {n}: «airflow db check» sin /entrypoint delante" for n, l in enumerate(texto.splitlines(), 1) if re.search(r"(?<!/entrypoint )airflow db check", l)]
+
+
 def p_programas(texto):
     out = [f"línea {linea}: comando fuera de la lista: {c[:50]}" for linea, c, _, _ in _comandos(texto) if not c.startswith(PROGRAMAS)]
     return out + [f"línea {linea}: ningún comando de la guía borra volúmenes" for linea, c, _, _ in _comandos(texto) if re.search(r"\bdown\b.*\s-v\b", c)]
@@ -367,6 +374,7 @@ REGLAS = {
     "conteo": p_conteo,
     "scripts y opciones": lambda t: p_scripts_y_opciones(t, leer),
     "programas": p_programas,
+    "db check solo con entrypoint": p_db_check_solo_con_entrypoint,
     "secciones": p_secciones,
     "errores": p_errores,
     "frases": p_frases,
@@ -492,6 +500,10 @@ NEGATIVAS = [
     ("scripts y opciones", "opción inventada en una cita de la prosa", _reemplaza("configurar_mysql.py --rotar", "configurar_mysql.py --rotar-todo"), "no tiene la opción"),
     ("programas", "programa fuera de la lista", _reemplaza("```powershell\ndocker compose build\n```", "```powershell\ncurl http://ejemplo.invalido\n```"), "fuera de la lista"),
     ("programas", "down -v en un comando", _reemplaza("```powershell\ndocker compose down\n```", "```powershell\ndocker compose down -v\n```"), "borra volúmenes"),
+    ("db check solo con entrypoint", "la prosa recomienda airflow db check suelto", _reemplaza("`/entrypoint airflow db check`", "`airflow db check`"), "sin /entrypoint delante"),
+    ("db check solo con entrypoint", "un comando ejecuta airflow db check suelto", _reemplaza("```powershell\ndocker compose build\n```", "```powershell\ndocker compose exec airflow-init airflow db check\n```"), "suelto"),
+    ("frases", "desaparece que el código de up airflow-init no es fiable", _reemplaza("no es una señal fiable", "es una señal razonable"), "no es una señal fiable"),
+    ("frases", "desaparece la señal fiable con el código de up -d", _reemplaza("y el código de salida de `docker compose up -d` (0)", ""), "código de salida de `docker compose up -d`"),
     ("secciones", "sección fuera de orden", _reemplaza("## 3. Las tres cuentas", "## 13. Las tres cuentas"), "secciones"),
     ("errores", "fila de error sin marca", _reemplaza("`Set-Location ..\\airflow-medallon` y repetir | (visto) |", "`Set-Location ..\\airflow-medallon` y repetir | |"), "sin marca"),
     ("errores", "un tropiezo de la prueba pasa a deducido", _reemplaza("`Set-Location ..\\airflow-medallon` y repetir | (visto) |", "`Set-Location ..\\airflow-medallon` y repetir | (deducido) |"), "debe ser (visto)"),
