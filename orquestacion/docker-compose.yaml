@@ -20,12 +20,14 @@
 # AVISO DE ORIGEN Y DE CAMBIOS (proyecto ETL del sismo de Cali, D91)
 # Este archivo se basa en el docker-compose.yaml oficial de Apache Airflow 3.3.2 (https://airflow.apache.org/docs/apache-airflow/3.3.2/docker-compose.yaml),
 # distribuido con la licencia Apache 2.0 cuyo aviso está arriba; aquí se conserva y se indican los cambios hechos. Lo genera scripts/orquestacion/generar_compose.py.
-# Cambios respecto del oficial (lista completa en docs/orquestacion/diferencias_con_la_guia.md, DF-1, DF-8, DF-12 y DF-13 a DF-18):
+# Cambios respecto del oficial (lista completa en docs/orquestacion/diferencias_con_la_guia.md, DF-1, DF-8, DF-12 y DF-13 a DF-19):
 #   1. La imagen se construye con el Dockerfile de esta carpeta (`build: .`) en lugar de usar `image:` directamente.
 #   2. El repositorio se monta en /opt/airflow/medallon en SOLO LECTURA desde la carpeta hermana `../${PROYECTO_NOMBRE}`; el nombre de esa carpeta ya no es fijo.
 #   3. El puerto de la interfaz se publica solo en 127.0.0.1 y es el 8080 salvo que se defina AIRFLOW_PUERTO; el de Flower (servicio opcional, solo con `--profile flower`) también queda solo en 127.0.0.1.
 #   4. FERNET_KEY, la contraseña de la interfaz, la contraseña de Postgres y el secreto JWT son obligatorios: se leen del `.env` de esta carpeta (lo crea scripts/orquestacion/preparar_airflow.py) y no tienen valor escrito aquí.
 #   5. Las imágenes de Postgres y Redis conservan su etiqueta del compose oficial y se fijan además por su resumen (digest), para que no cambien sin avisar.
+#   6. En `airflow-init`, el `chown -R` de /opt/airflow/ se reemplaza por un `find` que salta /opt/airflow/medallon (el proyecto montado en solo lectura): antes recorría el `.venv` del proyecto y
+#      dejaba muchas líneas «Read-only file system».
 # Lo demás es el compose oficial sin tocar. Sigue siendo una configuración para desarrollo local, no para producción.
 # ---------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -290,7 +292,8 @@ services:
         echo
         echo "Change ownership of files in /opt/airflow to ${AIRFLOW_UID:-50000}:0"
         echo
-        chown -R "${AIRFLOW_UID:-50000}:0" /opt/airflow/
+        # El proyecto montado en solo lectura se salta: no se puede ni se debe cambiar su dueño, y recorrerlo (con su .venv) llenaba la salida de «Read-only file system»
+        find /opt/airflow -path /opt/airflow/medallon -prune -o -exec chown -h "${AIRFLOW_UID:-50000}:0" {} +
         echo
         echo "Change ownership of files in shared volumes to ${AIRFLOW_UID:-50000}:0"
         echo

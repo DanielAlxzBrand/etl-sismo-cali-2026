@@ -32,12 +32,14 @@ AVISO = """# -------------------------------------------------------------------
 # AVISO DE ORIGEN Y DE CAMBIOS (proyecto ETL del sismo de Cali, D91)
 # Este archivo se basa en el docker-compose.yaml oficial de Apache Airflow 3.3.2 (https://airflow.apache.org/docs/apache-airflow/3.3.2/docker-compose.yaml),
 # distribuido con la licencia Apache 2.0 cuyo aviso está arriba; aquí se conserva y se indican los cambios hechos. Lo genera scripts/orquestacion/generar_compose.py.
-# Cambios respecto del oficial (lista completa en docs/orquestacion/diferencias_con_la_guia.md, DF-1, DF-8, DF-12 y DF-13 a DF-18):
+# Cambios respecto del oficial (lista completa en docs/orquestacion/diferencias_con_la_guia.md, DF-1, DF-8, DF-12 y DF-13 a DF-19):
 #   1. La imagen se construye con el Dockerfile de esta carpeta (`build: .`) en lugar de usar `image:` directamente.
 #   2. El repositorio se monta en /opt/airflow/medallon en SOLO LECTURA desde la carpeta hermana `../${PROYECTO_NOMBRE}`; el nombre de esa carpeta ya no es fijo.
 #   3. El puerto de la interfaz se publica solo en 127.0.0.1 y es el 8080 salvo que se defina AIRFLOW_PUERTO; el de Flower (servicio opcional, solo con `--profile flower`) también queda solo en 127.0.0.1.
 #   4. FERNET_KEY, la contraseña de la interfaz, la contraseña de Postgres y el secreto JWT son obligatorios: se leen del `.env` de esta carpeta (lo crea scripts/orquestacion/preparar_airflow.py) y no tienen valor escrito aquí.
 #   5. Las imágenes de Postgres y Redis conservan su etiqueta del compose oficial y se fijan además por su resumen (digest), para que no cambien sin avisar.
+#   6. En `airflow-init`, el `chown -R` de /opt/airflow/ se reemplaza por un `find` que salta /opt/airflow/medallon (el proyecto montado en solo lectura): antes recorría el `.venv` del proyecto y
+#      dejaba muchas líneas «Read-only file system».
 # Lo demás es el compose oficial sin tocar. Sigue siendo una configuración para desarrollo local, no para producción.
 # ---------------------------------------------------------------------------------------------------------------------------------------------------
 """
@@ -52,6 +54,11 @@ EJEMPLO_OFICIAL = "air" + "flow"
 AVISO_POSTGRES = "${POSTGRES_PASSWORD:?Falta POSTGRES_PASSWORD en el .env de Airflow; lo crea scripts/orquestacion/preparar_airflow.py}"
 AVISO_JWT = "${AIRFLOW__API_AUTH__JWT_SECRET:?Falta AIRFLOW__API_AUTH__JWT_SECRET en el .env de Airflow; lo crea scripts/orquestacion/preparar_airflow.py}"
 AVISO_PROYECTO = "${PROYECTO_NOMBRE:?Falta PROYECTO_NOMBRE en el .env de Airflow; lo crea scripts/orquestacion/preparar_airflow.py}"
+# DF-19: el compose oficial hace `chown -R` de todo /opt/airflow/; aquí /opt/airflow/medallon es el proyecto montado en solo lectura, así que ese recorrido (con su .venv) falla archivo por archivo con
+# «Read-only file system». `find … -prune` salta ese montaje y conserva el resto; `-h` cambia el dueño del enlace y no del archivo al que apunta, como hace `chown -R`.
+CHOWN_OFICIAL = '        chown -R "${AIRFLOW_UID:-50000}:0" /opt/airflow/\n'
+CHOWN_NUEVO = ("        # El proyecto montado en solo lectura se salta: no se puede ni se debe cambiar su dueño, y recorrerlo (con su .venv) llenaba la salida de «Read-only file system»\n"
+               '        find /opt/airflow -path /opt/airflow/medallon -prune -o -exec chown -h "${AIRFLOW_UID:-50000}:0" {} +\n')
 
 # (ancla del texto oficial, texto nuevo); cada ancla debe aparecer exactamente una vez
 REEMPLAZOS = [
@@ -67,6 +74,7 @@ REEMPLAZOS = [
     ("    AIRFLOW__API_AUTH__JWT_SECRET: ${AIRFLOW__API_AUTH__JWT_SECRET:-airflow_jwt_secret}\n", f"    AIRFLOW__API_AUTH__JWT_SECRET: {AVISO_JWT}\n"),
     ("    image: postgres:16\n", f"    image: postgres:16@{RESUMEN_POSTGRES}\n"),
     ("    image: redis:7.2-bookworm\n", f"    image: redis:7.2-bookworm@{RESUMEN_REDIS}\n"),
+    (CHOWN_OFICIAL, CHOWN_NUEVO),
 ]
 
 
