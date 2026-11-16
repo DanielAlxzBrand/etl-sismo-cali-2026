@@ -1,0 +1,26 @@
+EV-104 · Las pruebas de regresión de DEF-017 a DEF-021 fallan sin su corrección
+
+Comando: python scripts/validacion/verificar_regresiones.py (sin --evidencia, para no reescribir EV-036). Salida completa, con las cinco reintroducciones nuevas al final de la tabla;
+las anteriores se repiten porque el verificador las corre todas.
+En una copia temporal se reintrodujo cada defecto (un reemplazo de texto en el código) y se ejecutó solo su prueba de regresión: debe pasar con la corrección y fallar sin ella.
+
+| Defecto | Archivo modificado | Prueba de regresión | Con la corrección | Sin la corrección | Resultado |
+|---|---|---|---|---|---|
+| DEF-001 | `src/transform/build_gold.py` | `tests/test_kpis.py::test_regresion_defecto_mh_sin_datos_no_entra_en_mh` | con la corrección: 1 passed in 6.14s | sin la corrección: 1 failed in 1.44s | la prueba detecta el defecto |
+| DEF-002 | `src/logger.py` | `tests/test_logger.py::test_enmascara_cabeceras_y_tokens` | con la corrección: 1 passed in 0.09s | sin la corrección: 1 failed in 0.23s | la prueba detecta el defecto |
+| DEF-004 | `pytest.ini` | `tests/test_entorno_de_pruebas.py::test_pytest_ini_fija_la_ruta_de_importacion_y_la_carpeta_de_pruebas` | con la corrección: 1 passed in 0.10s | sin la corrección: 1 failed in 0.22s | la prueba detecta el defecto |
+| DEF-005 | `scripts/make_dist.py` | `tests/test_dist.py::test_ninguna_carpeta_oculta_dentro_de_las_carpetas_permitidas_entra` | con la corrección: 1 passed in 0.24s | sin la corrección: 1 failed in 0.43s | la prueba detecta el defecto |
+| DEF-007 | `src/load/relacional.py` | `tests/test_carga_relacional.py::test_conversion_que_perderia_informacion_falla` | con la corrección: 10 passed, 1 warning in 1.83s | sin la corrección: 1 failed, 4 passed, 1 warning in 1.19s | la prueba detecta el defecto |
+| DEF-008 | `src/load/sql/esquema_mysql.sql` | `tests/test_carga_relacional.py::test_las_sentencias_no_dependen_de_separadores_dentro_de_los_textos` | con la corrección: 1 passed, 1 warning in 0.94s | sin la corrección: 1 failed, 1 warning in 1.28s | la prueba detecta el defecto |
+| DEF-008b | `src/load/sql/esquema_mysql.sql` | `tests/test_carga_relacional.py::test_los_dos_esquemas_declaran_las_mismas_tablas_y_columnas_en_el_mismo_orden` | con la corrección: 1 passed, 1 warning in 0.97s | sin la corrección: 1 failed, 1 warning in 1.19s | la prueba detecta el defecto |
+| DEF-013 | `dags/medallon_etl_dag.py` | `tests/test_dag_estatico.py::test_el_fallo_inducido_de_las_tareas_con_copia_ocurre_dentro_del_try_que_elimina_la_copia` | con la corrección: 1 passed in 0.18s | sin la corrección: 1 failed in 0.34s | la prueba detecta el defecto |
+| DEF-012 | `dags/medallon_etl_dag.py` | `tests/test_dag_estatico.py::test_la_copia_incluye_la_entrada_de_docs_silver_que_lee_la_transformacion` | con la corrección: 1 passed in 0.15s | sin la corrección: 1 failed in 0.31s | la prueba detecta el defecto |
+| DEF-015 | `src/panel/paginas/concentracion.py` | `tests/test_panel_textos.py::test_si_la_nota_de_k3_cambia_de_separador_no_se_muestra_una_tabla_a_medias` | con la corrección: 7 passed, 1 warning in 5.73s | sin la corrección: 1 failed, 1 warning in 4.98s | la prueba detecta el defecto |
+| DEF-016 | `src/panel/paginas/concentracion.py` | `tests/test_panel_textos.py::test_p_permutacion_nunca_falla_con_un_texto_mal_formado` | con la corrección: 6 passed, 1 warning in 4.39s | sin la corrección: 1 failed, 1 passed, 1 warning in 5.02s | la prueba detecta el defecto |
+| DEF-017 | `scripts/mysql/configurar_mysql.py` | `tests/test_env_sin_repositorio.py::test_sin_repositorio_y_con_gitignore_bueno_se_acepta_y_se_avisa` | con la corrección: 1 passed in 0.21s | sin la corrección: 1 failed in 0.33s | la prueba detecta el defecto |
+| DEF-018 | `scripts/escanear_secretos.py` | `tests/test_escaner_sin_repositorio.py::test_sin_repositorio_un_env_sin_gitignore_efectivo_es_un_hallazgo` | con la corrección: 6 passed in 0.45s | sin la corrección: 1 failed in 0.39s | la prueba detecta el defecto |
+| DEF-019 | `orquestacion/docker-compose.yaml` | `tests/test_compose_chown.py::test_el_init_salta_el_montaje_del_proyecto_y_ya_no_hace_chown_recursivo_de_todo_opt_airflow` | con la corrección: 1 passed in 0.17s | sin la corrección: 1 failed in 0.29s | la prueba detecta el defecto |
+| DEF-020 | `scripts/orquestacion/preparar_airflow.py` | `tests/test_nombre_compose_y_volumen.py::test_con_la_opcion_se_guarda_una_octava_variable_opcional_que_no_cuenta_como_obligatoria` | con la corrección: 1 passed in 0.29s | sin la corrección: 1 failed in 0.42s | la prueba detecta el defecto |
+| DEF-021 | `orquestacion/docker-compose.yaml` | `tests/test_compose_db_check.py::test_la_comprobacion_va_despues_de_airflow_version_y_antes_del_ls_final_y_falla_con_exit_1` | con la corrección: 1 passed in 0.14s | sin la corrección: 1 failed in 0.27s | la prueba detecta el defecto |
+
+Resultado: todas las pruebas de regresión fallan sin su corrección.

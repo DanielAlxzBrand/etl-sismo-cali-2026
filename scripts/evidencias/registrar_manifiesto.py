@@ -235,6 +235,24 @@ FILAS_SIM = {
 }
 
 
+CARPETA_MC = "docs/evidencias/modo_completo"
+FILAS_MC = {
+    "EV-100": ("5.4, 7.1", "La guía del modo completo seguida desde un zip nuevo en una carpeta con espacios y ñ (sin .git ni .env, Docker apagado al empezar): 33 comandos con su salida enmascarada, código y tiempo, los antes y después de los hallazgos 1 a 3 y 5 y 6, el DAG con las cuatro tareas en éxito, permisos, escáner con canario y la declaración del .env leído en memoria", "archivo",
+               "los comandos de `docs/instalacion/guia_modo_completo.md` sobre el zip de `make_dist.empaquetar` del commit `90bd057` descomprimido; la contraseña de `root` la tecleó Daniel", "EV-100_guia_seguida_desde_un_zip_nuevo.txt"),
+    "EV-101": ("5.4, 5.6", "Hallazgo 4 y DF-20: con un volumen de Postgres de otra instalación, `airflow-init` salía con 0 y el servidor quedaba «unhealthy»; con `airflow db check` sale con 1 y los demás servicios no arrancan; con el volumen nuevo todo queda sano; las dos líneas conocidas que el escáner marca (la URL de la base con la clave ya tapada)", "archivo",
+               "`docker compose up airflow-init`, `docker compose up -d` y `/entrypoint airflow db check` con el compose sellado y con el de DF-20, sin `down -v`", "EV-101_hallazgo_4_y_df20_antes_y_despues.txt"),
+    "EV-102": ("4.2, 5.4", "Descripción de las tres capturas manuales de Daniel (cuadrícula del DAG con las cuatro tareas en verde, las siete tablas de `sismo_cali` en phpMyAdmin y el `INSERT` rechazado con #1142)", "archivo",
+               "capturas de pantalla recortadas por Daniel en su navegador el 2026-11-16", "EV-102_capturas_de_daniel.txt"),
+    "EV-102b": ("5.4", "Imagen existente: captura manual de Daniel de la cuadrícula del DAG medallon_etl_sismo con las cuatro tareas en verde (no es una captura automatizada)", "imagen", "captura de pantalla de Daniel", "EV-102_captura_airflow_cuatro_tareas.png"),
+    "EV-102c": ("4.2", "Imagen existente: captura manual de Daniel de phpMyAdmin con las siete tablas de sismo_cali y sus filas (no es una captura automatizada)", "imagen", "captura de pantalla de Daniel", "EV-102_captura_phpmyadmin_siete_tablas.png"),
+    "EV-102d": ("4.2", "Imagen existente: captura manual de Daniel del INSERT rechazado por MySQL con #1142 para la cuenta de solo lectura (no es una captura automatizada)", "imagen", "captura de pantalla de Daniel", "EV-102_captura_phpmyadmin_insert_rechazado.png"),
+    "EV-103": ("5.6, 7.1", "Tablas de mutaciones de las pruebas del modo completo (`.env` sin repositorio, nombre de Compose, escáner, guía, DF-19 y DF-20): 132 mutaciones, todas detectadas", "archivo",
+               "mutación de un archivo en un clon y `python -m pytest -q -p no:cacheprovider` sobre las pruebas de cada parte", "EV-103_mutaciones_modo_completo.txt"),
+    "EV-104": ("5.6", "Las pruebas de regresión de DEF-017 a DEF-021 (y las de los defectos anteriores) fallan sin su corrección en una copia temporal", "archivo",
+               "`python scripts/validacion/verificar_regresiones.py`", "EV-104_regresiones_def017_a_def021.txt"),
+}
+
+
 def fila(ev, item, que, tipo, cmd, archivo, carpeta, fecha):
     p = REPO / carpeta / archivo
     return f"| {ev} |", f"| {ev} | {item} | {que} | {tipo} | {cmd} | {fecha} | {carpeta}/{archivo} | {hashlib.sha256(p.read_bytes()).hexdigest()} |"
@@ -299,6 +317,11 @@ def main():
             log.warning("falta %s; no se registra %s", archivo, ev)
             continue
         nuevas.append(fila(ev, item, que, tipo, cmd, archivo, CARPETA_SIM, "2026-11-15"))
+    for ev, (item, que, tipo, cmd, archivo) in FILAS_MC.items():
+        if not (REPO / CARPETA_MC / archivo).exists():
+            log.warning("falta %s; no se registra %s", archivo, ev)
+            continue
+        nuevas.append(fila(ev, item, que, tipo, cmd, archivo, CARPETA_MC, "2026-11-16"))
     ids ={pref for pref, _ in nuevas}
     lineas = [l for l in lineas if not any(l.startswith(i) for i in ids)]
     ultima = max(i for i, l in enumerate(lineas) if l.startswith("| EV-"))   # las filas nuevas van al final de la tabla, antes de la convención

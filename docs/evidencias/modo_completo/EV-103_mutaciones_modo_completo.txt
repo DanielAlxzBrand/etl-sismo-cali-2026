@@ -1,0 +1,176 @@
+EV-103 · Tablas de mutaciones de las pruebas del modo completo
+
+Cada mutación cambia un archivo en un clon con ruta corta (el repositorio no se toca), corre las pruebas indicadas y debe hacer fallar al menos una; el clon se restaura después.
+En el clon, las versiones de trabajo de la guía y de su prueba se copian encima de las del último commit cuando la parte lo dice.
+
+## Parte 1 · `.env` y escáner sin repositorio de Git y nombre de proyecto de Compose (D102 y D103)
+Pruebas que se corren: tests/test_env_sin_repositorio.py, tests/test_escaner_sin_repositorio.py, tests/test_nombre_compose_y_volumen.py y las pruebas de configurar_mysql, canario y secretos que cada mutación alcanza.
+Línea de partida en el clon: 65 passed in 4.65s (código 0); 47 passed in 2.75s (código 0); 38 passed in 10.00s (código 0).
+
+| Mutación | Pruebas que fallan | ¿Detectada? |
+|---|---|---|
+| D1 · la línea «!.env» no reincorpora el archivo | `test_el_gitignore_ignora_env_solo_si_la_ultima_regla_que_coincide_lo_ignora[.env\n!.env\n-False]`; `test_el_gitignore_ignora_env_solo_si_la_ultima_regla_que_coincide_lo_ignora[.env\n!.env*\n-False]`; `test_el_gitignore_ignora_env_solo_si_la_ultima_regla_que_coincide_lo_ignora[*\n!.env\n-False]` y 4 más | sí |
+| D1 · gana la primera regla que coincide y no la última | `test_el_gitignore_ignora_env_solo_si_la_ultima_regla_que_coincide_lo_ignora[!.env\n.env\n-True]`; `test_el_gitignore_ignora_env_solo_si_la_ultima_regla_que_coincide_lo_ignora[.env\n!.env\n-False]`; `test_el_gitignore_ignora_env_solo_si_la_ultima_regla_que_coincide_lo_ignora[.env\n!.env*\n-False]` y 5 más | sí |
+| D1 · un patrón de carpeta («.env/») cuenta para el archivo | `test_el_gitignore_ignora_env_solo_si_la_ultima_regla_que_coincide_lo_ignora[.env/\n-False]`; `test_el_evaluador_de_texto_coincide_con_git_cuando_git_esta_instalado`; `test_sin_repositorio_un_env_sin_gitignore_efectivo_es_un_hallazgo[solo carpeta]` | sí |
+| D1 · basta que el patrón contenga «.env» (acepta .env.example) | `test_el_gitignore_ignora_env_solo_si_la_ultima_regla_que_coincide_lo_ignora[.*\n-True]`; `test_el_gitignore_ignora_env_solo_si_la_ultima_regla_que_coincide_lo_ignora[*\n!.gitignore\n-True]`; `test_el_gitignore_ignora_env_solo_si_la_ultima_regla_que_coincide_lo_ignora[.*\n!.env.example\n-True]` y 7 más | sí |
+| D1 · sin repositorio se acepta aunque el .gitignore no ignore .env | `test_sin_repositorio_se_rechaza_con_un_mensaje_que_dice_que_hacer_y_no_habla_de_versionar[.env.example\n-no deja ignorado]`; `test_sin_repositorio_se_rechaza_con_un_mensaje_que_dice_que_hacer_y_no_habla_de_versionar[.env\n!.env\n-no deja ignorado]`; `test_sin_repositorio_se_rechaza_con_un_mensaje_que_dice_que_hacer_y_no_habla_de_versionar[# .env\n-no deja ignorado]` y 1 más | sí |
+| D1 · sin repositorio se acepta aunque falte el .gitignore | `test_sin_repositorio_se_rechaza_con_un_mensaje_que_dice_que_hacer_y_no_habla_de_versionar[None-no tiene .gitignore]`; `test_los_tres_flujos_aceptan_el_zip_con_gitignore_bueno_y_lo_rechazan_sin_el[configurar]`; `test_los_tres_flujos_aceptan_el_zip_con_gitignore_bueno_y_lo_rechazan_sin_el[configurar_docker]` y 1 más | sí |
+| D1 · un .git en el disco no cuenta cuando Git falla | `test_una_carpeta_git_que_falla_no_abre_la_puerta_a_la_comprobacion_de_texto` | sí |
+| D1 · sin el programa git y con .git se acepta por el texto | `test_sin_el_programa_git_pero_con_una_carpeta_git_se_rechaza_con_un_mensaje_claro_y_sin_traceback`; `test_el_codigo_2_tambien_sale_con_sin_historial_porque_el_estado_de_env_necesita_git` | sí |
+| D1 · con Git, basta que ignore .env (no mira si está versionado) | `test_con_repositorio_git_decide_y_el_gitignore_de_texto_no_cuenta[True-True-False]` | sí |
+| D1 · con Git, basta que no esté versionado (no mira si se ignora) | `test_con_repositorio_git_decide_y_el_gitignore_de_texto_no_cuenta[False-False-False]`; `test_una_carpeta_git_que_falla_no_abre_la_puerta_a_la_comprobacion_de_texto`; `test_un_proyecto_dentro_de_otro_repositorio_usa_la_comprobacion_estricta` | sí |
+| D1 · el rechazo sin repositorio vuelve al mensaje engañoso | `test_sin_repositorio_se_rechaza_con_un_mensaje_que_dice_que_hacer_y_no_habla_de_versionar[.env.example\n-no deja ignorado]`; `test_sin_repositorio_se_rechaza_con_un_mensaje_que_dice_que_hacer_y_no_habla_de_versionar[.env\n!.env\n-no deja ignorado]`; `test_sin_repositorio_se_rechaza_con_un_mensaje_que_dice_que_hacer_y_no_habla_de_versionar[# .env\n-no deja ignorado]` | sí |
+| D1 · se acepta sin repositorio pero sin avisar | `test_sin_repositorio_y_con_gitignore_bueno_se_acepta_y_se_avisa` | sí |
+| D1 · el flujo de la cuenta de solo lectura no exige la guardia | `test_los_tres_flujos_aceptan_el_zip_con_gitignore_bueno_y_lo_rechazan_sin_el[configurar_lectura]` | sí |
+| D1 · el flujo de la cuenta de Docker no exige la guardia | `test_los_tres_flujos_aceptan_el_zip_con_gitignore_bueno_y_lo_rechazan_sin_el[configurar_docker]` | sí |
+| D1 · el BOM del .gitignore rompe la primera línea | `test_el_gitignore_ignora_env_solo_si_la_ultima_regla_que_coincide_lo_ignora[\ufeff.env\n-True]` | sí |
+| D2 · el nombre de Compose admite mayúsculas | `test_un_nombre_de_compose_invalido_se_rechaza_antes_de_escribir_nada[Airflow]` | sí |
+| D2 · COMPOSE_PROJECT_NAME pasa a ser una variable obligatoria (ocho) | `test_sin_la_opcion_nada_cambia_el_env_trae_exactamente_las_siete_variables_y_el_nombre_es_el_de_la_carpeta`; `test_con_la_opcion_se_guarda_una_octava_variable_opcional_que_no_cuenta_como_obligatoria`; `test_sin_un_volumen_legible_no_hay_aviso_ni_error[no existe]` y 9 más | sí |
+| D2 · sin la opción igual se escribe un nombre (cambia el defecto) | `test_sin_la_opcion_nada_cambia_el_env_trae_exactamente_las_siete_variables_y_el_nombre_es_el_de_la_carpeta`; `test_en_un_env_existente_solo_se_toca_esa_variable_y_repetirlo_no_cambia_nada`; `test_con_un_volumen_previo_y_un_env_nuevo_avisa_con_el_nombre_el_sintoma_y_los_dos_remedios_sin_borrar_nada` y 1 más | sí |
+| D2 · --regenerar pierde el nombre de Compose que ya tenía | `test_regenerar_conserva_el_nombre_de_compose_que_ya_tenia_y_la_opcion_lo_reemplaza` | sí |
+| D2 · fijar el nombre duplica la línea en vez de reemplazarla | `test_en_un_env_existente_solo_se_toca_esa_variable_y_repetirlo_no_cambia_nada` | sí |
+| D2 · el aviso aparece aunque el volumen sea posterior al .env | `test_si_el_volumen_es_anterior_al_env_avisa_y_si_es_posterior_no` | sí |
+| D2 · sin volumen legible el aviso se inventa | `test_sin_la_opcion_nada_cambia_el_env_trae_exactamente_las_siete_variables_y_el_nombre_es_el_de_la_carpeta`; `test_con_la_opcion_se_guarda_una_octava_variable_opcional_que_no_cuenta_como_obligatoria`; `test_en_un_env_existente_solo_se_toca_esa_variable_y_repetirlo_no_cambia_nada` y 21 más | sí |
+| D2 · Docker que falla al preguntar por el volumen rompe la preparación | `test_sin_un_volumen_legible_no_hay_aviso_ni_error[docker falla al preguntar]` | sí |
+| D2 · una respuesta que no es fecha se toma por volumen existente | `test_sin_un_volumen_legible_no_hay_aviso_ni_error[respuesta que no es una fecha]`; `test_sin_un_volumen_legible_no_hay_aviso_ni_error[respuesta vacía]`; `test_verificar_es_de_solo_lectura_e_idempotente_y_detecta_un_nombre_distinto` | sí |
+| D2 · verificar pregunta por volúmenes aunque Docker esté apagado | `test_verificar_con_docker_apagado_no_pregunta_por_volumenes_ni_agrega_errores` | sí |
+| D2 · un aviso hace fallar el código de salida de verificar | `test_verificar_muestra_el_aviso_con_signo_de_exclamacion_y_no_cambia_el_codigo_de_salida` | sí |
+| D2 · se mira siempre el volumen del nombre por defecto | `test_el_volumen_que_se_mira_es_el_del_nombre_elegido` | sí |
+| D2 · el aviso no ofrece el remedio --nombre-compose | `test_con_un_volumen_previo_y_un_env_nuevo_avisa_con_el_nombre_el_sintoma_y_los_dos_remedios_sin_borrar_nada` | sí |
+| D2 · --nombre-compose se acepta junto con --verificar | `test_la_opcion_no_se_combina_con_verificar_y_main_la_pasa_a_preparar` | sí |
+| D2 · la preparación borra el volumen en vez de solo mirarlo | `test_con_un_volumen_previo_y_un_env_nuevo_avisa_con_el_nombre_el_sintoma_y_los_dos_remedios_sin_borrar_nada` | sí |
+| D2 · main no pasa la opción a preparar | `test_la_opcion_no_se_combina_con_verificar_y_main_la_pasa_a_preparar` | sí |
+| P1 · sin repositorio el escáner no comprueba nada del .env | `test_sin_repositorio_un_env_sin_gitignore_efectivo_es_un_hallazgo[sin .gitignore]`; `test_sin_repositorio_un_env_sin_gitignore_efectivo_es_un_hallazgo[vacío]`; `test_sin_repositorio_un_env_sin_gitignore_efectivo_es_un_hallazgo[solo .env.example]` y 5 más | sí |
+| P1 · sin repositorio se marca el .env aunque el archivo no exista | `test_sin_repositorio_y_sin_env_no_hay_nada_que_proteger`; `test_el_aviso_no_sale_si_se_pidio_omitir_el_historial_ni_si_hay_repositorio_propio`; `test_el_codigo_de_salida_es_distinto_de_cero_con_hallazgos` | sí |
+| P1 · cualquier .gitignore existente basta (no mira su contenido) | `test_sin_repositorio_un_env_sin_gitignore_efectivo_es_un_hallazgo[sin .gitignore]`; `test_sin_repositorio_un_env_sin_gitignore_efectivo_es_un_hallazgo[vacío]`; `test_sin_repositorio_un_env_sin_gitignore_efectivo_es_un_hallazgo[solo .env.example]` y 5 más | sí |
+| P1 · con repositorio el escáner usa el .gitignore de texto y no a Git | `test_con_repositorio_decide_git_y_el_gitignore_de_texto_no_cuenta[False-False-esperado1]`; `test_con_repositorio_decide_git_y_el_gitignore_de_texto_no_cuenta[True-True-esperado2]`; `test_con_repositorio_decide_git_y_el_gitignore_de_texto_no_cuenta[False-True-esperado3]` | sí |
+| P2 · el aviso de historial sale también con repositorio propio | `test_el_aviso_no_sale_si_se_pidio_omitir_el_historial_ni_si_hay_repositorio_propio` | sí |
+| P2 · el aviso de historial no sale nunca | `test_sin_repositorio_se_dice_que_el_historial_no_se_revisa_y_el_codigo_de_salida_no_cambia`; `test_con_un_hallazgo_el_aviso_sale_y_el_codigo_sigue_siendo_1`; `test_sin_el_programa_git_y_sin_carpeta_git_el_escaner_funciona_como_en_un_zip_sin_git` | sí |
+| P2 · el aviso cambia el código de salida | `test_sin_repositorio_se_dice_que_el_historial_no_se_revisa_y_el_codigo_de_salida_no_cambia`; `test_el_aviso_no_sale_si_se_pidio_omitir_el_historial_ni_si_hay_repositorio_propio`; `test_sin_el_programa_git_y_sin_carpeta_git_el_escaner_funciona_como_en_un_zip_sin_git` y 4 más | sí |
+| P2 · sin el programa git el escáner no termina con código 2 | `test_con_git_en_disco_y_sin_el_programa_hay_un_mensaje_claro_y_codigo_2_sin_traceback`; `test_el_codigo_2_tambien_sale_con_sin_historial_porque_el_estado_de_env_necesita_git` | sí |
+| P2 · --sin-historial exime del código 2 aunque falte git | `test_el_codigo_2_tambien_sale_con_sin_historial_porque_el_estado_de_env_necesita_git` | sí |
+| P2 · --solo-canario con --sin-historial exige git | `test_sin_historial_y_solo_canario_no_necesitan_git_aunque_haya_una_carpeta_git` | sí |
+| P1 · el escáner deja de importar el módulo compartido por su carpeta | `test_el_escaner_solo_necesita_su_carpeta_y_el_modulo_compartido_para_arrancar` | sí |
+| P1 · configurar_mysql vuelve a tener su propia copia de la regla | `test_la_regla_de_gitignore_vive_en_un_solo_modulo_y_los_dos_scripts_la_usan` | sí |
+
+Total: 43 de 43 detectadas.
+
+## Parte 2 · DF-19 (el `chown` de `airflow-init` salta el proyecto montado)
+Pruebas que se corren: tests/test_compose_chown.py y tests/test_servicios_compose.py.
+Línea de partida en el clon: 18 passed in 0.68s (código 0).
+
+| Mutación | Pruebas que fallan | ¿Detectada? |
+|---|---|---|
+| DF-19 · el compose vuelve al chown recursivo de todo /opt/airflow | `test_el_init_salta_el_montaje_del_proyecto_y_ya_no_hace_chown_recursivo_de_todo_opt_airflow`; `test_lo_que_se_salta_es_exactamente_donde_se_monta_el_proyecto_y_las_carpetas_compartidas_siguen_con_su_chown`; `test_el_compose_del_repositorio_es_exactamente_lo_que_sale_del_oficial_sin_necesitar_la_red` | sí |
+| DF-19 · el find salta otra carpeta y no el montaje del proyecto | `test_el_init_salta_el_montaje_del_proyecto_y_ya_no_hace_chown_recursivo_de_todo_opt_airflow`; `test_lo_que_se_salta_es_exactamente_donde_se_monta_el_proyecto_y_las_carpetas_compartidas_siguen_con_su_chown`; `test_el_compose_del_repositorio_es_exactamente_lo_que_sale_del_oficial_sin_necesitar_la_red` | sí |
+| DF-19 · desaparece el chown de las cuatro carpetas compartidas | `test_lo_que_se_salta_es_exactamente_donde_se_monta_el_proyecto_y_las_carpetas_compartidas_siguen_con_su_chown`; `test_el_compose_del_repositorio_es_exactamente_lo_que_sale_del_oficial_sin_necesitar_la_red` | sí |
+| DF-19 · el chown deja de ser sobre el enlace (sin -h) | `test_el_init_salta_el_montaje_del_proyecto_y_ya_no_hace_chown_recursivo_de_todo_opt_airflow`; `test_lo_que_se_salta_es_exactamente_donde_se_monta_el_proyecto_y_las_carpetas_compartidas_siguen_con_su_chown`; `test_el_compose_del_repositorio_es_exactamente_lo_que_sale_del_oficial_sin_necesitar_la_red` | sí |
+| DF-19 · el generador pierde el reemplazo y el compose ya no sale del oficial | `test_el_generador_lleva_el_reemplazo_y_el_aviso_y_el_diff_lo_muestran`; `test_el_compose_del_repositorio_es_exactamente_lo_que_sale_del_oficial_sin_necesitar_la_red` | sí |
+| DF-19 · el aviso del compose no se actualiza (DF-13 a DF-18) | `test_el_generador_lleva_el_reemplazo_y_el_aviso_y_el_diff_lo_muestran`; `test_el_compose_del_repositorio_es_exactamente_lo_que_sale_del_oficial_sin_necesitar_la_red` | sí |
+| DF-19 · el diff regenerado pierde la línea nueva | `test_el_generador_lleva_el_reemplazo_y_el_aviso_y_el_diff_lo_muestran` | sí |
+| DF-19 · el documento de diferencias pierde la fila DF-19 | `test_las_diferencias_con_la_guia_dicen_lo_mismo_que_el_compose` | sí |
+| DF-19 · el documento sigue diciendo DF-13 a DF-18 | `test_las_diferencias_con_la_guia_dicen_lo_mismo_que_el_compose` | sí |
+
+Total: 9 de 9 detectadas.
+
+## Parte 3 · DF-20 (`airflow db check` en `airflow-init`)
+Pruebas que se corren: tests/test_compose_db_check.py, tests/test_compose_chown.py y tests/test_servicios_compose.py.
+Línea de partida en el clon: 24 passed in 1.07s (código 0).
+
+| Mutación | Pruebas que fallan | ¿Detectada? |
+|---|---|---|
+| DF-20 · la comprobación fallida ya no termina con exit 1 (sale 0) | `test_la_comprobacion_va_despues_de_airflow_version_y_antes_del_ls_final_y_falla_con_exit_1`; `test_el_mismo_if_else_exit_1_da_1_si_la_comprobacion_falla_y_0_si_no`; `test_el_compose_del_repositorio_es_exactamente_lo_que_sale_del_oficial_sin_necesitar_la_red` | sí |
+| DF-20 · se quita el exit 1 y el contenedor sigue | `test_la_comprobacion_va_despues_de_airflow_version_y_antes_del_ls_final_y_falla_con_exit_1`; `test_el_mismo_if_else_exit_1_da_1_si_la_comprobacion_falla_y_0_si_no`; `test_el_compose_del_repositorio_es_exactamente_lo_que_sale_del_oficial_sin_necesitar_la_red` | sí |
+| DF-20 · la comprobación pasa a ir antes de airflow version | `test_el_compose_del_repositorio_es_exactamente_lo_que_sale_del_oficial_sin_necesitar_la_red` | sí |
+| DF-20 · se llama al airflow suelto y no a /entrypoint | `test_la_comprobacion_va_despues_de_airflow_version_y_antes_del_ls_final_y_falla_con_exit_1`; `test_el_mismo_if_else_exit_1_da_1_si_la_comprobacion_falla_y_0_si_no`; `test_el_compose_del_repositorio_es_exactamente_lo_que_sale_del_oficial_sin_necesitar_la_red` | sí |
+| DF-20 · en un error se imprime el registro completo (con la traza) | `test_solo_se_muestran_dos_lineas_de_error_y_nunca_la_traza_ni_el_archivo_completo`; `test_el_mismo_if_else_exit_1_da_1_si_la_comprobacion_falla_y_0_si_no`; `test_el_compose_del_repositorio_es_exactamente_lo_que_sale_del_oficial_sin_necesitar_la_red` | sí |
+| DF-20 · en un error se imprimen 200 líneas y no 2 | `test_solo_se_muestran_dos_lineas_de_error_y_nunca_la_traza_ni_el_archivo_completo`; `test_el_compose_del_repositorio_es_exactamente_lo_que_sale_del_oficial_sin_necesitar_la_red` | sí |
+| DF-20 · la salida de la comprobación ya no va a un archivo | `test_la_comprobacion_va_despues_de_airflow_version_y_antes_del_ls_final_y_falla_con_exit_1`; `test_el_mismo_if_else_exit_1_da_1_si_la_comprobacion_falla_y_0_si_no`; `test_el_compose_del_repositorio_es_exactamente_lo_que_sale_del_oficial_sin_necesitar_la_red` | sí |
+| DF-20 · el script gana un set -e | `test_el_script_sigue_sin_set_e_y_terminando_en_ls_como_dice_la_guia`; `test_el_compose_del_repositorio_es_exactamente_lo_que_sale_del_oficial_sin_necesitar_la_red` | sí |
+| DF-20 · desaparece el mensaje de éxito | `test_el_mismo_if_else_exit_1_da_1_si_la_comprobacion_falla_y_0_si_no`; `test_el_compose_del_repositorio_es_exactamente_lo_que_sale_del_oficial_sin_necesitar_la_red` | sí |
+| DF-20 · el generador pierde el reemplazo y el compose ya no sale del oficial | `test_el_generador_lleva_el_reemplazo_y_el_aviso_y_el_diff_lo_muestran`; `test_el_compose_del_repositorio_es_exactamente_lo_que_sale_del_oficial_sin_necesitar_la_red` | sí |
+| DF-20 · el generador cambia el ancla | `test_el_generador_lleva_el_reemplazo_y_el_aviso_y_el_diff_lo_muestran`; `test_el_compose_del_repositorio_es_exactamente_lo_que_sale_del_oficial_sin_necesitar_la_red` | sí |
+| DF-20 · el aviso del compose no se actualiza (DF-13 a DF-19) | `test_el_generador_lleva_el_reemplazo_y_el_aviso_y_el_diff_lo_muestran`; `test_el_generador_lleva_el_reemplazo_y_el_aviso_y_el_diff_lo_muestran`; `test_el_compose_del_repositorio_es_exactamente_lo_que_sale_del_oficial_sin_necesitar_la_red` | sí |
+| DF-20 · el aviso del generador pierde el punto 7 | `test_el_generador_lleva_el_reemplazo_y_el_aviso_y_el_diff_lo_muestran`; `test_el_compose_del_repositorio_es_exactamente_lo_que_sale_del_oficial_sin_necesitar_la_red` | sí |
+| DF-20 · el diff regenerado pierde la línea del exit 1 | `test_el_generador_lleva_el_reemplazo_y_el_aviso_y_el_diff_lo_muestran` | sí |
+| DF-20 · el documento de diferencias pierde la fila DF-20 | `test_las_diferencias_con_la_guia_dicen_lo_mismo_que_el_compose` | sí |
+| DF-20 · la fila DF-20 deja de explicar por qué no basta set -e | `test_las_diferencias_con_la_guia_dicen_lo_mismo_que_el_compose` | sí |
+| DF-20 · el documento sigue diciendo DF-13 a DF-19 | `test_las_diferencias_con_la_guia_dicen_lo_mismo_que_el_compose`; `test_las_diferencias_con_la_guia_dicen_lo_mismo_que_el_compose` | sí |
+
+Total: 17 de 17 detectadas.
+
+## Parte 4 · la prueba guardiana de la guía del modo completo (daños a la guía y reglas debilitadas)
+Pruebas que se corren: tests/test_guia_modo_completo.py.
+Línea de partida en el clon: 93 passed in 0.94s (código 0).
+
+| Mutación | Pruebas que fallan | ¿Detectada? |
+|---|---|---|
+| guía · un comando lleva --password | `test_la_guia_cumple_la_regla[contraseñas en comandos]`; `test_negativa_la_regla_rechaza_el_texto_danado[contraseñas en comandos: -p pegado a la contraseña]`; `test_negativa_la_regla_rechaza_el_texto_danado[contraseñas en comandos: MYSQL_PWD en un comando]` y 3 más | sí |
+| guía · un comando lleva -p pegado a la contraseña | `test_la_guia_cumple_la_regla[contraseñas en comandos]`; `test_negativa_la_regla_rechaza_el_texto_danado[contraseñas en comandos: -p pegado a la contraseña]`; `test_negativa_la_regla_rechaza_el_texto_danado[contraseñas en comandos: MYSQL_PWD en un comando]` y 3 más | sí |
+| guía · el .env se lee sin copiar al portapapeles | `test_la_guia_cumple_la_regla[env al portapapeles]`; `test_negativa_la_regla_rechaza_el_texto_danado[env al portapapeles: lee el .env y no lo copia al portapapeles]`; `test_negativa_la_regla_rechaza_el_texto_danado[portapapeles limpio: no se limpia tras copiar]` | sí |
+| guía · desaparece la limpieza del portapapeles tras la copia | `test_la_guia_cumple_la_regla[portapapeles limpio]` | sí |
+| guía · un comando pierde su «Para qué sirve» | `test_la_guia_cumple_la_regla[para qué sirve]` | sí |
+| guía · el <ID> pierde su «Reemplace» | `test_la_guia_cumple_la_regla[reemplace]`; `test_negativa_la_regla_rechaza_el_texto_danado[reemplace: falta «Reemplace» del ID]` | sí |
+| guía · la carpeta del proyecto pierde su «Reemplace» | `test_la_guia_cumple_la_regla[reemplace]`; `test_negativa_la_regla_rechaza_el_texto_danado[reemplace: falta «Reemplace» de la carpeta]` | sí |
+| guía · el número de comandos no cuadra con el conteo | `test_la_guia_cumple_la_regla[conteo]`; `test_negativa_la_regla_rechaza_el_texto_danado[conteo: número de comandos que no cuadra]`; `test_negativa_la_regla_rechaza_el_texto_danado[conteo: no dice cuántos comandos trae]` | sí |
+| guía · el conteo de vistos no cuadra | `test_la_guia_cumple_la_regla[conteo]` | sí |
+| guía · aparece una ruta del equipo | `test_la_guia_cumple_la_regla[rutas]`; `test_advertir_de_onedrive_no_cuenta_como_ruta_del_equipo` | sí |
+| guía · desaparece la advertencia de OneDrive | `test_la_guia_cumple_la_regla[frases]`; `test_advertir_de_onedrive_no_cuenta_como_ruta_del_equipo`; `test_negativa_la_regla_rechaza_el_texto_danado[frases: desaparece la advertencia de OneDrive]` | sí |
+| guía · vuelve a decir que terminar en 0 garantiza la base | `test_la_guia_cumple_la_regla[frases]`; `test_negativa_la_regla_rechaza_el_texto_danado[frases: la guía vuelve a decir que terminar en 0 garantiza]` | sí |
+| guía · un bloque «visto» sin salida pasa a traer el texto pendiente | `test_la_guia_cumple_la_regla[salidas]`; `test_la_guia_cumple_la_regla[borrador]`; `test_los_bloques_vistos_sin_salida_se_admiten_sin_varia_ni_tiempo` y 4 más | sí |
+| guía · un bloque «no probado» trae «(sin salida)» | `test_la_guia_cumple_la_regla[salidas]`; `test_los_bloques_vistos_sin_salida_se_admiten_sin_varia_ni_tiempo`; `test_negativa_la_regla_rechaza_el_texto_danado[salidas: no probado con salida inventada]` y 4 más | sí |
+| guía · pasa a terminada con bloques sin probar | `test_la_guia_cumple_la_regla[borrador]`; `test_la_guia_cumple_la_regla[evidencia]`; `test_la_guia_terminada_con_un_bloque_sin_probar_o_borrador_sin_pendientes_se_rechaza` y 1 más | sí |
+| guía · un enlace interno apunta a un título que no existe | `test_la_guia_cumple_la_regla[enlaces]`; `test_negativa_la_regla_rechaza_el_texto_danado[enlaces: ancla interna que no existe]` | sí |
+| guía · un enlace apunta a un archivo que no existe | `test_la_guia_cumple_la_regla[enlaces]`; `test_negativa_la_regla_rechaza_el_texto_danado[enlaces: archivo que no existe]` | sí |
+| guía · una opción citada no existe en el script | `test_la_guia_cumple_la_regla[scripts y opciones]`; `test_negativa_la_regla_rechaza_el_texto_danado[contraseñas en comandos: --password en un comando]`; `test_negativa_la_regla_rechaza_el_texto_danado[scripts y opciones: opción que el script no tiene]` | sí |
+| guía · una opción citada en la prosa no existe | `test_la_guia_cumple_la_regla[scripts y opciones]` | sí |
+| guía · un marcador inventado en un comando | `test_la_guia_cumple_la_regla[marcadores]`; `test_la_guia_cumple_la_regla[reemplace]`; `test_negativa_la_regla_rechaza_el_texto_danado[marcadores: marcador inventado en un comando]` | sí |
+| guía · un tropiezo visto pasa a deducido | `test_la_guia_cumple_la_regla[errores]`; `test_negativa_la_regla_rechaza_el_texto_danado[errores: fila de error sin marca]`; `test_negativa_la_regla_rechaza_el_texto_danado[errores: un tropiezo de la prueba pasa a deducido]` | sí |
+| guía · desaparece la nota para 8 GB | `test_la_guia_cumple_la_regla[frases]`; `test_negativa_la_regla_rechaza_el_texto_danado[frases: desaparece la nota de memoria]` | sí |
+| guía · desaparece qué hacer si falta MySQL o Docker | `test_la_guia_cumple_la_regla[frases]`; `test_negativa_la_regla_rechaza_el_texto_danado[frases: desaparece qué hacer si falta MySQL o Docker]` | sí |
+| guía · la prosa recomienda airflow db check suelto | `test_la_guia_cumple_la_regla[db check solo con entrypoint]`; `test_la_guia_cumple_la_regla[frases]`; `test_negativa_la_regla_rechaza_el_texto_danado[db check solo con entrypoint: la prosa recomienda airflow db check suelto]` | sí |
+| guía · un comando ejecuta airflow db check suelto | `test_la_guia_cumple_la_regla[db check solo con entrypoint]`; `test_negativa_la_regla_rechaza_el_texto_danado[contraseñas en comandos: -p pegado a la contraseña]`; `test_negativa_la_regla_rechaza_el_texto_danado[contraseñas en comandos: MYSQL_PWD en un comando]` y 3 más | sí |
+| guía · desaparece que el código de up airflow-init no es fiable | `test_la_guia_cumple_la_regla[frases]`; `test_negativa_la_regla_rechaza_el_texto_danado[frases: desaparece que el código de up airflow-init no es fiable]` | sí |
+| guía · desaparece el código de up -d como señal | `test_la_guia_cumple_la_regla[frases]`; `test_negativa_la_regla_rechaza_el_texto_danado[frases: desaparece la señal fiable con el código de up -d]` | sí |
+| regla · db check suelto en la prosa deja de rechazarse | `test_negativa_la_regla_rechaza_el_texto_danado[db check solo con entrypoint: la prosa recomienda airflow db check suelto]` | sí |
+| regla · db check suelto en un comando deja de rechazarse | `test_negativa_la_regla_rechaza_el_texto_danado[db check solo con entrypoint: un comando ejecuta airflow db check suelto]` | sí |
+| regla · la frase «no es una señal fiable» deja de exigirse | `test_negativa_la_regla_rechaza_el_texto_danado[frases: desaparece que el código de up airflow-init no es fiable]` | sí |
+| regla · la afirmación sobre airflow db check deja de revisarse | `test_negativa_una_afirmacion_de_la_guia_se_rechaza_cuando_el_codigo_deja_de_cumplirla[airflow-init pierde la comprobación de la base]`; `test_negativa_una_afirmacion_de_la_guia_se_rechaza_cuando_el_codigo_deja_de_cumplirla[airflow-init ya no termina con exit 1 si la base falla]` | sí |
+| regla · se pierde la detección de -p pegado | `test_negativa_la_regla_rechaza_el_texto_danado[contraseñas en comandos: -p pegado a la contraseña]` | sí |
+| regla · se pierde la detección de MYSQL_PWD | `test_negativa_la_regla_rechaza_el_texto_danado[contraseñas en comandos: MYSQL_PWD en un comando]` | sí |
+| regla · se pierde la detección de --password | `test_negativa_la_regla_rechaza_el_texto_danado[contraseñas en comandos: --password en un comando]` | sí |
+| regla · la lectura de .env deja de reconocerse | `test_negativa_la_regla_rechaza_el_texto_danado[env al portapapeles: lee el .env y no lo copia al portapapeles]`; `test_negativa_la_regla_rechaza_el_texto_danado[env al portapapeles: Get-Content del .env]` | sí |
+| regla · el .env ya no exige terminar en Set-Clipboard | `test_negativa_la_regla_rechaza_el_texto_danado[env al portapapeles: lee el .env y no lo copia al portapapeles]`; `test_negativa_la_regla_rechaza_el_texto_danado[env al portapapeles: Get-Content del .env]` | sí |
+| regla · la copia ya no exige su limpieza | `test_negativa_la_regla_rechaza_el_texto_danado[portapapeles limpio: no se limpia tras copiar]` | sí |
+| regla · «Para qué sirve» deja de exigirse | `test_negativa_la_regla_rechaza_el_texto_danado[para qué sirve: comando sin «Para qué sirve»]` | sí |
+| regla · «Reemplace» deja de exigirse | `test_negativa_la_regla_rechaza_el_texto_danado[reemplace: falta «Reemplace» del ID]`; `test_negativa_la_regla_rechaza_el_texto_danado[reemplace: falta «Reemplace» de la carpeta]` | sí |
+| regla · el conteo deja de compararse | `test_negativa_la_regla_rechaza_el_texto_danado[conteo: número de comandos que no cuadra]`; `test_negativa_la_regla_rechaza_el_texto_danado[conteo: un comando sin su bloque aunque el conteo dicho coincida]` | sí |
+| regla · el conteo ignora los comandos sin marca | `test_negativa_la_regla_rechaza_el_texto_danado[conteo: un comando sin su bloque aunque el conteo dicho coincida]` | sí |
+| regla · «(sin salida)» deja de admitirse en los vistos | `test_la_guia_cumple_la_regla[salidas]`; `test_los_bloques_vistos_sin_salida_se_admiten_sin_varia_ni_tiempo` | sí |
+| regla · los vistos dejan de exigir «Varía» y «Tiempo» | `test_negativa_la_regla_rechaza_el_texto_danado[salidas: visto con salida sin varía ni tiempo]` | sí |
+| regla · «borrador» deja de exigir bloques sin probar | `test_la_guia_terminada_con_un_bloque_sin_probar_o_borrador_sin_pendientes_se_rechaza` | sí |
+| regla · una guía terminada deja de rechazar bloques sin probar | `test_la_guia_terminada_con_un_bloque_sin_probar_o_borrador_sin_pendientes_se_rechaza`; `test_negativa_la_regla_rechaza_el_texto_danado[borrador: terminada con bloques sin probar]` | sí |
+| regla · la evidencia no compara el sha256 | `test_una_guia_terminada_cita_su_evidencia_y_el_manifiesto_trae_el_sha256_del_archivo` | sí |
+| regla · la evidencia no exige estar en el manifiesto | `test_una_guia_terminada_cita_su_evidencia_y_el_manifiesto_trae_el_sha256_del_archivo` | sí |
+| regla · los enlaces dejan de comprobar el ancla | `test_negativa_la_regla_rechaza_el_texto_danado[enlaces: ancla que no existe]`; `test_negativa_la_regla_rechaza_el_texto_danado[enlaces: ancla interna que no existe]` | sí |
+| regla · los enlaces dejan de comprobar el archivo | `test_negativa_la_regla_rechaza_el_texto_danado[enlaces: archivo que no existe]` | sí |
+| regla · la ruta del equipo deja de buscar AppData | `test_negativa_la_regla_rechaza_el_texto_danado[rutas: carpeta AppData]` | sí |
+| regla · la ruta del equipo pasa a prohibir OneDrive | `test_la_guia_cumple_la_regla[rutas]`; `test_advertir_de_onedrive_no_cuenta_como_ruta_del_equipo` | sí |
+| regla · el canario deja de buscarse con .env presente | `test_un_valor_del_env_en_la_guia_se_detecta_sin_imprimirlo_en_el_mensaje` | sí |
+| regla · el mensaje del canario incluye el valor | `test_un_valor_del_env_en_la_guia_se_detecta_sin_imprimirlo_en_el_mensaje` | sí |
+| regla · los marcadores de los comandos dejan de revisarse | `test_negativa_la_regla_rechaza_el_texto_danado[marcadores: marcador inventado en un comando]` | sí |
+| regla · las citas de la prosa dejan de revisarse | `test_negativa_la_regla_rechaza_el_texto_danado[scripts y opciones: opción inventada en una cita de la prosa]` | sí |
+| regla · la frase prohibida sobre el código 0 deja de revisarse | `test_negativa_la_regla_rechaza_el_texto_danado[frases: la guía vuelve a decir que terminar en 0 garantiza]` | sí |
+| regla · las afirmaciones sobre el puerto 8081 dejan de revisarse | `test_negativa_una_afirmacion_de_la_guia_se_rechaza_cuando_el_codigo_deja_de_cumplirla[phpMyAdmin cambia de puerto]` | sí |
+| regla · el DAG en pausa deja de revisarse | `test_negativa_una_afirmacion_de_la_guia_se_rechaza_cuando_el_codigo_deja_de_cumplirla[el DAG ya no nace en pausa]` | sí |
+| regla · el comando de airflow-init deja de revisarse | `test_negativa_una_afirmacion_de_la_guia_se_rechaza_cuando_el_codigo_deja_de_cumplirla[airflow-init gana un set -e]`; `test_negativa_una_afirmacion_de_la_guia_se_rechaza_cuando_el_codigo_deja_de_cumplirla[airflow-init ya no termina en ls]`; `test_negativa_una_afirmacion_de_la_guia_se_rechaza_cuando_el_codigo_deja_de_cumplirla[airflow-init ya no migra la base]` | sí |
+| regla · el orden de las cuatro tareas deja de revisarse | `test_negativa_una_afirmacion_de_la_guia_se_rechaza_cuando_el_codigo_deja_de_cumplirla[el DAG cambia el orden de las tareas]` | sí |
+| regla · el programa de la lista cerrada deja de revisarse | `test_negativa_la_regla_rechaza_el_texto_danado[programas: programa fuera de la lista]` | sí |
+| regla · down -v deja de rechazarse | `test_negativa_la_regla_rechaza_el_texto_danado[programas: down -v en un comando]` | sí |
+| regla · las filas de errores dejan de exigir marca | `test_negativa_la_regla_rechaza_el_texto_danado[errores: fila de error sin marca]` | sí |
+
+Total: 63 de 63 detectadas.
+
+Resultado: 132 mutaciones en total, todas detectadas.
+
+Qué NO demuestra: que no existan mutaciones que ninguna prueba detecte; solo las que se probaron. Los mutantes equivalentes que aparecieron en el camino se eliminaron quitando el código que los producía (la cláusula del conteo de la guía que otra regla ya cubría se cubrió con una prueba negativa propia).

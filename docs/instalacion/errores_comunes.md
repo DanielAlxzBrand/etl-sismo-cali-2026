@@ -32,6 +32,7 @@ una solución de una línea, y porque «no funciona» sin el mensaje no sirve pa
 | `docker compose` no existe | Docker Desktop antiguo | Actualizar Docker Desktop |
 | La interfaz de Airflow tarda o los contenedores se reinician | falta de memoria | Ver la [advertencia para 8 GB](README.md#4-tiempos-y-memoria-medidos): apagar el panel, limitar WSL2 con `.wslconfig` |
 | El DAG falla en `cargar_datawarehouse` al conectar | MySQL apagado, o falta la cuenta `sismo_airflow`, o el origen no coincide | Iniciar `MySQL80`; ejecutar `configurar_mysql.py --usuario-docker --origen localhost`; `preparar_airflow.py --verificar` dice qué variables faltan (solo nombres) |
+| El servidor de Airflow queda «unhealthy» con «password authentication failed for user airflow», o `airflow-init` imprime «ERROR: could not connect to the metadata database» y sale con código 1 (visto) | el nombre de proyecto de Compose por defecto (el de la carpeta de Airflow) reutiliza el volumen de Postgres de otra instalación, que guarda otra contraseña | `preparar_airflow.py` avisa con una línea «!»; repita con `--nombre-compose <otro nombre>` (por ejemplo `airflow-zip`) y levante de nuevo; no borre el volumen viejo. La señal de que quedó bien es `docker compose ps -a` con todo «(healthy)» y el código de `docker compose up -d`, no el de `docker compose up airflow-init` |
 
 ## 4. MySQL y contraseñas
 | Síntoma | Causa probable | Qué hacer |
