@@ -96,16 +96,20 @@ def seccion(texto, slug, origen=""):
 
 def _filtrar_filas(cuerpo, filtros):
     """Deja de una tabla el encabezado y las filas que contienen alguno de los textos; el resto del cuerpo queda igual."""
-    salida, vistas = [], 0
+    salida, vistas, con_filas, hay_tabla = [], 0, False, False
     for linea in cuerpo.split("\n"):
         if linea.startswith("|"):
             vistas += 1
-            if vistas <= 2 or any(f in linea for f in filtros):
+            hay_tabla = True
+            if vistas <= 2:
                 salida.append(linea)
+            elif any(f in linea for f in filtros):
+                salida.append(linea)
+                con_filas = True
         else:
             vistas = 0
             salida.append(linea)
-    if len(salida) <= 2 and any(l.startswith("|") for l in salida):
+    if hay_tabla and not con_filas:      # una tabla sin filas dejaría un encabezado vacío en la guía sin que nadie lo note
         raise ErrorDeGuia(f"ninguna fila de la tabla contiene {filtros}")
     return "\n".join(salida)
 
