@@ -68,6 +68,8 @@ def test_una_tabla_se_convierte_en_filas_y_celdas_y_una_barra_dentro_de_codigo_n
     assert html.count("<tr>") == 3 and html.count("<th>") == 2 and html.count("<td>") == 4
     assert "<code>x\\|y</code>" in html or "<code>x|y</code>" in html
     assert "<td><strong>dos</strong></td>" in html
+    sin_escapar = gen.md_a_html("| a | b |\n|---|---|\n| `x|y` | z |\n")      # una barra dentro de un trozo de código tampoco parte la celda
+    assert sin_escapar.count("<td>") == 2 and "<code>x|y</code>" in sin_escapar
 
 
 def test_las_listas_anidadas_y_las_casillas_se_convierten():
