@@ -34,7 +34,13 @@ El bloque original empezaba en «Attaching to airflow-init-1» y le faltaban las
    Container airflow-zip3-redis-1 Started
    Container airflow-zip3-redis-1 Waiting
    Container airflow-zip3-postgres-1 Healthy
-Diferencia: al bloque original le faltaban 24 líneas de progreso de Compose (`Network`, `Volume` y `Container` con `Creating`, `Created`, `Starting`, `Started`, `Waiting` y `Healthy`): las anteriores a «Attaching to airflow-init-1» y las de arranque de Postgres y Redis que se intercalan después. La captura original tenía 617 líneas y esta 653, 36 más: 24 son de progreso de Compose y las otras 12 son líneas propias de Airflow que no se compararon una a una (varían de una ejecución a otra). El resto coincide: el código de salida (0), «Connection successful.», ningún «Read-only file system».
+Diferencia y conciliación (617 + 24 no da 653; el resto está explicado): la captura completa trae 36 líneas que el bloque original no tenía y NINGUNA del original falta en ella (comparadas todas, con las horas y el nombre del proyecto normalizados).
+  24 · líneas de progreso de Compose (`Network`, `Volume` y `Container` con `Creating`, `Created`, `Starting`, `Started`, `Waiting` y `Healthy`; 8 de ellas salen dos veces, también en las demás capturas de Compose): salida de errores de `docker compose`.
+   2 · el aviso «The container is run as root user. For security, consider using a regular user account.», una vez en `airflow version` y otra en `airflow config list`: salida de errores DEL CONTENEDOR, que Compose reenvía por su salida de errores.
+   1 · «Values are hidden by default. Use `--show-values` to display them (may include sensitive data).», también salida de errores del contenedor.
+   9 · líneas «ownership of … retained as airflow:root» de la ejecución del DAG de las 17:14: NO son líneas perdidas sino una diferencia de estado. La carpeta `logs` de la carpeta de Airflow se comparte entre las pruebas y al hacer esta captura ya tenía esa ejecución (la captura original, de las 17:11, no); el `chown -v` de `airflow-init` la lista.
+  Total: 24 + 2 + 1 + 9 = 36 = 653 - 617. Las líneas realmente perdidas por no guardar la salida de errores son 27 (24 + 2 + 1); las otras 9 son estado, y las 12 que no cuadraban eran 2 + 1 + 9.
+  Cuenta de líneas: 653 en la captura completa y 617 en la original, ambas sin la cabecera del programa de captura y sin líneas en blanco sobrantes al final (una línea en blanco, la misma, en las dos).
 Antes: el bloque de la guía sin esas líneas. Después: el bloque con la captura completa (DEF-024).
 
 == Auditoría de los demás bloques «visto» de la guía: ¿su captura original incluía la salida de errores?
@@ -44,8 +50,8 @@ Método: se volvió a correr cada comando que se puede correr hoy con las dos sa
   c02, c12, c17, c18, c19, c27, c30, c31 y c33: son comandos de PowerShell (Select-String, Set-Location, Invoke-WebRequest, Set-Clipboard) y no escriben por una salida de errores.
   c05, c06 y c07 (configurar_mysql.py de las tres cuentas): se capturaron con un programa que SÍ unía las dos salidas; coinciden con lo que Daniel vio en su consola en EV-106.
   c08 (configurar_mysql.py --solo-verificar): PERDIÓ las líneas de registro (DEF-023, ya corregido).
-  c13 (docker compose build): PERDIÓ 12 líneas de la salida de errores (` Image airflow-zip-… Building` al empezar y sus `Built` al terminar), medido hoy: con `1>` y `2>` separadas, 114 líneas por la salida estándar y 12 por la de errores.
-        La captura completa con 2>&1 de hoy está al final de este archivo. El bloque de la guía NO se corrigió (queda a la espera de la decisión del equipo).
+  c13 (docker compose build): PERDIÓ 12 líneas de la salida de errores (6 ` Image … Building` al empezar y 6 `Built` al terminar), medido hoy: con `1>` y `2>` separadas, 114 líneas por la salida estándar y 12 por la de errores (la captura con 2>&1 de abajo tiene 130: 118 + 12; las 4 de diferencia en la estándar son de una corrida a otra y no se compararon una a una).
+        Corregido después, con la captura completa de abajo: DEF-025.
   c15, c28, c32 y c34 (docker compose up -d / down de Airflow y de phpMyAdmin): ya se habían recapturado con `cmd /c "… > archivo 2>&1"` (incluyen el progreso).
   c14 (docker compose up airflow-init): perdió las líneas de progreso: es el bloque de este defecto (DEF-024), corregido.
   Los dos bloques sin comando propio (teclear «root» en el indicador y la sección 11) son consolas completas que copió Daniel.
@@ -724,7 +730,7 @@ airflow-init-1  | drwxrwxr-x 1 airflow root 4096 Nov 16 19:57 ..
 airflow-init-1 exited with code 0
 
 ================================================================================================================================
-CAPTURA COMPLETA de `docker compose build` (130 líneas), enmascarada (no sustituye todavía al bloque de la guía)
+CAPTURA COMPLETA de `docker compose build` (130 líneas), enmascarada (es la fuente del bloque de la guía, DEF-025)
 ================================================================================================================================
  Image airflow-zip3-airflow-triggerer Building
  Image airflow-zip3-airflow-worker Building

@@ -11,6 +11,7 @@ lo que debe verse al ejecutarlo y qué hacer cuando no se ve.
 - Cada bloque «Qué debe verse» dice si es **(visto)**, porque lo copiamos de una ejecución real desde un zip nuevo en otra carpeta, o **(no probado)**. Nada se afirma sin haberlo ejecutado. Los comandos que no imprimen nada (cambiar de carpeta, copiar al portapapeles) llevan el bloque `(sin salida)`, también marcado.
 - Lo que cambia de un equipo a otro está enmascarado con marcadores fijos: `<usuario>` (el nombre de usuario de Windows), `<ruta>` (una carpeta de su equipo), `<ID>` (un identificador que genera el programa), `<PID>` (un número de proceso), `<hash>` (una huella)
   y `<contraseña>` (cualquier contraseña o clave: nunca se imprime). Debajo de cada bloque «visto» una línea **Varía:** dice qué partes cambian en su equipo (tiempos, identificadores, fechas) y otra **Tiempo:** cuánto tardó.
+- **El nombre del proyecto de Compose que sale en las salidas (`airflow-zip`) es el nombre de ejemplo de esta guía.** En las capturas reales fue `airflow-zip`, `airflow-zip2` o `airflow-zip3` según la pasada, y se muestra siempre como `airflow-zip`; el suyo es el que elija con `--nombre-compose`.
 - Las salidas «visto» salen de una prueba real desde un zip nuevo: [EV-100](../evidencias/modo_completo/EV-100_guia_seguida_desde_un_zip_nuevo.txt) (transcripción completa) y [EV-101](../evidencias/modo_completo/EV-101_hallazgo_4_y_df20_antes_y_despues.txt) (el hallazgo del volumen de Postgres, antes y después).
 - Donde un comando trae `<ID>` o `<carpeta del proyecto>`, la guía dice **«Reemplace»** y por qué valor.
 - Donde dice **código de salida** se refiere a `$LASTEXITCODE` justo después del comando; `0` significa que terminó bien.
@@ -276,26 +277,36 @@ docker compose build
 ```
 **Qué debe verse (visto):**
 ```text
+ Image airflow-zip-airflow-triggerer Building
+ Image airflow-zip-airflow-worker Building
+ Image airflow-zip-airflow-apiserver Building
+ Image airflow-zip-airflow-init Building
+ Image airflow-zip-airflow-dag-processor Building
+ Image airflow-zip-airflow-scheduler Building
 #1 [internal] load local bake definitions
 #1 reading from stdin 4.31kB 0.1s done
 #1 DONE 0.1s
 
-#2 [airflow-triggerer internal] load build definition from Dockerfile
+#2 [airflow-worker internal] load build definition from Dockerfile
 #2 transferring dockerfile: 239B 0.0s done
-#2 DONE 0.0s
+[… 104 líneas más (las líneas 13 a 116; la captura completa de 130 está en EV-107) …]
+#18 [airflow-worker] resolving provenance for metadata file
+#18 DONE 0.2s
 
-[… 102 líneas más …]
-#18 [airflow-init] resolving provenance for metadata file
-#18 DONE 0.4s
-
-#19 [airflow-worker] resolving provenance for metadata file
+#19 [airflow-apiserver] resolving provenance for metadata file
 #19 DONE 0.3s
 
-#20 [airflow-scheduler] resolving provenance for metadata file
+#20 [airflow-dag-processor] resolving provenance for metadata file
 #20 DONE 0.0s
+ Image airflow-zip-airflow-triggerer Built
+ Image airflow-zip-airflow-worker Built
+ Image airflow-zip-airflow-apiserver Built
+ Image airflow-zip-airflow-dag-processor Built
+ Image airflow-zip-airflow-init Built
+ Image airflow-zip-airflow-scheduler Built
 ```
-**Varía:** la lista de pasos y sus tiempos (formato de texto plano porque la captura no se hizo en una consola interactiva; en PowerShell se dibuja un progreso). Se abrevió: faltan las líneas de en medio.
-**Tiempo:** 6,5 s con las capas en caché; desde cero será más y no se midió.
+**Varía:** la lista de pasos de BuildKit y sus tiempos. Se capturó con `docker compose build` y las salidas estándar y de errores juntas (`cmd /c "… > archivo 2>&1"`), sin consola interactiva (en PowerShell se dibuja un progreso en vivo); las 6 líneas `Image … Building` del principio y las 6 `Built` del final salen por la salida de errores y antes faltaban en este bloque (DEF-025). **Enmascarado:** el nombre del proyecto de Compose se muestra como `airflow-zip`, el nombre de ejemplo de esta guía (en la captura fue `airflow-zip3`; el suyo es el que elija con `--nombre-compose`) y los resúmenes de imagen (`sha256`) como `<hash>`. **Abreviado:** se omiten las líneas 13 a 116 de la captura de 130; la captura completa está en [EV-107](../evidencias/modo_completo/EV-107_recaptura_de_airflow_init_con_2_y_1.txt).
+**Tiempo:** 12,2 s con las capas en caché; desde cero será más y no se midió.
 
 **Para qué sirve:** preparar la base de metadatos de Airflow (en Postgres) y crear el usuario de la interfaz; termina solo.
 ```powershell
@@ -350,7 +361,7 @@ airflow-init-1  | drwxrwxr-x 1 airflow root 4096 Nov 16 19:57 ..
 
 airflow-init-1 exited with code 0
 ```
-**Varía:** las horas, los identificadores y el orden de las líneas de Airflow; el número de líneas (unas 650); la dirección de la base, que Airflow imprime con la clave ya tapada, aparece aquí como `<contraseña>`. Se capturó con `docker compose up airflow-init` y las salidas estándar y de errores juntas (`cmd /c "… > archivo 2>&1"`) sobre un volumen nuevo, por eso empieza con las líneas de progreso de Compose del primer arranque (`Network`, `Volume` y `Container` con `Creating`, `Created`, `Starting`, `Started`, `Waiting`, `Healthy`); en PowerShell interactivo Docker dibuja ese progreso en vivo. El nombre del proyecto de Compose es el que se elige con `--nombre-compose` (en la captura fue otro; aquí se muestra `airflow-zip`). Se abrevió: faltan las líneas de en medio. Debe verse «Checking the connection to the metadata database:» seguido de «Connection successful.» y ninguna línea «Read-only file system»; sobre su código de salida, vea la advertencia de arriba.
+**Varía:** las horas, los identificadores y el orden de las líneas de Airflow; el número de líneas (unas 650); la dirección de la base, que Airflow imprime con la clave ya tapada, aparece aquí como `<contraseña>`. Se capturó con `docker compose up airflow-init` y las salidas estándar y de errores juntas (`cmd /c "… > archivo 2>&1"`) sobre un volumen nuevo, por eso empieza con las líneas de progreso de Compose del primer arranque (`Network`, `Volume` y `Container` con `Creating`, `Created`, `Starting`, `Started`, `Waiting`, `Healthy`); en PowerShell interactivo Docker dibuja ese progreso en vivo. El nombre del proyecto de Compose es el que se elige con `--nombre-compose` (en la captura fue otro; aquí se muestra `airflow-zip`). Se abrevió: faltan las líneas de en medio. La captura anterior, hecha sin `2>&1`, perdía 27 líneas que Compose y el contenedor escriben por la salida de errores (24 de progreso de Compose y 3 avisos del contenedor, como «The container is run as root user…»). Debe verse «Checking the connection to the metadata database:» seguido de «Connection successful.» y ninguna línea «Read-only file system»; sobre su código de salida, vea la advertencia de arriba.
 **Tiempo:** 59,6 s con un volumen de Postgres nuevo (primer arranque).
 
 **Para qué sirve:** arrancar todos los contenedores de Airflow en segundo plano.
