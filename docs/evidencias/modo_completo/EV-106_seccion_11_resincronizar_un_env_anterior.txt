@@ -1,0 +1,52 @@
+EV-106 · Sección 11 de la guía del modo completo: volver a usar un `.env` anterior (resincronizar las tres cuentas)
+
+Qué es: la prueba corta de la sección 11 que hizo Daniel el 2026-11-16 en su proyecto real (con .git, entorno virtual propio), en su propia terminal de PowerShell. La contraseña de `root` la tecleó él, tres veces, en el indicador del
+script; no pasó por el código, por un registro ni por quien escribió la guía. Lo que sigue es lo que Daniel copió de su consola, con la carpeta enmascarada como <ruta> (el nombre de usuario de Windows no aparece más que en el indicador).
+Contexto: tras la prueba de la guía desde el zip nuevo, las tres cuentas (sismo_etl, sismo_airflow y sismo_lectura) tenían contraseñas nuevas, de modo que el `.env` de su proyecto real quedó «anterior» (con contraseñas viejas).
+Quién lo hizo: Daniel (no es una ejecución de quien escribió la guía). Hora de los registros: 14:28 a 14:32 (hora local).
+
+== Paso 1 · comprobar el `.env` anterior (sin contraseña de root)
+PS <ruta>> .\.venv\Scripts\python.exe scripts\mysql\configurar_mysql.py --solo-verificar
+2026-11-16 14:28:08 ERROR etl.__main__ las credenciales de .env no son válidas (ejecuta el script sin --solo-verificar)
+PS <ruta>> $LASTEXITCODE
+1
+
+== Paso 2 · sismo_etl (root, 1 de 3)
+(.venv) PS <ruta>> .\.venv\Scripts\python.exe scripts\mysql\configurar_mysql.py --rotar
+Contraseña del administrador de MySQL (root); no se muestra al escribir:
+2026-11-16 14:30:36 INFO etl.__main__ servidor MySQL 8.0.45; lower_case_table_names=1; character_set_server=utf8mb4
+2026-11-16 14:30:36 INFO etl.__main__ variables escritas en .env: MYSQL_HOST, MYSQL_PORT, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE, MYSQL_DATABASE_PRUEBA
+2026-11-16 14:30:36 INFO etl.__main__ Listo
+
+== Paso 3 · sismo_airflow (root, 2 de 3)
+(.venv) PS <ruta>> .\.venv\Scripts\python.exe scripts\mysql\configurar_mysql.py --usuario-docker --origen localhost --rotar
+Contraseña del administrador de MySQL (root); no se muestra al escribir:
+2026-11-16 14:31:40 INFO etl.__main__ servidor MySQL 8.0.45; lower_case_table_names=1; character_set_server=utf8mb4
+2026-11-16 14:31:40 INFO etl.__main__ variables escritas en .env: MYSQL_DOCKER_USER, MYSQL_DOCKER_PASSWORD, MYSQL_DOCKER_ORIGEN
+2026-11-16 14:31:40 INFO etl.__main__ Listo
+
+== Paso 4 · sismo_lectura (root, 3 de 3)
+(.venv) PS <ruta>> .\.venv\Scripts\python.exe scripts\mysql\configurar_mysql.py --usuario-lectura --rotar
+Contraseña del administrador de MySQL (root); no se muestra al escribir:
+2026-11-16 14:32:13 INFO etl.__main__ servidor MySQL 8.0.45; lower_case_table_names=1; character_set_server=utf8mb4
+2026-11-16 14:32:13 INFO etl.__main__ variables escritas en .env: MYSQL_LECTURA_USER, MYSQL_LECTURA_PASSWORD
+2026-11-16 14:32:13 INFO etl.__main__ Listo
+
+== Paso 5 · comprobar que el `.env` ya sirve (sin contraseña de root)
+(.venv) PS <ruta>> .\.venv\Scripts\python.exe scripts\mysql\configurar_mysql.py --solo-verificar
+2026-11-16 14:32:42 INFO etl.__main__ verificación correcta: las credenciales de .env funcionan y los privilegios son los esperados
+2026-11-16 14:32:42 INFO etl.__main__ Listo
+(.venv) PS <ruta>> $LASTEXITCODE
+0
+
+(Daniel también activó el entorno virtual con `Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned` y `Activate.ps1` entre el paso 1 y el paso 2; esa línea se omite porque lleva su ruta y no forma parte de la guía.)
+
+== Comparación con lo que decía la guía
+Pasos 1 a 4: coinciden con lo esperado (el error y el código 1 del paso 1; el indicador de root y las tres líneas con solo nombres de variables en los pasos 2 a 4; ninguna contraseña impresa).
+Paso 5: NO coincide con el bloque «(sin salida)» que traía la guía para `configurar_mysql.py --solo-verificar`: el comando imprime DOS líneas de registro (la de la verificación correcta y «Listo») y sale con 0.
+  Causa: ese bloque se había copiado de una captura que solo guardaba la salida estándar; las líneas de registro del script salen por la salida de errores y se perdieron. Es el defecto DEF-023.
+  Antes: la guía decía «(sin salida)». Después: la guía trae las dos líneas literales (del paso 5 de esta evidencia).
+No se probó el paso 2 de la sección 11 (apagar y volver a levantar phpMyAdmin y Airflow para que lean el `.env` nuevo): Docker estaba apagado y no se levantó nada en esta prueba.
+Las contraseñas de sismo_etl, sismo_airflow y sismo_lectura del proyecto real quedaron nuevas; las del zip de prueba (carpeta temporal) quedaron viejas y ese `.env` ya no sirve: es lo que la sección 11 advierte.
+
+Qué NO demuestra: que el reinicio de los servicios lea el `.env` nuevo, ni qué pasa con otra versión de MySQL o con el origen de Docker distinto de localhost.

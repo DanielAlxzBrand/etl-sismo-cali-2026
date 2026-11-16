@@ -412,16 +412,18 @@ def test_la_guia_esta_enlazada_desde_el_modo_completo_y_desde_el_indice_de_insta
     assert "guia_modo_completo.md" in leer("docs/instalacion/README.md")
 
 
-def _terminada(texto):
-    """La misma guía con todo «visto» y sin «borrador», como quedaría al terminar la prueba desde el zip."""
-    return re.sub(r"\(no probado\):\*\*", "(visto):**", texto).replace(PENDIENTE, SIN_SALIDA).replace("**Estado:** borrador", "**Estado:** terminada")
+def _como_borrador(texto):
+    """La misma guía como estaba en borrador: la primera salida vista pasa a «no probado» con su texto pendiente y la cabecera dice «borrador» (la guía real ya no tiene bloques sin probar)."""
+    texto = re.sub(r"(\*\*Qué debe verse )\(visto\):\*\*(\n```text\n).*?(\n```\n)\*\*Varía:[^\n]*\n\*\*Tiempo:[^\n]*\n", lambda m: f"{m[1]}(no probado):**{m[2]}{PENDIENTE}{m[3]}", texto, count=1, flags=re.S)
+    return texto.replace("· **Estado:** probada desde", "· **Estado:** borrador; probada desde", 1)
 
 
 def test_una_guia_terminada_cita_su_evidencia_y_el_manifiesto_trae_el_sha256_del_archivo():
     contenido = b"salida de la prueba"
     sha = hashlib.sha256(contenido).hexdigest()
     ruta = "docs/evidencias/modo_completo/EV-900_prueba.txt"
-    texto = _terminada(_texto()).replace("**Estado:** terminada", "**Estado:** terminada · **Evidencia:** [EV-900](../evidencias/modo_completo/EV-900_prueba.txt)", 1)
+    texto = _texto().replace("[EV-100](../evidencias/modo_completo/EV-100_guia_seguida_desde_un_zip_nuevo.txt)", "[EV-900](../evidencias/modo_completo/EV-900_prueba.txt)", 1)
+    assert texto != _texto()
     fila = f"| EV-900 | 1.1 | descripción | archivo | comando | 2026-11-16 | {ruta} | {{}} |"
 
     def con(manifiesto, binario=lambda rel: contenido):
@@ -431,12 +433,13 @@ def test_una_guia_terminada_cita_su_evidencia_y_el_manifiesto_trae_el_sha256_del
     assert "sha256" in " ".join(con(fila.format("0" * 64)))
     assert "no está en el manifiesto" in " ".join(con("| EV-901 | x | x | x | x | x | a | b |"))
     assert "no existe el archivo" in " ".join(con(fila.format(sha), binario=lambda rel: (_ for _ in ()).throw(FileNotFoundError(rel))))
-    assert "cita la evidencia" in " ".join(p_evidencia(_terminada(_texto()), leer, leer_bytes))
+    assert "cita la evidencia" in " ".join(p_evidencia(_texto().replace("**Evidencia:**", "**Evidencia 2:**", 1), leer, leer_bytes))
 
 
 def test_la_guia_terminada_con_un_bloque_sin_probar_o_borrador_sin_pendientes_se_rechaza():
-    assert "ya no dice «borrador»" in " ".join(p_borrador(_texto().replace("**Estado:** borrador", "**Estado:** terminada")))
-    assert "debe pasar a terminada" in " ".join(p_borrador(re.sub(r"\(no probado\):\*\*", "(visto):**", _texto()).replace(PENDIENTE, SIN_SALIDA)))
+    assert "ya no dice «borrador»" in " ".join(p_borrador(_como_borrador(_texto()).replace("· **Estado:** borrador;", "· **Estado:** terminada;")))
+    assert "debe pasar a terminada" in " ".join(p_borrador(_texto().replace("· **Estado:** probada desde", "· **Estado:** borrador; probada desde")))
+    assert p_borrador(_como_borrador(_texto())) == []
 
 
 def test_un_valor_del_env_en_la_guia_se_detecta_sin_imprimirlo_en_el_mensaje(tmp_path):
@@ -477,12 +480,12 @@ NEGATIVAS = [
     ("salidas", "visto con texto pendiente", lambda t: _en_la_primera_salida_vista(t, PENDIENTE), "no puede traer el texto pendiente"),
     ("salidas", "visto con salida sin varía ni tiempo", lambda t: re.sub(r"\*\*Varía:[^\n]*\n\*\*Tiempo:[^\n]*\n", "", t, count=1), "qué varía"),
     ("salidas", "visto vacío", lambda t: _en_la_primera_salida_vista(t, ""), "vacío"),
-    ("salidas", "no probado con salida inventada", _reemplaza(PENDIENTE, "salida inventada"), "solo trae el texto pendiente"),
-    ("salidas", "no probado con «(sin salida)»", _reemplaza(PENDIENTE, SIN_SALIDA), "solo trae el texto pendiente"),
-    ("marcadores", "marcador inventado en una salida", _reemplaza(PENDIENTE, "<ruta secreta>"), "marcador no permitido en una salida"),
+    ("salidas", "no probado con salida inventada", lambda t: _reemplaza(PENDIENTE, "salida inventada")(_como_borrador(t)), "solo trae el texto pendiente"),
+    ("salidas", "no probado con «(sin salida)»", lambda t: _reemplaza(PENDIENTE, SIN_SALIDA)(_como_borrador(t)), "solo trae el texto pendiente"),
+    ("marcadores", "marcador inventado en una salida", lambda t: _reemplaza(PENDIENTE, "<ruta secreta>")(_como_borrador(t)), "marcador no permitido en una salida"),
     ("marcadores", "marcador inventado en un comando", _reemplaza("airflow tasks states-for-dag-run medallon_etl_sismo <ID>", "airflow tasks states-for-dag-run medallon_etl_sismo <otro>"), "marcador no permitido en un comando"),
-    ("rutas", "ruta de Windows", _reemplaza(PENDIENTE, "C:\\Users\\alguien\\proyecto"), "ruta o nombre de usuario"),
-    ("rutas", "carpeta AppData", _reemplaza(PENDIENTE, "<ruta>\\AppData\\Local"), "ruta o nombre de usuario"),
+    ("rutas", "ruta de Windows", lambda t: _reemplaza(PENDIENTE, "C:\\Users\\alguien\\proyecto")(_como_borrador(t)), "ruta o nombre de usuario"),
+    ("rutas", "carpeta AppData", lambda t: _reemplaza(PENDIENTE, "<ruta>\\AppData\\Local")(_como_borrador(t)), "ruta o nombre de usuario"),
     ("contraseñas en comandos", "--password en un comando", _reemplaza("scripts\\mysql\\configurar_mysql.py --solo-verificar", "scripts\\mysql\\configurar_mysql.py --solo-verificar --password x"), "lleva una contraseña"),
     ("contraseñas en comandos", "-p pegado a la contraseña", _reemplaza("```powershell\ndocker compose build\n```", "```powershell\ndocker compose build -pClave123\n```"), "lleva una contraseña"),
     ("contraseñas en comandos", "MYSQL_PWD en un comando", _reemplaza("```powershell\ndocker compose build\n```", "```powershell\n$env:MYSQL_PWD='x'; docker compose build\n```"), "lleva una contraseña"),
@@ -512,8 +515,8 @@ NEGATIVAS = [
     ("frases", "la guía vuelve a decir que terminar en 0 garantiza", _reemplaza("no garantiza una base correcta", "garantiza una base correcta"), "no debe decir"),
     ("frases", "desaparece la nota de memoria", _reemplaza("con 8 GB de RAM apague", "con poca memoria apague"), "8 GB de RAM"),
     ("frases", "desaparece qué hacer si falta MySQL o Docker", _reemplaza("no trae pasos para instalarlos", "trae pasos"), "no trae pasos para instalarlos"),
-    ("borrador", "terminada con bloques sin probar", _reemplaza("**Estado:** borrador", "**Estado:** terminada"), "ya no dice «borrador»"),
-    ("evidencia", "terminada sin evidencia", lambda t: _terminada(t), "cita la evidencia"),
+    ("borrador", "terminada con bloques sin probar", lambda t: _reemplaza("· **Estado:** borrador;", "· **Estado:** terminada;")(_como_borrador(t)), "ya no dice «borrador»"),
+    ("evidencia", "terminada sin evidencia", _reemplaza("**Evidencia:**", "**Evidencia 2:**"), "cita la evidencia"),
     ("enlaces", "ancla que no existe", _reemplaza("modo_minimo.md#3-crear-el-entorno-e-instalar", "modo_minimo.md#9-inexistente"), "no lleva a un título"),
     ("enlaces", "archivo que no existe", _reemplaza("(errores_comunes.md)", "(errores_inexistentes.md)"), "no lleva a un archivo"),
     ("enlaces", "ancla interna que no existe", _reemplaza("(#10-si-algo-falla)", "(#10-si-algo-no-falla)"), "no lleva a un título"),

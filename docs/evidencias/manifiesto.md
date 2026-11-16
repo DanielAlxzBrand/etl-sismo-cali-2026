@@ -233,6 +233,7 @@
 | EV-103 | 5.6, 7.1 | Tablas de mutaciones de las pruebas del modo completo (`.env` sin repositorio, nombre de Compose, escáner, guía, DF-19 y DF-20): 132 mutaciones, todas detectadas | archivo | mutación de un archivo en un clon y `python -m pytest -q -p no:cacheprovider` sobre las pruebas de cada parte | 2026-11-16 | docs/evidencias/modo_completo/EV-103_mutaciones_modo_completo.txt | c1454789e7c8c684460e2ab828b0a0f23ff9f38fdece4f135e9454e434fadc2f |
 | EV-104 | 5.6 | Las pruebas de regresión de DEF-017 a DEF-021 (y las de los defectos anteriores) fallan sin su corrección en una copia temporal | archivo | `python scripts/validacion/verificar_regresiones.py` | 2026-11-16 | docs/evidencias/modo_completo/EV-104_regresiones_def017_a_def021.txt | fa00a95b7bb2df62a8f42bccd79adb40d526e6b5c242cf4036ce23aa8e037628 |
 | EV-105 | 5.6, 7.1 | La suite completa en un clon y en el zip, antes y después de corregir dos pruebas que usaban el bash de WSL (DEF-022): 2 fallos en cada uno antes y 0 después | archivo | `python -m pytest -q -p no:cacheprovider` desde PowerShell con el entorno virtual nuevo, en un clon (con .git) y en el zip descomprimido (sin .git) | 2026-11-16 | docs/evidencias/modo_completo/EV-105_suite_en_clon_y_zip_antes_y_despues.txt | 246bb31cddb5ba9e4de06078b24e0a6a0b92de6a22b4fad719069d062a885b25 |
+| EV-106 | 4.1, 7.1 | Sección 11 de la guía del modo completo probada por Daniel en su proyecto real (el `.env` anterior ya no entra, resincronización de las tres cuentas con `--rotar`, verificación final) y la discrepancia del bloque de `--solo-verificar` (DEF-023) | archivo | `configurar_mysql.py --solo-verificar`, `--rotar`, `--usuario-docker --origen localhost --rotar` y `--usuario-lectura --rotar` en la terminal de Daniel; la contraseña de `root` la tecleó él | 2026-11-16 | docs/evidencias/modo_completo/EV-106_seccion_11_resincronizar_un_env_anterior.txt | d8416c3ec422ac4c144c43e1b8bb40f35523e51fad20ab28b074cd627778d25d |
 
 **Convención:** `EV-nnn` correlativo; los archivos de cada componente en la carpeta de su tema (`base/`, `estrategia/`, `api/`, …) con el nombre `EV-nnn_descripcion.ext`. Política de evidencias (D35): sin video; se adjuntan archivos (salidas registradas, JSON, XML de pruebas, documentos e imágenes renderizadas) y, de forma opcional, capturas de pantalla que toma el equipo y se rotulan «captura tomada por el equipo». Las capturas automatizadas del navegador se rotulan «captura automatizada del navegador» y las imágenes generadas desde salidas reales «imagen generada a partir de la salida registrada; no es una captura de pantalla». La guía por ítem está en `guia_de_evidencias.md`. Al cerrar cada componente se recalcula el sha256 de sus filas.
 
@@ -240,6 +241,9 @@
 
 
 **Archivos protegidos.** Las salidas crudas de `base/`, `estrategia/` y `api/`, las imágenes y los PDF, la retroalimentación original recibida y el documento aislado de la raíz no se editan: se movieron con `git mv` y su sha256 es el mismo que tenían al capturarse (por eso las filas de esta tabla siguen vigentes). Por eso las salidas crudas conservan los nombres de pruebas y las rutas que tenían al capturarse (por ejemplo, rutas de la estructura anterior de `docs/` y nombres de pruebas anteriores) y la imagen de la arquitectura conserva sus rótulos de ese momento. Se regeneran en el cierre final con `scripts/evidencias/evidencias_api.py` y `scripts/evidencias/make_diagrama_arquitectura.py`.
+
+
+
 
 
 

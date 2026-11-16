@@ -1,6 +1,6 @@
 # Guía del modo completo: MySQL, Airflow y phpMyAdmin desde el zip
 
-**Componente:** Servicios locales · **Requisitos:** el [modo mínimo](modo_minimo.md) funcionando, MySQL 8.0 o superior, Docker Desktop con WSL2 y la contraseña de `root` de MySQL · **Estado:** borrador; probada desde un zip nuevo salvo un bloque «no probado» (volver a usar un `.env` anterior, sección 11)
+**Componente:** Servicios locales · **Requisitos:** el [modo mínimo](modo_minimo.md) funcionando, MySQL 8.0 o superior, Docker Desktop con WSL2 y la contraseña de `root` de MySQL · **Estado:** probada desde un zip nuevo el 2026-11-16 (la sección 11 la probó Daniel en su proyecto real; el reinicio de los servicios de su paso 2 no se probó) · **Evidencia:** [EV-100](../evidencias/modo_completo/EV-100_guia_seguida_desde_un_zip_nuevo.txt) y [EV-106](../evidencias/modo_completo/EV-106_seccion_11_resincronizar_un_env_anterior.txt)
 
 Esta guía lleva, paso a paso, a una persona que recibe el zip hasta tener tres cosas funcionando en su equipo: las cuentas de MySQL, Airflow ejecutando el DAG de las 06:00 y phpMyAdmin mirando las siete tablas. La escribimos porque quien la probó
 por primera vez, desde el zip y en otra carpeta, tropezó con seis cosas que ningún documento decía (están en la [sección 10](#10-si-algo-falla)). [modo_completo.md](modo_completo.md) sigue siendo la referencia corta de los mismos pasos; esta guía agrega para qué sirve cada comando,
@@ -14,7 +14,7 @@ lo que debe verse al ejecutarlo y qué hacer cuando no se ve.
 - Las salidas «visto» salen de una prueba real desde un zip nuevo: [EV-100](../evidencias/modo_completo/EV-100_guia_seguida_desde_un_zip_nuevo.txt) (transcripción completa) y [EV-101](../evidencias/modo_completo/EV-101_hallazgo_4_y_df20_antes_y_despues.txt) (el hallazgo del volumen de Postgres, antes y después).
 - Donde un comando trae `<ID>` o `<carpeta del proyecto>`, la guía dice **«Reemplace»** y por qué valor.
 - Donde dice **código de salida** se refiere a `$LASTEXITCODE` justo después del comando; `0` significa que terminó bien.
-- Esta guía trae **33 comandos**: **33** con su salida vista y **0** sin probar. Aparte hay dos salidas sin comando propio: la de teclear `root` en el indicador (vista por Daniel, no por una ejecución nuestra) y la de la sección 11 («no probado»).
+- Esta guía trae **33 comandos**: **33** con su salida vista y **0** sin probar. Aparte hay dos salidas sin comando propio, vistas por Daniel y no por una ejecución nuestra: la de teclear `root` en el indicador y la de comprobar un `.env` anterior (sección 11).
 
 ## 0. Antes de empezar
 **Requisito previo: el zip descomprimido y el entorno creado.** Descomprima el zip en una carpeta **nueva**, de ruta corta (menos de unos 120 caracteres), **fuera de cualquier repositorio de Git** y **fuera de carpetas sincronizadas con OneDrive** (la sincronización puede bloquear o demorar archivos mientras Docker los monta; es una
@@ -180,8 +180,11 @@ Contraseña del administrador de MySQL (root); no se muestra al escribir:
 ```
 **Qué debe verse (visto):**
 ```text
-(sin salida)
+2026-11-16 14:32:42 INFO etl.__main__ verificación correcta: las credenciales de .env funcionan y los privilegios son los esperados
+2026-11-16 14:32:42 INFO etl.__main__ Listo
 ```
+**Varía:** la fecha y la hora. Con credenciales que no sirven imprime en su lugar «ERROR … las credenciales de .env no son válidas» y sale con 1 (sección 11). Lo vio Daniel en su proyecto real el 2026-11-16 ([EV-106](../evidencias/modo_completo/EV-106_seccion_11_resincronizar_un_env_anterior.txt)); la primera versión de este bloque decía «(sin salida)» por un error de captura (DEF-023).
+**Tiempo:** menos de 1 s.
 
 ## 4. La carpeta de Airflow
 Airflow vive en una carpeta **hermana** del proyecto que genera `preparar_airflow.py` (no se versiona ni es un requisito previo). Primero se mira, sin escribir nada.
@@ -706,11 +709,14 @@ Cada fila dice cómo se supo: **(visto)** si alguien lo reprodujo en una ejecuci
 Las contraseñas de MySQL viven en MySQL y en los archivos `.env`; **cada cuenta tiene una sola contraseña vigente**. Después de la sección 3, el `.env` de cualquier otra carpeta (el de su proyecto anterior, por ejemplo) tiene contraseñas viejas y ya no entra a MySQL.
 Para resincronizar, elija **una** carpeta como la que manda y haga ahí los pasos; las demás dejan de servir hasta que repita el proceso en ellas.
 
-**Qué debe verse al comprobar un `.env` anterior (no probado):**
+**Qué debe verse al comprobar un `.env` anterior (visto):**
 ```text
-<pendiente: se copia de la prueba desde el zip>
+2026-11-16 14:28:08 ERROR etl.__main__ las credenciales de .env no son válidas (ejecuta el script sin --solo-verificar)
 ```
-Pasos (no probados): (1) en la carpeta que manda, `.\.venv\Scripts\python.exe scripts\mysql\configurar_mysql.py --rotar` y los dos comandos de la sección 3 con `--rotar`; (2) apague phpMyAdmin y Airflow (sección 9) y levántelos de nuevo para que lean el `.env` nuevo.
+**Varía:** la fecha y la hora. El código de salida de ese comando es 1 (`$LASTEXITCODE`) y no pide la contraseña de `root` ni imprime ninguna clave. **Lo vio Daniel el 2026-11-16 en su proyecto real, en su propia terminal; no es una ejecución nuestra** ([EV-106](../evidencias/modo_completo/EV-106_seccion_11_resincronizar_un_env_anterior.txt)).
+**Tiempo:** menos de 1 s.
+
+Pasos (vistos por Daniel el 2026-11-16, en la carpeta que manda, con la contraseña de `root` tecleada por él en cada uno): (1) `.\.venv\Scripts\python.exe scripts\mysql\configurar_mysql.py --rotar`, luego `.\.venv\Scripts\python.exe scripts\mysql\configurar_mysql.py --usuario-docker --origen localhost --rotar` y `.\.venv\Scripts\python.exe scripts\mysql\configurar_mysql.py --usuario-lectura --rotar`; cada uno imprime el indicador de `root`, la versión de MySQL, la línea «variables escritas en .env» con solo los nombres y «Listo». Después, `.\.venv\Scripts\python.exe scripts\mysql\configurar_mysql.py --solo-verificar` imprime «verificación correcta» y sale con 0 (el bloque de la sección 3). (2) Apague phpMyAdmin y Airflow (sección 9) y levántelos de nuevo para que lean el `.env` nuevo: **este segundo paso no se probó**.
 
 ## 12. Qué no demuestra esta guía
 - Que funcione en un equipo distinto de aquel donde se probó, con otra versión de Docker Desktop o de MySQL, o con menos de 8 GB de memoria.

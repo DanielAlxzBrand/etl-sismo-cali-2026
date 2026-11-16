@@ -252,6 +252,8 @@ FILAS_MC = {
                "`python scripts/validacion/verificar_regresiones.py`", "EV-104_regresiones_def017_a_def021.txt"),
     "EV-105": ("5.6, 7.1", "La suite completa en un clon y en el zip, antes y después de corregir dos pruebas que usaban el bash de WSL (DEF-022): 2 fallos en cada uno antes y 0 después", "archivo",
                "`python -m pytest -q -p no:cacheprovider` desde PowerShell con el entorno virtual nuevo, en un clon (con .git) y en el zip descomprimido (sin .git)", "EV-105_suite_en_clon_y_zip_antes_y_despues.txt"),
+    "EV-106": ("4.1, 7.1", "Sección 11 de la guía del modo completo probada por Daniel en su proyecto real (el `.env` anterior ya no entra, resincronización de las tres cuentas con `--rotar`, verificación final) y la discrepancia del bloque de `--solo-verificar` (DEF-023)", "archivo",
+               "`configurar_mysql.py --solo-verificar`, `--rotar`, `--usuario-docker --origen localhost --rotar` y `--usuario-lectura --rotar` en la terminal de Daniel; la contraseña de `root` la tecleó él", "EV-106_seccion_11_resincronizar_un_env_anterior.txt"),
 }
 
 
