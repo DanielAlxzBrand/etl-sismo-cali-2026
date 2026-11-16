@@ -1,6 +1,6 @@
 # Guía del modo completo: MySQL, Airflow y phpMyAdmin desde el zip
 
-**Componente:** Servicios locales · **Requisitos:** el [modo mínimo](modo_minimo.md) funcionando, MySQL 8.0 o superior, Docker Desktop con WSL2 y la contraseña de `root` de MySQL · **Estado:** probada desde un zip nuevo el 2026-11-16 (la sección 11 la probó Daniel en su proyecto real; el reinicio de los servicios de su paso 2 no se probó) · **Evidencia:** [EV-100](../evidencias/modo_completo/EV-100_guia_seguida_desde_un_zip_nuevo.txt) y [EV-106](../evidencias/modo_completo/EV-106_seccion_11_resincronizar_un_env_anterior.txt)
+**Componente:** Servicios locales · **Requisitos:** el [modo mínimo](modo_minimo.md) funcionando, MySQL 8.0 o superior, Docker Desktop con WSL2 y la contraseña de `root` de MySQL · **Estado:** probada desde un zip nuevo el 2026-11-16 (la sección 11 la probó Daniel en su proyecto real; el reinicio de los servicios de su paso 2 no se probó) · **Evidencia:** [EV-100](../evidencias/modo_completo/EV-100_guia_seguida_desde_un_zip_nuevo.txt) y [EV-106](../evidencias/modo_completo/EV-106_resincronizar_un_env_anterior.txt)
 
 Esta guía lleva, paso a paso, a una persona que recibe el zip hasta tener tres cosas funcionando en su equipo: las cuentas de MySQL, Airflow ejecutando el DAG de las 06:00 y phpMyAdmin mirando las siete tablas. La escribimos porque quien la probó
 por primera vez, desde el zip y en otra carpeta, tropezó con seis cosas que ningún documento decía (están en la [sección 10](#10-si-algo-falla)). [modo_completo.md](modo_completo.md) sigue siendo la referencia corta de los mismos pasos; esta guía agrega para qué sirve cada comando,
@@ -183,7 +183,7 @@ Contraseña del administrador de MySQL (root); no se muestra al escribir:
 2026-11-16 14:32:42 INFO etl.__main__ verificación correcta: las credenciales de .env funcionan y los privilegios son los esperados
 2026-11-16 14:32:42 INFO etl.__main__ Listo
 ```
-**Varía:** la fecha y la hora. Con credenciales que no sirven imprime en su lugar «ERROR … las credenciales de .env no son válidas» y sale con 1 (sección 11). Lo vio Daniel en su proyecto real el 2026-11-16 ([EV-106](../evidencias/modo_completo/EV-106_seccion_11_resincronizar_un_env_anterior.txt)); la primera versión de este bloque decía «(sin salida)» por un error de captura (DEF-023).
+**Varía:** la fecha y la hora. Con credenciales que no sirven imprime en su lugar «ERROR … las credenciales de .env no son válidas» y sale con 1 (sección 11). Lo vio Daniel en su proyecto real el 2026-11-16 ([EV-106](../evidencias/modo_completo/EV-106_resincronizar_un_env_anterior.txt)); la primera versión de este bloque decía «(sin salida)» por un error de captura (DEF-023).
 **Tiempo:** menos de 1 s.
 
 ## 4. La carpeta de Airflow
@@ -713,7 +713,7 @@ Para resincronizar, elija **una** carpeta como la que manda y haga ahí los paso
 ```text
 2026-11-16 14:28:08 ERROR etl.__main__ las credenciales de .env no son válidas (ejecuta el script sin --solo-verificar)
 ```
-**Varía:** la fecha y la hora. El código de salida de ese comando es 1 (`$LASTEXITCODE`) y no pide la contraseña de `root` ni imprime ninguna clave. **Lo vio Daniel el 2026-11-16 en su proyecto real, en su propia terminal; no es una ejecución nuestra** ([EV-106](../evidencias/modo_completo/EV-106_seccion_11_resincronizar_un_env_anterior.txt)).
+**Varía:** la fecha y la hora. El código de salida de ese comando es 1 (`$LASTEXITCODE`) y no pide la contraseña de `root` ni imprime ninguna clave. **Lo vio Daniel el 2026-11-16 en su proyecto real, en su propia terminal; no es una ejecución nuestra** ([EV-106](../evidencias/modo_completo/EV-106_resincronizar_un_env_anterior.txt)).
 **Tiempo:** menos de 1 s.
 
 Pasos (vistos por Daniel el 2026-11-16, en la carpeta que manda, con la contraseña de `root` tecleada por él en cada uno): (1) `.\.venv\Scripts\python.exe scripts\mysql\configurar_mysql.py --rotar`, luego `.\.venv\Scripts\python.exe scripts\mysql\configurar_mysql.py --usuario-docker --origen localhost --rotar` y `.\.venv\Scripts\python.exe scripts\mysql\configurar_mysql.py --usuario-lectura --rotar`; cada uno imprime el indicador de `root`, la versión de MySQL, la línea «variables escritas en .env» con solo los nombres y «Listo». Después, `.\.venv\Scripts\python.exe scripts\mysql\configurar_mysql.py --solo-verificar` imprime «verificación correcta» y sale con 0 (el bloque de la sección 3). (2) Apague phpMyAdmin y Airflow (sección 9) y levántelos de nuevo para que lean el `.env` nuevo: **este segundo paso no se probó**.
