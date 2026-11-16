@@ -329,6 +329,9 @@ def p_afirmaciones(texto, leer_fuente):
         exige("el comando de airflow-init no usa set -e", "set -e" not in script)
         exige("el último comando de airflow-init es un ls", bool(ultimo) and ultimo[-1].startswith("ls "))
         exige("airflow-init activa la migración y la creación del usuario", "_AIRFLOW_DB_MIGRATE: 'true'" in servicio and "_AIRFLOW_WWW_USER_CREATE: 'true'" in servicio)
+    if "airflow db check" in texto:
+        script = _servicio_y_script_de_init(compose)[1]
+        exige("airflow-init comprueba la conexión con airflow db check y termina con exit 1 si falla", "if /entrypoint airflow db check" in script and "exit 1" in script)
     if "`medallon_etl_sismo`" in texto:
         exige("el DAG medallon_etl_sismo", 'dag_id="medallon_etl_sismo"' in dag)
         exige("el DAG corre a las 06:00 hora de Bogotá", 'schedule="0 6 * * *"' in dag and "America/Bogota" in dag)
@@ -509,6 +512,8 @@ CODIGO = [
     ("el DAG ya no nace en pausa", "orquestacion/docker-compose.yaml", lambda s: s.replace("DAGS_ARE_PAUSED_AT_CREATION: 'true'", "DAGS_ARE_PAUSED_AT_CREATION: 'false'"), "nace en pausa"),
     ("airflow-init gana un set -e", "orquestacion/docker-compose.yaml", lambda s: s.replace("        one_meg=1048576", "        set -e\n        one_meg=1048576", 1), "no usa set -e"),
     ("airflow-init ya no termina en ls", "orquestacion/docker-compose.yaml", lambda s: s.replace('        echo "Files in shared volumes:"\n        echo\n        ls -la /opt/airflow/{logs,dags,plugins,config}\n\n    # yamllint enable', '        echo "Listo"\n\n    # yamllint enable'), "es un ls"),
+    ("airflow-init pierde la comprobación de la base", "orquestacion/docker-compose.yaml", lambda s: s.replace("if /entrypoint airflow db check > /tmp/db_check.log 2>&1; then", "if true; then"), "airflow db check"),
+    ("airflow-init ya no termina con exit 1 si la base falla", "orquestacion/docker-compose.yaml", lambda s: s.replace("          exit 1\n        fi\n", "          exit 0\n        fi\n"), "airflow db check"),
     ("airflow-init ya no migra la base", "orquestacion/docker-compose.yaml", lambda s: s.replace("_AIRFLOW_DB_MIGRATE: 'true'", "_AIRFLOW_DB_MIGRATE: 'false'"), "migración"),
     ("el DAG cambia de hora", "dags/medallon_etl_dag.py", lambda s: s.replace('schedule="0 6 * * *"', 'schedule="0 7 * * *"'), "06:00"),
     ("el DAG cambia el orden de las tareas", "dags/medallon_etl_dag.py", lambda s: s.replace("def validar_bronze(", "def validar_bronze_x(", 1).replace("def cargar_datawarehouse(", "def validar_bronze(", 1).replace("def validar_bronze_x(", "def cargar_datawarehouse(", 1), "cuatro tareas"),

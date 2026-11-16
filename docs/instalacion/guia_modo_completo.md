@@ -1,6 +1,6 @@
 # Guía del modo completo: MySQL, Airflow y phpMyAdmin desde el zip
 
-**Componente:** Servicios locales · **Requisitos:** el [modo mínimo](modo_minimo.md) funcionando, MySQL 8.0 o superior, Docker Desktop con WSL2 y la contraseña de `root` de MySQL · **Estado:** borrador; probada desde un zip nuevo salvo dos bloques «no probado» (teclear `root` en el indicador de PowerShell y volver a usar un `.env` anterior)
+**Componente:** Servicios locales · **Requisitos:** el [modo mínimo](modo_minimo.md) funcionando, MySQL 8.0 o superior, Docker Desktop con WSL2 y la contraseña de `root` de MySQL · **Estado:** borrador; probada desde un zip nuevo salvo un bloque «no probado» (volver a usar un `.env` anterior, sección 11)
 
 Esta guía lleva, paso a paso, a una persona que recibe el zip hasta tener tres cosas funcionando en su equipo: las cuentas de MySQL, Airflow ejecutando el DAG de las 06:00 y phpMyAdmin mirando las siete tablas. La escribimos porque quien la probó
 por primera vez, desde el zip y en otra carpeta, tropezó con seis cosas que ningún documento decía (están en la [sección 10](#10-si-algo-falla)). [modo_completo.md](modo_completo.md) sigue siendo la referencia corta de los mismos pasos; esta guía agrega para qué sirve cada comando,
@@ -13,7 +13,7 @@ lo que debe verse al ejecutarlo y qué hacer cuando no se ve.
   y `<contraseña>` (cualquier contraseña o clave: nunca se imprime). Debajo de cada bloque «visto» una línea **Varía:** dice qué partes cambian en su equipo (tiempos, identificadores, fechas) y otra **Tiempo:** cuánto tardó.
 - Donde un comando trae `<ID>` o `<carpeta del proyecto>`, la guía dice **«Reemplace»** y por qué valor.
 - Donde dice **código de salida** se refiere a `$LASTEXITCODE` justo después del comando; `0` significa que terminó bien.
-- Esta guía trae **33 comandos**: **33** con su salida vista y **0** sin probar. Aparte hay dos salidas sin comando propio («no probado»): la de teclear `root` en el indicador y la de la sección 11.
+- Esta guía trae **33 comandos**: **33** con su salida vista y **0** sin probar. Aparte hay dos salidas sin comando propio: la de teclear `root` en el indicador (vista por Daniel, no por una ejecución nuestra) y la de la sección 11 («no probado»).
 
 ## 0. Antes de empezar
 **Requisito previo: el zip descomprimido y el entorno creado.** Descomprima el zip en una carpeta **nueva**, de ruta corta (menos de unos 120 caracteres), **fuera de cualquier repositorio de Git** y **fuera de carpetas sincronizadas con OneDrive** (la sincronización puede bloquear o demorar archivos mientras Docker los monta; es una
@@ -55,10 +55,18 @@ Los pasos 1 a 9 se hacen desde la raíz del proyecto, salvo donde dice que se en
 Los tres comandos de la sección 3 abren una línea que dice **«Contraseña del administrador de MySQL (root); no se muestra al escribir:»**. Ahí, y solo ahí, se escribe la contraseña de la cuenta `root` de MySQL (no la palabra `root`) y se presiona Enter;
 al teclear no aparece nada, ni siquiera asteriscos. Si se escribe `root` en el indicador de PowerShell, antes de que el script pida nada, PowerShell contesta que no conoce ese comando; no pasó nada y se vuelve a ejecutar el comando de la guía.
 
-**Qué debe verse si se teclea `root` en el indicador de PowerShell (no probado):**
+**Qué debe verse si se teclea `root` en el indicador de PowerShell (visto):**
 ```text
-<pendiente: se copia de la prueba desde el zip>
+root : El término 'root' no se reconoce como nombre de un cmdlet, función, archivo de script o programa ejecutable. Compruebe si escribió correctamente el nombre
+o, si incluyó una ruta de acceso, compruebe que dicha ruta es correcta e inténtelo de nuevo.
+En línea: 1 Carácter: 1
++ root
++ ~~~~
+    + CategoryInfo          : ObjectNotFound: (root:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
 ```
+**Varía:** el idioma del mensaje. Lo vio Daniel el 2026-11-15 al seguir la guía desde un zip en otra carpeta; **no es una ejecución nuestra**.
+**Tiempo:** instantáneo (no cronometrado).
 
 ### Contraseñas copiadas al portapapeles
 Las secciones 6 y 8 copian una contraseña al portapapeles para pegarla en una página sin mostrarla. Apenas la pegue, **limpie el portapapeles** con el comando que sigue a cada copia (`Set-Clipboard -Value $null`).
@@ -265,32 +273,32 @@ docker compose build
 **Qué debe verse (visto):**
 ```text
 #1 [internal] load local bake definitions
-#1 reading from stdin 4.29kB 0.1s done
+#1 reading from stdin 4.31kB 0.1s done
 #1 DONE 0.1s
 
-#2 [airflow-dag-processor internal] load build definition from Dockerfile
+#2 [airflow-triggerer internal] load build definition from Dockerfile
 #2 transferring dockerfile: 239B 0.0s done
 #2 DONE 0.0s
 
-[… 96 líneas más …]
-#18 [airflow-dag-processor] resolving provenance for metadata file
-#18 DONE 0.2s
+[… 102 líneas más …]
+#18 [airflow-init] resolving provenance for metadata file
+#18 DONE 0.4s
 
-#19 [airflow-triggerer] resolving provenance for metadata file
-#19 DONE 0.1s
+#19 [airflow-worker] resolving provenance for metadata file
+#19 DONE 0.3s
 
 #20 [airflow-scheduler] resolving provenance for metadata file
-#20 DONE 0.3s
+#20 DONE 0.0s
 ```
-**Varía:** la lista de pasos y sus tiempos (formato de texto plano porque la captura no se hizo en una consola interactiva; en PowerShell se dibuja un progreso).  Se abrevió: faltan las líneas de en medio.
-**Tiempo:** 8,9 s con las capas en caché; desde cero será más y no se midió.
+**Varía:** la lista de pasos y sus tiempos (formato de texto plano porque la captura no se hizo en una consola interactiva; en PowerShell se dibuja un progreso). Se abrevió: faltan las líneas de en medio.
+**Tiempo:** 6,5 s con las capas en caché; desde cero será más y no se midió.
 
 **Para qué sirve:** preparar la base de metadatos de Airflow (en Postgres) y crear el usuario de la interfaz; termina solo.
 ```powershell
 docker compose up airflow-init
 ```
 **Cuidado con el código de salida.** Leímos el comando de `airflow-init` en `orquestacion/docker-compose.yaml`: crea las carpetas, ejecuta `airflow version` (la imagen migra la base y crea el usuario de la interfaz porque el compose activa `_AIRFLOW_DB_MIGRATE` y `_AIRFLOW_WWW_USER_CREATE`; en la prueba el registro mostró «Performing upgrade to the metadata database»), genera la configuración y cambia el dueño de las carpetas compartidas.
-El script **no usa `set -e` y su último comando es un `ls`**, así que termina con `Exited (0)` aunque un paso anterior haya fallado; así pasó cuando la contraseña de Postgres era la equivocada (error 4). Por eso **`Exited (0)` no garantiza una base correcta**: la señal fiable es `docker compose ps -a` con todo «(healthy)», más abajo.
+El script **no usa `set -e` y su último comando es un `ls`**, así que, como en el compose oficial, un paso anterior podía fallar y el contenedor terminaba igual con `Exited (0)`: así pasó cuando la contraseña de Postgres era la equivocada (error 4). Como `set -e` no habría bastado (el propio `airflow version` sale con 0 aunque la migración falle), el compose de esta versión añade una comprobación con `airflow db check` (DF-20): si no se conecta a la base, `airflow-init` termina con código 1 y los demás servicios no arrancan. Aun así, **`Exited (0)` no garantiza una base correcta** (una migración que falle con la base alcanzable no se detecta): la señal fiable es `docker compose ps -a` con todo «(healthy)», más abajo.
 
 **Qué debe verse (visto):**
 ```text
@@ -300,22 +308,24 @@ airflow-init-1  | Creating missing opt dirs if missing:
 airflow-init-1  |
 airflow-init-1  |
 airflow-init-1  | Airflow version:
-airflow-init-1  | 2026-11-16T16:15:58.808690Z [info     ] Performing upgrade to the metadata database [airflow.cli.commands.db_command] loc=db_command.py:134 url=<contraseña>
-airflow-init-1  | 2026-11-16T16:15:59.214328Z [info     ] Context impl PostgresqlImpl.   [alembic.runtime.migration] loc=migration.py:205
-airflow-init-1  | 2026-11-16T16:15:59.214541Z [info     ] Will assume transactional DDL. [alembic.runtime.migration] loc=migration.py:208
-airflow-init-1  | 2026-11-16T16:16:01.556637Z [warning  ] starlette.middleware.wsgi is deprecated and will be removed in a future release. Please refer to https://github.com/abersheeran/a2wsgi as a replacement. [py.warnings] category=StarletteDeprecationWarning filename=/home/airflow/.local/lib/python3.13/site-packages/fastapi/middleware/wsgi.py lineno=1
-[… 473 líneas más …]
-airflow-init-1  | drwxrwxr-x 1 airflow root 4096 Nov 16 16:15 ..
+airflow-init-1  | 2026-11-16T17:11:43.709538Z [info     ] Performing upgrade to the metadata database [airflow.cli.commands.db_command] loc=db_command.py:134 url=<contraseña>
+airflow-init-1  | 2026-11-16T17:11:44.115158Z [info     ] Context impl PostgresqlImpl.   [alembic.runtime.migration] loc=migration.py:205
+airflow-init-1  | 2026-11-16T17:11:44.115403Z [info     ] Will assume transactional DDL. [alembic.runtime.migration] loc=migration.py:208
+airflow-init-1  | 2026-11-16T17:11:46.321586Z [warning  ] starlette.middleware.wsgi is deprecated and will be removed in a future release. Please refer to https://github.com/abersheeran/a2wsgi as a replacement. [py.warnings] category=StarletteDeprecationWarning filename=/home/airflow/.local/lib/python3.13/site-packages/fastapi/middleware/wsgi.py lineno=1
+[… 597 líneas más …]
+airflow-init-1  | drwxrwxr-x 1 airflow root 4096 Nov 16 17:11 ..
+airflow-init-1  | drwxrwxr-x 1 airflow root 4096 Nov 16 17:08 dag_id=medallon_etl_sismo
+airflow-init-1  | drwxrwxr-x 1 airflow root 4096 Nov 16 16:17 dag_processor
 airflow-init-1  |
 airflow-init-1  | /opt/airflow/plugins:
 airflow-init-1  | total 4
 airflow-init-1  | drwxrwxrwx 1 airflow root 4096 Nov 16 16:15 .
-airflow-init-1  | drwxrwxr-x 1 airflow root 4096 Nov 16 16:15 ..
+airflow-init-1  | drwxrwxr-x 1 airflow root 4096 Nov 16 17:11 ..
 
 airflow-init-1 exited with code 0
 ```
-**Varía:** las horas, los identificadores y el orden de las líneas de Airflow; el número de líneas (unas 490); la dirección de la base, que Airflow imprime con la clave ya tapada, aparece aquí como `<contraseña>`. Se abrevió: faltan las líneas de en medio. No debe salir ninguna línea «Read-only file system».
-**Tiempo:** 42,2 s con un volumen de Postgres nuevo.
+**Varía:** las horas, los identificadores y el orden de las líneas de Airflow; el número de líneas (unas 620); la dirección de la base, que Airflow imprime con la clave ya tapada, aparece aquí como `<contraseña>`. Se abrevió: faltan las líneas de en medio. Debe verse «Checking the connection to the metadata database:» seguido de «Connection successful.» y ninguna línea «Read-only file system».
+**Tiempo:** 63,3 s con un volumen de Postgres nuevo.
 
 **Para qué sirve:** arrancar todos los contenedores de Airflow en segundo plano.
 ```powershell
@@ -323,41 +333,41 @@ docker compose up -d
 ```
 **Qué debe verse (visto):**
 ```text
- Container airflow-zip-redis-1 Running
  Container airflow-zip-postgres-1 Running
+ Container airflow-zip-redis-1 Running
  Container airflow-zip-airflow-scheduler-1 Creating
- Container airflow-zip-airflow-apiserver-1 Creating
  Container airflow-zip-airflow-dag-processor-1 Creating
  Container airflow-zip-airflow-triggerer-1 Creating
+ Container airflow-zip-airflow-apiserver-1 Creating
+ Container airflow-zip-airflow-scheduler-1 Created
+ Container airflow-zip-airflow-dag-processor-1 Created
  Container airflow-zip-airflow-triggerer-1 Created
  Container airflow-zip-airflow-apiserver-1 Created
  Container airflow-zip-airflow-worker-1 Creating
- Container airflow-zip-airflow-scheduler-1 Created
- Container airflow-zip-airflow-dag-processor-1 Created
  Container airflow-zip-airflow-worker-1 Created
- Container airflow-zip-redis-1 Waiting
  Container airflow-zip-postgres-1 Waiting
+ Container airflow-zip-redis-1 Waiting
  Container airflow-zip-redis-1 Healthy
  Container airflow-zip-postgres-1 Healthy
  Container airflow-zip-airflow-init-1 Starting
  Container airflow-zip-airflow-init-1 Started
  Container airflow-zip-airflow-init-1 Waiting
  Container airflow-zip-airflow-init-1 Exited
+ Container airflow-zip-airflow-apiserver-1 Starting
  Container airflow-zip-airflow-dag-processor-1 Starting
  Container airflow-zip-airflow-scheduler-1 Starting
  Container airflow-zip-airflow-triggerer-1 Starting
- Container airflow-zip-airflow-apiserver-1 Starting
+ Container airflow-zip-airflow-apiserver-1 Started
+ Container airflow-zip-airflow-apiserver-1 Waiting
  Container airflow-zip-airflow-dag-processor-1 Started
  Container airflow-zip-airflow-scheduler-1 Started
  Container airflow-zip-airflow-triggerer-1 Started
- Container airflow-zip-airflow-apiserver-1 Started
- Container airflow-zip-airflow-apiserver-1 Waiting
  Container airflow-zip-airflow-apiserver-1 Healthy
  Container airflow-zip-airflow-worker-1 Starting
  Container airflow-zip-airflow-worker-1 Started
 ```
-**Varía:** el nombre del proyecto (`airflow-zip` es el que se eligió con `--nombre-compose`) y el orden de las líneas. En esta captura `airflow-init` ya había corrido antes.
-**Tiempo:** 55 s hasta que el servidor de Airflow quedó sano.
+**Varía:** el orden de las líneas. El nombre del proyecto de Compose es el que se elige con `--nombre-compose` (en la prueba fue otro; aquí se muestra `airflow-zip`, el de esta guía).
+**Tiempo:** 77,3 s hasta que el servidor de Airflow quedó sano.
 
 **Para qué sirve:** ver el estado de cada contenedor; es **la señal fiable** de que Airflow quedó sano.
 ```powershell
@@ -367,18 +377,18 @@ Cuando todo está sano: `airflow-apiserver`, `airflow-scheduler`, `airflow-dag-p
 
 **Qué debe verse (visto):**
 ```text
-NAME                                  IMAGE                                                                                        COMMAND                  SERVICE                 CREATED              STATUS                          PORTS
-airflow-zip-airflow-apiserver-1       airflow-zip-airflow-apiserver                                                                "/usr/bin/dumb-init …"   airflow-apiserver       About a minute ago   Up About a minute (healthy)     127.0.0.1:8080->8080/tcp
-airflow-zip-airflow-dag-processor-1   airflow-zip-airflow-dag-processor                                                            "/usr/bin/dumb-init …"   airflow-dag-processor   About a minute ago   Up About a minute (healthy)     8080/tcp
-airflow-zip-airflow-init-1            airflow-zip-airflow-init                                                                     "/bin/bash -c 'if [[…"   airflow-init            2 minutes ago        Exited (0) About a minute ago
-airflow-zip-airflow-scheduler-1       airflow-zip-airflow-scheduler                                                                "/usr/bin/dumb-init …"   airflow-scheduler       About a minute ago   Up About a minute (healthy)     8080/tcp
-airflow-zip-airflow-triggerer-1       airflow-zip-airflow-triggerer                                                                "/usr/bin/dumb-init …"   airflow-triggerer       About a minute ago   Up About a minute (healthy)     8080/tcp
-airflow-zip-airflow-worker-1          airflow-zip-airflow-worker                                                                   "/usr/bin/dumb-init …"   airflow-worker          About a minute ago   Up 45 seconds (healthy)         8080/tcp
-airflow-zip-postgres-1                postgres:16          "docker-entrypoint.s…"   postgres                2 minutes ago        Up 2 minutes (healthy)          5432/tcp
-airflow-zip-redis-1                   redis:7.2-bookworm   "docker-entrypoint.s…"   redis                   2 minutes ago        Up 2 minutes (healthy)          6379/tcp
+NAME                                   IMAGE                                                                                        COMMAND                  SERVICE                 CREATED         STATUS                          PORTS
+airflow-zip-airflow-apiserver-1       airflow-zip-airflow-apiserver                                                               "/usr/bin/dumb-init …"   airflow-apiserver       2 minutes ago   Up About a minute (healthy)     127.0.0.1:8080->8080/tcp
+airflow-zip-airflow-dag-processor-1   airflow-zip-airflow-dag-processor                                                           "/usr/bin/dumb-init …"   airflow-dag-processor   2 minutes ago   Up About a minute (healthy)     8080/tcp
+airflow-zip-airflow-init-1            airflow-zip-airflow-init                                                                    "/bin/bash -c 'if [[…"   airflow-init            3 minutes ago   Exited (0) About a minute ago
+airflow-zip-airflow-scheduler-1       airflow-zip-airflow-scheduler                                                               "/usr/bin/dumb-init …"   airflow-scheduler       2 minutes ago   Up About a minute (healthy)     8080/tcp
+airflow-zip-airflow-triggerer-1       airflow-zip-airflow-triggerer                                                               "/usr/bin/dumb-init …"   airflow-triggerer       2 minutes ago   Up About a minute (healthy)     8080/tcp
+airflow-zip-airflow-worker-1          airflow-zip-airflow-worker                                                                  "/usr/bin/dumb-init …"   airflow-worker          2 minutes ago   Up 45 seconds (healthy)         8080/tcp
+airflow-zip-postgres-1                postgres:16          "docker-entrypoint.s…"   postgres                3 minutes ago   Up 3 minutes (healthy)          5432/tcp
+airflow-zip-redis-1                   redis:7.2-bookworm   "docker-entrypoint.s…"   redis                   3 minutes ago   Up 3 minutes (healthy)          6379/tcp
 ```
-**Varía:** los nombres (llevan el del proyecto de Compose), los tiempos de «CREATED» y «STATUS» y Se hizo unos 45 s después de `docker compose up -d`.
-**Tiempo:** 0,7 s.
+**Varía:** los nombres, los tiempos de «CREATED» y «STATUS». El nombre del proyecto de Compose es el que se elige con `--nombre-compose` (en la prueba fue otro; aquí se muestra `airflow-zip`, el de esta guía). Se hizo unos 45 s después de `docker compose up -d`.
+**Tiempo:** 0,6 s.
 
 **Para qué sirve:** comprobar que la interfaz responde (es la misma dirección que usa el compose para su prueba de salud: `/api/v2/monitor/health`).
 ```powershell
@@ -624,23 +634,23 @@ docker compose down
 ```
 **Qué debe verse (visto):**
 ```text
- Container airflow-zip-airflow-triggerer-1 Stopping
- Container airflow-zip-airflow-dag-processor-1 Stopping
- Container airflow-zip-airflow-worker-1 Stopping
  Container airflow-zip-airflow-scheduler-1 Stopping
- Container airflow-zip-airflow-dag-processor-1 Stopped
- Container airflow-zip-airflow-dag-processor-1 Removing
- Container airflow-zip-airflow-dag-processor-1 Removed
+ Container airflow-zip-airflow-triggerer-1 Stopping
+ Container airflow-zip-airflow-worker-1 Stopping
+ Container airflow-zip-airflow-dag-processor-1 Stopping
  Container airflow-zip-airflow-scheduler-1 Stopped
  Container airflow-zip-airflow-scheduler-1 Removing
- Container airflow-zip-airflow-scheduler-1 Removed
  Container airflow-zip-airflow-triggerer-1 Stopped
  Container airflow-zip-airflow-triggerer-1 Removing
+ Container airflow-zip-airflow-scheduler-1 Removed
  Container airflow-zip-airflow-triggerer-1 Removed
  Container airflow-zip-airflow-worker-1 Stopped
  Container airflow-zip-airflow-worker-1 Removing
+ Container airflow-zip-airflow-dag-processor-1 Stopped
+ Container airflow-zip-airflow-dag-processor-1 Removing
  Container airflow-zip-airflow-worker-1 Removed
  Container airflow-zip-airflow-apiserver-1 Stopping
+ Container airflow-zip-airflow-dag-processor-1 Removed
  Container airflow-zip-airflow-apiserver-1 Stopped
  Container airflow-zip-airflow-apiserver-1 Removing
  Container airflow-zip-airflow-apiserver-1 Removed
@@ -650,17 +660,17 @@ docker compose down
  Container airflow-zip-airflow-init-1 Removed
  Container airflow-zip-postgres-1 Stopping
  Container airflow-zip-redis-1 Stopping
- Container airflow-zip-postgres-1 Stopped
- Container airflow-zip-postgres-1 Removing
- Container airflow-zip-postgres-1 Removed
  Container airflow-zip-redis-1 Stopped
  Container airflow-zip-redis-1 Removing
  Container airflow-zip-redis-1 Removed
+ Container airflow-zip-postgres-1 Stopped
+ Container airflow-zip-postgres-1 Removing
+ Container airflow-zip-postgres-1 Removed
  Network airflow-zip_default Removing
  Network airflow-zip_default Removed
 ```
-**Varía:** el orden de las líneas y el nombre del proyecto.
-**Tiempo:** 6,8 s.
+**Varía:** el orden de las líneas. El nombre del proyecto de Compose es el que se elige con `--nombre-compose` (en la prueba fue otro; aquí se muestra `airflow-zip`, el de esta guía).
+**Tiempo:** unos 7 s.
 
 **Para qué sirve:** confirmar que no queda ningún contenedor en marcha.
 ```powershell
@@ -685,7 +695,7 @@ Cada fila dice cómo se supo: **(visto)** si alguien lo reprodujo en una ejecuci
 | 1 | `configurar_mysql.py` termina con «.env no está ignorado por git o está versionado» (antes de esta guía, también sin `.git`) | la comprobación exigía Git; el zip no trae `.git` | con la versión actual el mensaje, sin repositorio, es «esta carpeta no es un repositorio de Git … su .gitignore no deja ignorado el archivo .env»: restaure la línea `.env` del `.gitignore` (está en el zip); `git init` ya no hace falta | (visto) |
 | 2 | `docker compose build` dice «no configuration file provided» | se ejecutó en la carpeta del proyecto | `Set-Location ..\airflow-medallon` y repetir | (visto) |
 | 3 | `airflow-init` imprime muchas líneas «chown … Read-only file system» sobre `.venv` y termina con «Exited (0)» | el comando del compose oficial recorría el proyecto montado en solo lectura; el contenedor seguía y terminaba bien | corregido en el compose (el `chown` salta `/opt/airflow/medallon`); con un compose anterior es ruido sin consecuencias | (visto) |
-| 4 | `airflow-apiserver` queda «unhealthy» y su registro dice «password authentication failed for user airflow»; `airflow-init` salió con «Exited (0)» | existe un volumen de Postgres de otra instalación (mismo nombre de proyecto de Compose) con otra contraseña | `preparar_airflow.py` avisa antes con una línea «!»; use `--nombre-compose <otro nombre>` y levante de nuevo; **no** borre el volumen viejo sin estar seguro de que no sirve | (visto) |
+| 4 | **Antes** (compose sellado): `airflow-apiserver` queda «unhealthy» y su registro dice «password authentication failed for user airflow»; `airflow-init` salió con «Exited (0)». **Ahora**: `airflow-init` imprime «ERROR: could not connect to the metadata database», sale con «Exited (1)» y `docker compose up -d` termina con código 1 con los demás servicios «not started: condition "service_completed_successfully"» | existe un volumen de Postgres de otra instalación (mismo nombre de proyecto de Compose) con otra contraseña | `preparar_airflow.py` avisa antes con una línea «!»; use `--nombre-compose <otro nombre>` y levante de nuevo; **no** borre el volumen viejo sin estar seguro de que no sirve | (visto) |
 | 5 | no sé qué contraseña pedir en la interfaz de Airflow | la contraseña está en el `.env` de la carpeta de Airflow, no en el del proyecto | variable `_AIRFLOW_WWW_USER_PASSWORD`; usuario `airflow`; cópiela con el comando de la sección 6 | (visto) |
 | 6 | al teclear `root` en el indicador de PowerShell, PowerShell dice que no reconoce `root` como nombre de un comando | la contraseña de `root` se teclea solo cuando el script la pide | ejecute de nuevo el comando de la guía y espere la línea «Contraseña del administrador de MySQL (root)…» | (visto) |
 | 7 | «el programa git no está instalado» con una carpeta `.git` presente | `escanear_secretos.py` y `configurar_mysql.py` necesitan Git si hay un repositorio | instale Git o descomprima el zip fuera del repositorio | (deducido) |
