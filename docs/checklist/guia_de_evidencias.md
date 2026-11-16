@@ -259,13 +259,13 @@ Fichas de los ítems 1.1 a 1.5 (Estrategia), 2.1 a 2.3 (API, fuentes y credencia
 - **(e) Validar:** `.\.venv\Scripts\python.exe scripts\informe_pruebas.py` y `.\.venv\Scripts\python.exe -m pytest tests/test_informe_pruebas.py -q -p no:cacheprovider`.
 
 ### Ítem 5.6 · Corrección de errores y repetición de las pruebas
-- **(a) Archivo principal:** `docs/validacion/registro_defectos.md` (Markdown). Demuestra: 21 defectos con fecha, dónde se detectaron, causa, corrección con su commit y prueba de regresión, y la verificación de que la prueba falla sin la corrección. **No demuestra:** que el registro sea exhaustivo antes del 2026-10-15.
+- **(a) Archivo principal:** `docs/validacion/registro_defectos.md` (Markdown). Demuestra: 22 defectos con fecha, dónde se detectaron, causa, corrección con su commit y prueba de regresión, y la verificación de que la prueba falla sin la corrección. **No demuestra:** que el registro sea exhaustivo antes del 2026-10-15.
 - **(b) Apoyo:**
   - `docs/evidencias/orquestacion/EV-036_regresiones_sin_correccion.txt` (nueve reintroducciones en una copia temporal: fallan sin la corrección y pasan con ella) y `docs/evidencias/usuarios/EV-065_regresiones_def015_def016.txt` (dos más, DEF-015 y DEF-016) y `docs/evidencias/modo_completo/EV-104_regresiones_def017_a_def021.txt` (cinco más, DEF-017 a DEF-021).
   - `docs/evidencias/orquestacion/EV-035_estabilidad_pipeline.txt` y `EV-042_fallo_inducido_y_recuperacion.txt` (DEF-011 y DEF-013).
   - `scripts/validacion/verificar_regresiones.py`.
   - `docs/evidencias/orquestacion/EV-050_pruebas_clon.txt` (repetición de todas las pruebas en un clon limpio, en su momento) y EV-072 (en su momento pasaron 822 pruebas en un entorno nuevo con Python 3.13, EV-062).
-- **(c) Texto sugerido:** «Registro de 21 defectos corregidos, cada uno con su prueba de regresión que falla sin la corrección y pasa con ella, y repetición de todas las pruebas: `docs/validacion/registro_defectos.md` y `docs/evidencias/orquestacion/EV-036_regresiones_sin_correccion.txt`.»
+- **(c) Texto sugerido:** «Registro de 22 defectos corregidos, cada uno con su prueba de regresión que falla sin la corrección y pasa con ella, y repetición de todas las pruebas: `docs/validacion/registro_defectos.md` y `docs/evidencias/orquestacion/EV-036_regresiones_sin_correccion.txt`.»
 - **(d) Captura opcional:** PowerShell con `.\.venv\Scripts\python.exe scripts\validacion\verificar_regresiones.py`, con cada defecto «falla sin la corrección». Nombre: `captura_5.6_regresiones.png`.
 - **(e) Validar:** `.\.venv\Scripts\python.exe scripts\validacion\verificar_regresiones.py` (código de salida 0) y `.\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider`.
 

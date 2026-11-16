@@ -250,6 +250,8 @@ FILAS_MC = {
                "mutación de un archivo en un clon y `python -m pytest -q -p no:cacheprovider` sobre las pruebas de cada parte", "EV-103_mutaciones_modo_completo.txt"),
     "EV-104": ("5.6", "Las pruebas de regresión de DEF-017 a DEF-021 (y las de los defectos anteriores) fallan sin su corrección en una copia temporal", "archivo",
                "`python scripts/validacion/verificar_regresiones.py`", "EV-104_regresiones_def017_a_def021.txt"),
+    "EV-105": ("5.6, 7.1", "La suite completa en un clon y en el zip, antes y después de corregir dos pruebas que usaban el bash de WSL (DEF-022): 2 fallos en cada uno antes y 0 después", "archivo",
+               "`python -m pytest -q -p no:cacheprovider` desde PowerShell con el entorno virtual nuevo, en un clon (con .git) y en el zip descomprimido (sin .git)", "EV-105_suite_en_clon_y_zip_antes_y_despues.txt"),
 }
 
 

@@ -1,0 +1,51 @@
+EV-105 · La suite completa en un clon y en el zip, antes y después de corregir dos pruebas que usaban el bash de WSL (DEF-022)
+
+Qué es: la suite completa (`python -m pytest -q -p no:cacheprovider`) con el intérprete del entorno virtual NUEVO de la prueba del modo completo (Python 3.13), lanzada desde PowerShell,
+sin PYTHONUTF8 ni PYTHONIOENCODING, en un clon con espacios y ñ en la ruta (con .git) y en el zip de `make_dist.empaquetar` descomprimido en otra carpeta con espacios (sin .git).
+
+== ANTES (commit 6aefa35, 1248 pruebas): 2 fallos en el clon y los mismos 2 en el zip
+  clon: 2 failed, 1246 passed, 1 warning (221 s)      zip: 2 failed, 1245 passed, 1 skipped, 1 warning (205 s)
+  tests/test_compose_chown.py::test_el_comando_salta_de_verdad_el_montaje_y_cubre_el_resto
+  tests/test_compose_db_check.py::test_el_mismo_if_else_exit_1_da_1_si_la_comprobacion_falla_y_0_si_no
+Causa: las dos pruebas ejecutaban el primer `bash` del PATH; en ese PowerShell era el `bash.exe` de WSL (de System32), que no lee rutas con letra de unidad y respondía
+«No such file or directory» (código 127 y 1). Dentro de Git Bash, donde se había corrido la suite del repositorio, el primero era el de Git y pasaban. La omisión del zip es la prueba del historial de git (1 omitida por diseño).
+
+== PRIMER ARREGLO (commit db5f3ac) y SEGUNDA CORRIDA (commit d75265d, 1251 pruebas): los mismos 2 fallos
+  clon: 2 failed, 1249 passed, 2 warnings (212 s)      zip: 2 failed, 1248 passed, 1 skipped, 2 warnings (184 s)
+  El ayudante `tests/bash_para_pruebas.py` ya elegía el `bash` de Git (probando cada candidato con un guion real), pero lanzado desde PowerShell ese `bash` encontraba primero el `find.exe` de Windows
+  (que no es el de GNU y sale con código 2) y no su propio `find`.
+
+== CORRECCIÓN DEFINITIVA (commit 595f565): `entorno_con_el_bash_delante` pone la carpeta del `bash` elegido al principio del PATH de la prueba, y `tests/test_bash_para_pruebas.py` la cubre
+(4 pruebas; la recolección pasó de 1248 a 1252). Comprobada en el mismo entorno donde fallaba (clon con espacios y ñ, PowerShell, entorno virtual nuevo): 16 passed en las tres pruebas implicadas.
+
+== DESPUÉS (commit 9c64dfe, 1252 pruebas)
+  clon (con .git):  1252 passed, 1 warning in 167.93 s, 0 failed
+  zip (sin .git):   1251 passed, 1 skipped, 1 warning in 192.28 s, 0 failed
+  zip de prueba de ese commit: etl_sismo_20261116.zip · 561 archivos · 22659182 bytes · sha256 ea0db0f38f937bb7239cbb6967165d76f9108c40a6522fb7e75bb1358ac4f640 (NO es el zip de entrega: ese se arma del commit final)
+
+Salida de pytest (últimas líneas, con las rutas del entorno virtual enmascaradas):
+commit del clon: 9c64dfe96ef11424c2eb72f88ce549687c303507
+ruta del clon (caracteres): 40
+zip: etl_sismo_20261116.zip | 561 archivos | 22659182 bytes | sha256 ea0db0f38f937bb7239cbb6967165d76f9108c40a6522fb7e75bb1358ac4f640
+== SUITE EN EL CLON (con .git)
+............................                                             [100%]
+============================== warnings summary ===============================
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1252 passed, 1 warning in 167.93s (0:02:47)
+segundos: 170
+== SUITE EN EL ZIP (sin .git: True)
+........................................................................ [ 92%]
+........................................................................ [ 97%]
+............................                                             [100%]
+============================== warnings summary ===============================
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1251 passed, 1 skipped, 1 warning in 192.28s (0:03:12)
+segundos: 195
+FIN
+
+
+Qué NO demuestra: que la suite pase en otro equipo, con otro PATH o sin Git para Windows (en ese caso las dos pruebas que usan `bash` se omiten con su motivo), ni que pase en Linux o macOS.
