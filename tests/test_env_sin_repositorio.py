@@ -94,7 +94,7 @@ CASOS = [(".env\n", True), ("/.env\n", True), (".env*\n", True), ("*.env\n", Tru
          (".env\n!.env\n.env\n", True), ("!.env\n.env\n", True), (".*\n!.env.example\n", True),
          ("", False), (".env.example\n", False), (".env/\n", False), ("# .env\n", False), ("docs/.env\n", False), ("*.example\n", False), (".env\n!.env\n", False),
          (".env\n!.env*\n", False), ("*\n!.env\n", False)]
-SOLO_TEXTO = [("﻿.env\n", True), (".env\r\n", True), (".env\r\n!.env\r\n", False)]      # el BOM y los saltos de Windows se tratan como en un archivo normal
+SOLO_TEXTO = [(chr(0xFEFF) + ".env\n", True), (".env\r\n", True), (".env\r\n!.env\r\n", False)]      # el BOM y los saltos de Windows se tratan como en un archivo normal
 
 
 @pytest.mark.parametrize("texto, esperado", CASOS + SOLO_TEXTO)

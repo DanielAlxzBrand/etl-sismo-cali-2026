@@ -89,7 +89,7 @@ def gitignore_ignora_env(texto):
     Por qué existe: sin repositorio (por ejemplo, el zip descomprimido) Git no puede responder, pero `.env` tampoco puede estar versionado; lo único que protege entonces es que el `.gitignore` lo ignore de
     verdad si más adelante se usa Git. Una línea `!.env` posterior lo reincorpora, un patrón de carpeta (`.env/`) no vale para un archivo y `.env.example` no es `.env`."""
     ignorado = False
-    for cruda in texto.lstrip("﻿").splitlines():
+    for cruda in texto.lstrip(chr(0xFEFF)).splitlines():
         linea = cruda.rstrip()
         if not linea or linea.startswith("#"):
             continue
@@ -97,13 +97,10 @@ def gitignore_ignora_env(texto):
         patron = linea[1:] if niega else linea
         if patron.startswith(BARRA_INVERTIDA):
             patron = patron[1:]
-        if patron.endswith("/"):
-            continue                       # un patrón con barra final solo vale para carpetas: nunca para el archivo `.env`
         patron = patron.lstrip("/")        # anclado a la raíz: la raíz es la única carpeta donde vive `.env`
         while patron.startswith("**/"):
             patron = patron[3:]
-        if "/" in patron:
-            continue                       # un patrón con carpetas intermedias no puede coincidir con un archivo de la raíz
+        # un patrón con «/» (de carpeta, como `.env/`, o con carpetas intermedias) nunca coincide con el nombre `.env`: fnmatch ya lo descarta
         if fnmatch.fnmatchcase(".env", patron):
             ignorado = not niega
     return ignorado
