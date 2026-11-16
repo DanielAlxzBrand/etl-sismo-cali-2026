@@ -21,7 +21,8 @@ GUIA = ROOT / "docs" / "instalacion" / "guia_modo_completo.md"
 CARPETA_GUIA = "docs/instalacion"
 MANIFIESTO = "docs/evidencias/manifiesto.md"
 MARCADORES = {"<usuario>", "<ruta>", "<ID>", "<PID>", "<hash>", "<contraseña>"}
-MARCADORES_EN_COMANDOS = {"<ID>", "<carpeta del proyecto>"}
+TEXTO_DEL_PROGRAMA = {"<otro nombre>"}   # lo imprime el propio programa (preparar_airflow.py sugiere «--nombre-compose <otro nombre>»); no es un dato enmascarado
+MARCADORES_EN_COMANDOS ={"<ID>", "<carpeta del proyecto>"}
 PENDIENTE = "<pendiente: se copia de la prueba desde el zip>"
 SIN_SALIDA = "(sin salida)"
 LIMPIAR = "Set-Clipboard -Value $null"
@@ -136,7 +137,7 @@ def p_salidas(texto):
 def p_marcadores(texto):
     out = []
     for linea, cuerpo, _, _ in _salidas(texto):
-        out += [f"línea {linea}: marcador no permitido en una salida: {m}" for m in re.findall(r"<[^<>\n]+>", cuerpo) if m not in MARCADORES and m != PENDIENTE]
+        out += [f"línea {linea}: marcador no permitido en una salida: {m}" for m in re.findall(r"<[^<>\n]+>", cuerpo) if m not in MARCADORES and m not in TEXTO_DEL_PROGRAMA and m != PENDIENTE]
     for linea, comando, _, _ in _comandos(texto):
         out += [f"línea {linea}: marcador no permitido en un comando: {m}" for m in re.findall(r"<[^<>\n]+>", comando) if m not in MARCADORES_EN_COMANDOS]
     return out
@@ -391,7 +392,7 @@ def test_advertir_de_onedrive_no_cuenta_como_ruta_del_equipo():
 
 
 def test_los_bloques_vistos_sin_salida_se_admiten_sin_varia_ni_tiempo():
-    texto = _texto().replace("**Qué debe verse (no probado):**\n```text\n" + PENDIENTE + "\n```", "**Qué debe verse (visto):**\n```text\n" + SIN_SALIDA + "\n```", 1)
+    texto = re.sub(r"\*\*Varía:[^\n]*\n\*\*Tiempo:[^\n]*\n", "", _en_la_primera_salida_vista(_texto(), SIN_SALIDA), count=1)
     assert texto != _texto() and p_salidas(texto) == []
 
 
@@ -442,20 +443,29 @@ def test_un_valor_del_env_en_la_guia_se_detecta_sin_imprimirlo_en_el_mensaje(tmp
 
 # ---------------------------------------------------------------- pruebas negativas: el mismo texto, dañado a propósito, debe ser rechazado por la regla que le corresponde
 
-def _reemplaza(antes, despues, veces=1):
+def _reemplaza(antes, despues, veces=1):   # veces=-1: todas las apariciones
     def cambio(t):
         assert antes in t, f"el texto a dañar no está en la guía: {antes[:50]!r}"
         return t.replace(antes, despues, veces)
     return cambio
 
 
+def _en_la_primera_salida_vista(t, cuerpo):
+    return re.sub(r"(\*\*Qué debe verse \(visto\):\*\*\n```text\n).*?(\n```)", lambda m: m[1] + cuerpo + m[2], t, count=1, flags=re.S)
+
+
+def _sin_bloque_de_salida_de_docker_ps(t):
+    """Quita, tras el primer `docker ps`, su etiqueta, su bloque de salida y sus líneas «Varía» y «Tiempo»."""
+    return re.sub(r"(```powershell\ndocker ps\n```\n)\*\*Qué debe verse \(visto\):\*\*\n```text\n.*?\n```\n\*\*Varía:[^\n]*\n\*\*Tiempo:[^\n]*\n", r"\1", t, count=1, flags=re.S)
+
+
 NEGATIVAS = [
-    ("estructura", "comando sin salida", _reemplaza("```powershell\ndocker ps\n```\n**Qué debe verse (no probado):**\n```text\n" + PENDIENTE + "\n```\n", "```powershell\ndocker ps\n```\n"), "falta su bloque"),
+    ("estructura", "comando sin salida", _sin_bloque_de_salida_de_docker_ps, "falta su bloque"),
     ("estructura", "dos comandos en un bloque", _reemplaza("```powershell\ndocker ps\n```", "```powershell\ndocker ps\ndocker ps\n```"), "un solo comando"),
-    ("etiquetas", "etiqueta sin marca", _reemplaza("**Qué debe verse (no probado):**", "**Qué debe verse:**"), "no tiene su etiqueta"),
-    ("salidas", "visto con texto pendiente", _reemplaza("**Qué debe verse (no probado):**", "**Qué debe verse (visto):**"), "no puede traer el texto pendiente"),
-    ("salidas", "visto con salida sin varía ni tiempo", _reemplaza("**Qué debe verse (no probado):**\n```text\n" + PENDIENTE, "**Qué debe verse (visto):**\n```text\nsalida real"), "qué varía"),
-    ("salidas", "visto vacío", _reemplaza("**Qué debe verse (no probado):**\n```text\n" + PENDIENTE + "\n```", "**Qué debe verse (visto):**\n```text\n\n```"), "vacío"),
+    ("etiquetas", "etiqueta sin marca", _reemplaza("**Qué debe verse (visto):**", "**Qué debe verse:**"), "no tiene su etiqueta"),
+    ("salidas", "visto con texto pendiente", lambda t: _en_la_primera_salida_vista(t, PENDIENTE), "no puede traer el texto pendiente"),
+    ("salidas", "visto con salida sin varía ni tiempo", lambda t: re.sub(r"\*\*Varía:[^\n]*\n\*\*Tiempo:[^\n]*\n", "", t, count=1), "qué varía"),
+    ("salidas", "visto vacío", lambda t: _en_la_primera_salida_vista(t, ""), "vacío"),
     ("salidas", "no probado con salida inventada", _reemplaza(PENDIENTE, "salida inventada"), "solo trae el texto pendiente"),
     ("salidas", "no probado con «(sin salida)»", _reemplaza(PENDIENTE, SIN_SALIDA), "solo trae el texto pendiente"),
     ("marcadores", "marcador inventado en una salida", _reemplaza(PENDIENTE, "<ruta secreta>"), "marcador no permitido en una salida"),
@@ -463,26 +473,26 @@ NEGATIVAS = [
     ("rutas", "ruta de Windows", _reemplaza(PENDIENTE, "C:\\Users\\alguien\\proyecto"), "ruta o nombre de usuario"),
     ("rutas", "carpeta AppData", _reemplaza(PENDIENTE, "<ruta>\\AppData\\Local"), "ruta o nombre de usuario"),
     ("contraseñas en comandos", "--password en un comando", _reemplaza("scripts\\mysql\\configurar_mysql.py --solo-verificar", "scripts\\mysql\\configurar_mysql.py --solo-verificar --password x"), "lleva una contraseña"),
-    ("contraseñas en comandos", "-p pegado a la contraseña", _reemplaza("docker compose build", "docker compose build -pClave123"), "lleva una contraseña"),
-    ("contraseñas en comandos", "MYSQL_PWD en un comando", _reemplaza("docker compose build", "$env:MYSQL_PWD='x'; docker compose build"), "lleva una contraseña"),
+    ("contraseñas en comandos", "-p pegado a la contraseña", _reemplaza("```powershell\ndocker compose build\n```", "```powershell\ndocker compose build -pClave123\n```"), "lleva una contraseña"),
+    ("contraseñas en comandos", "MYSQL_PWD en un comando", _reemplaza("```powershell\ndocker compose build\n```", "```powershell\n$env:MYSQL_PWD='x'; docker compose build\n```"), "lleva una contraseña"),
     ("env al portapapeles", "lee el .env y no lo copia al portapapeles", _reemplaza("^_AIRFLOW_WWW_USER_PASSWORD=').Line.Split('=', 2)[1] | Set-Clipboard", "^_AIRFLOW_WWW_USER_PASSWORD=').Line.Split('=', 2)[1]"), "lee un .env"),
-    ("env al portapapeles", "Get-Content del .env", _reemplaza("docker compose build", "Get-Content .env"), "lee un .env"),
+    ("env al portapapeles", "Get-Content del .env", _reemplaza("```powershell\ndocker compose build\n```", "```powershell\nGet-Content .env\n```"), "lee un .env"),
     ("portapapeles limpio", "no se limpia tras copiar", _reemplaza("```powershell\nSet-Clipboard -Value $null\n```", "```powershell\ndocker ps\n```"), "falta el comando que lo limpia"),
     ("para qué sirve", "comando sin «Para qué sirve»", _reemplaza("**Para qué sirve:** comprobar que los paquetes del entorno no tienen conflictos antes de usar los scripts.", "Comprobar que los paquetes del entorno no tienen conflictos."), "Para qué sirve"),
     ("reemplace", "falta «Reemplace» del ID", _reemplaza("**Reemplace `<ID>`**", "Cambie `<ID>`"), "no dice «Reemplace"),
     ("reemplace", "falta «Reemplace» de la carpeta", _reemplaza("**Reemplace `<carpeta del proyecto>`**", "Cambie `<carpeta del proyecto>`"), "no dice «Reemplace"),
     ("conteo", "número de comandos que no cuadra", _reemplaza("trae **33 comandos**", "trae **31 comandos**"), "conteo automático"),
-    ("conteo", "un comando sin su bloque aunque el conteo dicho coincida", lambda t: _reemplaza("```powershell\ndocker ps\n```\n**Qué debe verse (no probado):**\n```text\n" + PENDIENTE + "\n```\n", "```powershell\ndocker ps\n```\n")(t).replace("**33** sin probar", "**32** sin probar"), "conteo automático"),
+    ("conteo", "un comando sin su bloque aunque el conteo dicho coincida", lambda t: _sin_bloque_de_salida_de_docker_ps(t).replace("**33** con su salida vista", "**32** con su salida vista"), "conteo automático"),
     ("conteo", "no dice cuántos comandos trae",_reemplaza("Esta guía trae **33 comandos**", "Esta guía trae muchos comandos"), "no dice cuántos"),
     ("scripts y opciones", "opción que el script no tiene", _reemplaza("configurar_mysql.py --solo-verificar", "configurar_mysql.py --opcion-inventada"), "no tiene la opción"),
     ("scripts y opciones", "script que no existe", _reemplaza("scripts\\orquestacion\\preparar_airflow.py --nombre-compose", "scripts\\orquestacion\\no_existe.py --nombre-compose"), "no existe"),
     ("scripts y opciones", "opción inventada en una cita de la prosa", _reemplaza("configurar_mysql.py --rotar", "configurar_mysql.py --rotar-todo"), "no tiene la opción"),
-    ("programas", "programa fuera de la lista", _reemplaza("docker compose build", "curl http://ejemplo.invalido"), "fuera de la lista"),
-    ("programas", "down -v en un comando", _reemplaza("docker compose down\n```", "docker compose down -v\n```"), "borra volúmenes"),
+    ("programas", "programa fuera de la lista", _reemplaza("```powershell\ndocker compose build\n```", "```powershell\ncurl http://ejemplo.invalido\n```"), "fuera de la lista"),
+    ("programas", "down -v en un comando", _reemplaza("```powershell\ndocker compose down\n```", "```powershell\ndocker compose down -v\n```"), "borra volúmenes"),
     ("secciones", "sección fuera de orden", _reemplaza("## 3. Las tres cuentas", "## 13. Las tres cuentas"), "secciones"),
     ("errores", "fila de error sin marca", _reemplaza("`Set-Location ..\\airflow-medallon` y repetir | (visto) |", "`Set-Location ..\\airflow-medallon` y repetir | |"), "sin marca"),
     ("errores", "un tropiezo de la prueba pasa a deducido", _reemplaza("`Set-Location ..\\airflow-medallon` y repetir | (visto) |", "`Set-Location ..\\airflow-medallon` y repetir | (deducido) |"), "debe ser (visto)"),
-    ("errores", "falta el mensaje del chown", _reemplaza("Read-only file system", "Sistema de archivos"), "Read-only file system"),
+    ("errores", "falta el mensaje del chown", _reemplaza("Read-only file system", "Sistema de archivos", -1), "Read-only file system"),
     ("frases", "desaparece la advertencia de OneDrive", _reemplaza("fuera de carpetas sincronizadas con OneDrive", "en cualquier carpeta"), "OneDrive"),
     ("frases", "la guía vuelve a decir que terminar en 0 garantiza", _reemplaza("no garantiza una base correcta", "garantiza una base correcta"), "no debe decir"),
     ("frases", "desaparece la nota de memoria", _reemplaza("con 8 GB de RAM apague", "con poca memoria apague"), "8 GB de RAM"),
