@@ -9,7 +9,7 @@ El almacén relacional debía conservar historia y poder repetirse sin duplicar 
 - Cada carga crea una fila en `corrida` y todas las tablas de datos llevan `corrida_id` en su clave primaria: una corrida es una copia completa del estrato por barrio, de las construcciones de Gold y de los indicadores, no un registro de cambios (D43).
 - `clave_corrida` es el SHA-256 de las líneas `ruta:sha256` de los archivos de entrada, ordenadas, más la versión del esquema. Si la clave ya existe, la carga responde `ya_cargada` y no cambia nada (D44).
 - Toda la carga va en una sola transacción con `ROLLBACK` ante cualquier error; la lectura y conversión de los CSV ocurre antes de tocar la base (D45).
-- La carga usa lotes de 2.000 filas, fijados por medición: 0,715 s frente a 2,415 s fila a fila, con 5.622 filas por carga (D53).
+- La carga usa lotes de 2.000 filas, fijados por medición: 0,715 s frente a 2,415 s fila a fila, con 5.622 filas de datos por carga (D53).
 
 ## Consecuencias
 ### Positivas

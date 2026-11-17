@@ -10,7 +10,7 @@ Queríamos exponer los resultados de Gold sin poner en riesgo la línea base. La
 - Los endpoints no conocen el motor: usan una interfaz `RepositorioGold` con una implementación para SQLite y otra para MySQL, elegidas con `api.almacenamiento` (D27 y D52).
 - El solo lectura lo fuerza la conexión: SQLite se abre con `mode=ro`, MySQL con `SET SESSION TRANSACTION READ ONLY`, una conexión por solicitud cerrada en `finally`, y el SQL siempre va parametrizado y con listas blancas de tablas y columnas (D28).
 - `host: 127.0.0.1` en `config/config.yaml`, sin middleware de CORS (D29).
-- No se usa un conjunto de conexiones: con servidores locales la mediana de las rutas que usan el almacén es de unos 60 a 120 ms con MySQL frente a unos 3 a 10 ms con SQLite (D54, EV-032).
+- No se usa un conjunto de conexiones: en las rutas que usan el almacén, las medianas van de 75 a 103 ms con MySQL frente a 3 a 20 ms con SQLite, con una mediana de medianas de 88,2 y 6,1 ms (D54, EV-032).
 
 ## Consecuencias
 ### Positivas
@@ -21,7 +21,7 @@ Queríamos exponer los resultados de Gold sin poner en riesgo la línea base. La
 ### Negativas
 - Sin autenticación, la API no puede salir del equipo; si el panel se despliega aparte hará falta una decisión nueva.
 - Con MySQL caído la API contesta 503; el valor por defecto sigue siendo SQLite.
-- Una conexión por solicitud cuesta unas décimas de segundo con MySQL frente a un conjunto de conexiones.
+- Una conexión por solicitud suma unos 80 ms por consulta con MySQL (mediana de medianas de 88,2 ms frente a 6,1 ms con SQLite, EV-032); no medimos cuánto de esa diferencia evitaría un conjunto de conexiones.
 
 ## Alternativas consideradas entonces
 Registradas en `docs/DECISIONES.md`:

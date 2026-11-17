@@ -2,19 +2,46 @@ EV-115 · Mutaciones de las pruebas del documento de arquitectura y de sus ADR (
 
 Qué es: cada mutación cambia a propósito una cifra o un texto del documento de arquitectura, de un ADR, del README, del índice de docs, de la checklist o de DECISIONES.md, corre `tests/test_arquitectura_cifras.py` y
 `tests/test_arquitectura_guardiana.py`, y debe hacer fallar al menos una prueba; después el archivo se restaura (al terminar, `git status` queda sin cambios). El script que las ejecuta no se versiona: son mutaciones de un día.
-La línea de partida (los dos archivos de pruebas sin mutar) pasa antes de cada serie. Las mutaciones de EV-103 (132) no se repitieron; estas son las de las pruebas nuevas.
+La tercera serie no toca el repositorio: copia `src`, `config`, `data/silver`, `data/gold` y la prueba `tests/test_gold_sin_bronze.py` a una carpeta temporal, muta la copia y corre esa prueba; la carpeta se borra al terminar.
+Las mutaciones de EV-103 (132) no se repitieron; estas son las de las pruebas nuevas.
+La prueba que comprueba la cita de este mismo registro en la sección 17 del documento se mutó aparte, una vez escrita la cita, y no cuenta en las series de abajo.
 
-## Cifras y errores ya corregidos en el README: 59 de 59 detectadas
+## Cifras y errores ya corregidos en el README: 84 de 84 detectadas
 | Grupo | Mutación | Archivo | Resultado | Prueba que falla |
 |---|---|---|---|---|
 | pruebas | recuento de pruebas del documento | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_numero_de_pruebas_del_documento_es_el_de_la_recoleccion` |
+| latencias | mediana de MySQL en el documento | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_las_latencias_del_documento_y_de_adr_010_son_las_de_ev_032` |
+| latencias | diferencia por consulta en el documento | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_las_latencias_del_documento_y_de_adr_010_son_las_de_ev_032` |
+| latencias | rango de MySQL en ADR-010 | `docs/arquitectura/adr/adr-010_api_de_solo_lectura_local.md` | DETECTADA | `test_las_latencias_del_documento_y_de_adr_010_son_las_de_ev_032` |
+| latencias | rango de SQLite en ADR-010 | `docs/arquitectura/adr/adr-010_api_de_solo_lectura_local.md` | DETECTADA | `test_las_latencias_del_documento_y_de_adr_010_son_las_de_ev_032` |
+| latencias | diferencia en ADR-010 | `docs/arquitectura/adr/adr-010_api_de_solo_lectura_local.md` | DETECTADA | `test_las_latencias_del_documento_y_de_adr_010_son_las_de_ev_032` |
+| filas de MySQL | filas de datos en la nota | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_la_nota_de_filas_de_mysql_suma_lo_medido_y_nombra_las_entradas_y_las_comunas` |
+| filas de MySQL | comunas del catálogo | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_la_nota_de_filas_de_mysql_suma_lo_medido_y_nombra_las_entradas_y_las_comunas` |
+| filas de MySQL | comunas analizadas | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_la_nota_de_filas_de_mysql_suma_lo_medido_y_nombra_las_entradas_y_las_comunas` |
+| filas de MySQL | códigos adicionales | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_la_nota_de_filas_de_mysql_suma_lo_medido_y_nombra_las_entradas_y_las_comunas` |
+| filas de MySQL | filas de datos en ADR-003 | `docs/arquitectura/adr/adr-003_almacenamiento_dual_sin_orm.md` | DETECTADA | `test_la_nota_de_filas_de_mysql_suma_lo_medido_y_nombra_las_entradas_y_las_comunas` |
+| filas de MySQL | filas de datos en ADR-004 | `docs/arquitectura/adr/adr-004_historial_por_corrida_idempotente.md` | DETECTADA | `test_la_nota_de_filas_de_mysql_suma_lo_medido_y_nombra_las_entradas_y_las_comunas` |
+| reintentos | intentos de la descarga | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_los_reintentos_y_la_espera_de_la_descarga_del_documento_son_los_de_config` |
+| reintentos | pausas de la descarga | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_los_reintentos_y_la_espera_de_la_descarga_del_documento_son_los_de_config` |
+| reintentos | espera por intento | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_los_reintentos_y_la_espera_de_la_descarga_del_documento_son_los_de_config` |
+| puertos y cifrado | se afirma que MySQL escucha solo en un puerto local | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_los_puertos_y_flower_del_documento_estan_respaldados_por_los_compose_y_las_evidencias` |
+| puertos y cifrado | se afirma una comprobación de sockets | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_los_puertos_y_flower_del_documento_estan_respaldados_por_los_compose_y_las_evidencias` |
+| puertos y cifrado | se afirma TLS configurado | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_los_puertos_y_flower_del_documento_estan_respaldados_por_los_compose_y_las_evidencias` |
+| autoría | fila de riesgo de concentración sin su pendiente | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_la_seccion_de_riesgos_y_la_hoja_de_ruta_dicen_lo_acordado_sobre_la_concentracion` |
+| autoría | la fila de riesgo desaparece | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_si_todos_los_commits_son_de_una_persona_el_documento_lo_dice_y_si_no_lo_quita` |
+| autoría | la hoja de ruta pierde la comprobación en otros equipos | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_la_seccion_de_riesgos_y_la_hoja_de_ruta_dicen_lo_acordado_sobre_la_concentracion` |
+| hechos de ADR | fecha del defecto en ADR-007 | `docs/arquitectura/adr/adr-007_reproducibilidad_de_versiones.md` | DETECTADA | `test_los_hechos_citados_por_adr_007_y_adr_014_estan_en_el_registro_y_en_las_evidencias` |
+| hechos de ADR | magnitud no registrada en ADR-007 | `docs/arquitectura/adr/adr-007_reproducibilidad_de_versiones.md` | DETECTADA | `test_los_hechos_citados_por_adr_007_y_adr_014_estan_en_el_registro_y_en_las_evidencias` |
+| hechos de ADR | fecha del hallazgo de Pillow en ADR-007 | `docs/arquitectura/adr/adr-007_reproducibilidad_de_versiones.md` | DETECTADA | `test_los_hechos_citados_por_adr_007_y_adr_014_estan_en_el_registro_y_en_las_evidencias` |
+| hechos de ADR | alcance de la regla R10 en ADR-014 | `docs/arquitectura/adr/adr-014_gold_lee_solo_silver.md` | DETECTADA | `test_los_hechos_citados_por_adr_007_y_adr_014_estan_en_el_registro_y_en_las_evidencias` |
+| hechos de ADR | alcance de D5 en ADR-014 | `docs/arquitectura/adr/adr-014_gold_lee_solo_silver.md` | DETECTADA | `test_los_hechos_citados_por_adr_007_y_adr_014_estan_en_el_registro_y_en_las_evidencias` |
 | rutas | rutas GET del documento | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_las_rutas_el_panel_y_las_tablas_del_documento_son_los_de_la_aplicacion_y_los_almacenes` |
 | rutas | rutas GET de ADR-010 | `docs/arquitectura/adr/adr-010_api_de_solo_lectura_local.md` | DETECTADA | `test_las_rutas_el_panel_y_las_tablas_del_documento_son_los_de_la_aplicacion_y_los_almacenes` |
 | panel | páginas del panel en el documento | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_las_rutas_el_panel_y_las_tablas_del_documento_son_los_de_la_aplicacion_y_los_almacenes` |
 | panel | componentes del panel en ADR-012 | `docs/arquitectura/adr/adr-012_panel_solo_sobre_la_api.md` | DETECTADA | `test_las_rutas_el_panel_y_las_tablas_del_documento_son_los_de_la_aplicacion_y_los_almacenes` |
 | tablas | tablas de SQLite | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_las_rutas_el_panel_y_las_tablas_del_documento_son_los_de_la_aplicacion_y_los_almacenes` |
 | tablas | tablas de MySQL | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_las_rutas_el_panel_y_las_tablas_del_documento_son_los_de_la_aplicacion_y_los_almacenes` |
-| tablas | nombre de una tabla de MySQL | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_las_rutas_el_panel_y_las_tablas_del_documento_son_los_de_la_aplicacion_y_los_almacenes` |
+| tablas | nombre de una tabla de MySQL | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_la_nota_de_filas_de_mysql_suma_lo_medido_y_nombra_las_entradas_y_las_comunas` |
 | índices | índices secundarios | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_las_rutas_el_panel_y_las_tablas_del_documento_son_los_de_la_aplicacion_y_los_almacenes` |
 | defectos | defectos en el documento | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_defectos_mutaciones_cobertura_casos_y_reglas_del_documento_son_los_medidos` |
 | defectos | defectos con regresión demostrada | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_defectos_mutaciones_cobertura_casos_y_reglas_del_documento_son_los_medidos` |
@@ -67,7 +94,7 @@ La línea de partida (los dos archivos de pruebas sin mutar) pasa antes de cada 
 | enlaces | enlace del README al documento | `README.md` | DETECTADA | `test_los_enlaces_al_documento_existen_en_el_readme_el_indice_y_la_checklist` |
 | enlaces | enlace del índice de docs | `docs/README.md` | DETECTADA | `test_los_enlaces_al_documento_existen_en_el_readme_el_indice_y_la_checklist` |
 
-## Forma, redacción, diagramas, ADR y D106: 20 de 20 detectadas
+## Forma, redacción, diagramas, ADR y D106: 21 de 21 detectadas
 | Grupo | Mutación | Archivo | Resultado | Prueba que falla |
 |---|---|---|---|---|
 | términos | un término prohibido en el documento | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_real_cumple_la_guardiana` |
@@ -86,9 +113,20 @@ La línea de partida (los dos archivos de pruebas sin mutar) pasa antes de cada 
 | ADR | un origen que no existe | `docs/arquitectura/adr/adr-003_almacenamiento_dual_sin_orm.md` | DETECTADA | `test_los_adr_reales_cumplen_su_estructura_y_su_origen` |
 | ADR | revisión inventada | `docs/arquitectura/adr/adr-010_api_de_solo_lectura_local.md` | DETECTADA | `test_los_adr_reales_cumplen_su_estructura_y_su_origen` |
 | ADR | una alternativa alterada | `docs/arquitectura/adr/adr-007_reproducibilidad_de_versiones.md` | DETECTADA | `test_los_adr_reales_cumplen_su_estructura_y_su_origen` |
-| ADR | ADR-014 sin la frase exacta de sin alternativas | `docs/arquitectura/adr/adr-014_gold_lee_solo_silver.md` | DETECTADA | `test_los_adr_reales_cumplen_su_estructura_y_su_origen` |
-| ADR | ADR-014 sin hecho medible | `docs/arquitectura/adr/adr-014_gold_lee_solo_silver.md` | DETECTADA | `test_el_volumen_y_la_calidad_de_los_datos_del_documento_son_los_medidos` |
+| ADR | ADR-014 sin la frase exacta de sin alternativas | `docs/arquitectura/adr/adr-014_gold_lee_solo_silver.md` | DETECTADA | `test_los_hechos_citados_por_adr_007_y_adr_014_estan_en_el_registro_y_en_las_evidencias` |
+| ADR | ADR-014 con el tamaño de una página de Bronze alterado | `docs/arquitectura/adr/adr-014_gold_lee_solo_silver.md` | DETECTADA | `test_el_volumen_y_la_calidad_de_los_datos_del_documento_son_los_medidos` |
+| ADR | ADR-014 con las reglas de Silver alteradas | `docs/arquitectura/adr/adr-014_gold_lee_solo_silver.md` | DETECTADA | `test_defectos_mutaciones_cobertura_casos_y_reglas_del_documento_son_los_medidos` |
 | D106 | D5 pierde su marca | `docs/DECISIONES.md` | DETECTADA | `test_los_contenedores_las_ramas_y_los_secretos_del_documento_son_los_del_repositorio` |
 | D106 | D21 pierde su marca | `docs/DECISIONES.md` | DETECTADA | `test_los_contenedores_las_ramas_y_los_secretos_del_documento_son_los_del_repositorio` |
+
+## Gold sin Bronze y sin shapely, sobre una copia: 6 de 6 detectadas
+| Grupo | Mutación | Archivo | Resultado | Prueba que falla |
+|---|---|---|---|---|
+| shapely en Gold | Gold importa shapely | `copia de src/transform/build_gold.py` | DETECTADA | `test_el_codigo_de_gold_no_importa_shapely` |
+| shapely en Gold | Gold importa un submódulo de shapely dentro de una función | `copia de src/transform/build_gold.py` | DETECTADA | `test_el_codigo_de_gold_no_importa_shapely` |
+| shapely en Silver | Silver deja de usar shapely | `copia de src/transform/clean_api.py` | DETECTADA | `test_el_codigo_de_gold_no_importa_shapely` |
+| Gold lee Bronze | Gold lee el manifiesto de Bronze | `copia de src/transform/build_gold.py` | DETECTADA | `test_gold_se_regenera_desde_silver_sin_data_bronze_con_los_mismos_sha256` |
+| Gold cambia | Gold produce otro resultado (K1 con una cifra distinta) | `copia de src/transform/build_gold.py` | DETECTADA | `test_gold_se_regenera_desde_silver_sin_data_bronze_con_los_mismos_sha256` |
+| detector | el detector de shapely deja de ver los imports dentro de funciones | `copia de tests/test_gold_sin_bronze.py` | DETECTADA | `test_el_detector_de_shapely_reconoce_cada_forma_de_importarlo` |
 
 Qué NO demuestra: que no existan cifras del documento que ninguna prueba vigile; solo las que se mutaron. Una cifra escrita con otro formato que el esperado por las expresiones de las pruebas no se detectaría.

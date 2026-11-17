@@ -8,7 +8,7 @@ Gold calcula los indicadores K1 a K6 sobre construcciones ya limpias y unidas co
 ## Decisión
 - Gold lee solo `silver_integrated.csv` y `config/config.yaml`; nunca lee Bronze.
 - El paso espacial se calcula en Silver, en la regla R09: centroide de la huella con 7 decimales y punto en polígono con `shapely`. Deja en la tabla integrada el polígono donde cae cada construcción y si su código coincide con la llave. Solo valida la llave: no entra al JOIN.
-- Como consecuencia, Gold no conoce los formatos crudos de las fuentes ni necesita los polígonos. D5 quedó marcada como modificada por D106: `shapely` sí se usa, y se usa en Silver.
+- Como consecuencia, Gold no conoce los formatos crudos de las fuentes ni necesita los polígonos. D5 quedó marcada como modificada por D106: `shapely` sí se usa, y se usa en Silver. D5 registró alternativas para la herramienta del punto en polígono (geopandas y consulta por punto), pero ninguna para decidir en qué capa vive el paso ni qué capa lee a cuál.
 
 ## Consecuencias
 ### Positivas
@@ -18,7 +18,7 @@ Gold calcula los indicadores K1 a K6 sobre construcciones ya limpias y unidas co
 
 ### Negativas
 - Silver concentra más responsabilidad: un cambio en una regla de Silver cambia las entradas de todo Gold.
-- Gold no puede recuperar algo que Silver descartó, como las columnas vacías o sin uso de la regla R10, sin modificar Silver.
+- Gold no puede recuperar algo que Silver descartó, como las columnas vacías, en grados o sin uso de la regla R10, sin modificar Silver.
 - La validación espacial añade `shapely` a la transformación de Silver y obliga a leer los polígonos cada vez que se regenera.
 
 ## Alternativas consideradas entonces
@@ -26,5 +26,5 @@ No se registraron alternativas.
 
 ## Alternativas que hoy descartamos y por qué
 Razonamiento actual del equipo, no registrado en su momento.
-- **Que Gold lea Bronze directamente.** Tendría que repetir la limpieza: Bronze son 8 archivos crudos (tres páginas JSON de la API, el CSV de estrato de 16.030 bytes con miles con coma y guiones como cero, y 342 polígonos en 1.850.751 bytes), y Silver aplica 18 reglas sobre ellos. Una regla repetida en dos capas podría divergir, y la línea base de nueve archivos lo detectaría tarde.
+- **Que Gold lea Bronze directamente.** Tendría que repetir la limpieza: Bronze son 8 archivos crudos, tres páginas JSON de la API con las construcciones (1.774.634, 1.752.478 y 1.055.160 bytes), los conteos antes y después de descargar (181 bytes cada uno), el metadato de la capa (17.507 bytes), el CSV de estrato (16.030 bytes, con miles con coma y guiones como cero) y el GeoJSON de barrios (342 polígonos, 1.850.751 bytes). Silver aplica 18 reglas sobre ellos. Una regla repetida en dos capas podría divergir, y la línea base de nueve archivos lo detectaría tarde.
 - **Hacer el paso espacial en Gold.** Gold necesitaría `shapely` y volver a leer los 1.850.751 bytes de polígonos de Bronze solo para validar una llave que no entra al JOIN. En Silver la validación queda junto a las otras 17 reglas y se hace una vez.

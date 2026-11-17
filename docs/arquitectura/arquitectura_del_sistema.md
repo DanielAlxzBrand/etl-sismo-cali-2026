@@ -12,7 +12,7 @@
 | Repositorio | aún no está publicado; cuando se publique, esta tabla enlazará a sus issues (ver el [README](../../README.md#19-contacto-y-responsables)) |
 | Registros de decisión | los 14 ADR de [adr/](adr/), listados en la sección 10; las decisiones completas están en [docs/DECISIONES.md](../DECISIONES.md) (D1 a D106) |
 
-Este documento describe cómo está construido el sistema hoy y por qué lo construimos así. Lo escribimos como estudiantes que hicimos el proyecto: donde algo no existe decimos «no lo hicimos» o «no aplica» y damos la razón, y no rellenamos con contenido genérico. Todo lo que afirmamos se puede comprobar en el repositorio; lo que no, se declara como límite.
+Este documento describe cómo está construido el sistema hoy y por qué lo construimos así. Lo escribimos como estudiantes que hicimos el proyecto: donde algo no existe decimos «no lo hicimos» o «no aplica» y damos la razón, y no rellenamos con contenido genérico. Para cada cifra o afirmación indicamos de dónde sale (un archivo, una evidencia o una decisión del repositorio), y varias cifras las comparan pruebas automáticas con lo medido. Lo que no pudimos verificar, o depende de la máquina de quien lo ejecute, lo marcamos como límite.
 
 ## 2. Resumen ejecutivo
 **Propósito.** Un pipeline ETL con capas Bronze, Silver y Gold que integra una capa satelital de impacto en construcciones y el estrato socioeconómico por barrio, calcula indicadores con intervalos de confianza y los entrega por una API de solo lectura, un panel y dos bases de datos, con orquestación en Airflow.
@@ -28,7 +28,7 @@ Este documento describe cómo está construido el sistema hoy y por qué lo cons
 - Idempotencia: repetir la extracción o la carga no duplica nada.
 - API de solo lectura (11 rutas GET) y panel de 8 páginas que solo habla con la API.
 - Mínimo privilegio: tres cuentas de MySQL y un repositorio montado en solo lectura en Airflow.
-- Cifras de los documentos vigiladas por pruebas: **1362 pruebas** automáticas.
+- Cifras de los documentos vigiladas por pruebas: **1375 pruebas** automáticas.
 
 ## 3. Contexto y drivers
 **Objetivos.** Entregar un análisis reproducible de impacto sísmico por zonas, con incertidumbre explícita, y que se pueda repetir de punta a punta ([docs/estrategia/03_objetivo_alcance_okr_kpi.md](../estrategia/03_objetivo_alcance_okr_kpi.md) y [05_mvp_criterios_aceptacion.md](../estrategia/05_mvp_criterios_aceptacion.md)).
@@ -48,7 +48,7 @@ No hubo sesiones con personas usuarias que probaran el sistema (ver la sección 
 **Restricciones.**
 - Frescura: no hay requisito de frescura. Los datos son una captura única descargada el 2026-10-15 (hora de Bogotá); la capa se editó por última vez el 2026-09-02.
 - Presupuesto: el repositorio no define ninguno. El costo es tiempo del equipo y una máquina local; los precios son parámetros vacíos ([docs/finanzas/estructura_costos.md](../finanzas/estructura_costos.md)).
-- Regulaciones: no tratamos datos personales (construcciones por huella catastral y estrato por barrio). No hacemos afirmaciones jurídicas; lo que cada publicador declara sobre licencias está en [docs/bronze/atribucion_y_terminos_de_datos.md](../bronze/atribucion_y_terminos_de_datos.md).
+- Regulaciones: en ninguna capa hay nombres, documentos ni datos de contacto de personas (el detalle está en la sección 12). No hacemos afirmaciones jurídicas; lo que cada publicador declara sobre licencias está en [docs/bronze/atribucion_y_terminos_de_datos.md](../bronze/atribucion_y_terminos_de_datos.md).
 - Entorno: Windows 11 con PowerShell y Python 3.13; en otros sistemas no lo probamos.
 
 **Volumen actual (medido).**
@@ -60,6 +60,8 @@ No hubo sesiones con personas usuarias que probaran el sistema (ver la sección 
 | Tamaño de `data/` | 10,6 MB | [recursos_medidos.csv](../finanzas/recursos_medidos.csv), 2026-11-14 |
 | Base SQLite | 1,6 MB | el mismo archivo |
 | Filas en MySQL | 5.655 en 7 tablas | [EV-102](../evidencias/modo_completo/EV-102_capturas_de_daniel.txt) |
+
+**Nota sobre las filas de MySQL.** Las 5.655 filas en 7 tablas son las 5.622 filas de datos (`barrio_estrato` 346, `construccion` 5.146, `kpi` 23 y `kpi_sensibilidad` 107) más 27 de `comuna`, 1 de `corrida` y 5 de `corrida_archivo`. Los 5 archivos de corrida son las entradas de la carga relacional, `silver_estrato_barrio.csv`, `gold_final.csv`, `kpis_gold.csv`, `kpis_sensibilidad.csv` y `quality_report.json`, y no archivos de Bronze. La tabla `comuna` es un catálogo: se llena con las comunas de los 346 barrios del CSV de estrato, que cubre toda Cali, y con las de las construcciones; por eso tiene 27 filas aunque el análisis use 7 comunas (03, 09, 10, 17, 18, 19 y 20), que están contenidas en esas 27. Los códigos son 01 a 22, 51, 52, 53, 54 y 56; el repositorio no documenta qué son los códigos 51 a 56, y el nombre de cada fila lo genera el código («Comuna 51»), no una fuente oficial.
 
 **Proyección a 12 o 24 meses.** No proyectada: la fuente es una captura única del evento, no crece sola, y no tenemos una segunda fuente que cambie con el tiempo. Si la fuente se refresca, `--refresh` crea un snapshot nuevo del mismo tamaño aproximado.
 
@@ -167,7 +169,7 @@ Infraestructura declarada: el `Dockerfile` y los compose de `orquestacion/` y `s
 
 **Flujos principales.** El pipeline descarga y transforma hasta dejar los archivos de `data/`; la carga escribe SQLite y, aparte, MySQL; la API lee de uno de los dos almacenes y el panel lee de la API; Airflow ejecuta una copia del pipeline y la compara con lo versionado; phpMyAdmin solo mira MySQL.
 
-**Límites del sistema.** Todo escucha en `127.0.0.1`. No hay autenticación porque el servicio no sale del equipo. Las fuentes se consultan por HTTPS y nada se envía a un tercero.
+**Límites del sistema.** Lo que levanta el proyecto publica solo en `127.0.0.1`: la API, el panel, la interfaz de Airflow (y Flower, si se activa) y phpMyAdmin. Lo comprueban las pruebas de la configuración y de los compose y las evidencias en vivo [EV-016](../evidencias/api/EV-016_respuestas_api.txt), [EV-064](../evidencias/endurecimiento/EV-064_airflow_en_vivo.txt), [EV-085](../evidencias/servicios/EV-085_phpmyadmin_en_vivo.txt) y [EV-102](../evidencias/modo_completo/EV-102_capturas_de_daniel.txt); no hay una comprobación de sockets en escucha. El servicio MySQL es del equipo y el proyecto no lo configura: no sabemos en qué interfaces escucha. Lo que sí acotamos es quién puede iniciar sesión: ninguna cuenta tiene origen `%` (D46, D60 y D65). No hay autenticación en la API porque el servicio no sale del equipo. Las fuentes se consultan por HTTPS y nada se envía a un tercero.
 
 ## 7. Arquitectura de datos
 ### Modelo de capas y su justificación
@@ -310,7 +312,7 @@ La separación de capas (Gold solo desde Silver) tiene su [ADR-014](adr/adr-014_
 ## 11. Requisitos no funcionales
 ### Disponibilidad y resiliencia
 - **SLA y SLO:** no los definimos. No hay un servicio desplegado ni personas usuarias que dependan de él; ponerles un número sería inventarlo.
-- **Reintentos reales:** la descarga reintenta 3 veces con espera creciente y tiempo máximo de 30 s (`config/config.yaml`, sección `http`); el cliente del panel reintenta una vez un error de conexión; el DAG no tiene reintentos de tareas.
+- **Reintentos reales:** la descarga hace hasta 3 intentos por petición (reintenta si falla la conexión o la respuesta es 5xx), con una pausa de 0,5 s, 1 s y 1,5 s después de cada intento fallido, y espera como máximo 30 s por intento a que el servidor conteste (`timeout_s` de `config/config.yaml`, sección `http`, que acota la conexión y la espera de datos, no el tiempo total); el cliente del panel reintenta una vez un error de conexión; el DAG no tiene reintentos de tareas.
 - **Circuit breakers:** no hay.
 - **Idempotencia:** ver la sección 5.
 - **Recuperación:** un fallo en el DAG se recupera volviendo a lanzarlo; una carga a MySQL ocurre en una sola transacción, así que no queda a medias.
@@ -321,12 +323,12 @@ Mediciones locales de una máquina, con fecha ([EV-113](../evidencias/readme/EV-
 | Qué | Valor | Fecha |
 |---|---|---|
 | Pipeline completo | 2,9 s y 148 MB de pico (mediana de 3) | 2026-11-16 |
-| Carga a MySQL de 5.622 filas, fila a fila frente a lotes de 2.000 | 2,415 s frente a 0,715 s | 2026-11-14 |
-| Latencia de la API sobre SQLite, mediana por ruta | de 3,6 a 13,9 ms | 2026-11-14 |
+| Carga a MySQL de 5.622 filas de datos (las cuatro tablas de datos), fila a fila frente a lotes de 2.000 | 2,415 s frente a 0,715 s | 2026-11-14 |
+| Latencia de la API, mediana por ruta (12 rutas, cliente del panel, [EV-055](../evidencias/panel/EV-055_mediciones_panel.txt)) | SQLite de 3,6 a 13,9 ms; MySQL de 4,8 a 126,9 ms | 2026-11-14 |
 | Memoria en reposo de la API y el panel | unos 160 MiB | 2026-11-15 |
 | Memoria en reposo de Airflow (siete contenedores) | 1.970 MiB | 2026-11-14 |
 
-**Cuellos de botella medidos:** Airflow es lo que más memoria usa, por mucho; MySQL responde más lento que SQLite por la conexión por solicitud (de 60 a 120 ms frente a 3 a 10 ms, D54).
+**Cuellos de botella medidos:** Airflow es lo que más memoria usa, por mucho; en las rutas que consultan el almacén, MySQL tiene una mediana de medianas de 88,2 ms frente a 6,1 ms con SQLite ([EV-032](../evidencias/almacenamiento/EV-032_api_mysql_vs_sqlite.txt)); `/fuentes` y `/calidad`, que no lo consultan, responden en pocos milisegundos con ambos, lo que sugiere que la diferencia viene de abrir una conexión nueva por solicitud. No aislamos ese costo con una medición propia.
 **Estrategia de escalado:** no medimos más datos, más personas usuarias a la vez ni otro motor, y no prometemos cómo escala.
 **Optimizaciones aplicadas:** carga por lotes de 2.000 filas, 8 índices secundarios en MySQL, caché del panel de 300 s, paginación de la API (50 por omisión, 200 como máximo) y extracción que no vuelve a descargar si Bronze existe.
 
@@ -340,12 +342,12 @@ El modelo de costos tiene siete categorías y fórmulas con símbolos; los preci
 - **Deuda técnica conocida y reconocida:** el DAG sin reintentos; Airflow pesado para cuatro tareas; sin validación explícita de columnas de la fuente; dependencias transitivas sin fijar; dos almacenes que mantener sincronizados; el panel sin desplegar.
 
 ## 12. Seguridad y cumplimiento
-- **Clasificación de datos:** datos abiertos y no personales (construcciones por huella catastral y estrato por barrio). Los secretos son las contraseñas de las tres cuentas de MySQL y los de Airflow: la clave Fernet, el secreto JWT y las contraseñas de la interfaz y de Postgres. El compose adaptado no trae ninguno escrito: los exige desde el `.env` de Airflow.
-- **Controles de acceso:** tres cuentas de MySQL con el mínimo privilegio y ningún origen `%` (ver [ADR-011](adr/adr-011_cuentas_de_mysql_minimo_privilegio.md)); API y panel de solo lectura que escuchan en `127.0.0.1`. No hay IAM ni RBAC de nube porque no hay nube.
-- **Cifrado:** en tránsito, las fuentes se descargan por HTTPS; lo local (API, panel, MySQL, phpMyAdmin y Airflow) va sin TLS por la interfaz de loopback. En reposo no ciframos nada (CSV, SQLite, MySQL ni `.env`). Es una decisión de alcance: los datos son abiertos y no personales y todo corre en una máquina local; si el proyecto se despliega, hay que reconsiderarla.
+- **Clasificación de datos:** datos abiertos. En ninguna capa hay nombres, documentos ni datos de contacto de personas. Trabajamos con huellas de construcciones (con su ubicación y las columnas catastrales que publica la fuente, entre ellas identificadores de predio) y con el estrato por barrio. Una huella identifica un lugar y no a quien vive allí; no evaluamos si, cruzada con otras fuentes, podría asociarse a una persona. Los secretos son las contraseñas de las tres cuentas de MySQL y los de Airflow: la clave Fernet, el secreto JWT y las contraseñas de la interfaz y de Postgres. El compose adaptado no trae ninguno escrito: los exige desde el `.env` de Airflow.
+- **Controles de acceso:** tres cuentas de MySQL con el mínimo privilegio y ningún origen `%` (ver [ADR-011](adr/adr-011_cuentas_de_mysql_minimo_privilegio.md)); API y panel de solo lectura publicados solo en `127.0.0.1`. No hay IAM ni RBAC de nube porque no hay nube.
+- **Cifrado:** en tránsito, las fuentes se descargan por HTTPS; lo que levanta el proyecto (API, panel, phpMyAdmin y Airflow) se publica solo en loopback y sin TLS. Las conexiones a MySQL (desde el pipeline y la API, y desde los contenedores por `host.docker.internal`) no usan TLS configurado por el proyecto; no medimos si el servidor lo negocia. En reposo no ciframos nada (CSV, SQLite, MySQL ni `.env`). Es una decisión de alcance: los datos son abiertos, sin nombres ni datos de contacto de personas, y todo corre en una máquina local; si el proyecto se despliega, hay que reconsiderarla.
 - **Auditoría y registro de accesos:** la API registra cada solicitud (método, ruta, estado y duración) en el registro de ejecución; la interfaz de Airflow guarda un registro de auditoría de las acciones. No configuramos el registro de consultas de MySQL.
-- **Cumplimiento regulatorio:** no tratamos datos personales y no hacemos afirmaciones jurídicas. Las licencias de las fuentes se describen tal como las declara cada publicador, y el estrato de 2015 se trata con la condición más restrictiva por prudencia ([atribución](../bronze/atribucion_y_terminos_de_datos.md)).
-- **Gestión de secretos:** los genera `scripts/mysql/configurar_mysql.py` y `scripts/orquestacion/preparar_airflow.py` al azar, viven solo en archivos `.env` que Git ignora, y nunca se imprimen. `scripts/escanear_secretos.py` revisa el árbol, el historial, los notebooks, los registros y el zip, y con `--canario-env` busca los valores reales sin imprimirlos ([política](../seguridad/gestion_credenciales.md)).
+- **Cumplimiento regulatorio:** la clasificación de datos de arriba explica qué hay y qué no hay en cada capa, y no hacemos afirmaciones jurídicas. Las licencias de las fuentes se describen tal como las declara cada publicador, y el estrato de 2015 se trata con la condición más restrictiva por prudencia ([atribución](../bronze/atribucion_y_terminos_de_datos.md)).
+- **Gestión de secretos:** los generan al azar `scripts/mysql/configurar_mysql.py` y `scripts/orquestacion/preparar_airflow.py` y los escriben solo en archivos `.env` que Git ignora. Los scripts que los crean imprimen los nombres de las variables y no sus valores, y el registro de ejecución oculta tokens, cabeceras de autenticación y valores de `.env`; pruebas y el escáner comprueban que no aparezcan. Quien necesita la contraseña de la interfaz de Airflow la lee de su `.env`. `scripts/escanear_secretos.py` revisa el árbol, el historial, los notebooks, los registros y el zip, y con `--canario-env` busca los valores reales sin imprimirlos ([política](../seguridad/gestion_credenciales.md)).
 - **Límite conocido:** el origen `localhost` de una cuenta no acota por sí solo quién puede conectarse; la protección real es el mínimo privilegio más la contraseña aleatoria (D67).
 
 ## 13. Observabilidad
@@ -373,9 +375,9 @@ El modelo de costos tiene siete categorías y fórmulas con símbolos; los preci
 | Comparar byte a byte con la línea base ([ADR-006](adr/adr-006_copia_de_trabajo_y_comparacion.md) y [ADR-007](adr/adr-007_reproducibilidad_de_versiones.md)) | demostrar que Airflow y el entorno no cambian las cifras | rigidez: una versión de pandas distinta rompe la comparación | preferimos ver el fallo que aceptar una diferencia que no explicamos |
 | SQL explícito sin ORM ([ADR-003](adr/adr-003_almacenamiento_dual_sin_orm.md)) | siete tablas que se leen completas y menos dependencias | más SQL escrito a mano | el esquema es pequeño y la revisión completa es más valiosa que la comodidad |
 | API sin autenticación ([ADR-010](adr/adr-010_api_de_solo_lectura_local.md)) | un servicio simple y sin secretos | no puede salir del equipo | es local y de una persona a la vez; si se despliega hay que decidir de nuevo |
-| Una conexión por solicitud a MySQL ([ADR-010](adr/adr-010_api_de_solo_lectura_local.md)) | sin estado de conexiones que caduquen | unas décimas de segundo más por consulta | el servicio es local y de un solo usuario |
+| Una conexión por solicitud a MySQL ([ADR-010](adr/adr-010_api_de_solo_lectura_local.md)) | sin estado de conexiones que caduquen | unos 80 ms más por consulta con MySQL (88,2 ms frente a 6,1 ms, EV-032) | el servicio es local y de un solo usuario |
 | Proxy satelital con 7 comunas ([ADR-009](adr/adr-009_fuentes_por_criterios_de_aceptacion.md)) | la única fuente abierta a nivel de construcción | no es una evaluación estructural y no cubre toda Cali | lo declaramos en cada resultado y no extrapolamos |
-| Documentación vigilada por pruebas ([ADR-008](adr/adr-008_pruebas_sin_servidor_y_regresion.md)) | cifras que no se desactualizan en silencio | más pruebas que mantener (**1362 pruebas** en total) | una cifra vieja ya se coló una vez en un documento y la prueba la detectó |
+| Documentación vigilada por pruebas ([ADR-008](adr/adr-008_pruebas_sin_servidor_y_regresion.md)) | cifras que no se desactualizan en silencio | más pruebas que mantener (**1375 pruebas** en total) | una cifra vieja ya se coló una vez en un documento y la prueba la detectó |
 
 ## 16. Riesgos y mitigaciones
 La probabilidad y el impacto son juicio del equipo, sin cifras; se basan en las limitaciones, defectos y riesgos registrados.
@@ -393,6 +395,7 @@ La probabilidad y el impacto son juicio del equipo, sin cifras; se basan en las 
 | La licencia del estrato es contradictoria (dos portales declaran licencias distintas) | negocio | media | media | se trata con la condición más restrictiva; descripción en el documento de atribución |
 | Una dependencia transitiva cambia entre instalaciones | técnico | baja | baja | las pruebas de reproducibilidad detectarían un cambio que afecte las salidas |
 | Falta feedback de personas usuarias | negocio | alta | media | material de sesiones preparado; hoja de ruta de la sección 17 |
+| Todos los commits del historial son de la misma persona: el conocimiento técnico está concentrado en ella | organizativo | alta | alta | la documentación (README, este documento y los ADR), las guías de instalación y las pruebas que vigilan lo decidido; la ejecución desde cero en otros equipos está pendiente de comprobar |
 
 ## 17. Hoja de ruta técnica
 **Madurez actual:** MVP académico, ejecutable en local, sin despliegue ni integración continua, aún sin sesiones reales con personas usuarias.
@@ -402,14 +405,14 @@ La probabilidad y el impacto son juicio del equipo, sin cifras; se basan en las 
 **Propuesta del equipo, no compromiso:**
 | Plazo | Mejora propuesta |
 |---|---|
-| Corto | publicar el repositorio y enlazar sus issues desde el README; hacer las sesiones con personas usuarias; revisar este documento y pasarlo de Borrador a revisado; grabar la demostración |
+| Corto | publicar el repositorio y enlazar sus issues desde el README; comprobar la ejecución desde cero en otros equipos; hacer las sesiones con personas usuarias; revisar este documento y pasarlo de Borrador a revisado; grabar la demostración |
 | Medio | ampliar la cobertura a la Comuna 2 y a las demás comunas ausentes; repetir el análisis con un estrato actualizado; agregar una validación explícita de las columnas de la fuente; evaluar reintentos de tareas en el DAG |
 | Largo | incorporar la amenaza sísmica oficial; comparar el proxy con las inspecciones de la Alcaldía; si el sistema se despliega, agregar autenticación, integración continua y alertas |
 
 **Posibles cambios de arquitectura futuros:** autenticación en la API si sale de `127.0.0.1`; un conjunto de conexiones si crece el uso; carga incremental solo si aparece una fuente que cambie; sustituir el compose por infraestructura como código si se despliega.
 
-### Ítem 7.3: evidencias de pruebas, retroalimentación recibida y feedback de personas usuarias
-- **Evidencias de pruebas técnicas:** [informe de pruebas](../validacion/informe_pruebas.md), [matriz de casos](../validacion/matriz_casos_prueba.md) (179 casos), [registro de defectos](../validacion/registro_defectos.md) (25 defectos; para 15 se demostró que su prueba de regresión falla sin la corrección y para los otros 10 no se demostró (DEF-003, DEF-006, DEF-009, DEF-010, DEF-011, DEF-014 y DEF-022 a DEF-025), con el motivo de cada uno en el registro), las mutaciones de [EV-103](../evidencias/modo_completo/EV-103_mutaciones_modo_completo.txt) (132 en total), la suite en un clon y en un zip ([EV-113](../evidencias/readme/EV-113_primera_vez_y_suite_en_clon_y_zip.txt)) y la cobertura de `src/`, de 78 % ([EV-114](../evidencias/readme/EV-114_cobertura_de_src_repetida.txt)).
+### Evidencias de pruebas, retroalimentación recibida y feedback de personas usuarias
+- **Evidencias de pruebas técnicas:** [informe de pruebas](../validacion/informe_pruebas.md), [matriz de casos](../validacion/matriz_casos_prueba.md) (179 casos), [registro de defectos](../validacion/registro_defectos.md) (25 defectos; para 15 se demostró que su prueba de regresión falla sin la corrección y para los otros 10 no se demostró (DEF-003, DEF-006, DEF-009, DEF-010, DEF-011, DEF-014 y DEF-022 a DEF-025), con el motivo de cada uno en el registro), las mutaciones de [EV-103](../evidencias/modo_completo/EV-103_mutaciones_modo_completo.txt) (132 en total), la suite en un clon y en un zip ([EV-113](../evidencias/readme/EV-113_primera_vez_y_suite_en_clon_y_zip.txt)) la cobertura de `src/` es de 78 % de las líneas, medida con la suite completa y sin red ([EV-114](../evidencias/readme/EV-114_cobertura_de_src_repetida.txt)); es una cota inferior, porque `clean_api.py` e `integrate.py` se ejecutan en subprocesos que la medición no sigue y `extract_api.py` necesita red; y las mutaciones de las pruebas de este documento y de sus ADR ([EV-115](../evidencias/arquitectura/EV-115_mutaciones_de_las_pruebas_de_arquitectura.txt)): 111 de 111 detectadas.
 - **Retroalimentación recibida sobre la entrega anterior:** el texto está en [retroalimentacion_recibida.txt](../retroalimentacion/retroalimentacion_recibida.txt) y no se edita. Trae aspectos positivos y cinco observaciones por mejorar; cada una está atendida en [registro_de_cambios.md](../retroalimentacion/registro_de_cambios.md), con qué hicimos, qué archivos cambiaron y su evidencia. Atenderlas no cambió ningún dato, indicador, umbral, regla de Silver ni columna.
 - **Feedback de personas usuarias:** **no existe todavía y sigue pendiente.** La retroalimentación recibida sobre la entrega anterior no es feedback de personas usuarias. El protocolo, el guion, el consentimiento y el análisis (probado solo con datos sintéticos rotulados) están en [docs/usuarios/](../usuarios/README.md); cuando haya sesiones reales, sus resultados se registran ahí y este apartado se actualiza.
 
@@ -440,4 +443,5 @@ El glosario del análisis (Wilson, Newcombe, Mantel-Haenszel, K1 a K6) está en 
 - Documentación por componente: [API](../api/arquitectura.md), [panel](../panel/arquitectura_panel.md), [orquestación](../orquestacion/README.md), [modelo de datos](../almacenamiento/modelo_datos.md) y [seguridad](../seguridad/gestion_credenciales.md).
 - Documentación de las herramientas (páginas principales; no las verificamos con una consulta de hoy): Apache Airflow (https://airflow.apache.org/docs/), FastAPI (https://fastapi.tiangolo.com/), Streamlit (https://docs.streamlit.io/), pandas (https://pandas.pydata.org/docs/), pytest (https://docs.pytest.org/) y MySQL 8.0 (https://dev.mysql.com/doc/refman/8.0/en/).
 
+### Crédito del método de orquestación
 Orquestación: el DAG y el compose de Airflow siguen el artículo de Juan Manuel Núñez Velasco, «Apache Airflow en Windows con WSL2 y Docker: tutorial paso a paso para orquestar un pipeline ETL 2026», con las diferencias documentadas en [docs/orquestacion/diferencias_con_la_guia.md](../orquestacion/diferencias_con_la_guia.md).

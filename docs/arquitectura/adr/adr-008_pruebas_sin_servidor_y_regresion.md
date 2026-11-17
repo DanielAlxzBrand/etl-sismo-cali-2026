@@ -33,4 +33,4 @@ Registradas en `docs/DECISIONES.md`:
 ## Alternativas que hoy descartamos y por qué
 Razonamiento actual del equipo, no registrado en su momento.
 - **Levantar un MySQL de prueba en contenedor dentro de cada ejecución de la suite.** La suite completa ya tarda de 5 a 7 minutos en esta máquina y no hay integración continua que la ejecute; sumar un servidor haría que quien solo quiere ver las cifras necesitara Docker.
-- **Exigir un porcentaje mínimo de cobertura.** La cobertura de `src/` es de 78 % y los módulos con 0 % se ejecutan en subprocesos o descargan de la red; un umbral empujaría pruebas artificiales para subir un número.
+- **Exigir un porcentaje mínimo de cobertura.** La cobertura de `src/` es de 78 % de las líneas y los módulos con 0 % se ejecutan en subprocesos o descargan de la red; un umbral empujaría pruebas artificiales para subir un número.

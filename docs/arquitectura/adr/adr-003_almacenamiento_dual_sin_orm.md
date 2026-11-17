@@ -31,5 +31,5 @@ Registradas en `docs/DECISIONES.md`:
 
 ## Alternativas que hoy descartamos y por qué
 Razonamiento actual del equipo, no registrado en su momento.
-- **Una base columnar o un almacén en la nube.** El volumen es de 5.146 construcciones y la carga completa a MySQL (5.622 filas) tarda 0,715 s con lotes de 2.000 filas; SQLite pesa 1,6 MB. No hay un problema de escala que justifique otra pieza.
+- **Una base columnar o un almacén en la nube.** El volumen es de 5.146 construcciones y la carga completa a MySQL (5.622 filas de datos) tarda 0,715 s con lotes de 2.000 filas; SQLite pesa 1,6 MB. No hay un problema de escala que justifique otra pieza.
 - **Un ORM para generar las tablas.** El esquema tiene siete tablas y un ORM escondería el SQL que queremos que se pueda revisar en una sola lectura.

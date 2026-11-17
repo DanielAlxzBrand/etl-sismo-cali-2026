@@ -21,7 +21,7 @@ TODO = DOC_TEXTO + "\n" + "\n".join(ADR_TEXTO.values())
 README = (ROOT / "README.md").read_text(encoding="utf-8")
 DECISIONES = (ROOT / "docs" / "DECISIONES.md").read_text(encoding="utf-8")
 REP = json.loads((ROOT / "data" / "silver" / "quality_report.json").read_text(encoding="utf-8"))
-GOLD = pd.read_csv(ROOT / "data" / "gold" / "gold_final.csv")
+GOLD = pd.read_csv(ROOT / "data" / "gold" / "gold_final.csv", dtype={"comuna": str, "codigo_barrio": str})
 
 
 def _miles(n):
@@ -114,7 +114,7 @@ def test_defectos_mutaciones_cobertura_casos_y_reglas_del_documento_son_los_medi
     casos = len(list(csv.DictReader((ROOT / "docs" / "validacion" / "matriz_casos_prueba.csv").open(encoding="utf-8", newline=""))))
     assert cifras_con_patron(DOC_TEXTO, r"\((\d+) casos\)") == [str(casos)]
     reglas = max(int(n) for n in re.findall(r"\bR(\d\d)\b", _leer("docs/silver/reglas_silver.md")))
-    assert f"{reglas} reglas (R01 a R{reglas})" in DOC_TEXTO and f"R01 a R{reglas}" in ADR_TEXTO["adr-014_gold_lee_solo_silver.md"]
+    assert f"{reglas} reglas (R01 a R{reglas})" in DOC_TEXTO and f"R01 a R{reglas}" in ADR_TEXTO["adr-014_gold_lee_solo_silver.md"] and f"Silver aplica {reglas} reglas sobre ellos" in ADR_TEXTO["adr-014_gold_lee_solo_silver.md"]
     observaciones = len(re.findall(r"(?m)^\| \d+ \| «", _leer("docs/retroalimentacion/registro_de_cambios.md")))
     assert f"cinco observaciones" in DOC_TEXTO and observaciones == 5
 
@@ -158,7 +158,9 @@ def test_el_volumen_y_la_calidad_de_los_datos_del_documento_son_los_medidos():
     poligonos = [m["bytes"] for m in manifiesto if m["source_id"] == "poligonos_barrios"]
     csv_estrato = [m["bytes"] for m in manifiesto if m["source_id"] == "estrato_barrio"]
     catorce = ADR_TEXTO["adr-014_gold_lee_solo_silver.md"]
-    assert cifras_con_patron(catorce, r"([\d.]+) bytes") == sorted({_miles(poligonos[0]), _miles(csv_estrato[0])}), "todas las apariciones de bytes son las medidas"
+    todos_los_bytes = sorted({_miles(m["bytes"]) for m in manifiesto})   # las 8 líneas del manifiesto: tres páginas, dos conteos, el metadato, el CSV y el GeoJSON
+    assert len(manifiesto) == 8 and set(cifras_con_patron(catorce, r"([\d.]+) bytes")) <= set(todos_los_bytes), "toda cifra de bytes es una medida del manifiesto"
+    assert all(b in catorce for b in todos_los_bytes), "las 8 líneas del manifiesto están enumeradas con su tamaño"
     assert "342 polígonos" in catorce and "8 archivos crudos" in catorce
 
 
@@ -167,6 +169,7 @@ TIEMPOS_DEL_DOCUMENTO = [
     ("2,9 s y 148 MB de pico (mediana de 3)", EV113, ["mediana 2,92 s y 148,4 MB"]),
     ("2,415 s frente a 0,715 s", RECURSOS, ["carga_a_mysql_fila_a_fila_mediana,2.415,", "carga_a_mysql_lote_2000_mediana,0.715,"]),
     ("de 3,6 a 13,9 ms", RECURSOS, ["latencia_api_sqlite_mediana_por_ruta,3.6 a 13.9,"]),
+    ("de 4,8 a 126,9 ms", RECURSOS, ["latencia_api_mysql_mediana_por_ruta,4.8 a 126.9,"]),
     ("unos 160 MiB", RECURSOS, ["memoria_api_mas_panel_en_reposo,161,"]),
     ("1.970 MiB", RECURSOS, ["memoria_en_reposo_total_contenedores_de_airflow,1970,"]),
 ]
@@ -189,7 +192,7 @@ def test_los_tiempos_y_consumos_del_documento_estan_en_su_evidencia():
 
 # ---------------------------------------------------------------- errores que el README ya corrigió
 FRASES_PROHIBIDAS = ("cada uno con una prueba de regresión que falla sin su corrección", "seis contenedores", "se integra a `main`", "integra a `main`", "la única secreta", "única credencial",
-                     "deja vacía la clave Fernet", "secreto JWT de ejemplo", "contraseña de ejemplo", "Avan" + "ce 2")   # la etiqueta del avance anterior se parte para que este archivo no se detecte a sí mismo
+                     "deja vacía la clave Fernet", "secreto JWT de ejemplo", "contraseña de ejemplo", "unas décimas", "Todo lo que afirmamos se puede comprobar", "no tratamos datos personales", "Ítem 7.3", "60 a 120 ms frente", "Avan" + "ce 2")   # la etiqueta del avance anterior se parte para que este archivo no se detecte a sí mismo
 
 
 def test_el_documento_y_los_adr_no_repiten_errores_ya_corregidos_en_el_readme():
@@ -246,3 +249,154 @@ def test_las_frases_de_errores_corregidos_y_barrio_norm_sin_aclarar_se_detectan(
     assert barrio_norm_sin_aclarar("La llave era `barrio_norm`.\n\nOtro párrafo.") != []
     assert barrio_norm_sin_aclarar("La llave era `barrio_norm`, modificada por D-FUENTES.") == []
     assert tiempos_que_no_coinciden("2,9 s", [("3,9 s", EV113, ["mediana 2,92 s"])], _leer), "una cita que no está en el documento"
+
+
+# ---------------------------------------------------------------- correcciones de la revisión: latencias, filas de MySQL, reintentos, puertos, autoría y evidencias citadas
+def tabla_de_latencias(texto):
+    """{ruta: (mediana SQLite, mediana MySQL)} de la tabla de latencias de EV-032."""
+    inicio = texto.index("| Ruta | SQLite mediana")
+    filas = re.findall(r"(?m)^\| `([^`]+)` \| ([\d.]+) \| ([\d.]+) \| ([\d.]+) \| ([\d.]+) \|$", texto[inicio:])
+    return {ruta: (float(a), float(c)) for ruta, a, _, c, _ in filas}
+
+
+def test_las_latencias_del_documento_y_de_adr_010_son_las_de_ev_032():
+    ev = _leer("docs/evidencias/almacenamiento/EV-032_api_mysql_vs_sqlite.txt")
+    medianas = tabla_de_latencias(ev)
+    assert len(medianas) == 17
+    usan_almacen = {r: v for r, v in medianas.items() if r not in ("/fuentes", "/calidad")}
+    sq, my = [v[0] for v in usan_almacen.values()], [v[1] for v in usan_almacen.values()]
+    rango = lambda xs, f: f"{round(f(xs))}"   # noqa: E731
+    adr = ADR_TEXTO["adr-010_api_de_solo_lectura_local.md"]
+    assert f"de {rango(my, min)} a {rango(my, max)} ms con MySQL frente a {rango(sq, min)} a {rango(sq, max)} ms con SQLite" in adr
+    m = re.search(r"Mediana de las medianas: SQLite ([\d.]+) ms y MySQL ([\d.]+) ms", ev)
+    sqlite_mediana, mysql_mediana = m.group(1), m.group(2)
+    assert f"{_coma(mysql_mediana, 1)} ms" in DOC_TEXTO and f"{_coma(sqlite_mediana, 1)} ms" in DOC_TEXTO
+    par = f"{_coma(mysql_mediana, 1)} ms frente a {_coma(sqlite_mediana, 1)} ms"
+    assert DOC_TEXTO.count(par) == 2, "el par de medianas aparece en los cuellos de botella y en la tabla de compromisos"
+    assert f"mediana de medianas de {par} con SQLite" in DOC_TEXTO
+    assert f"unos {round((float(mysql_mediana) - float(sqlite_mediana)) / 10) * 10} ms más por consulta con MySQL ({par}, EV-032)" in DOC_TEXTO
+    assert f"{_coma(mysql_mediana, 1)} y {_coma(sqlite_mediana, 1)} ms" in adr and f"unos {round((float(mysql_mediana) - float(sqlite_mediana)) / 10) * 10} ms" in adr
+    assert medianas["/fuentes"][0] < 10 and medianas["/fuentes"][1] < 10 and medianas["/calidad"][1] < 10, "las rutas que no usan el almacén responden en pocos milisegundos con ambos"
+    assert "la diferencia de las demás se debe a que la API abre una conexión nueva" in ev, "EV-032 lo plantea como una lectura, no como una medición del costo de la conexión"
+
+
+def test_la_nota_de_filas_de_mysql_suma_lo_medido_y_nombra_las_entradas_y_las_comunas():
+    from pathlib import Path
+
+    from src.load import relacional
+
+    nota = DOC_TEXTO.split("**Nota sobre las filas de MySQL.**")[1].split("\n\n")[0]
+    estrato = pd.read_csv(ROOT / "data" / "silver" / "silver_estrato_barrio.csv", dtype=str)
+    datos = {"barrio_estrato": len(estrato), "construccion": len(GOLD), "kpi": len(pd.read_csv(ROOT / "data/gold/kpis_gold.csv")), "kpi_sensibilidad": len(pd.read_csv(ROOT / "data/gold/kpis_sensibilidad.csv"))}
+    comunas = sorted({f"{int(c) // 100:02d}" for c in estrato.codigo_barrio} | set(GOLD.comuna.dropna().astype(str).str.zfill(2)))
+    csvs, qr = relacional.entradas()
+    archivos = [Path(r).name for r in csvs.values()] + [Path(qr).name]
+    assert len(archivos) == 5 and sum(datos.values()) + len(comunas) + 1 + len(archivos) == 5655
+    for tabla, n in datos.items():
+        assert f"`{tabla}` {_miles(n)}" in nota, tabla
+    assert f"las {_miles(sum(datos.values()))} filas de datos" in nota and f"más {len(comunas)} de `comuna`, 1 de `corrida` y {len(archivos)} de `corrida_archivo`" in nota
+    for a in archivos:
+        assert f"`{a}`" in nota, a
+    assert "no archivos de Bronze" in nota
+    adicionales = [c for c in comunas if int(c) > 22]
+    assert all(f"{n:02d}" in comunas for n in range(1, 23)) and "01 a 22, " + ", ".join(adicionales[:-1]) + " y " + adicionales[-1] in nota
+    analizadas = sorted(GOLD.comuna.dropna().astype(str).str.zfill(2).unique())
+    assert len(analizadas) == 7 and "7 comunas (" + ", ".join(str(int(c)).zfill(2) for c in analizadas[:-1]) + " y " + analizadas[-1] + ")" in nota
+    assert set(analizadas) <= set(comunas)
+    assert "el repositorio no documenta qué son los códigos 51 a 56" in nota
+    for fila in ("| Carga a MySQL de 5.622 filas de datos (las cuatro tablas de datos)",):
+        assert fila in DOC_TEXTO
+    assert "5.622 filas de datos" in ADR_TEXTO["adr-003_almacenamiento_dual_sin_orm.md"] and "5.622 filas de datos" in ADR_TEXTO["adr-004_historial_por_corrida_idempotente.md"]
+
+
+def pausas_de_reintento(retardo, intentos):
+    fmt = lambda v: f"{v:g}".replace(".", ",")   # noqa: E731
+    return [fmt(retardo * i) for i in range(1, intentos + 1)]
+
+
+def test_los_reintentos_y_la_espera_de_la_descarga_del_documento_son_los_de_config():
+    from src.common import load_config
+
+    h = load_config()["http"]
+    p = pausas_de_reintento(h["request_delay_s"], h["retries"])
+    assert f"hasta {h['retries']} intentos por petición" in DOC_TEXTO
+    assert f"una pausa de {p[0]} s, {p[1]} s y {p[2]} s después de cada intento fallido" in DOC_TEXTO
+    assert f"espera como máximo {h['timeout_s']} s por intento" in DOC_TEXTO and "no el tiempo total" in DOC_TEXTO
+    codigo = _leer("src/extract/extract_api.py")
+    assert 'timeout=h["timeout_s"]' in codigo and 'time.sleep(h["request_delay_s"] * intento)' in codigo and "r.status_code < 500" in codigo
+
+
+def test_los_reintentos_calculados_y_la_cifra_de_espera_se_detectan_si_cambian():
+    assert pausas_de_reintento(0.5, 3) == ["0,5", "1", "1,5"]
+    assert pausas_de_reintento(1, 2) == ["1", "2"]
+
+
+def test_los_puertos_y_flower_del_documento_estan_respaldados_por_los_compose_y_las_evidencias():
+    compose = yaml.safe_load(_leer("orquestacion/docker-compose.yaml"))["services"]
+    assert "Flower" in DOC_TEXTO and "flower" in compose and all(p.startswith("127.0.0.1:") for p in compose["flower"]["ports"])
+    pma = yaml.safe_load(_leer("servicios/phpmyadmin/docker-compose.yaml"))["services"]
+    assert all(p.startswith("127.0.0.1:") for s in pma.values() for p in s.get("ports", []))
+    assert "def test_airflow_publica_todos_sus_puertos_solo_en_127_0_0_1" in _leer("tests/test_servicios_compose.py")
+    evidencias_de_puertos = [
+        ("api", "EV-016_respuestas_api"),
+        ("endurecimiento", "EV-064_airflow_en_vivo"),
+        ("servicios", "EV-085_phpmyadmin_en_vivo"),
+        ("modo_completo", "EV-102_capturas_de_daniel"),
+    ]
+    for carpeta, nombre in evidencias_de_puertos:
+        ev = f"{carpeta}/{nombre}.txt"
+        assert f"evidencias/{ev}" in DOC_TEXTO and (ROOT / "docs" / "evidencias" / ev).is_file(), ev
+        assert "127.0.0.1" in _leer(f"docs/evidencias/{ev}"), ev
+    assert "no sabemos en qué interfaces escucha" in DOC_TEXTO and "no hay una comprobación de sockets en escucha" in DOC_TEXTO
+    assert "no usan TLS configurado por el proyecto" in DOC_TEXTO and "ssl" not in _leer("src/load/conexion.py").lower()
+    assert "MySQL escucha solo en" not in DOC_TEXTO
+
+
+def autores_de(lista):
+    return sorted(set(l.strip() for l in lista if l.strip()))
+
+
+def test_si_todos_los_commits_son_de_una_persona_el_documento_lo_dice_y_si_no_lo_quita():
+    frase = "Todos los commits del historial son de la misma persona"
+    assert frase in DOC_TEXTO
+    if not (ROOT / ".git").exists():
+        return   # el zip no trae historial
+    r = subprocess.run(["git", "log", "--format=%an"], cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    if r.returncode == 0:
+        assert len(autores_de(r.stdout.splitlines())) == 1, "hay más de un autor: la fila de riesgo de concentración debe cambiar"
+
+
+def test_el_detector_de_autores_distingue_una_persona_de_varias():
+    assert autores_de(["Ana", "Ana", ""]) == ["Ana"]
+    assert len(autores_de(["Ana", "Luis"])) == 2
+
+
+def test_la_seccion_de_riesgos_y_la_hoja_de_ruta_dicen_lo_acordado_sobre_la_concentracion():
+    fila = next(l for l in DOC_TEXTO.splitlines() if l.startswith("| Todos los commits del historial"))
+    assert "| organizativo | alta | alta |" in fila and "la ejecución desde cero en otros equipos está pendiente de comprobar" in fila
+    assert not re.search(r"\d+ commits", DOC_TEXTO), "ninguna cifra de commits"
+    assert "aún no ejecutaron" not in DOC_TEXTO and "comprobar la ejecución desde cero en otros equipos" in DOC_TEXTO
+
+
+def test_las_mutaciones_citadas_en_el_apartado_de_pruebas_son_las_de_ev_115():
+    ev = _leer("docs/evidencias/arquitectura/EV-115_mutaciones_de_las_pruebas_de_arquitectura.txt")
+    series = re.findall(r"(?m)^## .*?: (\d+) de (\d+) detectadas$", ev)
+    assert len(series) >= 3
+    detectadas, total = sum(int(a) for a, _ in series), sum(int(b) for _, b in series)
+    assert detectadas == total
+    assert f"[EV-115](../evidencias/arquitectura/EV-115_mutaciones_de_las_pruebas_de_arquitectura.txt)): {detectadas} de {total} detectadas" in DOC_TEXTO
+    assert "@@" not in DOC_TEXTO
+
+
+def test_los_hechos_citados_por_adr_007_y_adr_014_estan_en_el_registro_y_en_las_evidencias():
+    registro = _leer("docs/validacion/registro_defectos.md")
+    assert "3 celdas del decimal 12" in registro and "799 celdas de `indice_escombros`" in registro and "2026-11-13" in registro
+    siete = ADR_TEXTO["adr-007_reproducibilidad_de_versiones.md"]
+    assert "DEF-011, 2026-11-13" in siete and "No registramos la magnitud de las 799 celdas" in siete and "1e-9" in siete
+    assert "No matching distribution found for numpy==2.5.4" in _leer("docs/evidencias/endurecimiento/EV-062_instalacion_desde_cero.txt") and "EV-062" in siete
+    assert "Pillow" in _leer("docs/evidencias/readme/EV-113_primera_vez_y_suite_en_clon_y_zip.txt") and "el 2026-11-16, en el clon nuevo de EV-113" in siete
+    assert "columnas vacías, en grados o sin uso en Gold" in _leer("docs/silver/reglas_silver.md")
+    catorce = ADR_TEXTO["adr-014_gold_lee_solo_silver.md"]
+    assert "columnas vacías, en grados o sin uso de la regla R10" in catorce and "geopandas y consulta por punto" in catorce
+    assert "geopandas; consulta por punto" in DECISIONES and "D5 registró alternativas para la herramienta" in catorce
+    assert "No se registraron alternativas.\n" in catorce
