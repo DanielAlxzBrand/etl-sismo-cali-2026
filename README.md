@@ -272,8 +272,8 @@ Tiempos medidos, todos de una máquina de desarrollo con Windows 11 y 15,7 GB de
 |---|---|---|---|
 | Crear el entorno virtual e instalar `requirements.txt` | 311 s (13,9 s el entorno y 296,8 s `pip install`) | [EV-113](docs/evidencias/readme/EV-113_primera_vez_y_suite_en_clon_y_zip.txt); antes, 251 s en [EV-100](docs/evidencias/modo_completo/EV-100_guia_seguida_desde_un_zip_nuevo.txt) y 288 s en [EV-083](docs/evidencias/servicios/EV-083_suite_sin_utf8_antes.txt) | 2026-11-16 |
 | `python main.py --stage all` | 10,3 s la primera vez; mediana de 3 repeticiones: 2,9 s y 148 MB de pico | EV-113 | 2026-11-16 |
-| Suite completa en el clon | 343 s con 1.330 pruebas y 323 MiB de pico | EV-113 | 2026-11-16 |
-| Suite completa en el zip descomprimido | 267 s con 1.329 pruebas y 1 omitida | EV-113 | 2026-11-16 |
+| Suite completa en el clon | de 343 s a 409 s con 1.330 pruebas (dos pasadas) y de 323 a 452 MiB de pico | EV-113 | 2026-11-16 |
+| Suite completa en el zip descomprimido | de 267 s a 358 s con 1.329 pruebas y 1 omitida (dos pasadas) | EV-113 | 2026-11-16 |
 | API y panel con `ejecutar_panel.py` | la API responde a los 2,2 s y el panel a los 5,4 s | EV-113 | 2026-11-16 |
 | `docker compose build` de Airflow | 8,9 s | EV-100, primera pasada | 2026-11-16 |
 | `docker compose up airflow-init` | 42,2 s | EV-100, primera pasada | 2026-11-16 |

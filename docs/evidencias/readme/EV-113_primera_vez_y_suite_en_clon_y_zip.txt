@@ -39,6 +39,12 @@ Zip temporal (scripts/make_dist.empaquetar con la carpeta de salida fuera de dis
 - Suite completa en el zip descomprimido (con el Python del entorno del clon): 1329 passed y 1 omitida en 267,30 s; pico 452 MiB (174 procesos).
 - La omitida es tests\test_secretos.py:44, «sin historial de git (el zip no lo trae)»: la única, como dice el README (en el clon con Git, ninguna).
 
+Repetición sobre el último commit (e3301f0, con las cifras de estado, el informe de pruebas y la cobertura ya regenerados): se vuelve a hacer el clon al día, la suite y un zip temporal nuevo.
+- Clon: 1330 passed y 0 omitidas en 408,99 s (412 s con el medidor); pico 452 MiB (189 procesos); git status del clon, sin cambios.
+- Zip temporal nuevo: 604 archivos, 25,92 MB, sha256 cf74cb18244e4c7495b478739af2e63cfa752e41a0f900fdbbd4a40f13874a4f; sin .git ni .env; dist/ sin cambios. Suite en él: 1329 passed y 1 omitida en 357,82 s; pico 277 MiB (165 procesos).
+- Los tiempos y el pico varían de una pasada a otra en la misma máquina: la suite en el clon tardó 282 s (con 6 fallos), 343 s y 409 s; en el zip, 267 s y 358 s. Por eso el README cita un rango y no una cifra única.
+- Escáner de secretos: hallazgos 0 sobre el árbol y el historial, sobre el zip temporal y en la comprobación canario (el .env del proyecto y el de Airflow, sin imprimir valores).
+
 Qué NO se verificó y por qué:
 - Todo lo que necesita Docker o MySQL: las tres cuentas de MySQL, la carga a MySQL, Airflow, el DAG en vivo y phpMyAdmin. No se ejecutaron hoy en el clon; los respalda EV-100 (2026-11-16) y EV-107, con las mediciones de Docker de esas evidencias.
 - Una máquina limpia de verdad: este equipo ya tenía Python 3.13, Git, Docker y MySQL, y pip descargó con la caché de la máquina.
