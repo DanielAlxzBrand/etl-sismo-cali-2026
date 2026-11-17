@@ -7,11 +7,13 @@ scripts/finanzas/costos.py,78,6,92.3,
 scripts/gitignore_env.py,28,1,96.4,
 scripts/informe_pruebas.py,168,40,76.2,
 scripts/make_catalogo_fuentes.py,113,6,94.7,
+scripts/make_diagramas.py,84,84,0.0,
 scripts/make_dist.py,87,8,90.8,
+scripts/make_imagenes_readme.py,43,43,0.0,
+scripts/make_insignias.py,45,23,48.9,
 scripts/make_matriz_casos.py,83,12,85.5,
 scripts/make_matriz_poder_interes.py,69,8,88.4,
 scripts/make_modelo_datos.py,126,58,54.0,genera el diccionario y el diagrama; el diccionario se comprueba contra el esquema y el dibujo con matplotlib no se prueba
-scripts/make_readme.py,184,184,0.0,generador del README: su salida se comprueba con test_readme_cifras (se ejecuta fuera de pytest)
 scripts/mysql/benchmark_lotes.py,118,75,36.4,necesita MySQL en vivo; su evidencia es EV-030 y se prueban las reglas de elección y el percentil
 scripts/mysql/configurar_mysql.py,348,38,89.1,
 scripts/mysql/respaldar_restaurar.py,183,40,78.1,

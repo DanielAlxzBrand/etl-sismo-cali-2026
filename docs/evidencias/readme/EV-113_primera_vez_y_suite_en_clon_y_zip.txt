@@ -1,0 +1,46 @@
+EV-113 · «Primera vez» del README en un clon nuevo, suite completa en ese clon y en un zip temporal, medidas el 2026-11-16 (sin Docker)
+
+Qué es: la sección «Primera vez en el modo mínimo» del README ejecutada en un clon nuevo, en una carpeta con espacios y ñ (ruta de 64 caracteres), con PowerShell y un entorno virtual nuevo, y la suite completa en ese clon y en un zip temporal.
+Todo son mediciones de una máquina (Windows 11, PowerShell, Python 3.13.0, 12 procesadores lógicos; 15,7 GB de RAM según la guía de instalación, no medidos de nuevo). En otro equipo cambian.
+No se usó Docker. No se tocó data/, src/, el pipeline, las etiquetas, el zip de entrega ni el sellado.
+
+Comandos y resultados (el clon se hizo con git clone del repositorio local; la suite medida es la del commit dec0da2):
+
+| Paso | Comando | Resultado |
+|---|---|---|
+| Clon | git clone | 1,2 s |
+| Diagnóstico antes del entorno | py -3.13 scripts\preparar_entorno.py | código 1, como se espera sin entorno: falta .venv y los requisitos; los puertos 8000, 8501, 8080 y 8081 libres; MySQL y Docker presentes (solo cuentan en el modo completo) |
+| Entorno virtual | py -3.13 -m venv .venv | 13,9 s |
+| Activación | . .\.venv\Scripts\Activate.ps1 | funcionó |
+| Instalación | python -m pip install -r requirements.txt | 296,8 s, código 0; pip avisó de que hay una versión nueva de pip (24.2 a 26.3) |
+| Comprobación | python -m pip check | No broken requirements found |
+| Pipeline, primera ejecución | python main.py --stage all | 10,32 s, código 0 |
+| Pipeline, tres repeticiones con la envoltura de scripts/finanzas/medir_recursos.py | tiempo y pico de memoria | 3,04 s y 147,5 MB; 2,89 s y 149,5 MB; 2,92 s y 148,4 MB; mediana 2,92 s y 148,4 MB |
+
+Líneas que imprime el pipeline (los números salen sin separador de miles):
+  Salida: construcciones=5146 barrios=346 integrado=5146 | cobertura de llave=99.8834% (pasa) | huérfanos izquierda=6 derecha=295
+  Salida: gold_final=5146 filas | kpis_gold=23 filas (6 indicadores) | sensibilidades=107 filas
+Tras ejecutarlo, git status del clon muestra exactamente dos archivos modificados: data/gold/etl_sismo.db y docs/silver/reglas_silver.md, como dice el README.
+
+Suite completa en el clon (python scripts\evidencias\medir_memoria_suite.py, que sigue a todos los procesos descendientes):
+- Primera ejecución, commit 741bf42: 1324 passed y 6 failed en 281,96 s; pico 324 MiB (166 procesos). Los fallos eran cinco defectos del propio repositorio, corregidos en dec0da2:
+  dos pruebas que exigían el número de pruebas del README y de la insignia (desactualizados tras añadir pruebas), la matriz de casos sin regenerar, la prueba de ramas (en un clon solo la rama activa es local; la otra es origen/master) y dos pruebas de requisitos
+  (el código importa Pillow y requirements.txt no lo declaraba; esas pruebas no se habían ejecutado desde que se añadieron las imágenes del README).
+- Ejecución definitiva, commit dec0da2: 1330 passed, 0 omitidas, 1 aviso, en 343,00 s (345 s con el medidor); pico 323 MiB (185 procesos).
+- Tras la suite, git status del clon: sin cambios.
+
+Panel y API (scripts\panel\ejecutar_panel.py --duracion 60 desde el clon):
+- /health de la API respondió 200 a los 2,2 s con "estado":"ok", "fecha_corte":"2026-09-02" y almacenamiento sqlite; el panel (8501) respondió 200 a los 5,4 s.
+- A los 60 s el lanzador cerró solo ("procesos cerrados") y no quedó ningún proceso escuchando en 8000 ni en 8501. python scripts\panel\ejecutar_panel.py --verificar terminó con código 0.
+- No se probó la interrupción manual con Ctrl+C.
+
+Zip temporal (scripts/make_dist.empaquetar con la carpeta de salida fuera de dist/; el zip de dist/ no se tocó: mismos nombres, tamaños y fechas):
+- etl_sismo_20261116.zip, 602 archivos, 25,91 MB, sha256 80fd495c229eda012c0663a38a54748ad16513394aa4dcc43957306f0dd70cda; sin .git ni .env; la raíz trae LICENSE, README.md, main.py, requirements.txt, pytest.ini, .env.example, .gitignore, .gitattributes, el documento aislado y las carpetas config, dags, data, docs, notebooks, orquestacion, scripts, servicios, src y tests.
+- Suite completa en el zip descomprimido (con el Python del entorno del clon): 1329 passed y 1 omitida en 267,30 s; pico 452 MiB (174 procesos).
+- La omitida es tests\test_secretos.py:44, «sin historial de git (el zip no lo trae)»: la única, como dice el README (en el clon con Git, ninguna).
+
+Qué NO se verificó y por qué:
+- Todo lo que necesita Docker o MySQL: las tres cuentas de MySQL, la carga a MySQL, Airflow, el DAG en vivo y phpMyAdmin. No se ejecutaron hoy en el clon; los respalda EV-100 (2026-11-16) y EV-107, con las mediciones de Docker de esas evidencias.
+- Una máquina limpia de verdad: este equipo ya tenía Python 3.13, Git, Docker y MySQL, y pip descargó con la caché de la máquina.
+- Que otra persona obtenga los mismos tiempos.
+- La interrupción manual del panel con Ctrl+C.

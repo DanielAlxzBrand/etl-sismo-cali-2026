@@ -116,7 +116,7 @@ def texto_de_insignia(ruta):
 
 def valor_medido_de_cobertura():
     """Porcentaje de cobertura de `src/` registrado en la evidencia de la medición (línea «Cobertura de src/: N %»)."""
-    for ev in sorted((ROOT / "docs" / "evidencias" / "readme").glob("EV-109_*.txt")):
+    for ev in sorted((ROOT / "docs" / "evidencias" / "readme").glob("EV-1*_cobertura_de_src*.txt"), reverse=True):   # la medición más reciente primero
         m = re.search(r"(?m)^Cobertura de src/: (\d+ %)", ev.read_text(encoding="utf-8"))
         if m:
             return m.group(1)
@@ -272,13 +272,16 @@ def test_las_mutaciones_del_readme_son_las_registradas_en_ev_103():
     assert len(re.findall(r"(?m)^\| Parte \d+ \|", README)) == len(partes), "una parte de más o de menos en el README"
 
 
-def test_la_cobertura_del_readme_es_la_medida_en_ev_109():
+def test_la_cobertura_del_readme_es_la_de_la_medicion_mas_reciente():
     assert set(re.findall(r"(\d+ %) de las líneas de `src/`", README)) == {valor_medido_de_cobertura()}
+    reciente = sorted((ROOT / "docs" / "evidencias" / "readme").glob("EV-1*_cobertura_de_src*.txt"))[-1].name
+    assert reciente in README, "el README cita la evidencia de cobertura más reciente"
 
 
 # --- los tiempos y consumos que el README cita están en la evidencia que dice como origen ---
 EV100 = "docs/evidencias/modo_completo/EV-100_guia_seguida_desde_un_zip_nuevo.txt"
 RECURSOS = "docs/finanzas/recursos_medidos.csv"
+EV113 = "docs/evidencias/readme/EV-113_primera_vez_y_suite_en_clon_y_zip.txt"
 TIEMPOS_CITADOS = [
     ("251 s", EV100, ["instalación de requirements.txt y pip check en 251 s"]),
     ("| 8,9 s |", EV100, ["$ docker compose build\n# código de salida: 0 · segundos: 8.9 "]),
@@ -286,8 +289,12 @@ TIEMPOS_CITADOS = [
     ("| 55 s |", EV100, ["$ docker compose up -d\n# código de salida: 0 · segundos: 55 "]),
     ("unos 12 s", EV100, ["terminaron en success en unos 12 s"]),
     ("288 s en [EV-083]", "docs/evidencias/servicios/EV-083_suite_sin_utf8_antes.txt", ["288"]),
-    ("323 s con 1.007 pruebas y 319 MiB de pico", "docs/evidencias/auditoria/EV-097_memoria_de_la_suite.txt", ["1007 passed", "in 323.61s", "319 MiB"]),
-    ("3,4 s y 148 MB de pico", RECURSOS, ["tiempo_main_todas_las_etapas,3.4,", "pico_memoria_main_todas_las_etapas,148,"]),
+    ("311 s (13,9 s el entorno y 296,8 s `pip install`)", EV113, ["| Entorno virtual | py -3.13 -m venv .venv | 13,9 s |", "python -m pip install -r requirements.txt | 296,8 s, código 0"]),
+    ("10,3 s la primera vez; mediana de 3 repeticiones: 2,9 s y 148 MB de pico", EV113, ["python main.py --stage all | 10,32 s, código 0", "mediana 2,92 s y 148,4 MB"]),
+    ("2,9 s y 148 MB de pico (mediana de 3 repeticiones en un clon nuevo)", EV113, ["mediana 2,92 s y 148,4 MB"]),
+    ("343 s con 1.330 pruebas y 323 MiB de pico", EV113, ["1330 passed, 0 omitidas, 1 aviso, en 343,00 s", "pico 323 MiB (185 procesos)"]),
+    ("267 s con 1.329 pruebas y 1 omitida", EV113, ["1329 passed y 1 omitida en 267,30 s", "test_secretos.py:44"]),
+    ("la API responde a los 2,2 s y el panel a los 5,4 s", EV113, ["200 a los 2,2 s", "200 a los 5,4 s"]),
     ("de 3,6 a 13,9 ms", RECURSOS, ["latencia_api_sqlite_mediana_por_ruta,3.6 a 13.9,"]),
     ("2,415 s frente a 0,715 s", RECURSOS, ["carga_a_mysql_fila_a_fila_mediana,2.415,", "carga_a_mysql_lote_2000_mediana,0.715,"]),
     ("unos 160 MiB", RECURSOS, ["memoria_api_mas_panel_en_reposo,161,"]),

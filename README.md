@@ -37,7 +37,7 @@ Los tres recuadros siguientes son los mismos de [docs/gold/resultados.md](docs/g
 Las cifras de la evaluación estructural son cifras reportadas por la prensa citando a la Alcaldía; no las cotejamos con una fuente oficial descargable. La unidad (predios) no es la nuestra (construcciones), por lo que no las comparamos ni las mezclamos con ninguna cifra de Gold.
 
 ## 2. Insignias
-Las insignias están bajo el título. Cada valor sale de un archivo del repositorio y una prueba comprueba que coincida: Python de `requirements.txt`, Airflow del `Dockerfile` de `orquestacion/`, el número de pruebas de la recolección de pytest, la licencia de `LICENSE` y la fecha de la última verificación del manifiesto de evidencias. La última verificación es la fecha de [EV-100](docs/evidencias/modo_completo/EV-100_guia_seguida_desde_un_zip_nuevo.txt), la guía del modo completo seguida desde un zip nuevo; no es una ejecución automática. La cobertura es la de `src/` sin red, medida con la suite completa ([EV-109](docs/evidencias/readme/EV-109_cobertura_de_src.txt)); es una cota inferior porque parte del código se ejecuta en subprocesos que la medición no sigue. No hay insignias de integración continua porque no hay integración continua (sección 12).
+Las insignias están bajo el título. Cada valor sale de un archivo del repositorio y una prueba comprueba que coincida: Python de `requirements.txt`, Airflow del `Dockerfile` de `orquestacion/`, el número de pruebas de la recolección de pytest, la licencia de `LICENSE` y la fecha de la última verificación del manifiesto de evidencias. La última verificación es la fecha de [EV-100](docs/evidencias/modo_completo/EV-100_guia_seguida_desde_un_zip_nuevo.txt), la guía del modo completo seguida desde un zip nuevo; no es una ejecución automática. La cobertura es la de `src/` sin red, medida con la suite completa ([EV-114](docs/evidencias/readme/EV-114_cobertura_de_src_repetida.txt)); es una cota inferior porque parte del código se ejecuta en subprocesos que la medición no sigue. No hay insignias de integración continua porque no hay integración continua (sección 12).
 
 ## 3. Tabla de contenidos
 - [1. Descripción y madurez](#1-descripción-y-madurez)
@@ -270,15 +270,17 @@ Tiempos medidos, todos de una máquina de desarrollo con Windows 11 y 15,7 GB de
 
 | Qué | Tiempo | Origen | Fecha |
 |---|---|---|---|
-| Crear el entorno e instalar `requirements.txt` | 251 s | [EV-100](docs/evidencias/modo_completo/EV-100_guia_seguida_desde_un_zip_nuevo.txt); 288 s en [EV-083](docs/evidencias/servicios/EV-083_suite_sin_utf8_antes.txt) | 2026-11-16 |
-| `python main.py --stage all` | 3,4 s y 148 MB de pico | [recursos_medidos.csv](docs/finanzas/recursos_medidos.csv) | 2026-11-14 |
-| Suite completa | 323 s con 1.007 pruebas y 319 MiB de pico | [EV-097](docs/evidencias/auditoria/EV-097_memoria_de_la_suite.txt) | 2026-11-15 |
+| Crear el entorno virtual e instalar `requirements.txt` | 311 s (13,9 s el entorno y 296,8 s `pip install`) | [EV-113](docs/evidencias/readme/EV-113_primera_vez_y_suite_en_clon_y_zip.txt); antes, 251 s en [EV-100](docs/evidencias/modo_completo/EV-100_guia_seguida_desde_un_zip_nuevo.txt) y 288 s en [EV-083](docs/evidencias/servicios/EV-083_suite_sin_utf8_antes.txt) | 2026-11-16 |
+| `python main.py --stage all` | 10,3 s la primera vez; mediana de 3 repeticiones: 2,9 s y 148 MB de pico | EV-113 | 2026-11-16 |
+| Suite completa en el clon | 343 s con 1.330 pruebas y 323 MiB de pico | EV-113 | 2026-11-16 |
+| Suite completa en el zip descomprimido | 267 s con 1.329 pruebas y 1 omitida | EV-113 | 2026-11-16 |
+| API y panel con `ejecutar_panel.py` | la API responde a los 2,2 s y el panel a los 5,4 s | EV-113 | 2026-11-16 |
 | `docker compose build` de Airflow | 8,9 s | EV-100, primera pasada | 2026-11-16 |
 | `docker compose up airflow-init` | 42,2 s | EV-100, primera pasada | 2026-11-16 |
 | `docker compose up -d` de Airflow | 55 s | EV-100, primera pasada | 2026-11-16 |
 | Las cuatro tareas del DAG | unos 12 s | EV-100 | 2026-11-16 |
 
-Los tiempos de Docker son de una máquina que ya tenía Docker, MySQL y las imágenes descargadas; en una máquina limpia serán mayores y no los medimos. No decimos cuánto tarda una persona en total porque depende de la conexión y de cada equipo.
+Los tiempos de Docker son de EV-100 y no se volvieron a medir hoy, porque no se usó Docker; son de una máquina que ya tenía Docker, MySQL y las imágenes descargadas, y en una máquina limpia serán mayores. Lo que se ejecutó hoy en un clon nuevo es el modo mínimo; lo que necesita Docker o MySQL no se verificó hoy y lo respalda EV-100. No decimos cuánto tarda una persona en total porque depende de la conexión y de cada equipo.
 
 ### Modo completo en resumen
 Con el modo mínimo funcionando, el modo completo agrega, en este orden: las tres cuentas de MySQL (`.\.venv\Scripts\python.exe scripts\mysql\configurar_mysql.py`, con sus opciones `--usuario-docker` y `--usuario-lectura`; cada una pide la contraseña del administrador por teclado y guarda las credenciales solo en `.env`), la carga a MySQL, la carpeta de Airflow (`scripts\orquestacion\preparar_airflow.py`) con `docker compose build`, `docker compose up airflow-init` y `docker compose up -d`, y phpMyAdmin. La guía con lo que debe verse en cada comando y los errores comunes está en [docs/instalacion/guia_modo_completo.md](docs/instalacion/guia_modo_completo.md).
@@ -376,7 +378,7 @@ Hay **1330 pruebas** automáticas, sin red ni servidor MySQL. Se ejecutan con `p
 - **Recálculo independiente:** el notebook `notebooks/04_gold_kpis.ipynb` recalcula los indicadores con SQL sobre SQLite y con implementaciones propias de Wilson, Newcombe, Mantel-Haenszel y Spearman; la diferencia máxima es inferior a 1e-9. Ese recálculo detectó un defecto real de Mantel-Haenszel (se contaban construcciones sin datos satelitales en los tamaños de grupo), que se corrigió y quedó fijado por una prueba.
 - **Defectos:** **25 defectos** registrados (DEF-001 a DEF-025), cada uno con su causa, su corrección y la prueba o comprobación que lo vigila ([docs/validacion/registro_defectos.md](docs/validacion/registro_defectos.md)). Para 15 se demostró que su prueba de regresión falla sin la corrección, reintroduciendo el defecto en una copia ([EV-036](docs/evidencias/orquestacion/EV-036_regresiones_sin_correccion.txt) y [EV-104](docs/evidencias/modo_completo/EV-104_regresiones_def017_a_def021.txt)). Para los otros 10 no se demostró (DEF-003, DEF-006, DEF-009, DEF-010, DEF-011, DEF-014 y DEF-022 a DEF-025) y el registro da el motivo de cada uno: dependen del entorno, de un servidor MySQL, de una versión de pandas, del dibujo de una captura o de que la prueba no puede reintroducir el defecto por reemplazo de texto.
 - **Mutaciones:** [EV-103](docs/evidencias/modo_completo/EV-103_mutaciones_modo_completo.txt) registra 132 mutaciones en total, todas detectadas, el 2026-11-16; la tabla siguiente las descompone. Una mutación cambia a propósito un archivo en un clon del repositorio, corre las pruebas indicadas y debe hacer fallar al menos una; después se restaura el clon. Lo que se prueba son las pruebas del modo completo, no los datos. Quedaron como registro de lo que se probó ese día; no hay un comando único que las repita.
-- **Cobertura:** 78 % de las líneas de `src/`, medida sin red con la suite completa el 2026-11-16 ([EV-109](docs/evidencias/readme/EV-109_cobertura_de_src.txt)). No es una cota exacta: `extract_api.py` necesita red y dos módulos se ejercen en subprocesos que no se miden.
+- **Cobertura:** 78 % de las líneas de `src/`, medida sin red con la suite completa el 2026-11-16 ([EV-114](docs/evidencias/readme/EV-114_cobertura_de_src_repetida.txt)). No es una cota exacta: `extract_api.py` necesita red y dos módulos se ejercen en subprocesos que no se miden.
 - **Si se incumple un umbral** (verificado en el código): con `thresholds.join_coverage_min` la transformación no se detiene; `quality_report.json` registra `resultado_umbral: no pasa`, se escribe un aviso `WARNING` cuando la cobertura queda a menos de 0,05 del umbral y la prueba `test_cobertura_join_supera_umbral` falla si el reporte versionado dice `no pasa`. Con `thresholds.gold_min_rows` la etapa Gold se detiene con el error «Gold por debajo del mínimo». Con `silver.muestra_baja_severos` el grupo solo se marca como de muestra baja y se escribe un aviso. `thresholds.min_edificios_por_barrio` no avisa: deja fuera de K4 a los barrios con menos construcciones con datos.
 - **Matriz de casos e informe:** [matriz de casos](docs/validacion/matriz_casos_prueba.md) por función crítica e [informe de pruebas](docs/validacion/informe_pruebas.md), generados con `python scripts\make_matriz_casos.py` y `python scripts\informe_pruebas.py`.
 - **Evidencias:** cada afirmación de los documentos que se apoya en una ejecución tiene una evidencia con su sha256 en [docs/evidencias/manifiesto.md](docs/evidencias/manifiesto.md).
@@ -450,7 +452,7 @@ Mediciones locales de una máquina, con su fecha ([docs/finanzas/recursos_medido
 
 | Qué | Valor | Fecha |
 |---|---|---|
-| Pipeline completo | 3,4 s y 148 MB de pico | 2026-11-14 |
+| Pipeline completo | 2,9 s y 148 MB de pico (mediana de 3 repeticiones en un clon nuevo) | 2026-11-16 |
 | Latencia de la API sobre SQLite, mediana por ruta | de 3,6 a 13,9 ms | 2026-11-14 |
 | Carga a MySQL de 5.622 filas, fila a fila frente a lotes de 2.000 | 2,415 s frente a 0,715 s | 2026-11-14 |
 | Memoria de la API y el panel en reposo | unos 160 MiB | 2026-11-15 |
