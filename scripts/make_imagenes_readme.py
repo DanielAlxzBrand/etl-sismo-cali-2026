@@ -52,8 +52,10 @@ def main():
               "| Copia (docs/img/readme/) | Original | Recorte | Tamaño | Qué muestra | sha256 del original | sha256 de la copia |", "|---|---|---|---|---|---|---|"]
     for copia, origen, recorte, que, so, sc, tam in filas:
         lineas.append(f"| {copia} | {origen} | {'sin recorte' if recorte is None else 'izq, arriba, der, abajo = ' + str(recorte)} | {tam[0]}x{tam[1]} | {que} | {so} | {sc} |")
-    lineas += ["", "Imágenes generadas desde su fuente en texto (no son capturas):", "", "| Archivo | Fuente | Comando | sha256 |", "|---|---|---|---|"]
+    lineas += ["", "Imágenes generadas desde su fuente en texto (no son capturas; las aportadas a mano, sin fuente, se registran en EV-112):", "", "| Archivo | Fuente | Comando | sha256 |", "|---|---|---|---|"]
     for ruta in sorted((ROOT / "docs" / "diagramas").glob("*.png")) + sorted((ROOT / "docs" / "diagramas").glob("*.svg")):
+        if not ruta.with_suffix(".yaml").exists():
+            continue
         lineas.append(f"| {ruta.relative_to(ROOT).as_posix()} | docs/diagramas/{ruta.stem}.yaml | python scripts/make_diagramas.py | {sha256(ruta)} |")
     for ruta in sorted((ROOT / "docs" / "img" / "insignias").glob("*.svg")):
         lineas.append(f"| {ruta.relative_to(ROOT).as_posix()} | valores medidos del repositorio | python scripts/make_insignias.py | {sha256(ruta)} |")

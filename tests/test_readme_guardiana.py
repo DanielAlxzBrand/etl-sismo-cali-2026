@@ -240,3 +240,45 @@ def test_un_aviso_de_licencia_alterado_se_detecta():
     assert not aviso_de_licencia_correcto(real.replace(", Jhoan Sebastián Castellanos Mayor", "", 1)), "falta un nombre"
     assert not aviso_de_licencia_correcto(real.replace("Diego Fernando Gordillo Londoño", "el equipo", 1)), "un nombre cambiado"
     assert not aviso_de_licencia_correcto(real.replace("MIT License", "Otra licencia", 1)), "otra licencia"
+
+
+# ------------------------------------------------------------------------------------------------ el README real
+README_TEXTO = (ROOT / "README.md").read_text(encoding="utf-8")
+DIAGRAMAS = ("docs/diagramas/arquitectura_nueva.png", "docs/diagramas/flujo_dag_nueva.png")   # los dos diagramas aportados por Daniel (EV-112)
+
+
+def secciones_numeradas(texto):
+    """Números de los encabezados de nivel 2 que empiezan por «N.», en orden."""
+    return [int(re.match(r"(\d+)\.", t).group(1)) for n, t in _encabezados(texto) if n == 2 and re.match(r"\d+\.", t)]
+
+
+def test_el_readme_real_cumple_la_guardiana():
+    assert problemas_del_readme(README_TEXTO, ROOT) == []
+
+
+def test_el_readme_tiene_las_veinte_secciones_numeradas_en_orden():
+    assert secciones_numeradas(README_TEXTO) == list(range(1, 21))
+    assert secciones_numeradas("## 1. A\n## 3. C\n") != list(range(1, 21)), "una sección que falta se detecta"
+    assert secciones_numeradas("## 2. B\n## 1. A\n") != [1, 2], "el orden importa"
+
+
+def test_el_readme_tiene_el_diagrama_de_arquitectura_y_la_seccion_de_primera_vez():
+    assert re.search(r"!\[[^\]]*Arquitectura[^\]]*\]\([^)]+\)", README_TEXTO)
+    assert any(re.search(r"(?i)primera vez", t) for _, t in _encabezados(README_TEXTO))
+
+
+def test_el_readme_usa_los_diagramas_aportados_y_las_capturas_aprobadas():
+    for ruta in DIAGRAMAS:
+        assert f"]({ruta})" in README_TEXTO, ruta
+        assert (ROOT / ruta).is_file(), ruta
+    for captura in ("airflow_dag", "phpmyadmin_tablas", "phpmyadmin_insert_rechazado", "panel_respuesta", "api_docs"):
+        assert f"](docs/img/readme/{captura}.png)" in README_TEXTO, captura
+    for insignia in ("python", "airflow", "mysql", "pruebas", "cobertura", "licencia", "madurez"):
+        assert f"](docs/img/insignias/{insignia}.svg)" in README_TEXTO, insignia
+
+
+def test_cada_figura_del_readme_tiene_un_pie_que_la_describe():
+    figuras = re.findall(r"(?m)^\*Figura (\d+)\. (.+)\*$", README_TEXTO)
+    assert [int(n) for n, _ in figuras] == list(range(1, len(figuras) + 1))
+    assert len(figuras) == len(re.findall(r"(?m)^!\[[^\]]+\]\(docs/(?:diagramas|img/readme)/", README_TEXTO)), "una imagen sin pie o un pie sin imagen"
+    assert all(t.startswith("Muestra ") for _, t in figuras), "el pie dice lo que la imagen muestra"

@@ -1,0 +1,34 @@
+EV-112 · Diagramas de la arquitectura y del flujo del DAG aportados por Daniel (2026-11-16)
+
+Origen: dos imágenes hechas por Daniel y copiadas a docs/diagramas/ el 2026-11-16. No tienen fuente en texto y ningún script las regenera.
+Son las que usa el README. Los diagramas que sí tienen fuente en texto (arquitectura.png y flujo_dag.png con sus .yaml, y scripts/make_diagramas.py) se conservan sin uso en el README.
+Las imágenes no se modificaron: el registro conserva el sha256 de cada archivo tal como llegó.
+
+| Archivo | Formato | Tamaño | sha256 |
+|---|---|---|---|
+| docs/diagramas/arquitectura_nueva.png | PNG, 1774x757, RGBA sin transparencia | 1333098 bytes | e6e079d3ebbdcfe837ddc67f205712302acc54e80f5c2158c639d69ab2680435 |
+| docs/diagramas/flujo_dag_nueva.png | PNG, 1752x897, RGB | 1571719 bytes | 6bf7af0c82e65b4c470f9fd114f59476a7be1e8d9c2cee946d800cbcdd6b6b00 |
+
+Color: las dos llevan color (azul, verde, ocre, morado y un fondo azul muy claro). Los píxeles con color apreciable son el 2,2 % de la arquitectura y el 3,4 % del flujo. No son en blanco y negro.
+Rutas, usuarios o secretos: ninguno. Aparecen el nombre del archivo etl_sismo.db, los nombres de las tareas del DAG, "Airflow 3.3.2" y "MySQL 8.0". No aparecen puertos, nombres de cuentas ni contraseñas.
+
+Comparación con el repositorio (cada afirmación de las imágenes frente a dags/medallon_etl_dag.py, data/, docs/api, docs/panel y orquestacion/Dockerfile):
+
+Coincide:
+- Capas Bronze, Silver y Gold, en ese orden; las tres fuentes (API ArcGIS de la capa satelital, CSV de estrato 2015, WFS de barrios solo para validar la llave) entran a Bronze, como en data/bronze/manifest.jsonl.
+- Airflow 3.3.2 en Docker, DAG medallon_etl_sismo, cuatro tareas con los nombres y el orden del DAG, programación diaria (0 6 * * *) o manual, parámetro fallo_inducido.
+- Cada tarea descrita como lo hace el código: validar_bronze comprueba el manifiesto y los sha256; transformar_a_silver e integrar_a_gold generan su capa y la comparan con lo versionado; cargar_datawarehouse deja SQLite con el mismo contenido y carga MySQL de forma idempotente.
+- Copia de trabajo temporal dentro del contenedor, repositorio montado en solo lectura, copia borrada al terminar la carga o ante un fallo.
+- SQLite (etl_sismo.db) y MySQL 8.0 como almacenamiento; API FastAPI de solo lectura y solo GET que lee de cualquiera de los dos; panel Streamlit que habla solo con la API; phpMyAdmin con una cuenta de solo SELECT sobre MySQL.
+
+Inexacto o ambiguo (las imágenes no se modificaron; se informa para decidir):
+1. Subtítulo del flujo: dice "proceso de extracción, transformación e integración". El DAG no extrae: su primera tarea valida un Bronze ya descargado y no descarga nada. La extracción se ejecuta con main.py --stage extract, fuera del DAG.
+2. Arquitectura: las flechas punteadas de Airflow terminan en los encabezados "Pipeline" y "Almacenamiento". Puede leerse que Airflow ejecuta también la extracción desde las fuentes; no lo hace (ver punto 1).
+3. Flujo: la copia de trabajo se describe con "src, config y data"; el código copia además docs/silver/hallazgos_eda.md, que es entrada de la transformación a Silver.
+4. Flujo: "MySQL 8.0, usuario de Docker con permisos mínimos". Es correcto (la cuenta del DAG no tiene UPDATE, DELETE ni ALTER), pero no dice que es una cuenta distinta de la de lectura que usa phpMyAdmin.
+5. Las dos imágenes llevan una barra vertical suelta pegada a los títulos ("API ArcGIS |", "Bronze |", "| Flujo del ETL (DAG)"), que parece un resto del dibujo.
+6. Textos en inglés dentro de una imagen en español: "Trigger" en el flujo.
+7. Omisiones que no son errores: no se dibujan Postgres, Redis ni el ejecutor Celery de Airflow, ni los puertos.
+8. Los iconos de Airflow y de MySQL de las imágenes recuerdan a los logotipos de esos proyectos.
+
+Qué NO demuestra este registro: que las imágenes sean exactas en todo detalle de dibujo; solo que las afirmaciones que se compararon coinciden con el repositorio o están señaladas arriba.

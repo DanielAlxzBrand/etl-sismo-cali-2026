@@ -53,7 +53,7 @@
 ### `diagramas/` y `img/` · imágenes del README
 | carpeta | para qué sirve |
 |---|---|
-| `diagramas/` | fuente en texto (`*.yaml`) de los diagramas de arquitectura y del DAG, y su imagen en escala de grises (`*.svg`, `*.png`) dibujada con `scripts/make_diagramas.py` |
+| `diagramas/` | los dos diagramas que usa el README, aportados por Daniel y sin fuente en texto (`arquitectura_nueva.png` y `flujo_dag_nueva.png`, EV-112); además, sin uso en el README, la fuente en texto (`*.yaml`) de los diagramas de arquitectura y del DAG y su imagen en escala de grises (`*.svg`, `*.png`) dibujada con `scripts/make_diagramas.py` |
 | `img/insignias/` | insignias del README (SVG), generadas con `scripts/make_insignias.py` |
 | `img/readme/` | copias en escala de grises de las capturas del README; el registro con el origen y el sha256 está en `docs/evidencias/readme/` |
 

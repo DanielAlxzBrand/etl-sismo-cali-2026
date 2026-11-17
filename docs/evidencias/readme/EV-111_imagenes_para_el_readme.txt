@@ -10,7 +10,7 @@ Comando: python scripts/make_imagenes_readme.py. Los originales no se modifican;
 | panel_respuesta.png | docs/evidencias/readme/EV-110_captura_panel_respuesta.png | sin recorte | 1400x1355 | página Respuesta del panel (captura automatizada del navegador) | 7f4f244f60b39f0998f7e6538e0d4bf2c4ce68470d55b4e88bb472e24e214401 | 5afaa9ba29b5842479908b724be3475dfaacb24d5261e57122dd7877622a3258 |
 | api_docs.png | docs/evidencias/readme/EV-110_captura_api_docs.png | izq, arriba, der, abajo = (0, 0, 1400, 1040) | 1400x1040 | documentación automática de la API, solo la lista de rutas (captura automatizada, recortada) | 0df4bf9ba377c7dcc1019858f39f2fced5efe775142989b94ecceb4e03237355 | 296b35cfbe6b106e115407b126b970c606705cf119e2b403cd757e4e966ac33d |
 
-Imágenes generadas desde su fuente en texto (no son capturas):
+Imágenes generadas desde su fuente en texto (no son capturas; las aportadas a mano, sin fuente, se registran en EV-112):
 
 | Archivo | Fuente | Comando | sha256 |
 |---|---|---|---|
@@ -23,5 +23,5 @@ Imágenes generadas desde su fuente en texto (no son capturas):
 | docs/img/insignias/licencia.svg | valores medidos del repositorio | python scripts/make_insignias.py | 3ec6eae897e34b003950129e6e448ada65edda3eb6093b80a15ebb38a5df2aae |
 | docs/img/insignias/madurez.svg | valores medidos del repositorio | python scripts/make_insignias.py | 1bcc283d9cd4442b2fe692c973217e648db92e51017d02eb54dc4b11d56ddce0 |
 | docs/img/insignias/mysql.svg | valores medidos del repositorio | python scripts/make_insignias.py | d76990921e6387bc823da42dcb52b9b73711b61e6dcea6964f4e7a10628e7e56 |
-| docs/img/insignias/pruebas.svg | valores medidos del repositorio | python scripts/make_insignias.py | cb44e378fd55c7dcf1e94e8a088b2b384dd17b3130339250a103dcc720aebbb6 |
+| docs/img/insignias/pruebas.svg | valores medidos del repositorio | python scripts/make_insignias.py | 04fbc76bd6f429584d18bb0ae8908320e0dda561c5f4e9dac8ac30b9145b1814 |
 | docs/img/insignias/python.svg | valores medidos del repositorio | python scripts/make_insignias.py | 6e153fae4d12dd489ac5bb53d23d79c51a68c4a8d40cd11af511d98e13310da0 |

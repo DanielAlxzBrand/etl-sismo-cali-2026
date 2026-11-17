@@ -324,7 +324,7 @@ def test_ningun_estado_supera_su_evidencia():
 
 def test_negativas_de_la_regla_un_estado_nunca_supera_su_evidencia(tmp_path):
     t = ESTADO.read_text(encoding="utf-8")
-    r = (ROOT / "README.md").read_text(encoding="utf-8")
+    r = "# Proyecto\n\nUn README de ejemplo sin diagrama de arquitectura ni sección de primera vez.\n"   # el README real ya los tiene: las negativas usan un texto sintético
     fila72 = re.search(r"^\| 7\.2 \| «.*$", t, re.M).group(0)
     fila75 = re.search(r"^\| 7\.5 \| «.*$", t, re.M).group(0)
     sube72 = _copia(tmp_path, t, [(fila72, _con_estado_vigente(fila72, "Cumple"))])
