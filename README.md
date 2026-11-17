@@ -417,7 +417,7 @@ Decidimos no incluir alertas ni métricas externas (Slack, PagerDuty, Prometheus
 Docker se usa solo para Airflow y phpMyAdmin; el pipeline, la API y el panel corren con Python en la máquina.
 
 ## 13. Errores, reintentos y recuperación
-- **Descargas:** `requests` con tiempo máximo de 30 s y 3 intentos con espera creciente entre ellos (`config/config.yaml`, sección `http`). Una extracción se considera completa solo si existe el conteo posterior de la capa.
+- **Descargas:** `requests` hace hasta 3 intentos por petición (reintenta si falla la conexión o la respuesta es 5xx), con una pausa de 0,5 s, 1 s y 1,5 s después de cada intento fallido, y espera como máximo 30 s por intento a que el servidor conteste (`timeout_s` de `config/config.yaml`, sección `http`, que acota la conexión y la espera de datos, no el tiempo total). Una extracción se considera completa solo si existe el conteo posterior de la capa.
 - **Bronze corrupto o alterado:** el manifiesto trae el sha256 de cada archivo; la tarea `validar_bronze` del DAG falla si alguno no coincide y las tareas siguientes no se ejecutan.
 - **Silver y Gold:** se regeneran desde Bronze y una prueba comprueba que, en una copia, reproducen byte a byte los nueve archivos de la línea base. Los datos dudosos no se descartan: los duplicados de geometría se marcan, los huérfanos se guardan en archivos aparte y los nulos no se imputan.
 - **Idempotencia:** repetir `--stage extract` no duplica nada; la carga a MySQL responde «ya cargada» cuando la entrada es la misma y no escribe. Cada carga distinta ocurre en una sola transacción: si algo falla, no queda nada a medias.
