@@ -129,4 +129,10 @@ La prueba que comprueba la cita de este mismo registro en la sección 17 del doc
 | Gold cambia | Gold produce otro resultado (K1 con una cifra distinta) | `copia de src/transform/build_gold.py` | DETECTADA | `test_gold_se_regenera_desde_silver_sin_data_bronze_con_los_mismos_sha256` |
 | detector | el detector de shapely deja de ver los imports dentro de funciones | `copia de tests/test_gold_sin_bronze.py` | DETECTADA | `test_el_detector_de_shapely_reconoce_cada_forma_de_importarlo` |
 
+Vueltas de esta serie (las series de arriba son las de la última vuelta; las anteriores se conservan porque mostraron huecos de las pruebas, que se corrigieron y se volvió a correr todo):
+- Vuelta 1 (2026-11-17): cifras 81 de 84, forma y redacción 19 de 20, Gold 6 de 6. No detectadas (2): la mediana de MySQL del documento (88,2 cambiada a 88,3 en su primera aparición) y la diferencia por consulta del documento («unos 80 ms» cambiada a «unos 70 ms»). No aplicaban (2), porque el texto que mutaban ya había cambiado: la cobertura del documento y el hecho medible de ADR-014. Corrección: la prueba de latencias exige ahora el par de medianas en sus dos apariciones y la frase de la diferencia por consulta, y las dos mutaciones se reescribieron sobre el texto vigente.
+- Vuelta 2 (2026-11-17): cifras 84 de 84, forma y redacción 20 de 21, Gold 6 de 6. No detectada (1): las reglas de Silver de ADR-014 cambiadas de 18 a 17. Corrección: la prueba de reglas exige ahora «Silver aplica N reglas sobre ellos» en ADR-014.
+- Vuelta 3 (2026-11-17): 84 de 84, 21 de 21 y 6 de 6, sobre un estado anterior al cambio de nombre de una prueba y a la partición de una lista de rutas que pidió el escáner de secretos.
+- Vuelta 4 (2026-11-17): las series de arriba, sobre el estado final de las pruebas, del documento y de los ADR.
+
 Qué NO demuestra: que no existan cifras del documento que ninguna prueba vigile; solo las que se mutaron. Una cifra escrita con otro formato que el esperado por las expresiones de las pruebas no se detectaría.
