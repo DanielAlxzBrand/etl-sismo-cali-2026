@@ -1,7 +1,7 @@
 EV-112 · Diagramas de la arquitectura y del flujo del DAG aportados por Daniel (2026-11-16)
 
 Origen: dos imágenes hechas por Daniel y copiadas a docs/diagramas/ el 2026-11-16. No tienen fuente en texto y ningún script las regenera.
-Son las que usa el README. Los diagramas que sí tienen fuente en texto (arquitectura.png y flujo_dag.png con sus .yaml, y scripts/make_diagramas.py) se conservan sin uso en el README.
+El README no las usa tal cual: usa sus copias en escala de grises, generadas con scripts/make_imagenes_readme.py y registradas en EV-111; si Daniel reemplaza estas imágenes, se vuelve a ejecutar ese script. Los diagramas que sí tienen fuente en texto (arquitectura.png y flujo_dag.png con sus .yaml, y scripts/make_diagramas.py) se conservan sin uso en el README.
 Las imágenes no se modificaron: el registro conserva el sha256 de cada archivo tal como llegó.
 
 | Archivo | Formato | Tamaño | sha256 |

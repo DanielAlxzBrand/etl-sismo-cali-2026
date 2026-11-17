@@ -244,7 +244,8 @@ def test_un_aviso_de_licencia_alterado_se_detecta():
 
 # ------------------------------------------------------------------------------------------------ el README real
 README_TEXTO = (ROOT / "README.md").read_text(encoding="utf-8")
-DIAGRAMAS = ("docs/diagramas/arquitectura_nueva.png", "docs/diagramas/flujo_dag_nueva.png")   # los dos diagramas aportados por Daniel (EV-112)
+ORIGINALES = ("docs/diagramas/arquitectura_nueva.png", "docs/diagramas/flujo_dag_nueva.png")   # los dos diagramas en color aportados por Daniel (EV-112); no se tocan
+DIAGRAMAS = ("docs/img/readme/arquitectura_gris.png", "docs/img/readme/flujo_dag_gris.png")   # sus copias en escala de grises, las que usa el README
 
 
 def secciones_numeradas(texto):
@@ -267,10 +268,11 @@ def test_el_readme_tiene_el_diagrama_de_arquitectura_y_la_seccion_de_primera_vez
     assert any(re.search(r"(?i)primera vez", t) for _, t in _encabezados(README_TEXTO))
 
 
-def test_el_readme_usa_los_diagramas_aportados_y_las_capturas_aprobadas():
-    for ruta in DIAGRAMAS:
+def test_el_readme_usa_las_copias_en_gris_de_los_diagramas_aportados_y_las_capturas_aprobadas():
+    for ruta, original in zip(DIAGRAMAS, ORIGINALES):
         assert f"]({ruta})" in README_TEXTO, ruta
-        assert (ROOT / ruta).is_file(), ruta
+        assert (ROOT / ruta).is_file() and (ROOT / original).is_file(), ruta
+        assert original not in README_TEXTO and "docs/diagramas/" not in README_TEXTO, "el README no apunta a los originales en color"
     for captura in ("airflow_dag", "phpmyadmin_tablas", "phpmyadmin_insert_rechazado", "panel_respuesta", "api_docs"):
         assert f"](docs/img/readme/{captura}.png)" in README_TEXTO, captura
     for insignia in ("python", "airflow", "mysql", "pruebas", "cobertura", "licencia", "madurez"):
@@ -282,3 +284,39 @@ def test_cada_figura_del_readme_tiene_un_pie_que_la_describe():
     assert [int(n) for n, _ in figuras] == list(range(1, len(figuras) + 1))
     assert len(figuras) == len(re.findall(r"(?m)^!\[[^\]]+\]\(docs/(?:diagramas|img/readme)/", README_TEXTO)), "una imagen sin pie o un pie sin imagen"
     assert all(t.startswith("Muestra ") for _, t in figuras), "el pie dice lo que la imagen muestra"
+
+
+def copia_en_gris_corresponde_al_original(copia, original):
+    """True si la copia es el original convertido a escala de grises, píxel por píxel (si alguien reemplaza el original, hay que volver a ejecutar `scripts/make_imagenes_readme.py`)."""
+    from PIL import Image
+
+    c, o = Image.open(copia), Image.open(original)
+    return c.mode == "L" and c.size == o.size and c.tobytes() == o.convert("L").tobytes()
+
+
+def test_las_copias_en_gris_son_los_originales_convertidos_y_estan_en_el_registro():
+    registro = (ROOT / "docs" / "evidencias" / "readme" / "EV-111_imagenes_para_el_readme.txt").read_text(encoding="utf-8")
+    for copia, original in zip(DIAGRAMAS, ORIGINALES):
+        assert copia_en_gris_corresponde_al_original(ROOT / copia, ROOT / original), copia
+        assert copia.split("/")[-1] in registro and original in registro, copia
+
+
+def test_una_copia_que_no_corresponde_a_su_original_se_detecta(tmp_path):
+    from PIL import Image
+
+    color = tmp_path / "color.png"
+    Image.new("RGB", (4, 4), (200, 30, 30)).save(color)
+    buena, mala, otra_forma = tmp_path / "buena.png", tmp_path / "mala.png", tmp_path / "otra.png"
+    Image.open(color).convert("L").save(buena)
+    Image.new("L", (4, 4), 255).save(mala)
+    Image.new("L", (5, 5), 0).save(otra_forma)
+    assert copia_en_gris_corresponde_al_original(buena, color)
+    assert not copia_en_gris_corresponde_al_original(mala, color), "otro contenido"
+    assert not copia_en_gris_corresponde_al_original(otra_forma, color), "otro tamaño"
+    assert not copia_en_gris_corresponde_al_original(color, color), "el original en color no es una copia en gris"
+
+
+def test_el_readme_que_apunta_a_los_originales_en_color_se_detecta():
+    malo = README_TEXTO.replace(DIAGRAMAS[0], ORIGINALES[0])
+    assert malo != README_TEXTO and "docs/diagramas/" in malo
+    assert f"]({DIAGRAMAS[0]})" not in malo

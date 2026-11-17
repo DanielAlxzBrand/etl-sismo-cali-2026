@@ -259,6 +259,13 @@ def test_las_mutaciones_del_readme_son_las_registradas_en_ev_103():
     assert f"Resultado: {total} mutaciones en total, todas detectadas." in ev
     assert set(re.findall(r"registra (\d+) mutaciones en total", README)) == {str(total)}
     assert "no hay un comando único que las repita" in README, "no se presentan como reproducibles"
+    # la descomposición por parte: cada fila de la tabla del README es una parte de la evidencia con su total
+    partes = re.findall(r"(?m)^## Parte (\d+) · ", ev)
+    assert [int(p) for p in partes] == list(range(1, len(tablas) + 1)), "una tabla de totales por parte de la evidencia"
+    for numero, (detectadas, _) in zip(partes, tablas):
+        assert re.search(rf"(?m)^\| Parte {numero} \| .+ \| {detectadas} \|$", README), (numero, detectadas)
+    assert re.search(rf"(?m)^\| Total \| .+ \| {total} \|$", README)
+    assert len(re.findall(r"(?m)^\| Parte \d+ \|", README)) == len(partes), "una parte de más o de menos en el README"
 
 
 def test_la_cobertura_del_readme_es_la_medida_en_ev_109():

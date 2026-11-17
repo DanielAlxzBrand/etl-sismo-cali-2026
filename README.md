@@ -60,7 +60,7 @@ Cada valor sale de un archivo del repositorio y una prueba comprueba que coincid
 - [20. Licencia y créditos](#20-licencia-y-créditos)
 
 ## 4. Arquitectura
-![Arquitectura del sistema: fuentes, capas Bronze, Silver y Gold, almacenamiento en SQLite y MySQL, API de solo lectura, panel y phpMyAdmin, con la orquestación de Airflow](docs/diagramas/arquitectura_nueva.png)
+![Arquitectura del sistema: fuentes, capas Bronze, Silver y Gold, almacenamiento en SQLite y MySQL, API de solo lectura, panel y phpMyAdmin, con la orquestación de Airflow](docs/img/readme/arquitectura_gris.png)
 
 *Figura 1. Muestra cómo las tres fuentes llegan a Bronze, cómo pasan por Silver y Gold, dónde se almacenan los resultados, quién los consume y qué orquesta Airflow.*
 
@@ -82,7 +82,7 @@ Los servicios locales escuchan solo en `127.0.0.1`:
 | Airflow | 8080 | interfaz del DAG |
 | phpMyAdmin | 8081 | ver las tablas de MySQL con una cuenta de solo lectura |
 
-![Flujo del DAG medallon_etl_sismo: disparo, las cuatro tareas en orden, la copia de trabajo temporal, el repositorio de solo lectura y MySQL](docs/diagramas/flujo_dag_nueva.png)
+![Flujo del DAG medallon_etl_sismo: disparo, las cuatro tareas en orden, la copia de trabajo temporal, el repositorio de solo lectura y MySQL](docs/img/readme/flujo_dag_gris.png)
 
 *Figura 2. Muestra el disparo del DAG, sus cuatro tareas en orden y cómo trabajan sobre una copia temporal sin escribir en el repositorio.*
 
@@ -160,7 +160,7 @@ python main.py --stage all
 python -m pytest -q -p no:cacheprovider
 python scripts\panel\ejecutar_panel.py                  # API en 8000 y panel en 8501; Ctrl+C cierra los dos
 ```
-Qué debe verse: `python main.py --stage all` termina con líneas como `Salida: construcciones=5.146 barrios=346 integrado=5.146 | cobertura de llave=99.8834% (pasa)` y `Salida: gold_final=5.146 filas | kpis_gold=23 filas (6 indicadores) | sensibilidades=107 filas`; las pruebas terminan con `1306 passed`. El pipeline no necesita red ni claves, porque Bronze ya está en el repositorio. Las variables de `.env.example` son solo nombres: `HTTP_USER_AGENT` es opcional y las `MYSQL_*` solo se usan en el modo completo.
+Qué debe verse: `python main.py --stage all` termina con líneas como `Salida: construcciones=5.146 barrios=346 integrado=5.146 | cobertura de llave=99.8834% (pasa)` y `Salida: gold_final=5.146 filas | kpis_gold=23 filas (6 indicadores) | sensibilidades=107 filas`; las pruebas terminan con `1309 passed`. El pipeline no necesita red ni claves, porque Bronze ya está en el repositorio. Las variables de `.env.example` son solo nombres: `HTTP_USER_AGENT` es opcional y las `MYSQL_*` solo se usan en el modo completo.
 
 Tiempos medidos, todos de una máquina de desarrollo con Windows 11 y 15,7 GB de RAM; en otro equipo cambian y no los prometemos:
 
@@ -248,16 +248,24 @@ La API tiene **11 rutas GET**: `/calidad`, `/composicion`, `/comunas`, `/constru
 | Salidas del pipeline | los nueve archivos de la línea base con sha256 | que regenerarlos reproduce los mismos bytes |
 
 ## 10. Calidad y pruebas
-Hay **1306 pruebas** automáticas, sin red ni servidor MySQL. Se ejecutan con `python -m pytest -q -p no:cacheprovider` y deben terminar con `1306 passed` en un clon con Git instalado; en el zip descomprimido se omiten algunas que necesitan el historial de Git (la lista y el motivo están en [docs/instalacion/README.md](docs/instalacion/README.md)).
+Hay **1309 pruebas** automáticas, sin red ni servidor MySQL. Se ejecutan con `python -m pytest -q -p no:cacheprovider` y deben terminar con `1309 passed` en un clon con Git instalado; en el zip descomprimido se omiten algunas que necesitan el historial de Git (la lista y el motivo están en [docs/instalacion/README.md](docs/instalacion/README.md)).
 
 - **Qué cubren:** el pipeline (llaves, duplicados, tipos, Wilson, Newcombe, Mantel-Haenszel), la reproducción byte a byte de la línea base, la API (estructura, solo GET, sin escritura), el panel (las ocho páginas con la API real en memoria, formato de cifras, aislamiento), la carga relacional (idempotencia, historial, reversión, integridad referencial), el DAG y los compose analizados como texto, el empaquetado y la gestión de secretos.
 - **Las cifras de los documentos se prueban contra las salidas.** Este README, el documento de resultados y la guía de instalación afirman cifras; una prueba extrae cada una del texto y la compara con la medida. Si alguien edita una cifra, o la deja desactualizada en un solo lugar, la prueba falla.
 - **Recálculo independiente:** el notebook `notebooks/04_gold_kpis.ipynb` recalcula los indicadores con SQL sobre SQLite y con implementaciones propias de Wilson, Newcombe, Mantel-Haenszel y Spearman; la diferencia máxima es inferior a 1e-9. Ese recálculo detectó un defecto real de Mantel-Haenszel (se contaban construcciones sin datos satelitales en los tamaños de grupo), que se corrigió y quedó fijado por una prueba.
 - **Defectos:** **25 defectos** registrados (DEF-001 a DEF-025), cada uno con una prueba de regresión que falla sin su corrección ([docs/validacion/registro_defectos.md](docs/validacion/registro_defectos.md)).
-- **Mutaciones:** [EV-103](docs/evidencias/modo_completo/EV-103_mutaciones_modo_completo.txt) registra 132 mutaciones en total de las pruebas del modo completo, todas detectadas, el 2026-11-16. Quedaron como registro de lo que se probó ese día; no hay un comando único que las repita.
+- **Mutaciones:** [EV-103](docs/evidencias/modo_completo/EV-103_mutaciones_modo_completo.txt) registra 132 mutaciones en total, todas detectadas, el 2026-11-16; la tabla siguiente las descompone. Una mutación cambia a propósito un archivo en un clon del repositorio, corre las pruebas indicadas y debe hacer fallar al menos una; después se restaura el clon. Lo que se prueba son las pruebas del modo completo, no los datos. Quedaron como registro de lo que se probó ese día; no hay un comando único que las repita.
 - **Cobertura:** 78 % de las líneas de `src/`, medida sin red con la suite completa el 2026-11-16 ([EV-109](docs/evidencias/readme/EV-109_cobertura_de_src.txt)). No es una cota exacta: `extract_api.py` necesita red y dos módulos se ejercen en subprocesos que no se miden.
 - **Matriz de casos e informe:** [matriz de casos](docs/validacion/matriz_casos_prueba.md) por función crítica e [informe de pruebas](docs/validacion/informe_pruebas.md), generados con `python scripts\make_matriz_casos.py` y `python scripts\informe_pruebas.py`.
 - **Evidencias:** cada afirmación de los documentos que se apoya en una ejecución tiene una evidencia con su sha256 en [docs/evidencias/manifiesto.md](docs/evidencias/manifiesto.md).
+
+| Parte de EV-103 | Qué se muta | Mutaciones |
+|---|---|---|
+| Parte 1 | el `.env` y el escáner de secretos sin repositorio de Git, y el nombre de proyecto de Compose (D102 y D103) | 43 |
+| Parte 2 | el `chown` de `airflow-init`, que salta el proyecto montado (DF-19) | 9 |
+| Parte 3 | `airflow db check` en `airflow-init` (DF-20) | 17 |
+| Parte 4 | la guía del modo completo y las reglas de su prueba guardiana: daños al texto de la guía y reglas debilitadas | 63 |
+| Total | las cuatro partes | 132 |
 
 Lo que no hay: pruebas de carga, de fuzzing ni de otro sistema operativo distinto de Windows 11.
 

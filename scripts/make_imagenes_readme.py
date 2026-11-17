@@ -21,6 +21,9 @@ IMAGENES = [
     ("phpmyadmin_insert_rechazado.png", "docs/evidencias/modo_completo/EV-102_captura_phpmyadmin_insert_rechazado.png", None, "un INSERT rechazado para la cuenta de solo lectura (captura manual, 2026-11-16)"),
     ("panel_respuesta.png", "docs/evidencias/readme/EV-110_captura_panel_respuesta.png", None, "página Respuesta del panel (captura automatizada del navegador)"),
     ("api_docs.png", "docs/evidencias/readme/EV-110_captura_api_docs.png", (0, 0, 1400, 1040), "documentación automática de la API, solo la lista de rutas (captura automatizada, recortada)"),
+    # los diagramas los aporta Daniel en color (EV-112) con estos nombres; si los reemplaza, volver a ejecutar este script regenera las copias en gris
+    ("arquitectura_gris.png", "docs/diagramas/arquitectura_nueva.png", None, "diagrama de la arquitectura aportado por Daniel (EV-112), solo convertido a gris"),
+    ("flujo_dag_gris.png", "docs/diagramas/flujo_dag_nueva.png", None, "diagrama del flujo del DAG aportado por Daniel (EV-112), solo convertido a gris"),
 ]
 
 
