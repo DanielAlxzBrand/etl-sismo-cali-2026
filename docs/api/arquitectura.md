@@ -137,7 +137,7 @@ Latencia por ruta con el **servidor real** en `127.0.0.1` (no el cliente de prue
 | exposición en red | el servicio no tiene autenticación | enlazado a `127.0.0.1` por defecto; sin CORS | revisión del comando de arranque y de `crear_app` |
 | fuga de información en errores | respuestas 500 | sin trazas ni rutas locales | `test_un_error_interno_da_500_sin_trazas_ni_rutas` |
 | agotar recursos | `/construcciones` | `limit` máximo 200 y `offset` acotado | `test_limites_de_paginacion_y_offset` |
-| datos personales | ninguno en Gold | las columnas expuestas son una lista blanca sin identificadores de personas | revisión del esquema `Construccion` |
+| identificadores de personas | ninguno en Gold | las columnas expuestas son una lista blanca sin identificadores de personas | revisión del esquema `Construccion` |
 | secretos | ninguno usado | no hay credenciales en la API ni en el repositorio | escáner de secretos (EV-019) |
 
 ## 10. Modos de ejecución

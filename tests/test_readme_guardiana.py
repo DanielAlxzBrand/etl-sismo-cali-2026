@@ -35,6 +35,7 @@ TERMINOS = {
     "generador retirado": re.compile("make" + "_readme"),
     "cita externa fuera de su línea": re.compile(r"Núñez|tutorial paso a paso|Apache Airflow en Windows"),
     "marca pendiente": re.compile(r"\bTODO\b|\[COMPLETAR"),
+    "afirmación de no manejar datos personales": re.compile(r"(?i)\bno (?:maneja|trata)(?:mos)? datos personales"),
     "nombre de una herramienta": re.compile("Cla" + "ude|Anthro" + "pic|Chat" + "GPT|Co" + "pilot|Gem" + "ini|Open" + "AI"),
 }
 
@@ -163,7 +164,8 @@ def test_un_guion_dentro_de_codigo_o_de_una_lista_no_se_detecta():
 
 def test_terminos_prohibidos_se_detectan():
     for malo in ("Lo hizo un asistente.", "Con un pro" + "mpt.", "Hecho con Cla" + "ude.", "Las fases del trabajo.", "El pro" + "fesor lo pidió.", "La asignatura de ETL.",
-                 "Ver guia" + "_equipo/", "Usa IA aquí.", "Con inteligencia artificial.", "Un TODO pendiente.", "make" + "_readme.py", "Mail a alguien@correo.com."):
+                 "Ver guia" + "_equipo/", "Usa IA aquí.", "Con inteligencia artificial.", "Un TODO pendiente.", "make" + "_readme.py", "Mail a alguien@correo.com.",
+                 "El proyecto no maneja datos personales.", "No tratamos datos personales.", "Hoy no manejamos datos personales."):
         assert problemas_del_readme(_con("Texto, con comas.", malo), BASE_FALSA), malo
 
 

@@ -380,7 +380,10 @@ def test_una_mencion_desactualizada_de_las_sesiones_se_detecta_en_cualquier_luga
     una_sola = README.replace("**aún sin sesiones reales**", "**con sesiones reales**", 1)
     assert problemas_de_sesiones(una_sola, False), "una sola mención cambiada"
     otra = README.replace("Las sesiones con personas usuarias aún no existen", "Las sesiones con personas usuarias ya existen", 1)
-    assert problemas_de_sesiones(otra, False), "la mención de los datos personales cambiada"
+    assert problemas_de_sesiones(otra, False), "la frase de que las sesiones aún no existen cambiada"
+    sin_el_parrafo = README.replace("**Sesiones y retención.** Las sesiones con personas usuarias aún no existen", "**Sesiones y retención.** Las sesiones con personas usuarias están por hacerse", 1)
+    assert problemas_de_sesiones(sin_el_parrafo, False), "el párrafo de sesiones y retención reescrito sin la frase"
+    assert "**Datos de personas.** En ninguna capa hay nombres, documentos ni datos de contacto de personas." in README
 
 
 def test_la_deteccion_de_sesiones_reales_distingue_plantillas_y_registros(tmp_path):
@@ -657,3 +660,46 @@ def test_la_ruta_de_escalado_asigna_cada_tema_a_su_responsable():
     cambiado = seccion.replace("| Diego Fernando Gordillo Londoño |\n| Documentación", "| Jhoan Sebastián Castellanos Mayor |\n| Documentación")
     assert cambiado != seccion and not re.search(r"(?m)^\| Sesiones con personas usuarias.* \| Diego Fernando Gordillo Londoño \|$", cambiado)
     assert "@" not in seccion
+
+
+def pausas_de_reintento(retardo, intentos):
+    """Pausas tras cada intento fallido, como se escriben en el texto: 0,5 / 1 / 1,5 con retardo 0,5 y 3 intentos."""
+    return [f"{retardo * i:g}".replace(".", ",") for i in range(1, intentos + 1)]
+
+
+def renglon_de_descargas(texto):
+    """El renglón «Descargas» del apartado de errores, reintentos y recuperación (sección 13 del README)."""
+    apartado = texto.split("## 13. Errores, reintentos y recuperación")[1].split("\n## ")[0]
+    return next(l for l in apartado.splitlines() if l.startswith("- **Descargas:**"))
+
+
+def problemas_de_reintentos(renglon, reintentos, retardo, tiempo_maximo):
+    """Frases que el renglón debe decir según la configuración y que no dice."""
+    pausas = pausas_de_reintento(retardo, reintentos)
+    texto_de_pausas = ", ".join(f"{p} s" for p in pausas[:-1]) + f" y {pausas[-1]} s"
+    esperadas = [f"hasta {reintentos} intentos por petición", f"una pausa de {texto_de_pausas} después de cada intento fallido",
+                 f"espera como máximo {tiempo_maximo:g} s por intento", "no el tiempo total", "`timeout_s` de `config/config.yaml`, sección `http`"]
+    return [f for f in esperadas if f not in renglon]
+
+
+def test_los_reintentos_de_la_descarga_del_readme_son_los_de_la_configuracion_y_del_codigo():
+    from src.common import load_config
+
+    h = load_config()["http"]
+    assert problemas_de_reintentos(renglon_de_descargas(README), h["retries"], h["request_delay_s"], h["timeout_s"]) == []
+    codigo = (ROOT / "src" / "extract" / "extract_api.py").read_text(encoding="utf-8")
+    assert 'timeout=h["timeout_s"]' in codigo, "el tiempo máximo se aplica a cada petición, no al total"
+    assert 'time.sleep(h["request_delay_s"] * intento)' in codigo, "la pausa crece con el intento"
+    assert "r.status_code < 500" in codigo, "se reintenta con un 5xx"
+
+
+def test_el_detector_de_reintentos_calcula_las_pausas_y_nota_cada_dato_cambiado():
+    assert pausas_de_reintento(0.5, 3) == ["0,5", "1", "1,5"]
+    assert pausas_de_reintento(1, 2) == ["1", "2"]
+    renglon = renglon_de_descargas(README)
+    assert problemas_de_reintentos(renglon, 3, 0.5, 30) == []
+    assert problemas_de_reintentos(renglon, 4, 0.5, 30), "otro número de intentos"
+    assert problemas_de_reintentos(renglon, 3, 1, 30), "otra pausa"
+    assert problemas_de_reintentos(renglon, 3, 0.5, 60), "otro tiempo máximo"
+    assert problemas_de_reintentos(renglon.replace("por intento", "en total"), 3, 0.5, 30), "el tiempo máximo presentado como total"
+    assert problemas_de_reintentos(renglon.replace("no el tiempo total", ""), 3, 0.5, 30), "sin aclarar que no es el total"
