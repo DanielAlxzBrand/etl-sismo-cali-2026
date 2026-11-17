@@ -15,7 +15,7 @@ El ítem 5.4 del checklist pide orquestación con flujos programados. Queríamos
 ### Positivas
 - Cada tarea deja su estado y su duración en la interfaz de Airflow; un fallo detiene las tareas siguientes.
 - El zip trae el compose ya adaptado, y `scripts/orquestacion/preparar_airflow.py` prepara la carpeta de Airflow sin pedir editar archivos a mano.
-- Una ejecución completa del DAG tarda de 9 a 16 segundos (EV-064 y EV-102).
+- Una ejecución completa del DAG tarda de 9 a 12 segundos (EV-064 y EV-100).
 
 ### Negativas
 - Airflow ocupa unos 1.970 MiB en reposo (siete contenedores), mucho más que lo que el pipeline necesita; es el componente más pesado del proyecto.

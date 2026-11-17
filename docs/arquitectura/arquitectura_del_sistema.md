@@ -10,7 +10,7 @@
 | Aprobadores | pendiente |
 | Estado | Borrador |
 | Repositorio | aún no está publicado; cuando se publique, esta tabla enlazará a sus issues (ver el [README](../../README.md#19-contacto-y-responsables)) |
-| Registros de decisión | los 13 ADR de [adr/](adr/), listados en la sección 10; las decisiones completas están en [docs/DECISIONES.md](../DECISIONES.md) (D1 a D106) |
+| Registros de decisión | los 14 ADR de [adr/](adr/), listados en la sección 10; las decisiones completas están en [docs/DECISIONES.md](../DECISIONES.md) (D1 a D106) |
 
 Este documento describe cómo está construido el sistema hoy y por qué lo construimos así. Lo escribimos como estudiantes que hicimos el proyecto: donde algo no existe decimos «no lo hicimos» o «no aplica» y damos la razón, y no rellenamos con contenido genérico. Todo lo que afirmamos se puede comprobar en el repositorio; lo que no, se declara como límite.
 
@@ -28,7 +28,7 @@ Este documento describe cómo está construido el sistema hoy y por qué lo cons
 - Idempotencia: repetir la extracción o la carga no duplica nada.
 - API de solo lectura (11 rutas GET) y panel de 8 páginas que solo habla con la API.
 - Mínimo privilegio: tres cuentas de MySQL y un repositorio montado en solo lectura en Airflow.
-- Cifras de los documentos vigiladas por pruebas: **1350 pruebas** automáticas.
+- Cifras de los documentos vigiladas por pruebas: **1362 pruebas** automáticas.
 
 ## 3. Contexto y drivers
 **Objetivos.** Entregar un análisis reproducible de impacto sísmico por zonas, con incertidumbre explícita, y que se pueda repetir de punta a punta ([docs/estrategia/03_objetivo_alcance_okr_kpi.md](../estrategia/03_objetivo_alcance_okr_kpi.md) y [05_mvp_criterios_aceptacion.md](../estrategia/05_mvp_criterios_aceptacion.md)).
@@ -91,7 +91,7 @@ Cada uno es una decisión de alcance, con su razón.
 Solo los que de verdad aplicamos, cada uno con el lugar donde se ve.
 | Principio | Cómo lo aplicamos |
 |---|---|
-| Separación de capas | Bronze guarda lo descargado, Silver limpia y une, y Gold lee solo `silver_integrated.csv`, nunca Bronze |
+| Separación de capas | Bronze guarda lo descargado, Silver limpia y une, y Gold lee solo `silver_integrated.csv`, nunca Bronze ([ADR-014](adr/adr-014_gold_lee_solo_silver.md)) |
 | Bronze inmutable | archivos abiertos en modo exclusivo y manifiesto con sha256 ([ADR-001](adr/adr-001_bronze_crudo_inmutable.md)) |
 | Idempotencia | repetir `--stage extract` verifica y no descarga; repetir una carga responde `ya_cargada` ([ADR-004](adr/adr-004_historial_por_corrida_idempotente.md)) |
 | Reproducibilidad | versiones exactas y nueve archivos de línea base comparados byte a byte ([ADR-007](adr/adr-007_reproducibilidad_de_versiones.md)) |
@@ -181,6 +181,7 @@ Separamos en capas para poder demostrar de dónde sale cada cifra: lo descargado
 
 ### Estrategia de modelado
 - **Gold:** una tabla ancha por construcción (`gold_final`), con la llave, el estrato, las banderas de daño y los datos de validación; los indicadores van aparte en dos tablas pequeñas.
+- **SQLite:** cuatro tablas, `silver_integrated`, `gold_final`, `kpis_gold` y `kpis_sensibilidad`, con el mismo contenido que los CSV.
 - **MySQL:** modelo relacional de siete tablas con claves primarias y foráneas y restricciones: `corrida`, `corrida_archivo`, `comuna`, `barrio_estrato`, `construccion`, `kpi` y `kpi_sensibilidad` ([docs/almacenamiento/modelo_datos.md](../almacenamiento/modelo_datos.md)).
 
 ### Estrategia de carga
@@ -302,8 +303,9 @@ Cada ADR vive en su archivo, con Contexto, Decisión, Consecuencias, las alterna
 | [ADR-011](adr/adr-011_cuentas_de_mysql_minimo_privilegio.md) | Tres cuentas de MySQL con el mínimo privilegio y ningún origen abierto | D46, D60, D65, D67, D91 |
 | [ADR-012](adr/adr-012_panel_solo_sobre_la_api.md) | El panel Streamlit solo habla con la API | D20, D69, D70 |
 | [ADR-013](adr/adr-013_dos_modos_de_instalacion.md) | Dos modos de instalación y Python 3.13 solo en paralelo | D93 |
+| [ADR-014](adr/adr-014_gold_lee_solo_silver.md) | Gold lee solo Silver y el paso espacial vive en Silver | D5, sección «Diseño», sección «Otras decisiones de Silver» |
 
-La separación de capas (Gold solo desde Silver) está registrada en DECISIONES.md como una decisión de diseño, pero sin alternativas, así que no tiene un ADR propio: lo que aplicamos está en la sección 5 y en los ADR 1 y 2. Por la misma razón, D21 y D5 quedaron marcadas como modificadas en [D106](../DECISIONES.md): D21 planeó una variante de Airflow que no implementamos y D5 decía que `shapely` ya no se usaba, cuando la regla R09 de Silver sí lo usa.
+La separación de capas (Gold solo desde Silver) tiene su [ADR-014](adr/adr-014_gold_lee_solo_silver.md): DECISIONES.md la registró como una decisión de diseño sin alternativas, así que ese ADR dice «No se registraron alternativas.» y sus alternativas de hoy están rotuladas como razonamiento actual. D21 y D5 quedaron marcadas como modificadas en [D106](../DECISIONES.md): D21 planeó una variante de Airflow que no implementamos y D5 decía que `shapely` ya no se usaba, cuando la regla R09 de Silver sí lo usa.
 
 ## 11. Requisitos no funcionales
 ### Disponibilidad y resiliencia
@@ -338,7 +340,7 @@ El modelo de costos tiene siete categorías y fórmulas con símbolos; los preci
 - **Deuda técnica conocida y reconocida:** el DAG sin reintentos; Airflow pesado para cuatro tareas; sin validación explícita de columnas de la fuente; dependencias transitivas sin fijar; dos almacenes que mantener sincronizados; el panel sin desplegar.
 
 ## 12. Seguridad y cumplimiento
-- **Clasificación de datos:** datos abiertos y no personales (construcciones por huella catastral y estrato por barrio). Los secretos son las contraseñas de MySQL y las de Airflow.
+- **Clasificación de datos:** datos abiertos y no personales (construcciones por huella catastral y estrato por barrio). Los secretos son las contraseñas de las tres cuentas de MySQL y los de Airflow: la clave Fernet, el secreto JWT y las contraseñas de la interfaz y de Postgres. El compose adaptado no trae ninguno escrito: los exige desde el `.env` de Airflow.
 - **Controles de acceso:** tres cuentas de MySQL con el mínimo privilegio y ningún origen `%` (ver [ADR-011](adr/adr-011_cuentas_de_mysql_minimo_privilegio.md)); API y panel de solo lectura que escuchan en `127.0.0.1`. No hay IAM ni RBAC de nube porque no hay nube.
 - **Cifrado:** en tránsito, las fuentes se descargan por HTTPS; lo local (API, panel, MySQL, phpMyAdmin y Airflow) va sin TLS por la interfaz de loopback. En reposo no ciframos nada (CSV, SQLite, MySQL ni `.env`). Es una decisión de alcance: los datos son abiertos y no personales y todo corre en una máquina local; si el proyecto se despliega, hay que reconsiderarla.
 - **Auditoría y registro de accesos:** la API registra cada solicitud (método, ruta, estado y duración) en el registro de ejecución; la interfaz de Airflow guarda un registro de auditoría de las acciones. No configuramos el registro de consultas de MySQL.
@@ -358,6 +360,7 @@ El modelo de costos tiene siete categorías y fórmulas con símbolos; los preci
 - **Entornos:** uno solo, el local; no hay staging ni producción.
 - **CI/CD:** no hay. No existe un repositorio remoto publicado. El procedimiento manual que repetimos: las pruebas completas en un clon y en el zip, `python scripts\make_dist.py` arma el zip por lista de inclusión, `python scripts\orquestacion\sincronizar_dag.py --verificar` comprueba que el DAG versionado y el de Airflow son idénticos, `python scripts\escanear_secretos.py` debe terminar en `hallazgos: 0`, y las etiquetas de Git por componente marcan cada cierre.
 - **Estrategia de despliegue:** no aplica; no desplegamos en ningún servidor.
+- **Ramas:** el trabajo vive en la rama `desarrollo`; la rama `master` conserva un punto anterior y no se ha vuelto a integrar. No hay rama `main`.
 - **Configuración por entorno:** `config/config.yaml` y las variables de `.env` (12 nombres en `.env.example`, nunca valores).
 - **Runbooks:** [guía de instalación](../instalacion/README.md), [modo mínimo](../instalacion/modo_minimo.md), [modo completo paso a paso](../instalacion/guia_modo_completo.md), [errores comunes](../instalacion/errores_comunes.md) y [operación de Airflow](../orquestacion/operacion.md).
 - **Responsables y guardia:** responsables por componente en la sección 8; no hay guardia ni on-call.
@@ -372,7 +375,7 @@ El modelo de costos tiene siete categorías y fórmulas con símbolos; los preci
 | API sin autenticación ([ADR-010](adr/adr-010_api_de_solo_lectura_local.md)) | un servicio simple y sin secretos | no puede salir del equipo | es local y de una persona a la vez; si se despliega hay que decidir de nuevo |
 | Una conexión por solicitud a MySQL ([ADR-010](adr/adr-010_api_de_solo_lectura_local.md)) | sin estado de conexiones que caduquen | unas décimas de segundo más por consulta | el servicio es local y de un solo usuario |
 | Proxy satelital con 7 comunas ([ADR-009](adr/adr-009_fuentes_por_criterios_de_aceptacion.md)) | la única fuente abierta a nivel de construcción | no es una evaluación estructural y no cubre toda Cali | lo declaramos en cada resultado y no extrapolamos |
-| Documentación vigilada por pruebas ([ADR-008](adr/adr-008_pruebas_sin_servidor_y_regresion.md)) | cifras que no se desactualizan en silencio | más pruebas que mantener (1330 en total) | una cifra vieja ya se coló una vez en un documento y la prueba la detectó |
+| Documentación vigilada por pruebas ([ADR-008](adr/adr-008_pruebas_sin_servidor_y_regresion.md)) | cifras que no se desactualizan en silencio | más pruebas que mantener (**1362 pruebas** en total) | una cifra vieja ya se coló una vez en un documento y la prueba la detectó |
 
 ## 16. Riesgos y mitigaciones
 La probabilidad y el impacto son juicio del equipo, sin cifras; se basan en las limitaciones, defectos y riesgos registrados.
@@ -406,7 +409,7 @@ La probabilidad y el impacto son juicio del equipo, sin cifras; se basan en las 
 **Posibles cambios de arquitectura futuros:** autenticación en la API si sale de `127.0.0.1`; un conjunto de conexiones si crece el uso; carga incremental solo si aparece una fuente que cambie; sustituir el compose por infraestructura como código si se despliega.
 
 ### Ítem 7.3: evidencias de pruebas, retroalimentación recibida y feedback de personas usuarias
-- **Evidencias de pruebas técnicas:** [informe de pruebas](../validacion/informe_pruebas.md), [matriz de casos](../validacion/matriz_casos_prueba.md) (179 casos), [registro de defectos](../validacion/registro_defectos.md) (25 defectos), las mutaciones de [EV-103](../evidencias/modo_completo/EV-103_mutaciones_modo_completo.txt) (132 en total), la suite en un clon y en un zip ([EV-113](../evidencias/readme/EV-113_primera_vez_y_suite_en_clon_y_zip.txt)) y la cobertura de `src/`, de 78 % ([EV-114](../evidencias/readme/EV-114_cobertura_de_src_repetida.txt)).
+- **Evidencias de pruebas técnicas:** [informe de pruebas](../validacion/informe_pruebas.md), [matriz de casos](../validacion/matriz_casos_prueba.md) (179 casos), [registro de defectos](../validacion/registro_defectos.md) (25 defectos; para 15 se demostró que su prueba de regresión falla sin la corrección y para los otros 10 no se demostró (DEF-003, DEF-006, DEF-009, DEF-010, DEF-011, DEF-014 y DEF-022 a DEF-025), con el motivo de cada uno en el registro), las mutaciones de [EV-103](../evidencias/modo_completo/EV-103_mutaciones_modo_completo.txt) (132 en total), la suite en un clon y en un zip ([EV-113](../evidencias/readme/EV-113_primera_vez_y_suite_en_clon_y_zip.txt)) y la cobertura de `src/`, de 78 % ([EV-114](../evidencias/readme/EV-114_cobertura_de_src_repetida.txt)).
 - **Retroalimentación recibida sobre la entrega anterior:** el texto está en [retroalimentacion_recibida.txt](../retroalimentacion/retroalimentacion_recibida.txt) y no se edita. Trae aspectos positivos y cinco observaciones por mejorar; cada una está atendida en [registro_de_cambios.md](../retroalimentacion/registro_de_cambios.md), con qué hicimos, qué archivos cambiaron y su evidencia. Atenderlas no cambió ningún dato, indicador, umbral, regla de Silver ni columna.
 - **Feedback de personas usuarias:** **no existe todavía y sigue pendiente.** La retroalimentación recibida sobre la entrega anterior no es feedback de personas usuarias. El protocolo, el guion, el consentimiento y el análisis (probado solo con datos sintéticos rotulados) están en [docs/usuarios/](../usuarios/README.md); cuando haya sesiones reales, sus resultados se registran ahí y este apartado se actualiza.
 
@@ -432,7 +435,7 @@ La probabilidad y el impacto son juicio del equipo, sin cifras; se basan en las 
 El glosario del análisis (Wilson, Newcombe, Mantel-Haenszel, K1 a K6) está en [docs/gold/resultados.md](../gold/resultados.md).
 
 ### Referencias
-- Decisiones: [docs/DECISIONES.md](../DECISIONES.md) y los 13 ADR de la sección 10.
+- Decisiones: [docs/DECISIONES.md](../DECISIONES.md) y los 14 ADR de la sección 10.
 - Diagramas: los de las secciones 6 y 9 de este documento, en texto.
 - Documentación por componente: [API](../api/arquitectura.md), [panel](../panel/arquitectura_panel.md), [orquestación](../orquestacion/README.md), [modelo de datos](../almacenamiento/modelo_datos.md) y [seguridad](../seguridad/gestion_credenciales.md).
 - Documentación de las herramientas (páginas principales; no las verificamos con una consulta de hoy): Apache Airflow (https://airflow.apache.org/docs/), FastAPI (https://fastapi.tiangolo.com/), Streamlit (https://docs.streamlit.io/), pandas (https://pandas.pydata.org/docs/), pytest (https://docs.pytest.org/) y MySQL 8.0 (https://dev.mysql.com/doc/refman/8.0/en/).

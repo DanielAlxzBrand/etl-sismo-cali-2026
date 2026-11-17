@@ -14,7 +14,7 @@ Queríamos una suite que cualquiera pudiera correr sin red, sin MySQL y sin Dock
 ### Positivas
 - La suite corre en un clon nuevo sin omitir pruebas; en el zip se omite una sola, la que necesita el historial de Git.
 - Las cifras de los documentos y de las insignias se comprueban contra lo medido.
-- Hay 25 defectos registrados; para 15 está demostrado que su prueba falla sin la corrección, y para los otros 10 el registro dice por qué no se pudo.
+- Hay **25 defectos** registrados (DEF-001 a DEF-025). Para 15 se demostró que su prueba de regresión falla sin la corrección. Para los otros 10 no se demostró (DEF-003, DEF-006, DEF-009, DEF-010, DEF-011, DEF-014 y DEF-022 a DEF-025) y el registro da el motivo de cada uno.
 
 ### Negativas
 - La verificación contra MySQL real no corre en cada `pytest`; hay que ejecutarla cuando cambia la carga.

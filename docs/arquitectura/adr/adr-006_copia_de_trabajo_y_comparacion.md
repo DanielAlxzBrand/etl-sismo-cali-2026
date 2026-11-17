@@ -29,5 +29,5 @@ Registradas en `docs/DECISIONES.md`:
 
 ## Alternativas que hoy descartamos y por qué
 Razonamiento actual del equipo, no registrado en su momento.
-- **Un volumen compartido de salidas entre tareas.** Con un trabajador y cuatro tareas que terminan en 9 a 16 segundos en total (EV-064 y EV-102), la copia local es más simple y se borra sola; un volumen compartido agregaría estado que limpiar.
+- **Un volumen compartido de salidas entre tareas.** Con un trabajador y cuatro tareas que terminan en 9 a 12 segundos en total (EV-064 y EV-100), la copia local es más simple y se borra sola; un volumen compartido agregaría estado que limpiar.
 - **Ejecutar el pipeline directamente en el contenedor sin comparar.** Dejaría de demostrar que Airflow no cambia los resultados, que es justo lo que queremos poder afirmar.

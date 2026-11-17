@@ -1,0 +1,94 @@
+EV-115 · Mutaciones de las pruebas del documento de arquitectura y de sus ADR (2026-11-17)
+
+Qué es: cada mutación cambia a propósito una cifra o un texto del documento de arquitectura, de un ADR, del README, del índice de docs, de la checklist o de DECISIONES.md, corre `tests/test_arquitectura_cifras.py` y
+`tests/test_arquitectura_guardiana.py`, y debe hacer fallar al menos una prueba; después el archivo se restaura (al terminar, `git status` queda sin cambios). El script que las ejecuta no se versiona: son mutaciones de un día.
+La línea de partida (los dos archivos de pruebas sin mutar) pasa antes de cada serie. Las mutaciones de EV-103 (132) no se repitieron; estas son las de las pruebas nuevas.
+
+## Cifras y errores ya corregidos en el README: 59 de 59 detectadas
+| Grupo | Mutación | Archivo | Resultado | Prueba que falla |
+|---|---|---|---|---|
+| pruebas | recuento de pruebas del documento | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_numero_de_pruebas_del_documento_es_el_de_la_recoleccion` |
+| rutas | rutas GET del documento | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_las_rutas_el_panel_y_las_tablas_del_documento_son_los_de_la_aplicacion_y_los_almacenes` |
+| rutas | rutas GET de ADR-010 | `docs/arquitectura/adr/adr-010_api_de_solo_lectura_local.md` | DETECTADA | `test_las_rutas_el_panel_y_las_tablas_del_documento_son_los_de_la_aplicacion_y_los_almacenes` |
+| panel | páginas del panel en el documento | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_las_rutas_el_panel_y_las_tablas_del_documento_son_los_de_la_aplicacion_y_los_almacenes` |
+| panel | componentes del panel en ADR-012 | `docs/arquitectura/adr/adr-012_panel_solo_sobre_la_api.md` | DETECTADA | `test_las_rutas_el_panel_y_las_tablas_del_documento_son_los_de_la_aplicacion_y_los_almacenes` |
+| tablas | tablas de SQLite | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_las_rutas_el_panel_y_las_tablas_del_documento_son_los_de_la_aplicacion_y_los_almacenes` |
+| tablas | tablas de MySQL | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_las_rutas_el_panel_y_las_tablas_del_documento_son_los_de_la_aplicacion_y_los_almacenes` |
+| tablas | nombre de una tabla de MySQL | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_las_rutas_el_panel_y_las_tablas_del_documento_son_los_de_la_aplicacion_y_los_almacenes` |
+| índices | índices secundarios | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_las_rutas_el_panel_y_las_tablas_del_documento_son_los_de_la_aplicacion_y_los_almacenes` |
+| defectos | defectos en el documento | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_defectos_mutaciones_cobertura_casos_y_reglas_del_documento_son_los_medidos` |
+| defectos | defectos con regresión demostrada | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_defectos_mutaciones_cobertura_casos_y_reglas_del_documento_son_los_medidos` |
+| defectos | un defecto que falta en la lista del documento | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_defectos_mutaciones_cobertura_casos_y_reglas_del_documento_son_los_medidos` |
+| defectos | un rango de la lista del documento | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_defectos_mutaciones_cobertura_casos_y_reglas_del_documento_son_los_medidos` |
+| defectos | defectos en ADR-008 | `docs/arquitectura/adr/adr-008_pruebas_sin_servidor_y_regresion.md` | DETECTADA | `test_defectos_mutaciones_cobertura_casos_y_reglas_del_documento_son_los_medidos` |
+| defectos | un defecto que falta en la lista de ADR-008 | `docs/arquitectura/adr/adr-008_pruebas_sin_servidor_y_regresion.md` | DETECTADA | `test_defectos_mutaciones_cobertura_casos_y_reglas_del_documento_son_los_medidos` |
+| mutaciones | mutaciones de EV-103 | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_defectos_mutaciones_cobertura_casos_y_reglas_del_documento_son_los_medidos` |
+| cobertura | cobertura en el documento | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_defectos_mutaciones_cobertura_casos_y_reglas_del_documento_son_los_medidos` |
+| cobertura | cobertura en ADR-008 | `docs/arquitectura/adr/adr-008_pruebas_sin_servidor_y_regresion.md` | DETECTADA | `test_defectos_mutaciones_cobertura_casos_y_reglas_del_documento_son_los_medidos` |
+| casos | casos de la matriz | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_defectos_mutaciones_cobertura_casos_y_reglas_del_documento_son_los_medidos` |
+| reglas | reglas de Silver en el documento | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_defectos_mutaciones_cobertura_casos_y_reglas_del_documento_son_los_medidos` |
+| reglas | reglas de Silver en ADR-014 | `docs/arquitectura/adr/adr-014_gold_lee_solo_silver.md` | DETECTADA | `test_defectos_mutaciones_cobertura_casos_y_reglas_del_documento_son_los_medidos` |
+| observaciones | observaciones de la retroalimentación | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_defectos_mutaciones_cobertura_casos_y_reglas_del_documento_son_los_medidos` |
+| ADR | número de ADR en el documento | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_numero_de_adr_y_la_ultima_decision_del_documento_y_de_los_enlaces_son_los_reales` |
+| ADR | número de ADR en el README | `README.md` | DETECTADA | `test_el_numero_de_adr_y_la_ultima_decision_del_documento_y_de_los_enlaces_son_los_reales` |
+| ADR | número de ADR en docs/README.md | `docs/README.md` | DETECTADA | `test_el_numero_de_adr_y_la_ultima_decision_del_documento_y_de_los_enlaces_son_los_reales` |
+| ADR | número de ADR en la checklist | `docs/checklist/estado_checklist.md` | DETECTADA | `test_el_numero_de_adr_y_la_ultima_decision_del_documento_y_de_los_enlaces_son_los_reales` |
+| decisiones | última decisión en el documento | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_numero_de_adr_y_la_ultima_decision_del_documento_y_de_los_enlaces_son_los_reales` |
+| volumen | construcciones y con datos | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_volumen_y_la_calidad_de_los_datos_del_documento_son_los_medidos` |
+| volumen | barrios del CSV | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_volumen_y_la_calidad_de_los_datos_del_documento_son_los_medidos` |
+| volumen | líneas del manifiesto | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_volumen_y_la_calidad_de_los_datos_del_documento_son_los_medidos` |
+| volumen | tamaño de data/ | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_volumen_y_la_calidad_de_los_datos_del_documento_son_los_medidos` |
+| volumen | tamaño de la base SQLite | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_volumen_y_la_calidad_de_los_datos_del_documento_son_los_medidos` |
+| volumen | filas de MySQL | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_volumen_y_la_calidad_de_los_datos_del_documento_son_los_medidos` |
+| volumen | tamaño de data/ en ADR-001 | `docs/arquitectura/adr/adr-001_bronze_crudo_inmutable.md` | DETECTADA | `test_el_volumen_y_la_calidad_de_los_datos_del_documento_son_los_medidos` |
+| calidad | cobertura de llave en ADR-002 | `docs/arquitectura/adr/adr-002_llave_codigo_catastral.md` | DETECTADA | `test_el_volumen_y_la_calidad_de_los_datos_del_documento_son_los_medidos` |
+| calidad | coincidencia con el polígono en ADR-002 | `docs/arquitectura/adr/adr-002_llave_codigo_catastral.md` | DETECTADA | `test_el_volumen_y_la_calidad_de_los_datos_del_documento_son_los_medidos` |
+| calidad | diferencia con el polígono en ADR-002 | `docs/arquitectura/adr/adr-002_llave_codigo_catastral.md` | DETECTADA | `test_el_volumen_y_la_calidad_de_los_datos_del_documento_son_los_medidos` |
+| calidad | huérfanos a la izquierda en ADR-002 | `docs/arquitectura/adr/adr-002_llave_codigo_catastral.md` | DETECTADA | `test_el_volumen_y_la_calidad_de_los_datos_del_documento_son_los_medidos` |
+| calidad | construcciones sin coincidencia en ADR-009 | `docs/arquitectura/adr/adr-009_fuentes_por_criterios_de_aceptacion.md` | DETECTADA | `test_el_volumen_y_la_calidad_de_los_datos_del_documento_son_los_medidos` |
+| calidad | bytes de los polígonos en ADR-014 | `docs/arquitectura/adr/adr-014_gold_lee_solo_silver.md` | DETECTADA | `test_el_volumen_y_la_calidad_de_los_datos_del_documento_son_los_medidos` |
+| calidad | polígonos de Bronze en ADR-014 | `docs/arquitectura/adr/adr-014_gold_lee_solo_silver.md` | DETECTADA | `test_el_volumen_y_la_calidad_de_los_datos_del_documento_son_los_medidos` |
+| calidad | archivos de Bronze en ADR-014 | `docs/arquitectura/adr/adr-014_gold_lee_solo_silver.md` | DETECTADA | `test_el_volumen_y_la_calidad_de_los_datos_del_documento_son_los_medidos` |
+| tiempos | tiempo del pipeline | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_los_tiempos_y_consumos_del_documento_estan_en_su_evidencia` |
+| tiempos | carga por lotes frente a fila a fila | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_los_tiempos_y_consumos_del_documento_estan_en_su_evidencia` |
+| tiempos | latencia de la API | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_los_tiempos_y_consumos_del_documento_estan_en_su_evidencia` |
+| tiempos | memoria de la API y el panel | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_los_tiempos_y_consumos_del_documento_estan_en_su_evidencia` |
+| tiempos | memoria de Airflow | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_los_tiempos_y_consumos_del_documento_estan_en_su_evidencia` |
+| tiempos | lote de 2.000 en ADR-003 | `docs/arquitectura/adr/adr-003_almacenamiento_dual_sin_orm.md` | DETECTADA | `test_los_tiempos_y_consumos_del_documento_estan_en_su_evidencia` |
+| tiempos | carga en ADR-004 | `docs/arquitectura/adr/adr-004_historial_por_corrida_idempotente.md` | DETECTADA | `test_los_tiempos_y_consumos_del_documento_estan_en_su_evidencia` |
+| tiempos | duración del DAG en ADR-005 | `docs/arquitectura/adr/adr-005_orquestacion_con_airflow.md` | DETECTADA | `test_los_tiempos_y_consumos_del_documento_estan_en_su_evidencia` |
+| errores del README | seis contenedores en el documento | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_y_los_adr_no_repiten_errores_ya_corregidos_en_el_readme` |
+| errores del README | la única secreta, agregado al documento | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_y_los_adr_no_repiten_errores_ya_corregidos_en_el_readme` |
+| errores del README | secreto de ejemplo en un ADR | `docs/arquitectura/adr/adr-005_orquestacion_con_airflow.md` | DETECTADA | `test_el_documento_y_los_adr_no_repiten_errores_ya_corregidos_en_el_readme` |
+| errores del README | integración a main | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_y_los_adr_no_repiten_errores_ya_corregidos_en_el_readme` |
+| errores del README | rama que no existe | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_los_contenedores_las_ramas_y_los_secretos_del_documento_son_los_del_repositorio` |
+| errores del README | barrio_norm sin aclarar | `docs/arquitectura/adr/adr-002_llave_codigo_catastral.md` | DETECTADA | `test_el_documento_y_los_adr_no_repiten_errores_ya_corregidos_en_el_readme` |
+| errores del README | el JWT sale de la sección de seguridad | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_los_contenedores_las_ramas_y_los_secretos_del_documento_son_los_del_repositorio` |
+| enlaces | enlace del README al documento | `README.md` | DETECTADA | `test_los_enlaces_al_documento_existen_en_el_readme_el_indice_y_la_checklist` |
+| enlaces | enlace del índice de docs | `docs/README.md` | DETECTADA | `test_los_enlaces_al_documento_existen_en_el_readme_el_indice_y_la_checklist` |
+
+## Forma, redacción, diagramas, ADR y D106: 20 de 20 detectadas
+| Grupo | Mutación | Archivo | Resultado | Prueba que falla |
+|---|---|---|---|---|
+| términos | un término prohibido en el documento | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_real_cumple_la_guardiana` |
+| secciones | una sección falta | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_real_cumple_la_guardiana` |
+| diagramas | una caja del diagrama que no está en su tabla | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_los_diagramas_reales_son_texto_ascii_coherente_con_el_dag_y_con_sus_cajas` |
+| diagramas | una tarea del DAG que falta en la secuencia | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_los_diagramas_reales_son_texto_ascii_coherente_con_el_dag_y_con_sus_cajas` |
+| diagramas | un carácter que no es ASCII en un diagrama | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_los_diagramas_reales_son_texto_ascii_coherente_con_el_dag_y_con_sus_cajas` |
+| metadatos | estado inventado | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_real_cumple_la_guardiana` |
+| metadatos | aprobadores inventados | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_real_cumple_la_guardiana` |
+| metadatos | revisión inventada | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_real_cumple_la_guardiana` |
+| cita | una segunda mención del artículo | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_real_cumple_la_guardiana` |
+| índice | un ADR que no existe en el índice | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_real_cumple_la_guardiana` |
+| índice | origen distinto en el índice | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_la_numeracion_de_los_adr_es_consecutiva_y_el_indice_del_documento_los_lista_todos` |
+| ADR | una alternativa que DECISIONES.md no registra | `docs/arquitectura/adr/adr-002_llave_codigo_catastral.md` | DETECTADA | `test_los_adr_reales_cumplen_su_estructura_y_su_origen` |
+| ADR | falta el rótulo de razonamiento actual | `docs/arquitectura/adr/adr-005_orquestacion_con_airflow.md` | DETECTADA | `test_los_adr_reales_cumplen_su_estructura_y_su_origen` |
+| ADR | un origen que no existe | `docs/arquitectura/adr/adr-003_almacenamiento_dual_sin_orm.md` | DETECTADA | `test_los_adr_reales_cumplen_su_estructura_y_su_origen` |
+| ADR | revisión inventada | `docs/arquitectura/adr/adr-010_api_de_solo_lectura_local.md` | DETECTADA | `test_los_adr_reales_cumplen_su_estructura_y_su_origen` |
+| ADR | una alternativa alterada | `docs/arquitectura/adr/adr-007_reproducibilidad_de_versiones.md` | DETECTADA | `test_los_adr_reales_cumplen_su_estructura_y_su_origen` |
+| ADR | ADR-014 sin la frase exacta de sin alternativas | `docs/arquitectura/adr/adr-014_gold_lee_solo_silver.md` | DETECTADA | `test_los_adr_reales_cumplen_su_estructura_y_su_origen` |
+| ADR | ADR-014 sin hecho medible | `docs/arquitectura/adr/adr-014_gold_lee_solo_silver.md` | DETECTADA | `test_el_volumen_y_la_calidad_de_los_datos_del_documento_son_los_medidos` |
+| D106 | D5 pierde su marca | `docs/DECISIONES.md` | DETECTADA | `test_los_contenedores_las_ramas_y_los_secretos_del_documento_son_los_del_repositorio` |
+| D106 | D21 pierde su marca | `docs/DECISIONES.md` | DETECTADA | `test_los_contenedores_las_ramas_y_los_secretos_del_documento_son_los_del_repositorio` |
+
+Qué NO demuestra: que no existan cifras del documento que ninguna prueba vigile; solo las que se mutaron. Una cifra escrita con otro formato que el esperado por las expresiones de las pruebas no se detectaría.

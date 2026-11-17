@@ -271,7 +271,7 @@ def test_los_adr_reales_cumplen_su_estructura_y_su_origen():
 
 def test_la_numeracion_de_los_adr_es_consecutiva_y_el_indice_del_documento_los_lista_todos():
     numeros = [int(re.match(r"adr-(\d{3})", r.name).group(1)) for r in archivos_adr()]
-    assert numeros == list(range(1, len(numeros) + 1)) and 10 <= len(numeros) <= 14
+    assert numeros == list(range(1, len(numeros) + 1)) and len(numeros) == 14
     seccion = _bloque(DOC.read_text(encoding="utf-8"), "10. Decisiones y ADR") or ""
     filas = re.findall(r"(?m)^\| \[(ADR-\d{3})\]\((adr/[^)]+)\) \| (.+?) \| (.+?) \|$", seccion)
     assert [f[1].split("/")[-1] for f in filas] == [r.name for r in archivos_adr()]
