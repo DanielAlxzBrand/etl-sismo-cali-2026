@@ -204,6 +204,7 @@ Docker Desktop con WSL2 se usó solo para Airflow y phpMyAdmin (Docker 29.9.3 y 
     ├── DECISIONES.md         # decisiones con alternativas, razón y riesgo
     ├── almacenamiento/       # modelo relacional, configuración de MySQL, phpMyAdmin y carga
     ├── api/                  # arquitectura del backend
+    ├── arquitectura/         # documento de arquitectura del sistema y registros de decisión (ADR)
     ├── bronze/               # fuentes, catálogo, atribución y muestras
     ├── checklist/            # estado y trazabilidad de los ítems
     ├── diagramas/            # diagramas en color aportados y diagramas con fuente en texto
@@ -249,7 +250,7 @@ python main.py --stage all
 python -m pytest -q -p no:cacheprovider
 python scripts\panel\ejecutar_panel.py                  # API en 8000 y panel en 8501; Ctrl+C cierra los dos
 ```
-Qué debe verse: `python main.py --stage all` termina con líneas como `Salida: construcciones=5146 barrios=346 integrado=5146 | cobertura de llave=99.8834% (pasa)` y `Salida: gold_final=5146 filas | kpis_gold=23 filas (6 indicadores) | sensibilidades=107 filas`; las pruebas terminan con `1330 passed`. El pipeline no necesita red ni claves, porque Bronze ya está en el repositorio. El archivo `.env` se crea al configurar el modo completo y nunca se versiona; `.env.example` trae solo los nombres de sus 12 variables y la tabla siguiente dice para qué sirve cada una (nunca valores):
+Qué debe verse: `python main.py --stage all` termina con líneas como `Salida: construcciones=5146 barrios=346 integrado=5146 | cobertura de llave=99.8834% (pasa)` y `Salida: gold_final=5146 filas | kpis_gold=23 filas (6 indicadores) | sensibilidades=107 filas`; las pruebas terminan con `1350 passed`. El pipeline no necesita red ni claves, porque Bronze ya está en el repositorio. El archivo `.env` se crea al configurar el modo completo y nunca se versiona; `.env.example` trae solo los nombres de sus 12 variables y la tabla siguiente dice para qué sirve cada una (nunca valores):
 
 | Variable | Para qué sirve | Obligatoria | Modo |
 |---|---|---|---|
@@ -355,7 +356,7 @@ La API tiene **11 rutas GET**: `/calidad`, `/composicion`, `/comunas`, `/constru
 | Calidad de Silver | `quality_report.json` y los umbrales de `config/config.yaml` | campos del reporte, cobertura frente al umbral, mínimo de filas |
 | Salidas del pipeline | los nueve archivos de la línea base con sha256 | que regenerarlos reproduce los mismos bytes |
 
-**Convenciones de nombres.** Las tablas y los archivos de Silver llevan el prefijo `silver_` (`silver_integrated`); Gold se llama `gold_final`, `kpis_gold` y `kpis_sensibilidad`; las tablas de MySQL van en minúsculas y en singular (`construccion`, `corrida`). Los indicadores son K1 a K6, los escenarios S0 a S5, los hallazgos H1 a H18 y las reglas R01 a R18; los defectos, DEF-nnn; las decisiones, D nnn (la última, D105); los casos de prueba, CP-nnn, y las evidencias, EV-nnn.
+**Convenciones de nombres.** Las tablas y los archivos de Silver llevan el prefijo `silver_` (`silver_integrated`); Gold se llama `gold_final`, `kpis_gold` y `kpis_sensibilidad`; las tablas de MySQL van en minúsculas y en singular (`construccion`, `corrida`). Los indicadores son K1 a K6, los escenarios S0 a S5, los hallazgos H1 a H18 y las reglas R01 a R18; los defectos, DEF-nnn; las decisiones, D nnn (la última, D106); los casos de prueba, CP-nnn, y las evidencias, EV-nnn.
 
 **Estrategia de carga.** Cada ejecución regenera Silver y Gold completos desde Bronze y reemplaza las tablas de `etl_sismo.db`; no hay carga incremental ni historial de cambios por registro (SCD). En MySQL, cada carga con una entrada distinta es una corrida completa que se suma a las anteriores, y repetir la misma entrada responde «ya cargada» sin escribir.
 
@@ -371,7 +372,7 @@ La API tiene **11 rutas GET**: `/calidad`, `/composicion`, `/comunas`, `/constru
 | `silver.muestra_baja_severos` | 30 | severos por debajo de los cuales un grupo se marca de muestra baja |
 
 ## 10. Calidad y pruebas
-Hay **1330 pruebas** automáticas, sin red ni servidor MySQL. Se ejecutan con `python -m pytest -q -p no:cacheprovider` y deben terminar con `1330 passed` en un clon con Git instalado; en un clon con Git no se omite ninguna; en el zip descomprimido con Git se omite 1 (`test_sin_hallazgos_en_el_historial_de_git`, porque el zip no trae historial) y sin Git se omiten 10: esa, 8 que arman un repositorio temporal y 1 que arma el zip y corre las demás. La lista está en la sección 3.1 de [docs/instalacion/README.md](docs/instalacion/README.md), medida con 1.007 pruebas ([EV-096](docs/evidencias/auditoria/EV-096_independencia_repetida_y_omisiones.txt)).
+Hay **1350 pruebas** automáticas, sin red ni servidor MySQL. Se ejecutan con `python -m pytest -q -p no:cacheprovider` y deben terminar con `1350 passed` en un clon con Git instalado; en un clon con Git no se omite ninguna; en el zip descomprimido con Git se omite 1 (`test_sin_hallazgos_en_el_historial_de_git`, porque el zip no trae historial) y sin Git se omiten 10: esa, 8 que arman un repositorio temporal y 1 que arma el zip y corre las demás. La lista está en la sección 3.1 de [docs/instalacion/README.md](docs/instalacion/README.md), medida con 1.007 pruebas ([EV-096](docs/evidencias/auditoria/EV-096_independencia_repetida_y_omisiones.txt)).
 
 - **Qué cubren:** el pipeline (llaves, duplicados, tipos, Wilson, Newcombe, Mantel-Haenszel), la reproducción byte a byte de la línea base, la API (estructura, solo GET, sin escritura), el panel (las ocho páginas con la API real en memoria, formato de cifras, aislamiento), la carga relacional (idempotencia, historial, reversión, integridad referencial), el DAG y los compose analizados como texto, el empaquetado y la gestión de secretos.
 - **Las cifras de los documentos se prueban contra las salidas.** Este README, el documento de resultados y la guía de instalación afirman cifras; una prueba extrae cada una del texto y la compara con la medida. Si alguien edita una cifra, o la deja desactualizada en un solo lugar, la prueba falla.
@@ -473,7 +474,7 @@ Con 8 GB de RAM no conviene encender todo a la vez; esa configuración no está 
 **Costos en la nube: no aplican.** Todo corre en una máquina local, así que no hay precios que medir. La estructura de costos, con las fórmulas y los precios como parámetros vacíos, está en [docs/finanzas/estructura_costos.md](docs/finanzas/estructura_costos.md); no inventamos ninguna cifra monetaria.
 
 ## 16. Decisiones de arquitectura
-Las decisiones, con sus alternativas, su razón y su riesgo, están en [docs/DECISIONES.md](docs/DECISIONES.md) (D1 a D105). Las que más condicionan el diseño:
+Las decisiones, con sus alternativas, su razón y su riesgo, están en [docs/DECISIONES.md](docs/DECISIONES.md) (D1 a D106). Las que más condicionan el diseño:
 
 | Decisión | Qué decidimos | Por qué |
 |---|---|---|
