@@ -28,6 +28,7 @@ IMPORT_A_DISTRIBUCION = {
     "numpy": "numpy",
     "openpyxl": "openpyxl",
     "pandas": "pandas",
+    "PIL": "pillow",
     "pydantic": "pydantic",
     "pymysql": "pymysql",
     "pytest": "pytest",

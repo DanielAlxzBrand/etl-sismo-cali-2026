@@ -157,6 +157,7 @@ Decisión de alcance: calidad con `pytest` y `quality_report.json`. No usamos he
 | `pyyaml` | 6.0.3 | lectura de `config/config.yaml` |
 | `python-dotenv` | 1.2.4 | lectura de `.env` |
 | `matplotlib` | 3.11.2 | gráficos de evidencias y diagramas propios |
+| `pillow` | 13.0.0 | copias en escala de grises de las imágenes del README |
 
 Docker Desktop con WSL2 se usó solo para Airflow y phpMyAdmin (Docker 29.9.3 y Compose 5.7.0 en la última prueba completa, [EV-100](docs/evidencias/modo_completo/EV-100_guia_seguida_desde_un_zip_nuevo.txt)).
 
@@ -248,7 +249,7 @@ python main.py --stage all
 python -m pytest -q -p no:cacheprovider
 python scripts\panel\ejecutar_panel.py                  # API en 8000 y panel en 8501; Ctrl+C cierra los dos
 ```
-Qué debe verse: `python main.py --stage all` termina con líneas como `Salida: construcciones=5.146 barrios=346 integrado=5.146 | cobertura de llave=99.8834% (pasa)` y `Salida: gold_final=5.146 filas | kpis_gold=23 filas (6 indicadores) | sensibilidades=107 filas`; las pruebas terminan con `1328 passed`. El pipeline no necesita red ni claves, porque Bronze ya está en el repositorio. El archivo `.env` se crea al configurar el modo completo y nunca se versiona; `.env.example` trae solo los nombres de sus 12 variables y la tabla siguiente dice para qué sirve cada una (nunca valores):
+Qué debe verse: `python main.py --stage all` termina con líneas como `Salida: construcciones=5146 barrios=346 integrado=5146 | cobertura de llave=99.8834% (pasa)` y `Salida: gold_final=5146 filas | kpis_gold=23 filas (6 indicadores) | sensibilidades=107 filas`; las pruebas terminan con `1330 passed`. El pipeline no necesita red ni claves, porque Bronze ya está en el repositorio. El archivo `.env` se crea al configurar el modo completo y nunca se versiona; `.env.example` trae solo los nombres de sus 12 variables y la tabla siguiente dice para qué sirve cada una (nunca valores):
 
 | Variable | Para qué sirve | Obligatoria | Modo |
 |---|---|---|---|
@@ -368,7 +369,7 @@ La API tiene **11 rutas GET**: `/calidad`, `/composicion`, `/comunas`, `/constru
 | `silver.muestra_baja_severos` | 30 | severos por debajo de los cuales un grupo se marca de muestra baja |
 
 ## 10. Calidad y pruebas
-Hay **1328 pruebas** automáticas, sin red ni servidor MySQL. Se ejecutan con `python -m pytest -q -p no:cacheprovider` y deben terminar con `1328 passed` en un clon con Git instalado; en un clon con Git no se omite ninguna; en el zip descomprimido con Git se omite 1 (`test_sin_hallazgos_en_el_historial_de_git`, porque el zip no trae historial) y sin Git se omiten 10: esa, 8 que arman un repositorio temporal y 1 que arma el zip y corre las demás. La lista está en la sección 3.1 de [docs/instalacion/README.md](docs/instalacion/README.md), medida con 1.007 pruebas ([EV-096](docs/evidencias/auditoria/EV-096_independencia_repetida_y_omisiones.txt)).
+Hay **1330 pruebas** automáticas, sin red ni servidor MySQL. Se ejecutan con `python -m pytest -q -p no:cacheprovider` y deben terminar con `1330 passed` en un clon con Git instalado; en un clon con Git no se omite ninguna; en el zip descomprimido con Git se omite 1 (`test_sin_hallazgos_en_el_historial_de_git`, porque el zip no trae historial) y sin Git se omiten 10: esa, 8 que arman un repositorio temporal y 1 que arma el zip y corre las demás. La lista está en la sección 3.1 de [docs/instalacion/README.md](docs/instalacion/README.md), medida con 1.007 pruebas ([EV-096](docs/evidencias/auditoria/EV-096_independencia_repetida_y_omisiones.txt)).
 
 - **Qué cubren:** el pipeline (llaves, duplicados, tipos, Wilson, Newcombe, Mantel-Haenszel), la reproducción byte a byte de la línea base, la API (estructura, solo GET, sin escritura), el panel (las ocho páginas con la API real en memoria, formato de cifras, aislamiento), la carga relacional (idempotencia, historial, reversión, integridad referencial), el DAG y los compose analizados como texto, el empaquetado y la gestión de secretos.
 - **Las cifras de los documentos se prueban contra las salidas.** Este README, el documento de resultados y la guía de instalación afirman cifras; una prueba extrae cada una del texto y la compara con la medida. Si alguien edita una cifra, o la deja desactualizada en un solo lugar, la prueba falla.

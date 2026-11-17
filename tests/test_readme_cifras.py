@@ -231,13 +231,16 @@ def test_filas_y_conteos_del_pipeline_en_readme():
     miles = lambda n: f"{n:,}".replace(",", ".")
     lineas_manifiesto = len((ROOT / "data/bronze/manifest.jsonl").read_text(encoding="utf-8").splitlines())
     esperadas = [
-        f"`Salida: construcciones={miles(len(gold))} barrios={barrios} integrado={miles(len(gold))} | cobertura de llave={rep['cobertura_llave']['pct'] * 100:.4f}% (pasa)`",
-        f"`Salida: gold_final={miles(len(gold))} filas | kpis_gold={len(k)} filas ({k.kpi_id.nunique()} indicadores) | sensibilidades={len(s)} filas`",
+        f"`Salida: construcciones={len(gold)} barrios={barrios} integrado={len(gold)} | cobertura de llave={rep['cobertura_llave']['pct'] * 100:.4f}% (pasa)`",
+        f"`Salida: gold_final={len(gold)} filas | kpis_gold={len(k)} filas ({k.kpi_id.nunique()} indicadores) | sensibilidades={len(s)} filas`",
         f"`kpis_gold.csv` tiene {len(k)} filas (K1 a K6) y `kpis_sensibilidad.csv` tiene {len(s)} (escenarios S0 a S5)",
         f"una fila por construcción ({miles(len(gold))})", f"({lineas_manifiesto} en total)",
     ]
     for e in esperadas:
         assert e in README, e
+    # el registro imprime los números sin separador de miles: así salió en la consola de un clon nuevo y así está en el código
+    assert '"Salida: construcciones=%s barrios=%s integrado=%s | cobertura de llave=%.4f%% (%s)' in (ROOT / "src" / "transform" / "integrate.py").read_text(encoding="utf-8")
+    assert '"Salida: gold_final=%s filas | kpis_gold=%s filas (%s indicadores) | sensibilidades=%s filas"' in (ROOT / "src" / "transform" / "build_gold.py").read_text(encoding="utf-8")
     assert set(re.findall(r"\b(\d\.\d{3})\*{0,2} construcciones", README)) == {miles(len(gold))}
 
 
@@ -631,9 +634,11 @@ def test_las_ramas_citadas_en_el_readme_existen_en_el_repositorio():
     assert citadas == {"desarrollo", "master"} and "integra a `main`" not in README
     if not (ROOT / ".git").exists():
         return   # el zip no trae historial: sin repositorio no hay ramas que comprobar
-    r = subprocess.run(["git", "branch", "--format=%(refname:short)"], cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    # en un clon solo la rama activa es local y las demás son ramas de seguimiento («origin/master»): se aceptan las dos
+    r = subprocess.run(["git", "for-each-ref", "--format=%(refname:short)", "refs/heads", "refs/remotes"], cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace")
     if r.returncode == 0:
-        assert citadas <= set(r.stdout.split())
+        ramas = {n.split("/", 1)[1] if n.startswith("origin/") else n for n in r.stdout.split()}
+        assert citadas <= ramas, (citadas, ramas)
 
 
 def test_la_ruta_de_escalado_asigna_cada_tema_a_su_responsable():

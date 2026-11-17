@@ -27,3 +27,5 @@ streamlit==1.67.0
 altair==6.3.0
 # Capturas del panel (scripts/evidencias): protocolo DevTools por websocket
 websockets==17.4
+# Imágenes del README (scripts/make_imagenes_readme.py y su prueba): copia en escala de grises. Llega con Streamlit; se declara porque el código lo importa directamente
+pillow==13.0.0
