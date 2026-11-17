@@ -131,6 +131,7 @@ def test_las_insignias_dicen_lo_que_miden_los_archivos_del_repositorio():
         "licencia.svg": ("licencia", (ROOT / "LICENSE").read_text(encoding="utf-8").splitlines()[0].replace(" License", "")),
         "madurez.svg": ("madurez", "MVP académico"),
         "mysql.svg": ("MySQL", "8.0"),
+        "verificacion.svg": ("última verificación", re.search(r"(?m)^\| EV-100 \|.*\| (\d{4}-\d{2}-\d{2}) \| docs/evidencias/modo_completo/EV-100_", (ROOT / "docs" / "evidencias" / "manifiesto.md").read_text(encoding="utf-8")).group(1)),
     }
     for archivo, esperado in esperadas.items():
         assert texto_de_insignia(INSIGNIAS / archivo) == esperado, archivo
@@ -179,7 +180,7 @@ def _medidas_del_repositorio():
 
 def versiones_afirmadas(texto):
     """{componente en minúsculas: versión} de las filas de la tabla del stack: «| `pandas` | 3.0.6 | ... |» o «| Airflow | 3.3.2 | ... |»."""
-    return {n.lower(): v for n, v in re.findall(r"(?m)^\| `?([A-Za-z][\w .+-]*?)`? \| (\d+(?:\.\d+)*) \|", texto)}
+    return {n.lower(): v for n, v in re.findall(r"(?m)^\| `?([A-Za-z][\w +-]*?)`? \| (\d+(?:\.\d+)*) \|", texto)}
 
 
 def test_las_versiones_del_stack_del_readme_son_las_de_los_archivos():
@@ -397,4 +398,250 @@ def test_todo_lo_que_el_readme_enlaza_viaja_en_el_zip():
 
     en_el_zip = {p.relative_to(ROOT).as_posix() for p in make_dist.listar(ROOT)}
     destinos = {d.split("#")[0] for d in re.findall(r"\]\(([^)\s]+)\)", re.sub(r"(?s)```.*?```", "", README)) if not d.startswith(("http://", "https://", "#"))}
-    assert destinos and sorted(d for d in destinos if d not in en_el_zip) == []
+    assert destinos and sorted(d for d in destinos if d not in en_el_zip and not (d.endswith("/") and any(z.startswith(d) for z in en_el_zip))) == []
+
+
+# --- ronda de revisión: variables de entorno, umbrales, defectos, contenedores, índices, árbol, cabecera, fechas, ramas y escalado ---
+def nombres_de_env_example():
+    return [l.split("=")[0] for l in (ROOT / ".env.example").read_text(encoding="utf-8").splitlines() if re.match(r"^[A-Z][A-Z0-9_]*=", l)]
+
+
+def variables_de_la_tabla(texto):
+    """Filas de la tabla de variables del README: (nombre, para qué sirve, obligatoria, modo)."""
+    return re.findall(r"(?m)^\| `([A-Z][A-Z0-9_]+)` \| (.+?) \| (.+?) \| (.+?) \|$", texto)
+
+
+def variables_que_no_coinciden(texto, esperadas):
+    """(faltan, sobran, con_valor): nombres de `.env.example` que la tabla no tiene, nombres que sobran y filas que parecen traer un valor."""
+    filas = variables_de_la_tabla(texto)
+    nombres = [f[0] for f in filas]
+    con_valor = [f[0] for f in filas if "=" in " ".join(f)]
+    return [n for n in esperadas if n not in nombres], [n for n in nombres if n not in esperadas], con_valor
+
+
+def test_la_tabla_de_variables_coincide_con_env_example():
+    esperadas = nombres_de_env_example()
+    assert len(esperadas) == 12 and "sus 12 variables" in README
+    assert variables_que_no_coinciden(README, esperadas) == ([], [], [])
+    assert [f[0] for f in variables_de_la_tabla(README)] == esperadas, "el mismo orden que el archivo"
+
+
+def test_una_variable_que_falta_sobra_o_trae_valor_se_detecta():
+    esperadas = ["A_UNO", "B_DOS"]
+    assert variables_que_no_coinciden("| `A_UNO` | x | no | y |", esperadas) == (["B_DOS"], [], [])
+    assert variables_que_no_coinciden("| `A_UNO` | x | no | y |\n| `B_DOS` | z | no | y |\n| `C_TRES` | z | no | y |", esperadas) == ([], ["C_TRES"], [])
+    assert variables_que_no_coinciden("| `A_UNO` | x | no | y |\n| `B_DOS` | clave=abc | no | y |", esperadas)[2] == ["B_DOS"]
+
+
+def umbrales_afirmados(texto):
+    """Filas «| `seccion.clave` | valor | ... |» de la tabla de umbrales: lista de (sección, clave, valor)."""
+    return [(s, k, float(v)) for s, k, v in re.findall(r"(?m)^\| `(\w+)\.(\w+)` \| ([\d.]+) \|", texto)]
+
+
+def umbrales_que_no_coinciden(texto, cfg):
+    return [(s, k, v, cfg.get(s, {}).get(k)) for s, k, v in umbrales_afirmados(texto) if cfg.get(s, {}).get(k) != v]
+
+
+def test_los_umbrales_del_readme_son_los_de_config():
+    from src.common import load_config
+
+    cfg = load_config()
+    claves = {k for _, k, _ in umbrales_afirmados(README)}
+    assert {"join_coverage_min", "gold_min_rows", "min_edificios_por_barrio", "muestra_baja_severos"} <= claves
+    assert umbrales_que_no_coinciden(README, cfg) == []
+
+
+def test_un_umbral_editado_se_detecta():
+    from src.common import load_config
+
+    cfg = load_config()
+    assert umbrales_que_no_coinciden("| `thresholds.gold_min_rows` | 201 | x |", cfg) == [("thresholds", "gold_min_rows", 201.0, 200)]
+    assert umbrales_que_no_coinciden("| `thresholds.inexistente` | 1 | x |", cfg), "un parámetro que no existe"
+
+
+def test_lo_que_el_readme_dice_que_pasa_al_incumplir_un_umbral_esta_en_el_codigo():
+    integrate = (ROOT / "src" / "transform" / "integrate.py").read_text(encoding="utf-8")
+    gold = (ROOT / "src" / "transform" / "build_gold.py").read_text(encoding="utf-8")
+    assert '"no pasa"' in integrate and "umbral + 0.05" in integrate and "log.warning(\"cobertura de llave" in integrate
+    assert 'assert len(gold) >= cfg["thresholds"]["gold_min_rows"], "Gold por debajo del mínimo"' in gold
+    assert "b.n >= min_n" in gold and "log.warning(\"muestra baja" in gold
+    assert "def test_cobertura_join_supera_umbral" in (ROOT / "tests" / "test_quality.py").read_text(encoding="utf-8")
+    for frase in ("`resultado_umbral: no pasa`", "a menos de 0,05 del umbral", "«Gold por debajo del mínimo»", "deja fuera de K4"):
+        assert frase in README, frase
+
+
+def clasificar_defectos(registro):
+    """(con_regresion_demostrada, sin_demostrar): identificadores de DEF cuya última columna empieza por «Sí» y los demás."""
+    si, no = [], []
+    for linea in registro.splitlines():
+        m = re.match(r"\| (DEF-\d+) \|", linea)
+        if m:
+            columnas = [c.strip() for c in linea.strip().strip("|").split("|")]
+            (si if columnas[6].startswith("Sí") else no).append(m.group(1))
+    return si, no
+
+
+def defectos_declarados_sin_demostrar(texto, n):
+    """Identificadores que el texto declara sin demostración tras «Para los otros N no se demostró (...)», con rangos «DEF-022 a DEF-025»."""
+    m = re.search(rf"Para los otros {n} no se demostró \(([^)]+)\)", texto)
+    if not m:
+        return None
+    ids = set(re.findall(r"DEF-\d+", re.sub(r"DEF-(\d+) a DEF-(\d+)", "", m.group(1))))
+    for a, b in re.findall(r"DEF-(\d+) a DEF-(\d+)", m.group(1)):
+        ids |= {f"DEF-{i:03d}" for i in range(int(a), int(b) + 1)}
+    return ids
+
+
+def test_los_defectos_con_regresion_demostrada_y_los_que_no_son_los_del_registro():
+    si, no = clasificar_defectos((ROOT / "docs" / "validacion" / "registro_defectos.md").read_text(encoding="utf-8"))
+    assert len(si) + len(no) == 25 and "DEF-022" in no and "DEF-025" in no, "DEF-022 a DEF-025 no se reintroducen por reemplazo de texto"
+    assert f"Para {len(si)} se demostró que su prueba de regresión falla sin la corrección" in README
+    assert defectos_declarados_sin_demostrar(README, len(no)) == set(no)
+    assert "cada uno con una prueba de regresión que falla sin su corrección" not in README
+
+
+def test_una_lista_de_defectos_sin_demostrar_incompleta_se_detecta():
+    si, no = clasificar_defectos((ROOT / "docs" / "validacion" / "registro_defectos.md").read_text(encoding="utf-8"))
+    incompleto = README.replace("DEF-006, ", "", 1)
+    assert defectos_declarados_sin_demostrar(incompleto, len(no)) != set(no)
+    assert defectos_declarados_sin_demostrar(README.replace("DEF-022 a DEF-025", "DEF-022 a DEF-024"), len(no)) != set(no)
+    assert clasificar_defectos("| DEF-001 | a | b | c | d | e | Sí (EV-036) |\n| DEF-002 | a | b | c | d | e | No aplica |") == (["DEF-001"], ["DEF-002"])
+
+
+def test_los_contenedores_de_airflow_en_reposo_son_los_que_levanta_el_compose():
+    import csv
+
+    import yaml
+
+    servicios = {n for n, s in yaml.safe_load((ROOT / "orquestacion" / "docker-compose.yaml").read_text(encoding="utf-8"))["services"].items()
+                 if "profiles" not in s and n != "airflow-init"}
+    with (ROOT / "docs" / "finanzas" / "recursos_medidos.csv").open(encoding="utf-8", newline="") as f:
+        filas = {r["magnitud"]: float(r["valor"]) for r in csv.DictReader(f) if r["magnitud"].startswith("memoria_en_reposo_")}
+    medidos = {n.removeprefix("memoria_en_reposo_") for n in filas} - {"total_contenedores_de_airflow", "phpmyadmin"}
+    assert medidos == servicios and len(servicios) == 7
+    assert sum(filas[f"memoria_en_reposo_{n}"] for n in servicios) == filas["memoria_en_reposo_total_contenedores_de_airflow"]
+    for texto in (README, (ROOT / "docs" / "instalacion" / "README.md").read_text(encoding="utf-8")):
+        assert "siete contenedores" in texto and "seis contenedores" not in texto
+    for n in servicios:
+        assert n.removeprefix("airflow-").lower() in README.lower(), n
+
+
+def test_los_indices_de_mysql_del_readme_son_los_del_esquema():
+    indices = re.findall(r"(?m)^\s+KEY (ix_\w+)", (ROOT / "src" / "load" / "sql" / "esquema_mysql.sql").read_text(encoding="utf-8"))
+    assert f"define {len(indices)} índices secundarios" in README
+    for citado in re.findall(r"`(ix_\w+)`", README):
+        assert citado in indices, citado
+
+
+def test_las_pruebas_omitidas_en_el_zip_del_readme_son_las_de_la_guia_de_instalacion():
+    guia = (ROOT / "docs" / "instalacion" / "README.md").read_text(encoding="utf-8")
+    assert re.search(r"\| clon con Git \| 0 \|", guia) and re.search(r"\| zip descomprimido, con Git instalado \| \*\*1\*\* \|", guia)
+    assert re.search(r"\| zip descomprimido, sin Git \(o clon sin Git\) \| \*\*10\*\* \|", guia)
+    assert "no se omite ninguna; en el zip descomprimido con Git se omite 1" in README and "sin Git se omiten 10" in README
+
+
+# --- el árbol de directorios ---
+def rutas_del_arbol(texto):
+    """Rutas del primer bloque de código que dibuja el árbol (líneas «├── nombre» y «└── nombre»)."""
+    bloque = re.search(r"(?s)```\n\.\n(.*?)```", texto).group(1)
+    pila, rutas = [], []
+    for linea in bloque.splitlines():
+        m = re.match(r"^((?:│   |    )*)(?:├── |└── )(\S+)", linea)
+        assert m, f"línea del árbol que no se entiende: {linea!r}"
+        nivel, nombre = len(m.group(1)) // 4, m.group(2)
+        rutas.append("/".join(pila[:nivel] + [nombre.rstrip("/")]))
+        if nombre.endswith("/"):
+            pila = pila[:nivel] + [nombre.rstrip("/")]
+    return rutas
+
+
+def test_toda_ruta_del_arbol_existe_y_toda_carpeta_principal_esta_en_el_arbol():
+    rutas = rutas_del_arbol(README)
+    assert [r for r in rutas if not (ROOT / r).exists()] == []
+    ignoradas = {"dist", "logs", "__pycache__"}
+    for base in ("", "src", "scripts", "docs", "tests"):
+        carpeta = ROOT / base if base else ROOT
+        for d in sorted(p for p in carpeta.iterdir() if p.is_dir() and not p.name.startswith(".") and p.name not in ignoradas):
+            if base == "tests" or (base == "" and d.name == "tests"):
+                continue
+            ruta = f"{base}/{d.name}" if base else d.name
+            assert ruta in rutas, f"falta en el árbol del README: {ruta}"
+
+
+def test_una_ruta_inexistente_en_el_arbol_se_detecta():
+    texto = "```\n.\n├── src/\n│   ├── api/\n│   └── no_existe/\n└── main.py\n```\n"
+    assert rutas_del_arbol(texto) == ["src", "src/api", "src/no_existe", "main.py"]
+    assert [r for r in rutas_del_arbol(texto) if not (ROOT / r).exists()] == ["src/no_existe"]
+
+
+# --- la cabecera: insignias bajo el título, enlaces rápidos y la fecha de la última verificación ---
+def fecha_de_ev_100():
+    m = re.search(r"(?m)^\| EV-100 \|.*\| (\d{4}-\d{2}-\d{2}) \| docs/evidencias/modo_completo/EV-100_", (ROOT / "docs" / "evidencias" / "manifiesto.md").read_text(encoding="utf-8"))
+    return m.group(1)
+
+
+def test_las_insignias_van_bajo_el_titulo_y_hay_enlaces_rapidos():
+    cabecera = README.split("\n## ")[0]
+    for nombre in ("python", "airflow", "mysql", "pruebas", "cobertura", "licencia", "madurez", "verificacion"):
+        assert f"](docs/img/insignias/{nombre}.svg)" in cabecera, nombre
+    assert "## 2. Insignias" in README and "](docs/img/insignias/" not in README.split("## 2. Insignias")[1], "las insignias no se repiten en la sección 2"
+    for destino in ("docs/README.md", "docs/gold/resultados.md", "data/", "docs/instalacion/README.md"):
+        assert f"]({destino})" in cabecera, destino
+    assert "no hay integración continua" in README and "pipeline passing" not in README.lower()
+
+
+def test_una_insignia_fuera_de_la_cabecera_se_detecta():
+    movido = README.replace(" ![Última verificación](docs/img/insignias/verificacion.svg)", "", 1).replace("## 2. Insignias\n", "## 2. Insignias\n![Última verificación](docs/img/insignias/verificacion.svg)\n", 1)
+    assert "](docs/img/insignias/verificacion.svg)" not in movido.split("\n## ")[0]
+    assert "](docs/img/insignias/" in movido.split("## 2. Insignias")[1]
+
+
+def test_la_insignia_de_ultima_verificacion_es_la_fecha_de_ev_100():
+    fecha = fecha_de_ev_100()
+    assert texto_de_insignia(INSIGNIAS / "verificacion.svg") == ("última verificación", fecha)
+    assert f"la última prueba completa desde un zip nuevo es del {fecha}" in README
+    assert "EV-100" in README.split("## 2. Insignias")[1].split("## 3.")[0]
+
+
+def test_una_insignia_de_verificacion_con_otra_fecha_se_detecta(tmp_path):
+    from scripts.make_insignias import insignia
+
+    f = tmp_path / "verificacion.svg"
+    f.write_text(insignia("última verificación", "2026-01-01"), encoding="utf-8")
+    assert texto_de_insignia(f) != ("última verificación", fecha_de_ev_100())
+
+
+# --- fechas, ramas y escalado ---
+def test_las_fechas_de_descarga_y_de_corte_del_readme_son_las_del_manifiesto_y_de_config():
+    import json
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+
+    from src.common import load_config
+
+    lineas = [json.loads(l) for l in (ROOT / "data" / "bronze" / "manifest.jsonl").read_text(encoding="utf-8").splitlines()]
+    fechas = {datetime.fromisoformat(l["fetched_at_utc"].replace("Z", "+00:00")).astimezone(ZoneInfo("America/Bogota")).date().isoformat() for l in lineas}
+    assert len(fechas) == 1
+    assert f"descargada el {next(iter(fechas))} (hora de Bogotá)" in README
+    assert f"última edición de la capa ({load_config()['fechas']['fecha_edicion_capa']})" in README
+
+
+def test_las_ramas_citadas_en_el_readme_existen_en_el_repositorio():
+    citadas = set(re.findall(r"la rama `(\w+)`", README))
+    assert citadas == {"desarrollo", "master"} and "integra a `main`" not in README
+    if not (ROOT / ".git").exists():
+        return   # el zip no trae historial: sin repositorio no hay ramas que comprobar
+    r = subprocess.run(["git", "branch", "--format=%(refname:short)"], cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    if r.returncode == 0:
+        assert citadas <= set(r.stdout.split())
+
+
+def test_la_ruta_de_escalado_asigna_cada_tema_a_su_responsable():
+    seccion = README.split("## 19. Contacto y responsables")[1].split("\n## ")[0]
+    esperado = [("Preguntas generales y técnicas", "Daniel Alexander Brand García"), ("Sesiones con personas usuarias", "Diego Fernando Gordillo Londoño"),
+                ("Documentación y demostración", "Jhoan Sebastián Castellanos Mayor")]
+    for tema, persona in esperado:
+        assert re.search(rf"(?m)^\| {tema}.* \| {persona} \|$", seccion), tema
+    cambiado = seccion.replace("| Diego Fernando Gordillo Londoño |\n| Documentación", "| Jhoan Sebastián Castellanos Mayor |\n| Documentación")
+    assert cambiado != seccion and not re.search(r"(?m)^\| Sesiones con personas usuarias.* \| Diego Fernando Gordillo Londoño \|$", cambiado)
+    assert "@" not in seccion

@@ -2,7 +2,7 @@
 
 Uso, desde la raíz:  python scripts/make_insignias.py [--pruebas N] [--cobertura "77 %"]
 Cada valor sale de un archivo del repositorio: Python de la cabecera de `requirements.txt`, Airflow del `FROM` de `orquestacion/Dockerfile`, el número de pruebas de la recolección
-de pytest (o de `--pruebas`), la licencia de `LICENSE`. La cobertura no se mide aquí: se pasa con `--cobertura` y debe salir de una medición registrada en `docs/evidencias/readme/`.
+de pytest (o de `--pruebas`), la licencia de `LICENSE`, la fecha de EV-100 del manifiesto de evidencias. La cobertura no se mide aquí: se pasa con `--cobertura` y debe salir de una medición registrada en `docs/evidencias/readme/`.
 Qué NO hace: no promete nada que el repositorio no pueda comprobar (no hay insignias de integración continua porque no hay integración continua).
 `tests/test_readme_cifras.py` comprueba que el texto de cada insignia coincida con lo que miden esos archivos.
 """
@@ -39,6 +39,12 @@ def licencia():
     return primera.replace(" License", "")
 
 
+def ultima_verificacion():
+    """Fecha de EV-100 en el manifiesto de evidencias: la guía del modo completo seguida desde un zip nuevo."""
+    m = re.search(r"(?m)^\| EV-100 \|.*?\| (\d{4}-\d{2}-\d{2}) \| docs/evidencias/", (ROOT / "docs" / "evidencias" / "manifiesto.md").read_text(encoding="utf-8"))
+    return m.group(1)
+
+
 def insignia(etiqueta, valor):
     """SVG de dos tramos: etiqueta en gris oscuro y valor en negro, texto en blanco."""
     w1, w2 = int(len(etiqueta) * ANCHO_CARACTER + 16), int(len(valor) * ANCHO_CARACTER + 16)
@@ -52,7 +58,8 @@ def insignia(etiqueta, valor):
 def insignias(pruebas, cobertura=None):
     """Lista de (archivo, etiqueta, valor) de las insignias del README."""
     out = [("python.svg", "Python", python_soportado()), ("airflow.svg", "Airflow", airflow()), ("mysql.svg", "MySQL", "8.0"),
-           ("pruebas.svg", "pruebas", str(pruebas)), ("licencia.svg", "licencia", licencia()), ("madurez.svg", "madurez", "MVP académico")]
+           ("pruebas.svg", "pruebas", str(pruebas)), ("licencia.svg", "licencia", licencia()), ("madurez.svg", "madurez", "MVP académico"),
+           ("verificacion.svg", "última verificación", ultima_verificacion())]
     if cobertura:
         out.append(("cobertura.svg", "cobertura de src", cobertura))
     return out

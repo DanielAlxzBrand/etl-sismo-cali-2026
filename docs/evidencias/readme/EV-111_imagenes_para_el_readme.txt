@@ -25,5 +25,6 @@ Imágenes generadas desde su fuente en texto (no son capturas; las aportadas a m
 | docs/img/insignias/licencia.svg | valores medidos del repositorio | python scripts/make_insignias.py | 3ec6eae897e34b003950129e6e448ada65edda3eb6093b80a15ebb38a5df2aae |
 | docs/img/insignias/madurez.svg | valores medidos del repositorio | python scripts/make_insignias.py | 1bcc283d9cd4442b2fe692c973217e648db92e51017d02eb54dc4b11d56ddce0 |
 | docs/img/insignias/mysql.svg | valores medidos del repositorio | python scripts/make_insignias.py | d76990921e6387bc823da42dcb52b9b73711b61e6dcea6964f4e7a10628e7e56 |
-| docs/img/insignias/pruebas.svg | valores medidos del repositorio | python scripts/make_insignias.py | 3d4913cbad351bec19b63f6abb0481214817ddb9d7e2f20f6a84a60984fc48e3 |
+| docs/img/insignias/pruebas.svg | valores medidos del repositorio | python scripts/make_insignias.py | dce8d93bf6e7f5ff9d1405de21358b39aee093ebe03423b3a0b1da955222b92e |
 | docs/img/insignias/python.svg | valores medidos del repositorio | python scripts/make_insignias.py | 6e153fae4d12dd489ac5bb53d23d79c51a68c4a8d40cd11af511d98e13310da0 |
+| docs/img/insignias/verificacion.svg | valores medidos del repositorio | python scripts/make_insignias.py | 92c1d52cd188753226f5064eb67e1daf8a989694ac66cfe2ba902c03cbe52eb9 |

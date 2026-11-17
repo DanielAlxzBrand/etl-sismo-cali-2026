@@ -1,5 +1,9 @@
 # ETL medallion del sismo M7.4 de Cali (10 de agosto de 2026)
 
+![Python 3.13](docs/img/insignias/python.svg) ![Airflow 3.3.2](docs/img/insignias/airflow.svg) ![MySQL 8.0](docs/img/insignias/mysql.svg) ![Pruebas automáticas](docs/img/insignias/pruebas.svg) ![Cobertura de src](docs/img/insignias/cobertura.svg) ![Licencia MIT](docs/img/insignias/licencia.svg) ![Madurez: MVP académico](docs/img/insignias/madurez.svg) ![Última verificación](docs/img/insignias/verificacion.svg)
+
+[Documentación](docs/README.md) · [Análisis](docs/gold/resultados.md) · [Datos](data/) · [Guía de instalación](docs/instalacion/README.md)
+
 Pipeline ETL con capas Bronze, Silver y Gold que integra una capa satelital de impacto en construcciones y el estrato socioeconómico por barrio, con una API de solo lectura, un panel, dos almacenes (SQLite y MySQL) y orquestación con Airflow.
 
 ## 1. Descripción y madurez
@@ -33,9 +37,7 @@ Los tres recuadros siguientes son los mismos de [docs/gold/resultados.md](docs/g
 Las cifras de la evaluación estructural son cifras reportadas por la prensa citando a la Alcaldía; no las cotejamos con una fuente oficial descargable. La unidad (predios) no es la nuestra (construcciones), por lo que no las comparamos ni las mezclamos con ninguna cifra de Gold.
 
 ## 2. Insignias
-![Python 3.13](docs/img/insignias/python.svg) ![Airflow 3.3.2](docs/img/insignias/airflow.svg) ![MySQL 8.0](docs/img/insignias/mysql.svg) ![Pruebas automáticas](docs/img/insignias/pruebas.svg) ![Cobertura de src](docs/img/insignias/cobertura.svg) ![Licencia MIT](docs/img/insignias/licencia.svg) ![Madurez: MVP académico](docs/img/insignias/madurez.svg)
-
-Cada valor sale de un archivo del repositorio y una prueba comprueba que coincida: Python de `requirements.txt`, Airflow del `Dockerfile` de `orquestacion/`, el número de pruebas de la recolección de pytest y la licencia de `LICENSE`. La cobertura es la de `src/` sin red, medida con la suite completa ([EV-109](docs/evidencias/readme/EV-109_cobertura_de_src.txt)); es una cota inferior porque parte del código se ejecuta en subprocesos que la medición no sigue. No hay insignias de integración continua porque no hay integración continua (sección 12).
+Las insignias están bajo el título. Cada valor sale de un archivo del repositorio y una prueba comprueba que coincida: Python de `requirements.txt`, Airflow del `Dockerfile` de `orquestacion/`, el número de pruebas de la recolección de pytest, la licencia de `LICENSE` y la fecha de la última verificación del manifiesto de evidencias. La última verificación es la fecha de [EV-100](docs/evidencias/modo_completo/EV-100_guia_seguida_desde_un_zip_nuevo.txt), la guía del modo completo seguida desde un zip nuevo; no es una ejecución automática. La cobertura es la de `src/` sin red, medida con la suite completa ([EV-109](docs/evidencias/readme/EV-109_cobertura_de_src.txt)); es una cota inferior porque parte del código se ejecuta en subprocesos que la medición no sigue. No hay insignias de integración continua porque no hay integración continua (sección 12).
 
 ## 3. Tabla de contenidos
 - [1. Descripción y madurez](#1-descripción-y-madurez)
@@ -88,53 +90,139 @@ Los servicios locales escuchan solo en `127.0.0.1`:
 
 Detalle por componente: [API](docs/api/arquitectura.md), [panel](docs/panel/arquitectura_panel.md), [orquestación](docs/orquestacion/README.md) y [modelo de datos](docs/almacenamiento/modelo_datos.md).
 
+**Calidad, linaje y monitoreo.** La calidad vive en `data/silver/quality_report.json` y en las pruebas de `tests/`. El linaje, en el manifiesto de Bronze con el sha256 de cada archivo y en la trazabilidad de [docs/checklist/trazabilidad.md](docs/checklist/trazabilidad.md). El monitoreo, en los registros de `logs/`, en `/health` y `/calidad` de la API y en la interfaz de Airflow. No hay un servicio aparte para ninguno de los tres.
+
 ## 5. Stack tecnológico
 Las versiones son las de `requirements.txt`, `orquestacion/Dockerfile` y los compose; una prueba comprueba que esta tabla coincida con ellos.
+
+**Extracción**
+
+| Componente | Versión | Para qué lo elegimos |
+|---|---|---|
+| `requests` | 2.34.2 | descarga con reintentos de la capa ArcGIS, del CSV y de los polígonos |
+| `openpyxl` | 3.1.5 | lector de Excel del módulo tabular; hoy la fuente es un CSV y el lector admite los dos formatos |
+
+**Orquestación**
+
+| Componente | Versión | Para qué lo elegimos |
+|---|---|---|
+| Airflow | 3.3.2 | orquestación con CeleryExecutor, en Docker |
+| Postgres | 16 | metadatos de Airflow (imagen fijada por digest) |
+| Redis | 7.2 | cola de Airflow (imagen fijada por digest) |
+
+**Transformación**
 
 | Componente | Versión | Para qué lo elegimos |
 |---|---|---|
 | Python | 3.13 | única versión con la que se fijaron las salidas de la línea base |
 | `pandas` | 3.0.6 | limpieza y cálculo; con otra versión cambian celdas de la línea base (D56) |
 | `numpy` | 2.5.4 | cálculo numérico |
-| `requests` | 2.34.2 | descarga con reintentos |
 | `shapely` | 2.2.0 | punto en polígono local para validar la llave (D5) |
-| `pyyaml` | 6.0.3 | lectura de `config/config.yaml` |
+
+**Almacenamiento**
+
+| Componente | Versión | Para qué lo elegimos |
+|---|---|---|
+| SQLite | incluido en Python | recalcular los indicadores con SQL de forma independiente (D10) |
+| MySQL | 8.0 | almacén relacional con historial de cargas; se verificó en vivo con 8.0.45 |
+| `pymysql` | 1.2.4 | carga relacional a MySQL |
+
+**Servicio y consumo**
+
+| Componente | Versión | Para qué lo elegimos |
+|---|---|---|
 | `fastapi` | 0.162.7 | API tipada y documentada de solo lectura |
 | `pydantic` | 2.14.3 | contratos de respuesta de la API |
 | `uvicorn` | 0.54.0 | servidor de la API |
 | `streamlit` | 1.67.0 | panel sobre la API (D20) |
 | `altair` | 6.3.0 | gráficos del panel |
-| `pymysql` | 1.2.4 | carga relacional a MySQL |
+| phpMyAdmin | 5.2.3 | ver las tablas de forma segura (imagen fijada por digest) |
+
+**Calidad**
+
+| Componente | Versión | Para qué lo elegimos |
+|---|---|---|
 | `pytest` | 9.2.0 | pruebas |
 | `coverage` | 7.17.3 | cobertura de `src/` |
+| `jupyter` | 1.1.1 | los cinco notebooks de análisis y validación, entre ellos el recálculo independiente |
+
+Decisión de alcance: calidad con `pytest` y `quality_report.json`. No usamos herramientas externas de calidad de datos ni de transformación declarativa (por ejemplo Great Expectations o dbt): las reglas de Silver viven en el código y cada una tiene su prueba.
+
+**Observabilidad.** El módulo `logging` de la biblioteca estándar de Python (`src/logger.py`), la interfaz de Airflow y `/health` de la API. No usamos herramientas externas (sección 11).
+
+**Infraestructura y apoyo**
+
+| Componente | Versión | Para qué lo elegimos |
+|---|---|---|
+| `pyyaml` | 6.0.3 | lectura de `config/config.yaml` |
+| `python-dotenv` | 1.2.4 | lectura de `.env` |
 | `matplotlib` | 3.11.2 | gráficos de evidencias y diagramas propios |
-| `jupyter` | 1.1.1 | los cinco notebooks de análisis y validación |
-| SQLite | incluido en Python | recalcular los indicadores con SQL de forma independiente (D10) |
-| MySQL | 8.0 | almacén relacional con historial de cargas; se verificó en vivo con 8.0.45 |
-| Airflow | 3.3.2 | orquestación con CeleryExecutor, en Docker |
-| Postgres | 16 | metadatos de Airflow (imagen fijada por digest) |
-| Redis | 7.2 | cola de Airflow (imagen fijada por digest) |
-| phpMyAdmin | 5.2.3 | ver las tablas de forma segura (imagen fijada por digest) |
 
 Docker Desktop con WSL2 se usó solo para Airflow y phpMyAdmin (Docker 29.9.3 y Compose 5.7.0 en la última prueba completa, [EV-100](docs/evidencias/modo_completo/EV-100_guia_seguida_desde_un_zip_nuevo.txt)).
 
 ## 6. Estructura del repositorio
-| Ruta | Contenido |
-|---|---|
-| `main.py` | punto de entrada del pipeline: `--stage extract`, `transform`, `gold` o `all`, y `--refresh` |
-| `config/` | parámetros: fuentes, umbrales, fechas, rutas, registro de ejecución, API y panel |
-| `data/` | `bronze/`, `silver/` y `gold/` con sus salidas versionadas |
-| `src/` | código por capas: `extract/`, `transform/`, `load/`, `api/`, `panel/`, `common.py` y `logger.py` |
-| `tests/` | pruebas automáticas |
-| `scripts/` | utilidades: carga y verificación de MySQL, preparación de Airflow, escáner de secretos, empaquetado, matriz de casos e informes ([scripts/README.md](scripts/README.md)) |
-| `dags/` | el DAG `medallon_etl_dag.py` |
-| `orquestacion/` | Dockerfile, compose de Airflow y requisitos de su imagen |
-| `servicios/` | compose de phpMyAdmin de solo lectura |
-| `notebooks/` | cinco notebooks: conexión, exploración, Silver, Gold con recálculo en SQL y validación |
-| `docs/` | documentación por tema; el índice y la tabla «dónde está cada cosa» están en [docs/README.md](docs/README.md) |
-| `LICENSE` | licencia MIT del código |
+```
+.
+├── main.py                   # punto de entrada: --stage extract, transform, gold o all, y --refresh
+├── requirements.txt          # dependencias con versión exacta (Python 3.13)
+├── pytest.ini                # configuración de las pruebas
+├── .env.example              # nombres de las variables de entorno, sin valores
+├── LICENSE                   # licencia MIT del código
+├── config/
+│   ├── config.yaml           # fuentes, umbrales, fechas, rutas, registro de ejecución, API y panel
+│   └── parametros_costos.yaml  # precios como parámetros vacíos
+├── data/
+│   ├── bronze/               # respuestas crudas, CSV original, polígonos y manifest.jsonl
+│   ├── silver/               # tablas limpias, huérfanos y quality_report.json
+│   └── gold/                 # gold_final.csv, kpis_gold.csv, kpis_sensibilidad.csv y etl_sismo.db
+├── src/
+│   ├── extract/              # descarga paginada y snapshots de Bronze
+│   ├── transform/            # limpieza, llave, JOIN y Gold
+│   ├── load/                 # carga a SQLite y carga relacional a MySQL (esquemas en sql/)
+│   ├── api/                  # API de solo lectura
+│   ├── panel/                # panel Streamlit (páginas en paginas/)
+│   ├── common.py             # configuración, manifiesto y sha256
+│   └── logger.py             # registro de ejecución con enmascarado de secretos
+├── tests/                    # pruebas automáticas
+├── scripts/                  # utilidades (ver scripts/README.md)
+│   ├── mysql/                # configurar las cuentas y verificar MySQL
+│   ├── orquestacion/         # preparar y sincronizar Airflow
+│   ├── panel/                # lanzador de la API y el panel
+│   ├── usuarios/             # análisis de sesiones con personas usuarias
+│   ├── validacion/           # regresiones e igualdad de código
+│   ├── finanzas/             # medición de recursos
+│   └── evidencias/           # scripts que producen evidencias
+├── dags/
+│   └── medallon_etl_dag.py   # el DAG medallon_etl_sismo
+├── orquestacion/             # Dockerfile, compose de Airflow y requisitos de su imagen
+├── servicios/
+│   └── phpmyadmin/           # compose de phpMyAdmin de solo lectura
+├── notebooks/                # cinco notebooks: conexión, exploración, Silver, Gold y validación
+└── docs/
+    ├── README.md             # índice y tabla «dónde está cada cosa»
+    ├── DECISIONES.md         # decisiones con alternativas, razón y riesgo
+    ├── almacenamiento/       # modelo relacional, configuración de MySQL, phpMyAdmin y carga
+    ├── api/                  # arquitectura del backend
+    ├── bronze/               # fuentes, catálogo, atribución y muestras
+    ├── checklist/            # estado y trazabilidad de los ítems
+    ├── diagramas/            # diagramas en color aportados y diagramas con fuente en texto
+    ├── estrategia/           # estrategia, objetivo, canvas y MVP
+    ├── evidencias/           # manifiesto y evidencias con sha256
+    ├── finanzas/             # estructura de costos y recursos medidos
+    ├── gold/                 # definición de los indicadores y resultados
+    ├── img/                  # insignias y copias de las imágenes del README
+    ├── instalacion/          # guías de instalación
+    ├── orquestacion/         # Airflow: diferencias con la guía y operación
+    ├── panel/                # arquitectura, guía y pruebas del panel
+    ├── proyecto/             # contexto, entorno y decisiones técnicas
+    ├── retroalimentacion/    # retroalimentación recibida y cómo se atendió
+    ├── seguridad/            # gestión de credenciales
+    ├── silver/               # hallazgos, reglas y validación de la llave
+    ├── usuarios/             # material y análisis de sesiones con personas usuarias
+    └── validacion/           # matriz de casos, informe de pruebas y registro de defectos
+```
 
-No se versionan `logs/`, `dist/`, `.venv/` ni `.env`.
+No se versionan los archivos `.log` de `logs/`, ni `dist/`, `.venv/` ni `.env`.
 
 ## 7. Requisitos e instalación
 | Requisito | Para qué | Cómo comprobarlo |
@@ -160,7 +248,22 @@ python main.py --stage all
 python -m pytest -q -p no:cacheprovider
 python scripts\panel\ejecutar_panel.py                  # API en 8000 y panel en 8501; Ctrl+C cierra los dos
 ```
-Qué debe verse: `python main.py --stage all` termina con líneas como `Salida: construcciones=5.146 barrios=346 integrado=5.146 | cobertura de llave=99.8834% (pasa)` y `Salida: gold_final=5.146 filas | kpis_gold=23 filas (6 indicadores) | sensibilidades=107 filas`; las pruebas terminan con `1309 passed`. El pipeline no necesita red ni claves, porque Bronze ya está en el repositorio. Las variables de `.env.example` son solo nombres: `HTTP_USER_AGENT` es opcional y las `MYSQL_*` solo se usan en el modo completo.
+Qué debe verse: `python main.py --stage all` termina con líneas como `Salida: construcciones=5.146 barrios=346 integrado=5.146 | cobertura de llave=99.8834% (pasa)` y `Salida: gold_final=5.146 filas | kpis_gold=23 filas (6 indicadores) | sensibilidades=107 filas`; las pruebas terminan con `1328 passed`. El pipeline no necesita red ni claves, porque Bronze ya está en el repositorio. El archivo `.env` se crea al configurar el modo completo y nunca se versiona; `.env.example` trae solo los nombres de sus 12 variables y la tabla siguiente dice para qué sirve cada una (nunca valores):
+
+| Variable | Para qué sirve | Obligatoria | Modo |
+|---|---|---|---|
+| `HTTP_USER_AGENT` | identificación de las descargas; si falta se usa una genérica | no | mínimo y completo, solo al descargar con red (`--refresh`) |
+| `MYSQL_HOST` | servidor de MySQL | sí, si se usa MySQL | completo |
+| `MYSQL_PORT` | puerto de MySQL | sí, si se usa MySQL | completo |
+| `MYSQL_USER` | cuenta de la carga y de la API con MySQL | sí, si se usa MySQL | completo |
+| `MYSQL_PASSWORD` | contraseña de esa cuenta; la genera el script de configuración | sí, si se usa MySQL | completo |
+| `MYSQL_DATABASE` | base de datos real | sí, si se usa MySQL | completo |
+| `MYSQL_DATABASE_PRUEBA` | base para las verificaciones destructivas | sí, para verificar MySQL | completo |
+| `MYSQL_DOCKER_USER` | cuenta de la tarea de carga del DAG | sí, si se usa Airflow | completo |
+| `MYSQL_DOCKER_PASSWORD` | contraseña de esa cuenta; la genera el script de configuración | sí, si se usa Airflow | completo |
+| `MYSQL_DOCKER_ORIGEN` | origen desde el que se conecta esa cuenta; lo escribe el script de configuración | sí, si se usa Airflow | completo |
+| `MYSQL_LECTURA_USER` | cuenta de solo lectura para phpMyAdmin | sí, si se usa phpMyAdmin | completo |
+| `MYSQL_LECTURA_PASSWORD` | contraseña de esa cuenta; la genera el script de configuración | sí, si se usa phpMyAdmin | completo |
 
 Tiempos medidos, todos de una máquina de desarrollo con Windows 11 y 15,7 GB de RAM; en otro equipo cambian y no los prometemos:
 
@@ -180,6 +283,8 @@ Los tiempos de Docker son de una máquina que ya tenía Docker, MySQL y las imá
 Con el modo mínimo funcionando, el modo completo agrega, en este orden: las tres cuentas de MySQL (`.\.venv\Scripts\python.exe scripts\mysql\configurar_mysql.py`, con sus opciones `--usuario-docker` y `--usuario-lectura`; cada una pide la contraseña del administrador por teclado y guarda las credenciales solo en `.env`), la carga a MySQL, la carpeta de Airflow (`scripts\orquestacion\preparar_airflow.py`) con `docker compose build`, `docker compose up airflow-init` y `docker compose up -d`, y phpMyAdmin. La guía con lo que debe verse en cada comando y los errores comunes está en [docs/instalacion/guia_modo_completo.md](docs/instalacion/guia_modo_completo.md).
 
 ## 8. Ejecución del pipeline
+Hay un solo entorno, el local (la máquina de quien lo ejecuta): no hay staging ni producción.
+
 ```powershell
 python main.py --stage all                  # Bronze, Silver y Gold
 python main.py --stage extract              # solo Bronze
@@ -247,15 +352,31 @@ La API tiene **11 rutas GET**: `/calidad`, `/composicion`, `/comunas`, `/constru
 | Calidad de Silver | `quality_report.json` y los umbrales de `config/config.yaml` | campos del reporte, cobertura frente al umbral, mínimo de filas |
 | Salidas del pipeline | los nueve archivos de la línea base con sha256 | que regenerarlos reproduce los mismos bytes |
 
+**Convenciones de nombres.** Las tablas y los archivos de Silver llevan el prefijo `silver_` (`silver_integrated`); Gold se llama `gold_final`, `kpis_gold` y `kpis_sensibilidad`; las tablas de MySQL van en minúsculas y en singular (`construccion`, `corrida`). Los indicadores son K1 a K6, los escenarios S0 a S5, los hallazgos H1 a H18 y las reglas R01 a R18; los defectos, DEF-nnn; las decisiones, D nnn (la última, D105); los casos de prueba, CP-nnn, y las evidencias, EV-nnn.
+
+**Estrategia de carga.** Cada ejecución regenera Silver y Gold completos desde Bronze y reemplaza las tablas de `etl_sismo.db`; no hay carga incremental ni historial de cambios por registro (SCD). En MySQL, cada carga con una entrada distinta es una corrida completa que se suma a las anteriores, y repetir la misma entrada responde «ya cargada» sin escribir.
+
+**Frescura de los datos.** No hay un acuerdo de nivel de servicio de frescura: los datos son una captura única, descargada el 2026-10-15 (hora de Bogotá), y no se actualizan solos. La fecha de corte, que es la de la última edición de la capa (2026-09-02), la entrega `/health`.
+
+**Umbrales de calidad.** Algunos de los que fija `config/config.yaml`, con su valor:
+
+| Parámetro | Valor | Qué controla |
+|---|---|---|
+| `thresholds.join_coverage_min` | 0.80 | cobertura mínima de la llave del JOIN |
+| `thresholds.gold_min_rows` | 200 | filas mínimas de Gold |
+| `thresholds.min_edificios_por_barrio` | 10 | construcciones con datos que exige K4 a cada barrio |
+| `silver.muestra_baja_severos` | 30 | severos por debajo de los cuales un grupo se marca de muestra baja |
+
 ## 10. Calidad y pruebas
-Hay **1309 pruebas** automáticas, sin red ni servidor MySQL. Se ejecutan con `python -m pytest -q -p no:cacheprovider` y deben terminar con `1309 passed` en un clon con Git instalado; en el zip descomprimido se omiten algunas que necesitan el historial de Git (la lista y el motivo están en [docs/instalacion/README.md](docs/instalacion/README.md)).
+Hay **1328 pruebas** automáticas, sin red ni servidor MySQL. Se ejecutan con `python -m pytest -q -p no:cacheprovider` y deben terminar con `1328 passed` en un clon con Git instalado; en un clon con Git no se omite ninguna; en el zip descomprimido con Git se omite 1 (`test_sin_hallazgos_en_el_historial_de_git`, porque el zip no trae historial) y sin Git se omiten 10: esa, 8 que arman un repositorio temporal y 1 que arma el zip y corre las demás. La lista está en la sección 3.1 de [docs/instalacion/README.md](docs/instalacion/README.md), medida con 1.007 pruebas ([EV-096](docs/evidencias/auditoria/EV-096_independencia_repetida_y_omisiones.txt)).
 
 - **Qué cubren:** el pipeline (llaves, duplicados, tipos, Wilson, Newcombe, Mantel-Haenszel), la reproducción byte a byte de la línea base, la API (estructura, solo GET, sin escritura), el panel (las ocho páginas con la API real en memoria, formato de cifras, aislamiento), la carga relacional (idempotencia, historial, reversión, integridad referencial), el DAG y los compose analizados como texto, el empaquetado y la gestión de secretos.
 - **Las cifras de los documentos se prueban contra las salidas.** Este README, el documento de resultados y la guía de instalación afirman cifras; una prueba extrae cada una del texto y la compara con la medida. Si alguien edita una cifra, o la deja desactualizada en un solo lugar, la prueba falla.
 - **Recálculo independiente:** el notebook `notebooks/04_gold_kpis.ipynb` recalcula los indicadores con SQL sobre SQLite y con implementaciones propias de Wilson, Newcombe, Mantel-Haenszel y Spearman; la diferencia máxima es inferior a 1e-9. Ese recálculo detectó un defecto real de Mantel-Haenszel (se contaban construcciones sin datos satelitales en los tamaños de grupo), que se corrigió y quedó fijado por una prueba.
-- **Defectos:** **25 defectos** registrados (DEF-001 a DEF-025), cada uno con una prueba de regresión que falla sin su corrección ([docs/validacion/registro_defectos.md](docs/validacion/registro_defectos.md)).
+- **Defectos:** **25 defectos** registrados (DEF-001 a DEF-025), cada uno con su causa, su corrección y la prueba o comprobación que lo vigila ([docs/validacion/registro_defectos.md](docs/validacion/registro_defectos.md)). Para 15 se demostró que su prueba de regresión falla sin la corrección, reintroduciendo el defecto en una copia ([EV-036](docs/evidencias/orquestacion/EV-036_regresiones_sin_correccion.txt) y [EV-104](docs/evidencias/modo_completo/EV-104_regresiones_def017_a_def021.txt)). Para los otros 10 no se demostró (DEF-003, DEF-006, DEF-009, DEF-010, DEF-011, DEF-014 y DEF-022 a DEF-025) y el registro da el motivo de cada uno: dependen del entorno, de un servidor MySQL, de una versión de pandas, del dibujo de una captura o de que la prueba no puede reintroducir el defecto por reemplazo de texto.
 - **Mutaciones:** [EV-103](docs/evidencias/modo_completo/EV-103_mutaciones_modo_completo.txt) registra 132 mutaciones en total, todas detectadas, el 2026-11-16; la tabla siguiente las descompone. Una mutación cambia a propósito un archivo en un clon del repositorio, corre las pruebas indicadas y debe hacer fallar al menos una; después se restaura el clon. Lo que se prueba son las pruebas del modo completo, no los datos. Quedaron como registro de lo que se probó ese día; no hay un comando único que las repita.
 - **Cobertura:** 78 % de las líneas de `src/`, medida sin red con la suite completa el 2026-11-16 ([EV-109](docs/evidencias/readme/EV-109_cobertura_de_src.txt)). No es una cota exacta: `extract_api.py` necesita red y dos módulos se ejercen en subprocesos que no se miden.
+- **Si se incumple un umbral** (verificado en el código): con `thresholds.join_coverage_min` la transformación no se detiene; `quality_report.json` registra `resultado_umbral: no pasa`, se escribe un aviso `WARNING` cuando la cobertura queda a menos de 0,05 del umbral y la prueba `test_cobertura_join_supera_umbral` falla si el reporte versionado dice `no pasa`. Con `thresholds.gold_min_rows` la etapa Gold se detiene con el error «Gold por debajo del mínimo». Con `silver.muestra_baja_severos` el grupo solo se marca como de muestra baja y se escribe un aviso. `thresholds.min_edificios_por_barrio` no avisa: deja fuera de K4 a los barrios con menos construcciones con datos.
 - **Matriz de casos e informe:** [matriz de casos](docs/validacion/matriz_casos_prueba.md) por función crítica e [informe de pruebas](docs/validacion/informe_pruebas.md), generados con `python scripts\make_matriz_casos.py` y `python scripts\informe_pruebas.py`.
 - **Evidencias:** cada afirmación de los documentos que se apoya en una ejecución tiene una evidencia con su sha256 en [docs/evidencias/manifiesto.md](docs/evidencias/manifiesto.md).
 
@@ -274,11 +395,14 @@ Lo que no hay: pruebas de carga, de fuzzing ni de otro sistema operativo distint
 - **Estado del servicio:** la API responde `/health` (estado, fecha de corte y filas por tabla) y `/calidad` (coberturas y confianza de la llave).
 - **Calidad de los datos:** `data/silver/quality_report.json` con las coberturas y las banderas de cada regla.
 - **Orquestación:** la interfaz de Airflow muestra el estado de cada tarea y la duración de cada ejecución.
+- **Linaje:** el manifiesto de Bronze liga cada archivo con su URL, su fecha y su sha256; cada regla de Silver cita el hallazgo que la justifica; y la trazabilidad por ítem enlaza archivos, pruebas y evidencias ([docs/checklist/trazabilidad.md](docs/checklist/trazabilidad.md)).
+- **Impacto de un cambio:** `tests/test_pipeline_reproducible.py` compara en una copia los nueve archivos de la línea base con lo regenerado, así que un cambio que altere una salida se ve como una diferencia de sha256; después se busca el archivo cambiado en la trazabilidad para saber qué ítems, pruebas y evidencias lo citan, y `python scripts\validar_checklist.py --todos` comprueba que siguen en pie. No hay una herramienta que dibuje el grafo de dependencias.
+- **Registros:** un archivo por día; no hay rotación ni borrado automático y los `.log` no se versionan.
 
 Decidimos no incluir alertas ni métricas externas (Slack, PagerDuty, Prometheus): el proyecto corre en una máquina local, sin un servicio desplegado que alguien deba vigilar. Si se despliega, esta sección es la primera que habría que ampliar.
 
 ## 12. Despliegue e integración continua
-**No hay despliegue en un servidor ni integración continua.** Tampoco hay repositorio remoto publicado, así que no hay flujos automáticos. Lo que sí hay es un procedimiento manual que se repite igual cada vez:
+**No hay despliegue en un servidor ni integración continua.** Existe un solo entorno, el local; no hay staging ni producción. Tampoco hay repositorio remoto publicado, así que no hay flujos automáticos. Lo que sí hay es un procedimiento manual que se repite igual cada vez:
 
 1. Las pruebas completas en un clon y en el zip.
 2. `python scripts\make_dist.py` arma el zip por lista de inclusión: nunca entran `.env`, `.git`, `.venv`, `logs` ni `dist`.
@@ -294,27 +418,29 @@ Docker se usa solo para Airflow y phpMyAdmin; el pipeline, la API y el panel cor
 - **Silver y Gold:** se regeneran desde Bronze y una prueba comprueba que, en una copia, reproducen byte a byte los nueve archivos de la línea base. Los datos dudosos no se descartan: los duplicados de geometría se marcan, los huérfanos se guardan en archivos aparte y los nulos no se imputan.
 - **Idempotencia:** repetir `--stage extract` no duplica nada; la carga a MySQL responde «ya cargada» cuando la entrada es la misma y no escribe. Cada carga distinta ocurre en una sola transacción: si algo falla, no queda nada a medias.
 - **Airflow:** el DAG no tiene reintentos de tareas (el valor por omisión es 0) y `catchup=False`. La carga a MySQL depende de un servicio que está fuera del repositorio, el MySQL del equipo; si no responde, la tarea falla y hay que volver a lanzarla. Ante un fallo, cada tarea borra su copia de trabajo. El fallo inducido (`fallo_inducido`) permite comprobar esa recuperación ([EV-042](docs/evidencias/orquestacion/EV-042_fallo_inducido_y_recuperacion.txt)).
+- **Si la fuente cambia de esquema:** no hay una validación explícita de columnas ni una prueba que simule ese cambio, y no podemos afirmar qué mensaje daría una columna que falte o cambie de nombre. Lo que sí existe: la extracción guarda el metadato de la capa (`capa_meta.json`, con sus campos) y los conteos antes y después de descargar, y las pruebas de Bronze comprueban que las páginas sumen el conteo oficial; Silver se detiene si aparece una etiqueta de `Estado_Estructural` que no conoce, si `OBJECTID` o el código de barrio dejan de ser únicos, si el CSV no se lee como UTF-8 o si hay nombres con codificación dañada. Como Bronze es inmutable y todo se calcula sobre el snapshot versionado, la fuente solo puede afectar al proyecto con `--refresh`, que crea un snapshot nuevo sin tocar el anterior.
 - **Backfill: no hay.** Hay una sola captura de la fuente, con su fecha. Un refresco crea un snapshot nuevo y no reescribe el pasado.
 
 ## 14. Seguridad
-- **Credenciales:** las fuentes no piden credenciales. La única secreta es la de MySQL: la crea `scripts/mysql/configurar_mysql.py` con `secrets`, la guarda solo en `.env` (que Git ignora) y nunca la imprime. La contraseña del administrador de MySQL la teclea la persona que la conoce. Política completa: [docs/seguridad/gestion_credenciales.md](docs/seguridad/gestion_credenciales.md).
+- **Credenciales:** las fuentes no piden credenciales. Los secretos son las contraseñas de las tres cuentas de MySQL, que crea `scripts/mysql/configurar_mysql.py` con `secrets`, guarda solo en `.env` (que Git ignora) y nunca imprime, y los de Airflow (clave Fernet, secreto JWT y contraseñas de la interfaz y de Postgres), que `scripts/orquestacion/preparar_airflow.py` genera al azar en el `.env` de la carpeta de Airflow, fuera del repositorio. La contraseña del administrador de MySQL la teclea la persona que la conoce. Política completa: [docs/seguridad/gestion_credenciales.md](docs/seguridad/gestion_credenciales.md).
 - **Tres cuentas de MySQL con el mínimo privilegio** y ninguna con origen `%`:
 
 | Cuenta | Para qué | Privilegios |
 |---|---|---|
-| `sismo_etl` | carga y API con MySQL | lectura y escritura solo sobre las dos bases del proyecto |
+| `sismo_etl` | carga y API con MySQL | `SELECT`, `INSERT`, `UPDATE`, `DELETE`, `CREATE`, `DROP`, `ALTER`, `INDEX` y `REFERENCES` solo sobre las dos bases del proyecto, sin privilegios globales ni `GRANT OPTION` |
 | `sismo_airflow` | la tarea de carga del DAG | `SELECT`, `INSERT`, `CREATE`, `INDEX` y `REFERENCES` solo sobre `sismo_cali`; sin `UPDATE`, `DELETE` ni `ALTER` |
 | `sismo_lectura` | phpMyAdmin | solo `SELECT` sobre `sismo_cali` |
 
 - **API y panel de solo lectura:** la API acepta solo GET y devuelve 405 para cualquier otro método; el panel no abre bases ni archivos, no lee `.env` y habla solo con la API. Todo escucha en `127.0.0.1`.
-- **Airflow:** el repositorio se monta en solo lectura y las tareas escriben en una copia temporal. El compose oficial trae un secreto de ejemplo para la API interna y deja vacía la clave Fernet; lo mitigamos publicando los puertos solo en `127.0.0.1` y no guardando conexiones ni variables en Airflow.
+- **Airflow:** el repositorio se monta en solo lectura y las tareas escriben en una copia temporal. El compose adaptado no trae secretos escritos: exige la clave Fernet, el secreto JWT y las contraseñas desde el `.env` de Airflow, y publica los puertos solo en `127.0.0.1`.
+- **Cifrado:** en tránsito, las fuentes se descargan por HTTPS; lo local (API, panel, MySQL, phpMyAdmin y Airflow) va sin TLS por la interfaz de loopback. En reposo no ciframos nada (CSV, SQLite, MySQL ni `.env`). Es una decisión de alcance: los datos son abiertos y no personales y todo corre en una máquina local; si el proyecto se despliega, hay que reconsiderarla.
 - **Escáner de secretos:** `python scripts\escanear_secretos.py` revisa el árbol, el historial, los notebooks, los registros y el zip, y reporta archivo, línea y patrón, nunca el valor; con `--canario-env` busca también los valores reales del `.env`.
 
 ![Intento de INSERT rechazado por MySQL para la cuenta de solo lectura en phpMyAdmin](docs/img/readme/phpmyadmin_insert_rechazado.png)
 
 *Figura 7. Muestra que MySQL rechaza una escritura hecha con la cuenta de solo lectura.*
 
-**Datos personales.** El proyecto no maneja datos personales: trabaja con construcciones por su huella catastral y con estrato por barrio. Las sesiones con personas usuarias aún no existen; cuando existan, sus nombres y consentimientos se guardan fuera del repositorio ([protocolo](docs/usuarios/protocolo_sesiones.md)). No definimos una política de retención más allá de que los snapshots de Bronze son inmutables.
+**Datos personales.** El proyecto no maneja datos personales: trabaja con construcciones por su huella catastral y con estrato por barrio. Las sesiones con personas usuarias aún no existen; cuando existan, sus nombres y consentimientos se guardan fuera del repositorio ([protocolo](docs/usuarios/protocolo_sesiones.md)). No definimos una política de retención: los snapshots de Bronze son inmutables y los registros de `logs/` se acumulan, un archivo por día, sin rotación ni borrado automático.
 
 **Límite conocido.** El origen `localhost` de una cuenta no acota por sí solo quién puede conectarse: cualquier proceso local que tenga la contraseña puede hacerlo. La protección real es el mínimo privilegio más una contraseña aleatoria (D67).
 
@@ -327,10 +453,19 @@ Mediciones locales de una máquina, con su fecha ([docs/finanzas/recursos_medido
 | Latencia de la API sobre SQLite, mediana por ruta | de 3,6 a 13,9 ms | 2026-11-14 |
 | Carga a MySQL de 5.622 filas, fila a fila frente a lotes de 2.000 | 2,415 s frente a 0,715 s | 2026-11-14 |
 | Memoria de la API y el panel en reposo | unos 160 MiB | 2026-11-15 |
-| Memoria de Airflow en reposo (seis contenedores) | 1.970 MiB | 2026-11-14 |
+| Memoria de Airflow en reposo (siete contenedores: worker, triggerer, apiserver, dag-processor, scheduler, Postgres y Redis) | 1.970 MiB | 2026-11-14 |
 | Memoria de phpMyAdmin en reposo | 33 MiB | 2026-11-15 |
 
 Con 8 GB de RAM no conviene encender todo a la vez; esa configuración no está probada y la guía de instalación propone trabajar por tramos.
+
+**Optimizaciones aplicadas** (verificadas en el código):
+- La carga a MySQL va por lotes de 2.000 filas (`almacenamiento.lote` de `config/config.yaml`, con `executemany`) dentro de una sola transacción; fue 3,4 veces más rápida que fila a fila ([EV-030](docs/evidencias/almacenamiento/EV-030_benchmark_lotes.csv)).
+- El esquema de MySQL define 8 índices secundarios (por ejemplo `ix_construccion_estrato` e `ix_construccion_severo`) en `src/load/sql/esquema_mysql.sql`.
+- El panel guarda 300 s las respuestas correctas de la API (`ttl_cache_s`) y no guarda los fallos.
+- La API pagina `/construcciones` (50 por omisión, 200 como máximo) y abre cada conexión de solo lectura por solicitud.
+- Con Bronze presente, `--stage extract` no vuelve a descargar: verifica los sha256.
+
+**Escalado.** Todo se midió con 5.146 construcciones. No medimos más datos, más personas usuarias a la vez ni otro motor de base de datos, y no prometemos cómo escala. Lo único medido que apunta a un límite es el consumo en reposo: unos 160 MiB para la API y el panel y 1.970 MiB para Airflow.
 
 **Costos en la nube: no aplican.** Todo corre en una máquina local, así que no hay precios que medir. La estructura de costos, con las fórmulas y los precios como parámetros vacíos, está en [docs/finanzas/estructura_costos.md](docs/finanzas/estructura_costos.md); no inventamos ninguna cifra monetaria.
 
@@ -357,13 +492,22 @@ Las decisiones, con sus alternativas, su razón y su riesgo, están en [docs/DEC
 ## 17. Contribución y estándares
 Esta sección describe cómo trabajamos hoy; no hay un flujo de solicitudes de cambio porque no hay un repositorio publicado.
 
-- **Ramas y commits:** se trabaja en una rama de desarrollo y se integra a `main`. Cada commit es pequeño, va en español y nombra el componente que cambia.
+- **Ramas y commits:** el trabajo vive en la rama `desarrollo`; la rama `master` conserva un punto anterior y no se ha vuelto a integrar. No hay rama `main`. Cada commit es pequeño, va en español y nombra el componente que cambia.
 - **Pruebas primero:** una regla, una prueba. Las reglas de documentos también se prueban (cifras, enlaces, términos prohibidos) y cada prueba nueva trae su caso negativo.
 - **Antes de commitear:** correr las pruebas afectadas y `python scripts\escanear_secretos.py`.
 - **Archivos:** UTF-8 y saltos de línea LF (`.gitattributes` fija los bytes de `data/`); rutas con `pathlib`; versiones exactas en `requirements.txt`.
 - **Documentos:** los de análisis y de evidencias declaran qué afirman y qué no demuestran. Una cifra que se repite en varios lugares se vigila en todos.
 - **Decisiones y evidencias:** cada decisión nueva se numera de forma consecutiva en `docs/DECISIONES.md`; cada evidencia se registra con su sha256 en el manifiesto y el estado de cada ítem del checklist se valida con `python scripts\validar_checklist.py`.
 - **Secretos:** nunca en el repositorio, en notebooks, en registros ni en el zip.
+
+**Lista de revisión para un cambio en el ETL**, derivada de lo que el repositorio ya exige:
+1. Las salidas de la línea base no cambian, o el cambio se justifica y se registra: `tests/test_pipeline_reproducible.py` compara los nueve archivos y, si cambian, hay una decisión que lo explica (como D56).
+2. Los umbrales de `config/config.yaml` siguen valiendo y `quality_report.json` dice `pasa`.
+3. Toda regla de Silver nueva o cambiada está en `docs/silver/reglas_silver.md` con su hallazgo.
+4. La decisión está registrada en `docs/DECISIONES.md` con el número siguiente.
+5. Hay una prueba con su caso negativo, la suite pasa y las cifras repetidas en los documentos se actualizan (las pruebas fallan si no).
+6. `python scripts\escanear_secretos.py` termina en `hallazgos: 0`.
+7. Si hay una evidencia nueva, se registra con su sha256 en el manifiesto y `python scripts\validar_checklist.py --todos` pasa.
 
 **No hay linter ni formateador configurados** (ni ruff, ni black, ni pre-commit). Las convenciones anteriores se cumplen por costumbre y por las pruebas.
 
@@ -391,6 +535,14 @@ Estas son las personas responsables del proyecto. El reparto es un acuerdo del e
 | Daniel Alexander Brand García | Orquestador y responsable general del proyecto: arquitectura, pipeline, calidad y seguridad |
 | Diego Fernando Gordillo Londoño | Responsable del protocolo y del análisis de las sesiones con personas usuarias |
 | Jhoan Sebastián Castellanos Mayor | Responsable de la revisión y el mantenimiento de la documentación, y del guion y la grabación de la demostración |
+
+A quién acudir según el tema:
+
+| Tema | Persona |
+|---|---|
+| Preguntas generales y técnicas: arquitectura, pipeline, calidad y seguridad | Daniel Alexander Brand García |
+| Sesiones con personas usuarias: protocolo y análisis | Diego Fernando Gordillo Londoño |
+| Documentación y demostración | Jhoan Sebastián Castellanos Mayor |
 
 El repositorio aún no está publicado, así que todavía no hay un canal de contacto público. Cuando se publique, esta sección enlazará a sus issues. Las decisiones del proyecto se registran en [docs/DECISIONES.md](docs/DECISIONES.md).
 
