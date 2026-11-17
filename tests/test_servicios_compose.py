@@ -149,3 +149,43 @@ def test_el_diff_del_repositorio_resume_los_cambios_y_no_contiene_contrasenas_ni
         assert pieza in diff, pieza
     # el ejemplo del oficial va oculto para que el escáner de secretos no lo tome por una URL con credenciales
     assert "<ejemplo del oficial>" in diff and not re.search(r"[a-z][a-z0-9+.-]*://[^/\s:@'\"]+:[^/\s@'\"]{3,}@", diff)
+
+
+# --- el documento de credenciales dice lo que el compose hace con la clave Fernet y el secreto JWT ---
+FILA_FERNET_JWT = re.compile(r"(?m)^\| clave Fernet y secreto JWT de Airflow \|.*$")
+
+
+def fila_de_fernet_y_jwt_correcta(doc, compose, preparar):
+    """Lista de problemas de la fila del documento de credenciales sobre la clave Fernet y el secreto JWT, frente al compose y al script que los genera."""
+    fila = FILA_FERNET_JWT.search(doc)
+    if not fila:
+        return ["falta la fila de la clave Fernet y el secreto JWT"]
+    errores = []
+    if "${FERNET_KEY:?" not in compose or "AIRFLOW__API_AUTH__JWT_SECRET:?" not in compose:
+        errores.append("el compose ya no exige la clave Fernet o el secreto JWT")
+    if "FERNET_KEY" not in preparar or "AIRFLOW__API_AUTH__JWT_SECRET" not in preparar:
+        errores.append("el script de preparación ya no genera la clave Fernet o el secreto JWT")
+    for falso in ("deja la Fernet vacía", "trae un secreto JWT de ejemplo", "no usadas con valor propio"):
+        if falso in fila.group(0):
+            errores.append(f"la fila dice «{falso}»")
+    for cierto in ("obligatorias", "se niega a arrancar", "DF-15", "DF-18", ".env"):
+        if cierto not in fila.group(0):
+            errores.append(f"la fila no dice «{cierto}»")
+    return errores
+
+
+def test_la_fila_de_fernet_y_jwt_del_documento_de_credenciales_dice_lo_que_hace_el_compose():
+    doc = (ROOT / "docs" / "seguridad" / "gestion_credenciales.md").read_text(encoding="utf-8")
+    compose = (ROOT / "orquestacion" / "docker-compose.yaml").read_text(encoding="utf-8")
+    preparar = (ROOT / "scripts" / "orquestacion" / "preparar_airflow.py").read_text(encoding="utf-8")
+    assert fila_de_fernet_y_jwt_correcta(doc, compose, preparar) == []
+
+
+def test_una_fila_desactualizada_de_fernet_y_jwt_se_detecta():
+    doc = (ROOT / "docs" / "seguridad" / "gestion_credenciales.md").read_text(encoding="utf-8")
+    compose = (ROOT / "orquestacion" / "docker-compose.yaml").read_text(encoding="utf-8")
+    preparar = (ROOT / "scripts" / "orquestacion" / "preparar_airflow.py").read_text(encoding="utf-8")
+    vieja = doc.replace("**con valor propio y obligatorias**", "**no usadas con valor propio**: el compose oficial deja la Fernet vacía y trae un secreto JWT de ejemplo")
+    assert fila_de_fernet_y_jwt_correcta(vieja, compose, preparar), "la fila antigua"
+    assert fila_de_fernet_y_jwt_correcta(doc, compose.replace("${FERNET_KEY:?", "${FERNET_KEY:-"), preparar), "el compose deja de exigir la clave"
+    assert fila_de_fernet_y_jwt_correcta(doc, compose, preparar.replace("FERNET_KEY", "OTRA")), "el script deja de generarla"
