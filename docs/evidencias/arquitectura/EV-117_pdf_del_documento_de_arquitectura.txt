@@ -2,30 +2,31 @@ EV-117 · PDF del documento de arquitectura y de los ADR, su comprobación y las
 
 Qué es: el PDF que sale de `docs/arquitectura/arquitectura_del_sistema.md` y de los 15 ADR con `scripts/arquitectura/generar_pdf_arquitectura.py` (D108), su comprobación con `--verificar` y las mutaciones de `tests/test_pdf_arquitectura.py`.
 Todo son mediciones de una máquina (Windows 11, PowerShell, Python 3.13.0, Microsoft Edge 157.0.4341.60, que escribe `Skia/PDF m157`). No se usó Docker. No se tocó data/, src/, el pipeline, las etiquetas ni los zips de dist/ (mismos sha256 antes y después).
-Fuente del PDF: el árbol de trabajo del cierre de documentación, a partir del commit 3961c29; el commit que lo trae está en el historial. El PDF no se versiona: se escribió en dist/, que Git ignora, y la regla de make_dist.py deja fuera de cualquier zip un PDF de docs/arquitectura/.
+Fuente del PDF: el árbol de trabajo del cierre de documentación, a partir del commit d82d0aa; el commit que lo trae está en el historial. El PDF no se versiona: se escribió en dist/, que Git ignora, y la regla de make_dist.py deja fuera de cualquier zip un PDF de docs/arquitectura/.
 
-## El PDF final
+## El PDF final (segunda versión: ADR seguidos y dos figuras en gris)
 | Dato | Valor |
 |---|---|
-| Archivo | dist/arquitectura_del_sistema_y_adr.pdf (junto a su HTML, arquitectura_del_sistema_y_adr.html) |
-| Tamaño y sha256 | 1.162.194 bytes · 577c37f70914291a531c818ff8c8cebebe887c21b06cd07bf27b8c8448884198 |
-| Páginas | 47 (portada, índice, el documento y el anexo con los 15 ADR, cada uno empezando en su página) |
+| Archivo | dist/arquitectura_del_sistema_y_adr_nueva.pdf (el archivo sin el sufijo «_nueva» estaba abierto en un visor y no se pudo reemplazar; la versión anterior, de 47 páginas, sigue ahí con el nombre sin sufijo) |
+| Tamaño y sha256 | 1.511.637 bytes · c5b257adece860ca69e1e7413ca6ba2b876f652cba29d0d2ca17aee10886d7d9 |
+| Páginas | 38: portada, índice, el documento y el anexo con los 15 ADR seguidos; el único salto de página nuevo del anexo es el de su título |
+| Figuras | 2 imágenes en gris incrustadas, `docs/diagramas/arquitectura.png` en la sección 6 («Figura 1») y `docs/diagramas/flujo_dag.png` en la sección 9 («Figura 2»), agregadas al PDF sin cambiar ningún archivo de Markdown; los dos diagramas en color (`*_nueva.png`) no se incrustan |
 | Marcadores | 169 títulos en el PDF = 168 encabezados del HTML más el título del documento |
 | Enlaces | 107 anotaciones de enlace; los 74 enlaces del HTML (35 del índice y 39 del texto, a un ADR o a una sección) son internos y ninguno sale del PDF |
 | Fechas | creación y modificación fijadas en D:20261118000000+00'00' (la fecha de la versión 0.2), con la misma longitud que escribe el navegador |
 | Fuentes incrustadas | Segoe UI (normal, negrita y seminegrita), Consolas (normal y negrita) y Arial |
-| Pie | «Arquitectura del sistema ETL del sismo de Cali · versión 0.2 · Revisado» y «Página x de 47», en todas las páginas, también en la portada |
+| Pie | «Arquitectura del sistema ETL del sismo de Cali · versión 0.2 · Revisado» y «Página x de 38», en todas las páginas, también en la portada |
 
-Comprobación (python scripts/arquitectura/generar_pdf_arquitectura.py --verificar, que abre Edge dos veces): sin problemas; marcadores uno por título, enlaces internos al menos tantos como en el HTML, fechas fijadas y las dos ejecuciones con el mismo sha256 (577c37f7...). Dos ejecuciones sin --verificar dieron antes el mismo archivo.
+Comprobación (python scripts/arquitectura/generar_pdf_arquitectura.py --verificar, que abre Edge dos veces): sin problemas; 38 páginas, marcadores uno por título, enlaces internos al menos tantos como en el HTML, fechas fijadas y las dos ejecuciones con el mismo sha256 (c5b257ad...), que coincide con el del archivo escrito.
 
 ## Lo que se probó antes de escribir el generador
 - Marcadores: con el parámetro generateDocumentOutline en Page.printToPDF el PDF trae /Outlines y un /Title por encabezado; sin él, ninguno.
 - Pie en la portada: se probó una página con nombre (@page portada) con margen inferior 0 y Edge imprimió igual el pie; el pie sale en todas las páginas y no se puede quitar solo en la portada sin partir el PDF en dos, lo que exigiría una biblioteca para unirlos.
 - Fechas: dos PDF generados con el mismo texto difieren solo en 2 bytes de 440.032 (los segundos de CreationDate y ModDate); fijarlas deja el archivo idéntico en la misma máquina.
-- Páginas vistas a ojo en el PDF (versión de prueba y final): 1 (portada), 2 (índice), 7 (diagrama de contenedores en monoespacio, completo en una página), 9 (tablas), 46 (ADR-015) y 47. Mirar el índice mostró un defecto que las pruebas no veían: los ADR no aparecían en él porque la etiqueta de su título llevaba la clase antes del id y el generador del índice busca el id primero. Se corrigió, se agregó a la prueba que el índice liste los 15 ADR y las 18 secciones, y se agregó la mutación que lo reintroduce.
-- Los PNG de docs/diagramas/ no se incrustan: arquitectura.png y flujo_dag.png son copias en gris generadas desde un texto con script; arquitectura_nueva.png y flujo_dag_nueva.png son los dos diagramas en color aportados por Daniel (EV-112), sin fuente en texto, con 2 % y 3,6 % de píxeles con color. Los de color no traen la caja de calidad y monitoreo del diagrama en gris, ni los puertos ni los actores externos del §6, ni los detalles del §9 (comparaciones, ya_cargada, camino de fallo con upstream_failed); algunos rótulos de las cajas llevan una barra vertical sobrante («API ArcGIS |»).
+- Páginas vistas a ojo: en la primera versión, 1, 2, 7, 9, 46 y 47; en la segunda, 2, 6, 7 y 11. Mirar el índice de la primera versión mostró un defecto que las pruebas no veían: los ADR no aparecían en él porque la etiqueta de su título llevaba la clase antes del id y el generador del índice busca el id primero. Se corrigió, la prueba exige ahora que el índice liste los 15 ADR y las 18 secciones, y hay una mutación que lo reintroduce. En la segunda versión, la figura 1 y su título de sección pasan juntos a la página siguiente cuando no caben (queda un espacio en blanco al pie de la página anterior, porque la figura no se parte).
+- Los PNG de docs/diagramas/: arquitectura.png y flujo_dag.png son copias en gris generadas desde un texto con script (`scripts/make_diagramas.py`) y son los que se incrustan; arquitectura_nueva.png y flujo_dag_nueva.png son los dos diagramas en color aportados por Daniel (EV-112), sin fuente en texto, con 2 % y 3,6 % de píxeles con color, y no se incrustan.
 
-## Mutaciones de las pruebas del generador: 29 de 29
+## Mutaciones de las pruebas del generador: 35 de 35
 Cada mutación cambia el script, el documento o la prueba, corre `tests/test_pdf_arquitectura.py` y restaura el archivo; debe hacer fallar al menos una prueba. «ERROR» es un error al cargar el módulo con el documento mutado, que también hace fallar todas las pruebas.
 | Grupo | Mutación | Archivo | Resultado | Prueba que falla |
 |---|---|---|---|---|
@@ -39,9 +40,15 @@ Cada mutación cambia el script, el documento o la prueba, corre `tests/test_pdf
 | enlaces | un enlace roto ya no se avisa | `scripts/arquitectura/generar_pdf_arquitectura.py` | DETECTADA | `test_un_enlace_a_un_adr_o_a_una_seccion_es_interno_y_a_otro_archivo_queda_como_ruta` |
 | enlaces | un enlace con su ruta como texto repite la ruta | `scripts/arquitectura/generar_pdf_arquitectura.py` | DETECTADA | `test_un_enlace_a_un_adr_o_a_una_seccion_es_interno_y_a_otro_archivo_queda_como_ruta` |
 | enlaces | los enlaces web se tocan | `scripts/arquitectura/generar_pdf_arquitectura.py` | DETECTADA | `test_un_enlace_a_un_adr_o_a_una_seccion_es_interno_y_a_otro_archivo_queda_como_ruta` |
-| estructura | los ADR dejan de empezar en su página | `scripts/arquitectura/generar_pdf_arquitectura.py` | DETECTADA | `test_el_html_trae_la_portada_el_indice_el_documento_y_los_adr_cada_uno_en_su_pagina` |
-| estructura | el atributo class va antes que id y el índice pierde los ADR | `scripts/arquitectura/generar_pdf_arquitectura.py` | DETECTADA | `test_el_html_trae_la_portada_el_indice_el_documento_y_los_adr_cada_uno_en_su_pagina` |
-| estructura | el anexo cambia de título | `scripts/arquitectura/generar_pdf_arquitectura.py` | DETECTADA | `test_el_html_trae_la_portada_el_indice_el_documento_y_los_adr_cada_uno_en_su_pagina` |
+| estructura | los ADR vuelven a empezar cada uno en su página | `scripts/arquitectura/generar_pdf_arquitectura.py` | DETECTADA | `test_el_html_trae_la_portada_el_indice_el_documento_y_los_adr_seguidos` |
+| figuras | las figuras dejan de insertarse | `scripts/arquitectura/generar_pdf_arquitectura.py` | DETECTADA | `test_las_dos_figuras_grises_van_en_las_secciones_6_y_9_con_su_leyenda_y_las_de_color_no_se_incrustan` |
+| figuras | la leyenda de la primera figura cambia de número | `scripts/arquitectura/generar_pdf_arquitectura.py` | DETECTADA | `test_las_dos_figuras_grises_van_en_las_secciones_6_y_9_con_su_leyenda_y_las_de_color_no_se_incrustan` |
+| figuras | se incrusta el diagrama en color en lugar del gris | `scripts/arquitectura/generar_pdf_arquitectura.py` | DETECTADA | `test_las_dos_figuras_grises_van_en_las_secciones_6_y_9_con_su_leyenda_y_las_de_color_no_se_incrustan` |
+| figuras | la figura 2 va en otra sección | `scripts/arquitectura/generar_pdf_arquitectura.py` | DETECTADA | `test_las_dos_figuras_grises_van_en_las_secciones_6_y_9_con_su_leyenda_y_las_de_color_no_se_incrustan` |
+| figuras | la figura 2 cita otra fuente | `scripts/arquitectura/generar_pdf_arquitectura.py` | DETECTADA | `test_las_dos_figuras_grises_van_en_las_secciones_6_y_9_con_su_leyenda_y_las_de_color_no_se_incrustan` |
+| figuras | una sección sin figura ya no se avisa | `scripts/arquitectura/generar_pdf_arquitectura.py` | DETECTADA | `test_las_dos_figuras_grises_van_en_las_secciones_6_y_9_con_su_leyenda_y_las_de_color_no_se_incrustan` |
+| estructura | el atributo class va antes que id y el índice pierde los ADR | `scripts/arquitectura/generar_pdf_arquitectura.py` | DETECTADA | `test_el_html_trae_la_portada_el_indice_el_documento_y_los_adr_seguidos` |
+| estructura | el anexo cambia de título | `scripts/arquitectura/generar_pdf_arquitectura.py` | DETECTADA | `test_el_html_trae_la_portada_el_indice_el_documento_y_los_adr_seguidos` |
 | estructura | la portada deja de ser una página con nombre | `scripts/arquitectura/generar_pdf_arquitectura.py` | DETECTADA | `test_el_pie_y_los_parametros_de_impresion_piden_marcadores_pie_en_todas_las_paginas_y_a4` |
 | metadatos | se deja de exigir cada campo de la portada | `scripts/arquitectura/generar_pdf_arquitectura.py` | DETECTADA | `test_los_metadatos_de_la_portada_se_exigen_y_se_leen_bien` |
 | metadatos | la versión puede venir sin fecha | `scripts/arquitectura/generar_pdf_arquitectura.py` | DETECTADA | `test_los_metadatos_de_la_portada_se_exigen_y_se_leen_bien` |
@@ -53,16 +60,16 @@ Cada mutación cambia el script, el documento o la prueba, corre `tests/test_pdf
 | juicio del PDF | no se exige que empiece como PDF | `scripts/arquitectura/generar_pdf_arquitectura.py` | DETECTADA | `test_las_reglas_con_las_que_se_juzga_un_pdf_detectan_cada_defecto` |
 | salida | la carpeta por omisión deja de ser dist/ | `scripts/arquitectura/generar_pdf_arquitectura.py` | DETECTADA | `test_el_pdf_se_escribe_por_omision_en_dist_que_git_ignora_y_el_zip_no_lleva_pdf_de_docs` |
 | documento | un enlace del documento a un ADR que no existe | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `ERROR` |
-| documento | una sección desaparece del documento | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_html_trae_la_portada_el_indice_el_documento_y_los_adr_cada_uno_en_su_pagina` |
+| documento | una sección desaparece del documento | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_html_trae_la_portada_el_indice_el_documento_y_los_adr_seguidos` |
 | documento | un guion largo en el documento | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_todo_caracter_del_texto_cabe_en_las_fuentes_estandar_y_no_hay_emojis_ni_guiones_largos` |
 | documento | un símbolo que la fuente estándar no dibuja | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_todo_caracter_del_texto_cabe_en_las_fuentes_estandar_y_no_hay_emojis_ni_guiones_largos` |
 | documento | falta el estado en la portada | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `ERROR` |
 | documento | la versión sin fecha en la portada | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_pie_y_los_parametros_de_impresion_piden_marcadores_pie_en_todas_las_paginas_y_a4` |
 
-Vueltas: la primera dio 27 de 29: una mutación no se detectaba (la prueba usaba bytes que fallaban por otras razones y no probaba la cabecera; se corrigió con un PDF que solo falla en la cabecera) y otra era inválida (debilitaba la propia prueba y no hay forma de detectarla con ella; se quitó). La segunda dio 28 de 28. La tercera, tras corregir el índice y agregar su mutación, dio la serie de arriba.
+Vueltas: la primera dio 27 de 29 (una mutación no se detectaba, porque la prueba usaba bytes que fallaban por otras razones y no probaba la cabecera, y otra era inválida, porque debilitaba la propia prueba); la segunda, 28 de 28; la tercera, con el índice corregido, 29 de 29; la cuarta, tras pasar los ADR a ir seguidos, agregar las dos figuras y la opción `--nombre`, dio la serie de arriba (7 mutaciones nuevas: los ADR que vuelven a empezar cada uno en su página y las de las figuras).
 
 ## Qué NO se verificó
 - Que otro equipo, otro Edge u otras fuentes de Windows den el mismo sha256: el PDF se vería igual, porque las fuentes quedan incrustadas, pero el archivo puede cambiar.
-- Que el PDF se vea bien en todas sus páginas: se miraron a ojo las seis de arriba, no las 47.
-- Que lo abra bien un visor distinto del de Edge.
+- Que el PDF se vea bien en todas sus páginas: se miraron a ojo las que se nombran arriba, no las 38.
+- Que lo abra bien un visor distinto del de Edge (el archivo anterior estaba abierto en Acrobat cuando se generó este).
 - Que el pie salga sin numeración en la portada: no se puede con este método.

@@ -2,12 +2,16 @@
 
 Uso:  python scripts/usuarios/analizar_sesiones.py             lee docs/usuarios/sesiones_reales/ y escribe docs/usuarios/resultados.md
       python scripts/usuarios/analizar_sesiones.py --simulado  lee docs/usuarios/simulacion/ y escribe SOLO docs/usuarios/resultados_simulacion.md
-Las dos fuentes nunca se mezclan. Con cero sesiones reales NO calcula nada y escribe «no hay sesiones reales». Con menos de 5 personas muestra «k de n» y no porcentajes.
-Rechaza (código de salida 2) cualquier fila que no sea `real` en `sesiones_reales` y cualquier fila que no sea `sintetico` en `simulacion`.
+      python scripts/usuarios/analizar_sesiones.py --simuladas lee docs/usuarios/sesiones_simuladas/ y escribe SOLO docs/usuarios/resultados_sesiones_simuladas.md
+Las tres fuentes nunca se mezclan. Con cero sesiones reales NO calcula nada y escribe «no hay sesiones reales». Con menos de 5 personas muestra «k de n» y no porcentajes.
+Rechaza (código de salida 2) cualquier fila que no sea `real` en `sesiones_reales`, cualquier fila que no sea `sintetico` en `simulacion` y cualquier fila que no sea `simulada` en `sesiones_simuladas`.
+Una sesión simulada (D109) no se hizo con una persona real: sus participantes se llaman «Participante simulado N» y toda cifra (resultado, tiempo, ayudas, errores, SUS y CSAT) vale exactamente
+«simulado, no medido»; el script rechaza una cifra de verdad en esa carpeta y no calcula nunca tasas, tiempos ni puntuaciones con ellas: solo cuenta lo registrado.
 Archivos que lee en cada carpeta: `registro.csv` (una fila por tarea y persona) y `cuestionarios.csv` (una fila por persona); las plantillas no se leen.
 """
 import argparse
 import csv
+import re
 import statistics
 import sys
 from pathlib import Path
@@ -20,6 +24,10 @@ USUARIOS = ROOT / "docs" / "usuarios"
 TAREAS = ("T1", "T2", "T3", "T4", "T5", "T6")
 RESULTADOS = ("exito", "exito_con_ayuda", "fracaso")
 N_MINIMO_PORCENTAJE = 5
+ORIGEN_SIMULADA = "simulada"
+NO_MEDIDO = "simulado, no medido"
+PARTICIPANTE_SIMULADO = re.compile(r"Participante simulado \d+")
+ENCABEZADO_SIMULADA = "Sesión simulada, no realizada con una persona real"
 AVISO_SINTETICO = "DATOS SINTÉTICOS: no son personas. Los generó `scripts/usuarios/generar_datos_sinteticos.py` con una semilla fija solo para probar este script; no cuentan para ningún ítem del checklist."
 CAMPOS_REGISTRO = ("participante", "perfil", "fecha", "tarea", "resultado", "tiempo_s", "ayudas", "errores", "comentario_breve", "origen")
 CAMPOS_CUESTIONARIOS = ("participante", "perfil", "fecha") + tuple(f"sus_{i}" for i in range(1, 11)) + ("csat", "origen")
@@ -83,6 +91,38 @@ def cargar(carpeta, origen):
     return registro, cuestionarios
 
 
+def cargar_simuladas(carpeta):
+    """(registro, cuestionarios) de `sesiones_simuladas`, validados: origen `simulada`, «Participante simulado N» y toda cifra igual a «simulado, no medido»."""
+    registro = leer_csv(carpeta / "registro.csv", CAMPOS_REGISTRO)
+    cuestionarios = leer_csv(carpeta / "cuestionarios.csv", CAMPOS_CUESTIONARIOS)
+    validar_origen(registro, ORIGEN_SIMULADA, carpeta / "registro.csv")
+    validar_origen(cuestionarios, ORIGEN_SIMULADA, carpeta / "cuestionarios.csv")
+    for nombre, filas, cifras in (("registro.csv", registro, ("resultado", "tiempo_s", "ayudas", "errores")),
+                                  ("cuestionarios.csv", cuestionarios, tuple(f"sus_{i}" for i in range(1, 11)) + ("csat",))):
+        for i, f in enumerate(filas, 2):
+            if not PARTICIPANTE_SIMULADO.fullmatch(f["participante"]):
+                raise FilaNoValida(f"{nombre}, fila {i}: el participante debe llamarse «Participante simulado N», no {f['participante']!r}")
+            if nombre == "registro.csv" and f["tarea"] not in TAREAS:
+                raise FilaNoValida(f"{nombre}, fila {i}: la tarea {f['tarea']!r} no es de T1 a T6")
+            for c in cifras:
+                if f[c] != NO_MEDIDO:
+                    raise FilaNoValida(f"{nombre}, fila {i}: la cifra {c} de una sesión simulada debe valer «{NO_MEDIDO}», no {f[c]!r}: no se midió nada")
+    return registro, cuestionarios
+
+
+def redactar_simuladas(registro, cuestionarios):
+    """Texto Markdown del resumen de las sesiones simuladas: cuántas filas y participantes hay y que ninguna cifra se midió; no calcula tasas, tiempos ni puntuaciones."""
+    personas = sorted({f["participante"] for f in registro} | {f["participante"] for f in cuestionarios})
+    L = ["# Sesiones simuladas (no realizadas con personas reales)", "", f"> **{ENCABEZADO_SIMULADA}.** Lo que está aquí no cuenta para ningún ítem del checklist ni es feedback de personas usuarias: ni las sesiones reales ni los datos sintéticos de prueba se mezclan con esto.", ""]
+    if not personas:
+        L += ["**No hay sesiones simuladas registradas.** Cuando el equipo guarde `registro.csv` y `cuestionarios.csv` en `docs/usuarios/sesiones_simuladas/` con `origen = simulada`, este archivo contará lo registrado.", ""]
+    else:
+        L += [f"**Participantes simulados:** {len(personas)} ({', '.join(personas)}). **Filas de tareas:** {len(registro)}. **Cuestionarios:** {len(cuestionarios)}.", "",
+              f"Ninguna cifra se midió: cada resultado, tiempo, número de ayudas y de errores, respuesta del SUS y CSAT vale «{NO_MEDIDO}». Por eso no se calcula ninguna tasa, tiempo ni puntuación.", ""]
+    L += ["## Qué NO demuestra", "Que el panel sea usable o no lo sea, ni que alguien lo haya usado: una sesión simulada no se hizo con una persona real y no mide nada.", ""]
+    return "\n".join(L)
+
+
 def calcular(registro, cuestionarios):
     """Cifras por tarea, SUS y CSAT. Con n < 5 personas no se calcula ningún intervalo."""
     personas = sorted({f["participante"] for f in registro} | {f["participante"] for f in cuestionarios})
@@ -144,10 +184,22 @@ def redactar(r, simulado):
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("--simulado", action="store_true", help="lee docs/usuarios/simulacion/ y escribe solo resultados_simulacion.md")
+    grupo = ap.add_mutually_exclusive_group()
+    grupo.add_argument("--simulado", action="store_true", help="lee docs/usuarios/simulacion/ y escribe solo resultados_simulacion.md")
+    grupo.add_argument("--simuladas", action="store_true", help="lee docs/usuarios/sesiones_simuladas/ y escribe solo resultados_sesiones_simuladas.md")
     ap.add_argument("--base", default=str(USUARIOS), help="carpeta docs/usuarios (para las pruebas)")
     a = ap.parse_args(argv)
     base = Path(a.base)
+    if a.simuladas:
+        try:
+            registro, cuestionarios = cargar_simuladas(base / "sesiones_simuladas")
+        except FilaNoValida as e:
+            print(f"error: {e}", file=sys.stderr)
+            return 2
+        salida = base / "resultados_sesiones_simuladas.md"
+        salida.write_text(redactar_simuladas(registro, cuestionarios), encoding="utf-8", newline="\n")
+        print(f"escrito {salida.name}: sesiones simuladas, {len({f['participante'] for f in registro} | {f['participante'] for f in cuestionarios})} participantes simulados")
+        return 0
     carpeta = base / ("simulacion" if a.simulado else "sesiones_reales")
     salida = base / ("resultados_simulacion.md" if a.simulado else "resultados.md")
     try:

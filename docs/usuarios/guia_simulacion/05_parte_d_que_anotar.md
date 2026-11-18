@@ -44,6 +44,8 @@ Es un archivo por sesión: `registro_P01.csv` (y así `P02`, `P03`). Una fila po
 | `comentario_breve` | una frase **sin nombres**; si lleva una coma, la frase va entre comillas dobles |
 | `origen` | siempre `real` |
 
+> **Si la sesión es una simulación, no una sesión con una persona real,** no se anota aquí: se registra en [`docs/usuarios/sesiones_simuladas/`](../sesiones_simuladas/README.md) con `origen = simulada`, el participante se llama «Participante simulado N» y toda cifra vale «simulado, no medido» (D109). Una sesión simulada nunca va en `sesiones_reales/` y no cuenta como sesión real.
+
 **EJEMPLO SINTÉTICO: no son personas ni una sesión.** Son las primeras filas de los datos de práctica del proyecto (`docs/usuarios/simulacion/registro.csv`), que usan el código `S01` y el origen `sintetico`. En una sesión real el código sería `P01` y el origen `real`:
 
 {{codigo: docs/usuarios/simulacion/registro.csv | csv | lineas: 1-4}}

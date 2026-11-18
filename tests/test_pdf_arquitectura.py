@@ -1,7 +1,7 @@
 """Guardianes del PDF del documento de arquitectura y de los ADR (`scripts/arquitectura/generar_pdf_arquitectura.py`).
 
 Por qué existe: el PDF sale del mismo texto que vigilan las pruebas del documento, pero un enlace que no apunta a ningún lado, un título sin marcador, una fecha distinta en cada ejecución o un carácter que
-la fuente no dibuja solo se notan al abrirlo. Aquí se comprueba, sin abrir ningún navegador: (1) que el HTML traiga la portada, el índice, el documento y los 15 ADR, cada uno en su página; (2) que cada
+la fuente no dibuja solo se notan al abrirlo. Aquí se comprueba, sin abrir ningún navegador: (1) que el HTML traiga la portada, el índice, el documento y los 15 ADR seguidos, con el salto de página solo antes del anexo, y las dos figuras grises en las secciones 6 y 9 con su leyenda; (2) que cada
 enlace interno tenga su destino, que un enlace a un ADR o a una sección sea interno y que el resto quede como ruta en código; (3) que todo carácter quepa en las fuentes estándar y no haya emojis ni guiones largos;
 (4) que el pie y los parámetros de impresión pidan marcadores, pie en todas las páginas y A4; (5) que las fechas del PDF se fijen sin cambiar su longitud; y (6) las reglas con las que se juzga un PDF real
 (marcadores uno por título, enlaces, fechas, páginas). El paso que imprime con Edge se comprueba con `python scripts/arquitectura/generar_pdf_arquitectura.py --verificar` (EV-117), no aquí.
@@ -37,7 +37,7 @@ HTML = gen.construir_html()
 DATOS = gen.metadatos(DOC.read_text(encoding="utf-8"))
 
 
-def test_el_html_trae_la_portada_el_indice_el_documento_y_los_adr_cada_uno_en_su_pagina():
+def test_el_html_trae_la_portada_el_indice_el_documento_y_los_adr_seguidos():
     assert 'class="portada"' in HTML and 'id="titulo-de-la-guia"' in HTML and 'class="indice"' in HTML
     assert len(ADRS) == 15
     adrs_en_html = re.findall(r'<h2 id="(adr-\d{3}-[^"]*)" class="adr"', HTML)
@@ -49,7 +49,30 @@ def test_el_html_trae_la_portada_el_indice_el_documento_y_los_adr_cada_uno_en_su
     indice = re.search(r'(?s)<nav class="indice">.*?</nav>', HTML).group(0)
     assert all(f'href="#{a}"' in indice for a in adrs_en_html), "el índice lista los 15 ADR"
     assert all(re.search(rf'href="#{n}-', indice) for n in range(1, 19)), "y las 18 secciones"
-    assert "page-break-before: always" in gen.gen.ESTILO + gen.ESTILO_EXTRA and "h2.adr" in gen.ESTILO_EXTRA
+    regla_adr = re.search(r"h2\.adr \{[^}]*\}", gen.ESTILO_EXTRA).group(0)
+    assert "page-break-before" not in regla_adr, "los ADR van seguidos: ninguno empieza en página nueva"
+    assert re.search(r"h1 \{[^}]*page-break-before: always", gen.gen.ESTILO), "el título del anexo sí empieza en página nueva"
+    assert re.search(r'<h1 id="anexo-registros-de-decisión-adr"(?! class="continuo")', HTML), "el anexo no es una parte continua"
+
+
+def test_las_dos_figuras_grises_van_en_las_secciones_6_y_9_con_su_leyenda_y_las_de_color_no_se_incrustan():
+    import base64
+
+    figuras = re.findall(r"(?s)<figure>(.*?)</figure>", HTML)
+    assert len(figuras) == 2 == len(gen.FIGURAS)
+    assert [re.search(r"Figura (\d+)\.", f).group(1) for f in figuras] == ["1", "2"]
+    pos = {n: HTML.index(f'<h2 id="{n}-') for n in (6, 7, 9, 10)}
+    assert pos[6] < HTML.index("Figura 1.") < pos[7] and pos[9] < HTML.index("Figura 2.") < pos[10], "cada figura está en su sección"
+    for _, ruta, _, leyenda in gen.FIGURAS:
+        assert (ROOT / ruta).is_file() and f"data:image/png;base64,{base64.b64encode((ROOT / ruta).read_bytes()).decode()}" in HTML, ruta
+        yaml_citado = re.search(r"`(docs/diagramas/[a-z_]+\.yaml)`", leyenda).group(1)
+        assert (ROOT / yaml_citado).is_file() and (ROOT / yaml_citado).with_suffix(".png") == ROOT / ruta, "la leyenda cita la fuente de la imagen"
+    for color in ("arquitectura_nueva.png", "flujo_dag_nueva.png"):
+        assert base64.b64encode((ROOT / "docs" / "diagramas" / color).read_bytes()).decode()[:200] not in HTML, f"{color} no se incrusta"
+    assert "Figura 1." not in DOC.read_text(encoding="utf-8"), "las figuras se agregan al PDF sin tocar el Markdown"
+    with pytest.raises(ValueError):
+        gen.insertar_figuras("<h2 id=\"otra-cosa\">x</h2>")
+    assert gen.insertar_figuras('<h2 id="6-vista-de-alto-nivel">6</h2>', gen.FIGURAS[:1]).count("<figure>") == 1
 
 
 def test_cada_enlace_interno_tiene_su_destino_y_ningun_enlace_apunta_a_un_archivo():
@@ -167,4 +190,4 @@ def test_el_script_solo_importa_lo_que_ya_esta_declarado_y_no_tiene_marcas_de_pr
     assert terceros == {"websockets"}, "websockets ya está en requirements.txt y no se agrega ningún paquete"
     assert re.search(r"(?m)^websockets==", (ROOT / "requirements.txt").read_text(encoding="utf-8"))
     r = subprocess.run([sys.executable, str(CARPETA / "generar_pdf_arquitectura.py"), "--help"], capture_output=True, text=True, encoding="utf-8", errors="replace", cwd=ROOT)
-    assert r.returncode == 0 and "--verificar" in r.stdout and "--solo-html" in r.stdout
+    assert r.returncode == 0 and "--verificar" in r.stdout and "--solo-html" in r.stdout and "--nombre" in r.stdout

@@ -1,18 +1,18 @@
 """Genera el PDF del documento de arquitectura y de sus registros de decisión (ADR) desde los archivos de Markdown de `docs/arquitectura/`.
 
 Uso, desde la raíz del repositorio:
-    python scripts/arquitectura/generar_pdf_arquitectura.py [--salida CARPETA] [--solo-html | --verificar]
+    python scripts/arquitectura/generar_pdf_arquitectura.py [--salida CARPETA] [--nombre ARCHIVO.pdf] [--solo-html | --verificar]
 
 Qué hace: une el documento (`arquitectura_del_sistema.md`) y los ADR (`adr/adr-nnn_*.md`) en una sola página HTML con el conversor de Markdown de la guía de simulación, arma una portada con los
-metadatos de la sección 1, un índice con enlaces y un anexo con cada ADR en su página, y con Edge en modo sin ventana imprime a PDF A4 (por el protocolo DevTools, con la biblioteca `websockets`
+metadatos de la sección 1, un índice con enlaces y un anexo con los ADR seguidos (el salto de página va solo antes del anexo), y con Edge en modo sin ventana imprime a PDF A4 (por el protocolo DevTools, con la biblioteca `websockets`
 que ya está en `requirements.txt`). Escribe `arquitectura_del_sistema_y_adr.pdf` en `--salida` (por defecto `dist/`, que Git ignora) e imprime su sha256.
 El PDF lleva marcadores (el esquema del documento: partes, secciones y ADR), enlaces internos entre secciones y ADR, y un pie con el título, la versión, el estado y «página x de y»; el pie sale
 también en la portada porque el navegador lo imprime en todas las páginas.
 Cómo se convierten los enlaces: un enlace a un ADR o a una sección del documento pasa a ser un enlace interno del PDF; un enlace a cualquier otro archivo del repositorio no sirve en un PDF y se
 deja como texto con su ruta desde la raíz, en código.
 Por qué es así: (1) el PDF sale del navegador que ya trae Windows 11, así que no se agrega ninguna dependencia a `requirements.txt` (ADR-007); (2) el texto sale de los mismos archivos que vigilan las
-pruebas del documento: una sola fuente, sin copias; (3) los diagramas son texto ASCII y se imprimen en monoespacio, sin imágenes; los dos diagramas en color aportados (`docs/diagramas/*_nueva.png`)
-no se incrustan.
+pruebas del documento: una sola fuente, sin copias; (3) los diagramas del documento son texto ASCII y se imprimen en monoespacio; además se incrustan dos figuras en gris, `docs/diagramas/arquitectura.png` en la sección 6 y
+`docs/diagramas/flujo_dag.png` en la sección 9, con su leyenda «Figura N», sin cambiar los archivos de Markdown; los dos diagramas en color aportados (`docs/diagramas/*_nueva.png`) no se incrustan.
 Determinismo: el navegador escribe la fecha de creación y de modificación con los segundos de la ejecución; el script las reescribe con la fecha de la versión del documento (misma longitud, así
 que las posiciones del archivo no cambian). Con el mismo texto, el mismo Edge y las mismas fuentes de Windows, dos ejecuciones dan el mismo sha256. En otro equipo o con otro Edge el archivo
 puede cambiar, aunque se vea igual (las fuentes quedan incrustadas).
@@ -42,6 +42,12 @@ DOCUMENTO = DIRECTORIO / "arquitectura_del_sistema.md"
 NOMBRE_PDF = "arquitectura_del_sistema_y_adr.pdf"
 TITULO_DEL_ANEXO = "Anexo. Registros de decisión (ADR)"
 CAMPOS_DE_PORTADA = ("Versión y fecha", "Estado", "Autor y owner técnico", "Revisión de la documentación", "Aprobadores", "Registros de decisión")
+FIGURAS = (
+    ("6-vista-de-alto-nivel", "docs/diagramas/arquitectura.png", "Arquitectura de alto nivel",
+     "Figura 1. Arquitectura de alto nivel: fuentes, pipeline, almacenamiento, servicio y consumo, con Airflow arriba y la calidad y el monitoreo abajo (dibujo en gris generado desde `docs/diagramas/arquitectura.yaml`)."),
+    ("9-flujos-detallados", "docs/diagramas/flujo_dag.png", "Flujo del DAG",
+     "Figura 2. Flujo del DAG: las cuatro tareas en orden, el disparo con el parámetro `fallo_inducido`, el repositorio en solo lectura, la copia de trabajo y MySQL (dibujo en gris generado desde `docs/diagramas/flujo_dag.yaml`)."),
+)
 FECHA_DEL_PDF = re.compile(rb"/(CreationDate|ModDate) \(D:\d{14}\+00'00'\)")
 
 ESTILO_EXTRA = """
@@ -51,7 +57,10 @@ ESTILO_EXTRA = """
 .portada table { margin-top: 12mm; font-size: 10pt; }
 .portada td:first-child { width: 42mm; font-weight: 600; }
 nav.indice li.n2 { margin-left: 4mm; font-size: 9.5pt; }
-h2.adr { page-break-before: always; font-size: 15pt; border-bottom: 1px solid #9aa5b1; padding-bottom: 1.5mm; }
+h2.adr { font-size: 15pt; border-bottom: 1px solid #9aa5b1; padding-bottom: 1.5mm; margin-top: 9mm; }
+figure { margin: 3mm 0 4mm; page-break-inside: avoid; }
+figure img { display: block; width: 100%; border: 1px solid #c9d0d8; }
+figcaption { font-size: 9pt; color: #444; margin-top: 1.5mm; }
 pre { font-size: 7.4pt; line-height: 1.15; white-space: pre; overflow: hidden; }
 pre code { font-size: 7.4pt; }
 """
@@ -111,6 +120,17 @@ def convertir_enlaces(texto, base, anclas_de_adr):
 
 
 # ---------------------------------------------------------------------------------------------- HTML
+def insertar_figuras(html_del_documento, figuras=FIGURAS):
+    """Agrega cada figura justo después del título de su sección, con la imagen incrustada y su leyenda; falla si la sección no existe."""
+    for id_seccion, ruta, alternativo, leyenda in figuras:
+        patron = re.compile(rf'(<h2 id="{re.escape(id_seccion)}"[^>]*>.*?</h2>)')
+        if not patron.search(html_del_documento):
+            raise ValueError(f"no está la sección {id_seccion} para la figura {ruta}")
+        figura = f'<figure>{gen._imagen(alternativo, "/" + ruta, None, ROOT)}<figcaption>{gen.en_linea(leyenda)}</figcaption></figure>'
+        html_del_documento = patron.sub(lambda m: m.group(1) + figura, html_del_documento, count=1)
+    return html_del_documento
+
+
 def pie_del_pdf(datos):
     version, _, estado = version_y_estado(datos)
     return f"Arquitectura del sistema ETL del sismo de Cali · versión {version} · {estado}"
@@ -133,7 +153,8 @@ def construir_html(directorio=DIRECTORIO, documento=DOCUMENTO):
     ids = {"titulo-de-la-guia": 1}
     html_doc = gen.md_a_html(cuerpo_doc, directorio, ids)
     html_doc = html_doc.replace('<h1 id="documento-de-arquitectura-del-sistema-etl-del-sismo-de-cali"', '<h1 id="titulo-del-documento"', 1)
-    partes = [html_doc, gen.md_a_html(f"# {TITULO_DEL_ANEXO}\n\nCada registro de decisión empieza en su página y trae, en este orden: contexto, decisión, consecuencias, las alternativas que se registraron entonces y las que hoy descartamos.", directorio, ids)]
+    html_doc = insertar_figuras(html_doc)
+    partes = [html_doc, gen.md_a_html(f"# {TITULO_DEL_ANEXO}\n\nLos registros de decisión van uno a continuación del otro y cada uno trae, en este orden: contexto, decisión, consecuencias, las alternativas que se registraron entonces y las que hoy descartamos.", directorio, ids)]
     for nombre, t in textos_adr.items():
         convertido = gen._desplazar_titulos(convertir_enlaces(t, directorio / "adr", anclas), 1)
         html = gen.md_a_html(convertido, directorio / "adr", ids)
@@ -208,19 +229,19 @@ def imprimir_con_edge(ruta_html, pie):
                 proceso.kill()
 
 
-def generar(salida, solo_html=False):
-    """Escribe el HTML (y el PDF) en `salida` y devuelve (ruta, sha256, bytes)."""
+def generar(salida, solo_html=False, nombre=NOMBRE_PDF):
+    """Escribe el HTML (y el PDF) en `salida`, con ese `nombre` de PDF, y devuelve (ruta, sha256, bytes)."""
     salida = Path(salida)
     salida.mkdir(parents=True, exist_ok=True)
     html = construir_html()
-    ruta_html = salida / NOMBRE_PDF.replace(".pdf", ".html")
+    ruta_html = salida / nombre.replace(".pdf", ".html")
     ruta_html.write_text(html, encoding="utf-8", newline="\n")
     if solo_html:
         return ruta_html, hashlib.sha256(ruta_html.read_bytes()).hexdigest(), ruta_html.stat().st_size
     datos = metadatos(DOCUMENTO.read_text(encoding="utf-8"))
     _, fecha, _ = version_y_estado(datos)
     pdf = fijar_fechas(imprimir_con_edge(ruta_html, pie_del_pdf(datos)), fecha)
-    ruta_pdf = salida / NOMBRE_PDF
+    ruta_pdf = salida / nombre
     ruta_pdf.write_bytes(pdf)
     return ruta_pdf, hashlib.sha256(pdf).hexdigest(), len(pdf)
 
@@ -272,6 +293,7 @@ def verificar():
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--salida", type=Path, default=ROOT / "dist", help="carpeta donde se escribe el PDF (por defecto dist/, que Git ignora)")
+    ap.add_argument("--nombre", default=NOMBRE_PDF, help="nombre del archivo PDF (por si el anterior está abierto en un visor y no se puede reemplazar)")
     grupo = ap.add_mutually_exclusive_group()
     grupo.add_argument("--solo-html", action="store_true", help="escribe solo el HTML, para revisarlo o imprimirlo desde otro navegador")
     grupo.add_argument("--verificar", action="store_true", help="genera el PDF dos veces en una carpeta temporal y comprueba marcadores, enlaces, fechas y que las dos salidas sean iguales")
@@ -282,7 +304,7 @@ def main(argv=None):
         for p in problemas:
             print("PROBLEMA:", p)
         raise SystemExit(1 if problemas else 0)
-    ruta, sha, tamano = generar(args.salida, args.solo_html)
+    ruta, sha, tamano = generar(args.salida, args.solo_html, args.nombre)
     print(f"{ruta.name} | {tamano} bytes | sha256 {sha}")
 
 

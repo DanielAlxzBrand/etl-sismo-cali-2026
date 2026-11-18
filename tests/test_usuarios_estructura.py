@@ -292,3 +292,41 @@ def test_negativa_una_evaluacion_con_defectos_se_detecta():
     assert any("no existe" in e for e in errores_de_la_evaluacion(captura_falsa))
     sin_h10 = "\n".join(l for l in bueno.splitlines() if not l.startswith("| H10 "))
     assert any("diez heurísticas" in e for e in errores_de_la_evaluacion(sin_h10))
+
+
+# ---------------------------------------------------------------- sesiones simuladas (D109)
+SIMULADAS = USUARIOS / "sesiones_simuladas"
+BANNER = "Sesión simulada, no realizada con una persona real"
+NO_MEDIDO = "simulado, no medido"
+
+
+def test_sesiones_reales_no_contiene_nada_simulado():
+    assert sorted(p.name for p in REALES.iterdir()) == ["README.md", "plantilla_cuestionarios.csv", "plantilla_friccion.csv", "plantilla_registro.csv"], "ninguna carpeta ni archivo de más"
+    for ruta in sorted(REALES.glob("*.csv")):
+        with open(ruta, encoding="utf-8", newline="") as f:
+            filas = list(csv.DictReader(f))
+        assert filas == [], f"{ruta.name}: una plantilla de sesiones reales no trae filas"
+        texto = ruta.read_text(encoding="utf-8").lower()
+        assert "simulad" not in texto and NO_MEDIDO not in texto and "participante simulado" not in texto, ruta.name
+
+
+def test_la_carpeta_de_sesiones_simuladas_trae_solo_plantillas_rotuladas_y_los_conteos_reales_siguen_en_cero():
+    assert sorted(p.name for p in SIMULADAS.iterdir()) == ["README.md", "plantilla_registro.csv", "plantilla_registro.md"]
+    leer = lambda n: (SIMULADAS / n).read_text(encoding="utf-8")   # noqa: E731
+    assert BANNER in leer("README.md") and leer("plantilla_registro.md").startswith(f"# {BANNER}\n")
+    with open(SIMULADAS / "plantilla_registro.csv", encoding="utf-8", newline="") as f:
+        filas = list(csv.DictReader(f))
+    assert len(filas) == 1 and re.fullmatch(r"Participante simulado \d+", filas[0]["participante"]) and filas[0]["origen"] == "simulada"
+    assert all(filas[0][c] == NO_MEDIDO for c in ("resultado", "tiempo_s", "ayudas", "errores"))
+    an = _cargar(ROOT / "scripts" / "usuarios" / "analizar_sesiones.py", "analizar_sesiones_estructura")
+    assert (USUARIOS / "resultados_sesiones_simuladas.md").read_text(encoding="utf-8") == an.redactar_simuladas([], []), "el resumen versionado es el que escribe el script sin sesiones"
+    assert "No hay sesiones reales" in (USUARIOS / "resultados.md").read_text(encoding="utf-8")
+    from tests.test_readme_cifras import hay_sesiones_reales
+    assert hay_sesiones_reales(REALES) is False and hay_sesiones_reales(SIMULADAS) is False, "ninguna sesión real, y las simuladas no cuentan como reales"
+
+
+def test_d109_y_la_guia_dicen_donde_va_una_sesion_simulada_y_no_dejan_pendientes():
+    d109 = next(l for l in (ROOT / "docs" / "DECISIONES.md").read_text(encoding="utf-8").splitlines() if l.startswith("**D109 · "))
+    assert "docs/usuarios/sesiones_simuladas/" in d109 and "origen = simulada" in d109 and BANNER in d109 and "Pendiente de Daniel" not in d109
+    parte_d = (USUARIOS / "guia_simulacion" / "05_parte_d_que_anotar.md").read_text(encoding="utf-8")
+    assert "Si la sesión es una simulación" in parte_d and "origen = simulada" in parte_d and "nunca va en `sesiones_reales/`" in parte_d

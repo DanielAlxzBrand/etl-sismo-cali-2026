@@ -185,3 +185,43 @@ def test_la_simulacion_escribe_solo_su_archivo_con_el_aviso_y_no_mezcla_fuentes(
     assert an.main(["--base", str(tmp_path)]) == 0
     real = (tmp_path / "resultados.md").read_text(encoding="utf-8")
     assert "P01" in real and "S01" not in real and "SINTÉTICOS" not in real
+
+
+# ---------------------------------------------------------------- sesiones simuladas (D109): ni reales ni sintéticas
+NM = "simulado, no medido"
+
+
+def _fila_simulada(p="Participante simulado 1", t="T1", **cambios):
+    f = {"participante": p, "perfil": "otro", "fecha": "2000-01-01", "tarea": t, "resultado": NM, "tiempo_s": NM, "ayudas": NM, "errores": NM, "comentario_breve": "", "origen": "simulada"}
+    f.update(cambios)
+    return f
+
+
+def test_las_sesiones_simuladas_se_cuentan_aparte_y_no_calculan_ninguna_cifra(tmp_path):
+    _escribir(tmp_path / "sesiones_simuladas", [_fila_simulada(), _fila_simulada(t="T2"), _fila_simulada("Participante simulado 2")], [])
+    assert an.main(["--base", str(tmp_path), "--simuladas"]) == 0
+    texto = (tmp_path / "resultados_sesiones_simuladas.md").read_text(encoding="utf-8")
+    assert "Sesión simulada, no realizada con una persona real" in texto and "**Participantes simulados:** 2" in texto and "**Filas de tareas:** 3" in texto
+    assert "| Tarea |" not in texto and "Wilson" not in texto and "mediana" not in texto.lower() and "SUS (0 a 100)" not in texto and "%" not in texto
+    assert not (tmp_path / "resultados.md").exists() and not (tmp_path / "resultados_simulacion.md").exists(), "solo escribe su archivo"
+
+
+def test_sin_sesiones_simuladas_lo_dice_y_no_cuenta_a_nadie(tmp_path):
+    (tmp_path / "sesiones_simuladas").mkdir()
+    assert an.main(["--base", str(tmp_path), "--simuladas"]) == 0
+    assert "No hay sesiones simuladas registradas" in (tmp_path / "resultados_sesiones_simuladas.md").read_text(encoding="utf-8")
+
+
+@pytest.mark.parametrize("cambios", [{"tiempo_s": "60"}, {"ayudas": "0"}, {"errores": "1"}, {"resultado": "exito"}, {"participante": "P01"}, {"participante": "Participante simulado"},
+                                     {"origen": "real"}, {"origen": "sintetico"}, {"origen": "simulado"}, {"tarea": "T9"}])
+def test_una_cifra_de_verdad_un_participante_real_o_un_origen_equivocado_se_rechazan_en_sesiones_simuladas(tmp_path, cambios):
+    _escribir(tmp_path / "sesiones_simuladas", [_fila_simulada(**cambios)], [])
+    assert an.main(["--base", str(tmp_path), "--simuladas"]) == 2
+    assert not (tmp_path / "resultados_sesiones_simuladas.md").exists()
+
+
+def test_una_fila_simulada_se_rechaza_en_sesiones_reales_y_en_los_datos_sinteticos(tmp_path):
+    _escribir(tmp_path / "sesiones_reales", [_fila_registro("P01", "T1", "exito", 60, "simulada")], [])
+    assert an.main(["--base", str(tmp_path)]) == 2
+    _escribir(tmp_path / "simulacion", [_fila_registro("S01", "T1", "exito", 60, "simulada")], [])
+    assert an.main(["--base", str(tmp_path), "--simulado"]) == 2
