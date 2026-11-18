@@ -1,6 +1,6 @@
 # ADR-011: Tres cuentas de MySQL con el mínimo privilegio y ningún origen abierto
 
-**Estado:** Vigente (implementada). **Fecha de la decisión:** 2026-11-13 (D46, D60, D65), 2026-11-14 (D67) y 2026-11-15 (D91). **D de origen:** D46, D60, D65, D67, D91. **Propietario técnico:** Daniel Alexander Brand García. **Revisión:** pendiente.
+**Estado:** Vigente (implementada). **Fecha de la decisión:** 2026-11-13 (D46, D60, D65), 2026-11-14 (D67) y 2026-11-15 (D91). **D de origen:** D46, D60, D65, D67, D91. **Propietario técnico:** Daniel Alexander Brand García. **Revisión:** Jhoan Sebastián Castellanos Mayor, 2026-11-18.
 
 ## Contexto
 El proyecto guarda sus resultados en un MySQL local. La carga, la tarea del DAG que corre en un contenedor y el visor phpMyAdmin necesitan acceso, y ninguno debería poder más de lo que necesita. Además, las verificaciones destructivas no deben tocar la base real.

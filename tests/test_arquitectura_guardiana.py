@@ -86,11 +86,12 @@ def problemas_del_documento(texto, base):
     errores += problemas_de_redaccion(resto, base)
     if secciones_numeradas(texto) != list(range(1, 19)):
         errores.append("las secciones numeradas no son 1 a 18 en orden")
-    # metadatos honestos: la tabla de la sección 1 dice Borrador, revisión y aprobadores pendientes y repositorio sin publicar (no basta con que la palabra aparezca en otro lugar)
+    # metadatos honestos: la tabla de la sección 1 dice Revisado, la revisión con nombre y fecha, los tres aprobadores con la aclaración de que la aprobación se registra después, y repositorio sin publicar (no basta con que la palabra aparezca en otro lugar)
     portada = re.search(r"(?ms)^## 1\. .*?(?=^## 2\. )", texto)
     portada = portada.group(0) if portada else ""
-    for regla, descripcion in ((r"(?m)^\| Estado \| Borrador \|$", "estado Borrador"), (r"(?m)^\| Revisión de la documentación \| pendiente\b", "revisión pendiente"),
-                               (r"(?m)^\| Aprobadores \| pendiente \|$", "aprobadores pendientes"), (r"(?m)^\| Repositorio \| aún no está publicado\b", "repositorio sin publicar")):
+    for regla, descripcion in ((r"(?m)^\| Estado \| Revisado \|$", "estado Revisado"), (rf"(?m)^\| Revisión de la documentación \| {re.escape(REVISOR)}, \d{{4}}-\d{{2}}-\d{{2}} \|$", "revisión con nombre y fecha"),
+                               (rf"(?m)^\| Aprobadores \| {re.escape(APROBADORES)} \|$", "los tres aprobadores y la aclaración"), (r"(?m)^\| Versión y fecha \| \d+\.\d+, \d{4}-\d{2}-\d{2} \|$", "versión y fecha"),
+                               (r"(?m)^\| Repositorio \| aún no está publicado\b", "repositorio sin publicar")):
         if not re.search(regla, portada):
             errores.append(f"falta en los metadatos de la sección 1: {descripcion}")
     return errores
@@ -157,6 +158,12 @@ def problemas_de_diagramas(texto, tareas_del_dag):
     return errores
 
 
+REVISOR = "Jhoan Sebastián Castellanos Mayor"
+APROBADORES = ("Daniel Alexander Brand García, Jhoan Sebastián Castellanos Mayor y Diego Fernando Gordillo Londoño; "
+               "la aprobación se registra al pasar el estado a Aprobado")
+REVISION_DE_ADR = re.compile(rf"\*\*Revisión:\*\* {re.escape(REVISOR)}, \d{{4}}-\d{{2}}-\d{{2}}\.")
+
+
 def tareas_del_dag_real():
     """Funciones decoradas con @task en el DAG versionado, en el orden en que se definen."""
     arbol = ast.parse((ROOT / "dags" / "medallon_etl_dag.py").read_text(encoding="utf-8"))
@@ -201,9 +208,11 @@ def problemas_de_adr(texto, nombre, decisiones):
         return [f"nombre de archivo inválido: {nombre}"]
     if not texto.startswith(f"# ADR-{m.group(1)}: "):
         errores.append("el título no lleva el número del archivo")
-    for campo in ("**Estado:**", "**Fecha de la decisión:**", "**D de origen:**", "**Propietario técnico:** Daniel Alexander Brand García", "**Revisión:** pendiente"):
+    for campo in ("**Estado:**", "**Fecha de la decisión:**", "**D de origen:**", "**Propietario técnico:** Daniel Alexander Brand García"):
         if campo not in texto:
             errores.append(f"falta el campo {campo}")
+    if not REVISION_DE_ADR.search(texto):
+        errores.append("la línea Revisión debe llevar el nombre del revisor y la fecha (AAAA-MM-DD)")
     titulos = [t for n, t in _encabezados(texto)]
     esperados = ["Contexto", "Decisión", "Consecuencias", "Positivas", "Negativas", "Alternativas consideradas entonces", "Alternativas que hoy descartamos y por qué"]
     if titulos != esperados:
@@ -269,9 +278,17 @@ def test_los_adr_reales_cumplen_su_estructura_y_su_origen():
         assert problemas_de_redaccion(ruta.read_text(encoding="utf-8"), ruta.parent) == [], ruta.name
 
 
+def test_todos_los_adr_reales_llevan_la_revision_con_nombre_y_fecha_sin_excepcion():
+    adrs = archivos_adr()
+    assert len(adrs) == 15
+    sin = [a.name for a in adrs if not REVISION_DE_ADR.search(a.read_text(encoding="utf-8"))]
+    assert sin == [], f"estos ADR no llevan la revisión con nombre y fecha: {sin}"
+    assert not [a.name for a in adrs if "**Revisión:** pendiente" in a.read_text(encoding="utf-8")]
+
+
 def test_la_numeracion_de_los_adr_es_consecutiva_y_el_indice_del_documento_los_lista_todos():
     numeros = [int(re.match(r"adr-(\d{3})", r.name).group(1)) for r in archivos_adr()]
-    assert numeros == list(range(1, len(numeros) + 1)) and len(numeros) == 14
+    assert numeros == list(range(1, len(numeros) + 1)) and len(numeros) == 15
     seccion = _bloque(DOC.read_text(encoding="utf-8"), "10. Decisiones y ADR") or ""
     filas = re.findall(r"(?m)^\| \[(ADR-\d{3})\]\((adr/[^)]+)\) \| (.+?) \| (.+?) \|$", seccion)
     assert [f[1].split("/")[-1] for f in filas] == [r.name for r in archivos_adr()]
@@ -292,8 +309,8 @@ def test_d106_registra_la_estructura_y_marca_d21_y_d5_sin_reescribirlas():
 # ------------------------------------------------------------------------------------------------ casos sintéticos
 def _doc_bueno():
     cuerpo = "\n".join(f"## {n}. Sección {n}\nTexto." for n in range(2, 18))
-    return ("# Título\n\n## 1. Portada\n| Campo | Valor |\n|---|---|\n| Estado | Borrador |\n| Revisión de la documentación | pendiente (alguien) |\n| Aprobadores | pendiente |\n"
-            f"| Repositorio | aún no está publicado |\n\n{cuerpo}\n## 18. Glosario y referencias\nTexto. Un Borrador más.\n\n{LINEA_CITA_DOC}\n")
+    return (f"# Título\n\n## 1. Portada\n| Campo | Valor |\n|---|---|\n| Versión y fecha | 0.2, 2026-11-18 |\n| Revisión de la documentación | {REVISOR}, 2026-11-18 |\n| Aprobadores | {APROBADORES} |\n| Estado | Revisado |\n"
+            f"| Repositorio | aún no está publicado |\n\n{cuerpo}\n## 18. Glosario y referencias\nTexto. Un Revisado más.\n\n{LINEA_CITA_DOC}\n")
 
 
 def test_un_documento_correcto_no_tiene_problemas():
@@ -346,11 +363,18 @@ def test_las_secciones_y_los_metadatos_se_exigen():
     base = ROOT / "docs" / "arquitectura"
     assert problemas_del_documento(_doc_bueno().replace("## 7. Sección 7\nTexto.\n", ""), base), "falta una sección"
     assert problemas_del_documento(_doc_bueno().replace("## 3. Sección 3", "## 4. Sección 3"), base), "numeración"
-    assert problemas_del_documento(_doc_bueno().replace("| Estado | Borrador |", "| Estado | Aprobado |"), base), "estado inventado aunque la palabra aparezca en otro lugar"
-    assert problemas_del_documento(_doc_bueno().replace("| Aprobadores | pendiente |", "| Aprobadores | Alguien |"), base), "aprobadores inventados"
-    assert problemas_del_documento(_doc_bueno().replace("| Revisión de la documentación | pendiente (alguien) |", "| Revisión de la documentación | aprobada (alguien) |"), base), "revisión inventada"
+    assert problemas_del_documento(_doc_bueno(), base) == [], "el documento sintético bueno no tiene problemas"
+    assert problemas_del_documento(_doc_bueno().replace("| Estado | Revisado |", "| Estado | Aprobado |"), base), "estado inventado aunque la palabra aparezca en otro lugar"
+    assert problemas_del_documento(_doc_bueno().replace("| Estado | Revisado |", "| Estado | Borrador |"), base), "el estado Borrador ya no es el vigente"
+    assert problemas_del_documento(_doc_bueno().replace(f"| Aprobadores | {APROBADORES} |", "| Aprobadores | Alguien |"), base), "aprobadores inventados"
+    assert problemas_del_documento(_doc_bueno().replace("Diego Fernando Gordillo Londoño; ", ""), base), "falta uno de los tres aprobadores"
+    assert problemas_del_documento(_doc_bueno().replace("; la aprobación se registra al pasar el estado a Aprobado", ""), base), "falta la aclaración de que la aprobación se registra después"
+    assert problemas_del_documento(_doc_bueno().replace(f"| Revisión de la documentación | {REVISOR}, 2026-11-18 |", "| Revisión de la documentación | pendiente |"), base), "revisión pendiente"
+    assert problemas_del_documento(_doc_bueno().replace(f"| Revisión de la documentación | {REVISOR}, 2026-11-18 |", f"| Revisión de la documentación | {REVISOR} |"), base), "revisión sin fecha"
+    assert problemas_del_documento(_doc_bueno().replace(f"| Revisión de la documentación | {REVISOR}, 2026-11-18 |", "| Revisión de la documentación | Alguien, 2026-11-18 |"), base), "revisión de otra persona"
+    assert problemas_del_documento(_doc_bueno().replace("| Versión y fecha | 0.2, 2026-11-18 |\n", ""), base), "falta la versión y la fecha"
     assert problemas_del_documento(_doc_bueno().replace("aún no está publicado", "https://ejemplo.invalido/repo"), base), "repositorio inventado"
-    assert problemas_del_documento(_doc_bueno().replace("## 1. Portada\n", "## 1. Portada\nTexto.\n").replace("| Estado | Borrador |\n", ""), base), "falta el estado"
+    assert problemas_del_documento(_doc_bueno().replace("## 1. Portada\n", "## 1. Portada\nTexto.\n").replace("| Estado | Revisado |\n", ""), base), "falta el estado"
 
 
 def _diagramas_buenos():
@@ -381,7 +405,7 @@ def test_los_diagramas_incorrectos_se_detectan():
 
 
 def _adr_bueno():
-    return ("# ADR-001: Algo\n\n**Estado:** Vigente. **Fecha de la decisión:** 2026-10-15. **D de origen:** D6. **Propietario técnico:** Daniel Alexander Brand García. **Revisión:** pendiente.\n\n"
+    return (f"# ADR-001: Algo\n\n**Estado:** Vigente. **Fecha de la decisión:** 2026-10-15. **D de origen:** D6. **Propietario técnico:** Daniel Alexander Brand García. **Revisión:** {REVISOR}, 2026-11-18.\n\n"
             "## Contexto\nTexto.\n\n## Decisión\nTexto.\n\n## Consecuencias\n### Positivas\n- Algo bueno.\n\n### Negativas\n- Algo malo.\n\n"
             "## Alternativas consideradas entonces\nRegistradas en `docs/DECISIONES.md`:\n- CSV consolidado (D6)\n\n"
             "## Alternativas que hoy descartamos y por qué\nRazonamiento actual del equipo, no registrado en su momento.\n- **Una.** Con 11 MB basta.\n- **Otra.** Texto.\n")
@@ -395,7 +419,11 @@ def test_los_adr_incorrectos_se_detectan():
     d = DECISIONES
     assert problemas_de_adr(_adr_bueno(), "adr1.md", d), "nombre de archivo"
     assert problemas_de_adr(_adr_bueno().replace("# ADR-001:", "# ADR-002:"), "adr-001_algo.md", d), "número del título"
-    assert problemas_de_adr(_adr_bueno().replace("**Revisión:** pendiente", "**Revisión:** aprobada"), "adr-001_algo.md", d), "revisión inventada"
+    assert problemas_de_adr(_adr_bueno().replace(f"**Revisión:** {REVISOR}, 2026-11-18", "**Revisión:** aprobada"), "adr-001_algo.md", d), "revisión inventada"
+    assert problemas_de_adr(_adr_bueno().replace(f"**Revisión:** {REVISOR}, 2026-11-18", "**Revisión:** pendiente"), "adr-001_algo.md", d), "la revisión pendiente ya no es la vigente"
+    assert problemas_de_adr(_adr_bueno().replace(f"**Revisión:** {REVISOR}, 2026-11-18", f"**Revisión:** {REVISOR}"), "adr-001_algo.md", d), "revisión sin fecha"
+    assert problemas_de_adr(_adr_bueno().replace(f"**Revisión:** {REVISOR}, 2026-11-18", "**Revisión:** Alguien, 2026-11-18"), "adr-001_algo.md", d), "revisión de otra persona"
+    assert problemas_de_adr(_adr_bueno().replace("2026-11-18.", "ayer."), "adr-001_algo.md", d), "fecha que no es AAAA-MM-DD"
     assert problemas_de_adr(_adr_bueno().replace("## Contexto\nTexto.\n\n", ""), "adr-001_algo.md", d), "falta una sección"
     assert problemas_de_adr(_adr_bueno().replace("**D de origen:** D6.", "**D de origen:** D999."), "adr-001_algo.md", d), "origen inexistente"
     assert problemas_de_adr(_adr_bueno().replace("- Algo malo.", ""), "adr-001_algo.md", d), "consecuencias negativas vacías"

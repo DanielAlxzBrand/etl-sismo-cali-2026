@@ -296,9 +296,9 @@ Estas seis fichas se escribieron en la auditoría intermedia. Ninguna de las sei
 - **(e) Validar:** `.\.venv\Scripts\python.exe scripts\validar_checklist.py --item 7.2 --ejecutar`.
 
 ### Ítem 7.3 · Arquitectura, evidencias de pruebas y feedback del usuario (En curso)
-- **(a) Archivo principal:** `docs/arquitectura/arquitectura_del_sistema.md` (arquitectura del sistema completo, con 14 registros de decisión en `docs/arquitectura/adr/` y diagramas en texto), `docs/api/arquitectura.md` y `docs/panel/arquitectura_panel.md` (arquitectura por componente) y `docs/validacion/informe_pruebas.md` (evidencia de pruebas técnicas). **No demuestra:** que el documento esté revisado (está en Borrador; revisores y aprobadores pendientes) ni el feedback recibido de personas usuarias, que depende de sesiones reales. Estado: En curso.
+- **(a) Archivo principal:** `docs/arquitectura/arquitectura_del_sistema.md` (arquitectura del sistema completo, con 15 registros de decisión en `docs/arquitectura/adr/` y diagramas en texto), `docs/api/arquitectura.md` y `docs/panel/arquitectura_panel.md` (arquitectura por componente) y `docs/validacion/informe_pruebas.md` (evidencia de pruebas técnicas). **No demuestra:** que el documento esté aprobado (está revisado; la aprobación de los tres autores está pendiente) ni el feedback recibido de personas usuarias, que depende de sesiones reales. Estado: En curso.
 - **(b) Apoyo:** `docs/orquestacion/guia_de_implementacion.md`, `tests/test_informe_pruebas.py` y `tests/test_matriz_casos.py`.
-- **(c) Texto sugerido:** «Arquitectura del sistema documentada en un borrador con 14 registros de decisión y evidencias de pruebas técnicas; falta su revisión y el feedback de personas usuarias: `docs/arquitectura/arquitectura_del_sistema.md`.»
+- **(c) Texto sugerido:** «Arquitectura del sistema documentada y revisada, con 15 registros de decisión y evidencias de pruebas técnicas; falta su aprobación y el feedback de personas usuarias: `docs/arquitectura/arquitectura_del_sistema.md`.»
 - **(d) Captura opcional:** ninguna.
 - **(e) Validar:** `.\.venv\Scripts\python.exe scripts\validar_checklist.py --item 7.3 --ejecutar`.
 

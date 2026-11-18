@@ -1,6 +1,6 @@
 # ADR-012: El panel Streamlit solo habla con la API
 
-**Estado:** Vigente (implementada). **Fecha de la decisión:** 2026-11-12 (D20) y 2026-11-14 (D69, D70). **D de origen:** D20, D69, D70. **Propietario técnico:** Daniel Alexander Brand García. **Revisión:** pendiente.
+**Estado:** Vigente (implementada). **Fecha de la decisión:** 2026-11-12 (D20) y 2026-11-14 (D69, D70). **D de origen:** D20, D69, D70. **Propietario técnico:** Daniel Alexander Brand García. **Revisión:** Jhoan Sebastián Castellanos Mayor, 2026-11-18.
 
 ## Contexto
 Los resultados necesitaban una interfaz que cualquiera pudiera abrir sin instalar herramientas de inteligencia de negocio y que no abriera ningún camino nuevo hacia los datos. Los indicadores son un proxy satelital con límites que la interfaz debe mostrar siempre.

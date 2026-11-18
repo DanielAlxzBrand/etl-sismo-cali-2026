@@ -1,4 +1,4 @@
-EV-115 · Mutaciones de las pruebas del documento de arquitectura y de sus ADR (2026-11-17)
+EV-115 · Mutaciones de las pruebas del documento de arquitectura y de sus ADR (2026-11-18)
 
 Qué es: cada mutación cambia a propósito una cifra o un texto del documento de arquitectura, de un ADR, del README, del índice de docs, de la checklist o de DECISIONES.md, corre `tests/test_arquitectura_cifras.py` y
 `tests/test_arquitectura_guardiana.py`, y debe hacer fallar al menos una prueba; después el archivo se restaura (al terminar, `git status` queda sin cambios). El script que las ejecuta no se versiona: son mutaciones de un día.
@@ -7,7 +7,7 @@ La cuarta serie muta el README, `config/config.yaml` y `tests/test_readme_cifras
 Las mutaciones de EV-103 (132) no se repitieron; estas son las de las pruebas nuevas.
 La prueba que comprueba la cita de este mismo registro en la sección 17 del documento se mutó aparte, una vez escrita la cita, y no cuenta en las series de abajo.
 
-## Cifras y errores ya corregidos en el README: 90 de 90 detectadas
+## Cifras y errores ya corregidos en el README: 126 de 126 detectadas
 | Grupo | Mutación | Archivo | Resultado | Prueba que falla |
 |---|---|---|---|---|
 | pruebas | recuento de pruebas del documento | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_numero_de_pruebas_del_documento_es_el_de_la_recoleccion` |
@@ -100,8 +100,44 @@ La prueba que comprueba la cita de este mismo registro en la sección 17 del doc
 | cláusula por capa de predios | Gold conserva los identificadores en el documento (sección 3) | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_la_clausula_por_capa_de_los_predios_del_documento_es_la_de_los_archivos` |
 | cláusula por capa de predios | falta una columna de predio de Bronze en el documento | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_la_clausula_por_capa_de_los_predios_del_documento_es_la_de_los_archivos` |
 | la prueba de predios | el detector del documento deja de reconocer las columnas de predio | `tests/test_arquitectura_cifras.py` | DETECTADA | `test_el_detector_de_columnas_de_predio_del_documento_las_encuentra_y_no_inventa` |
+| ADR-015 | las reglas de Silver | `docs/arquitectura/adr/adr-015_calidad_de_datos_en_silver.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
+| ADR-015 | el reparto de las reglas | `docs/arquitectura/adr/adr-015_calidad_de_datos_en_silver.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
+| ADR-015 | el reparto de las reglas en otro archivo | `docs/arquitectura/adr/adr-015_calidad_de_datos_en_silver.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
+| ADR-015 | el umbral de cobertura | `docs/arquitectura/adr/adr-015_calidad_de_datos_en_silver.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
+| ADR-015 | el mínimo de filas de Gold | `docs/arquitectura/adr/adr-015_calidad_de_datos_en_silver.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
+| ADR-015 | el mínimo de construcciones por barrio | `docs/arquitectura/adr/adr-015_calidad_de_datos_en_silver.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
+| ADR-015 | la muestra baja | `docs/arquitectura/adr/adr-015_calidad_de_datos_en_silver.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
+| ADR-015 | la similitud del nombre | `docs/arquitectura/adr/adr-015_calidad_de_datos_en_silver.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
+| ADR-015 | una columna de R01 | `docs/arquitectura/adr/adr-015_calidad_de_datos_en_silver.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
+| ADR-015 | la capa de las columnas de R01 | `docs/arquitectura/adr/adr-015_calidad_de_datos_en_silver.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
+| ADR-015 | las filas repetidas de R01 | `docs/arquitectura/adr/adr-015_calidad_de_datos_en_silver.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
+| ADR-015 | la palabra llave en R01 | `docs/arquitectura/adr/adr-015_calidad_de_datos_en_silver.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
+| ADR-015 | las filas resumen | `docs/arquitectura/adr/adr-015_calidad_de_datos_en_silver.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
+| ADR-015 | los barrios sin construcciones | `docs/arquitectura/adr/adr-015_calidad_de_datos_en_silver.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
+| ADR-015 | los huérfanos | `docs/arquitectura/adr/adr-015_calidad_de_datos_en_silver.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
+| ADR-015 | dónde está la causa | `docs/arquitectura/adr/adr-015_calidad_de_datos_en_silver.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
+| ADR-015 | los paquetes fijados | `docs/arquitectura/adr/adr-015_calidad_de_datos_en_silver.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
+| ADR-015 | la prueba de G5 | `docs/arquitectura/adr/adr-015_calidad_de_datos_en_silver.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
+| ADR-015 | la cobertura que detiene | `docs/arquitectura/adr/adr-015_calidad_de_datos_en_silver.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
+| ADR-015 | una condición que detiene Silver | `docs/arquitectura/adr/adr-015_calidad_de_datos_en_silver.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
+| ADR-015 | la condición de Gold | `docs/arquitectura/adr/adr-015_calidad_de_datos_en_silver.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
+| ADR-015 | la ruta de la API | `docs/arquitectura/adr/adr-015_calidad_de_datos_en_silver.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
+| fila de contratos de la sección 7 | la cobertura de la llave pasa a detener | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
+| fila de contratos de la sección 7 | el mínimo de filas de Gold pasa a no detener | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
+| fila de contratos de la sección 7 | la fila vuelve a la redacción ambigua | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
+| estado en los demás documentos | el README dice Borrador en su resumen | `README.md` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
+| estado en los demás documentos | el README dice Borrador en su tabla de estado | `README.md` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
+| estado en los demás documentos | docs/README.md dice Borrador | `docs/README.md` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
+| estado en los demás documentos | la checklist dice Borrador | `docs/checklist/estado_checklist.md` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
+| estado en los demás documentos | la guía de evidencias dice Borrador | `docs/checklist/guia_de_evidencias.md` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
+| estado en los demás documentos | la trazabilidad con otra fecha de revisión | `docs/checklist/trazabilidad.csv` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
+| estado en los demás documentos | la hoja de ruta vuelve a pedir la revisión | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
+| las pruebas nuevas | el reparto de reglas pone el primer rango en otra forma | `tests/test_arquitectura_cifras.py` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
+| las pruebas nuevas | los umbrales con una sola cifra decimal | `tests/test_arquitectura_cifras.py` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
+| las pruebas nuevas | el detector del estado deja de ver Borrador | `tests/test_arquitectura_cifras.py` | DETECTADA | `test_un_estado_o_una_fecha_que_no_coinciden_en_otro_documento_se_detectan` |
+| las pruebas nuevas | la revisión de los ADR deja de exigir la fecha | `tests/test_arquitectura_guardiana.py` | DETECTADA | `test_los_adr_reales_cumplen_su_estructura_y_su_origen` |
 
-## Forma, redacción, diagramas, ADR y D106: 21 de 21 detectadas
+## Forma, redacción, diagramas, ADR y D106: 34 de 34 detectadas
 | Grupo | Mutación | Archivo | Resultado | Prueba que falla |
 |---|---|---|---|---|
 | términos | un término prohibido en el documento | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_real_cumple_la_guardiana` |
@@ -109,9 +145,15 @@ La prueba que comprueba la cita de este mismo registro en la sección 17 del doc
 | diagramas | una caja del diagrama que no está en su tabla | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_los_diagramas_reales_son_texto_ascii_coherente_con_el_dag_y_con_sus_cajas` |
 | diagramas | una tarea del DAG que falta en la secuencia | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_los_diagramas_reales_son_texto_ascii_coherente_con_el_dag_y_con_sus_cajas` |
 | diagramas | un carácter que no es ASCII en un diagrama | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_los_diagramas_reales_son_texto_ascii_coherente_con_el_dag_y_con_sus_cajas` |
-| metadatos | estado inventado | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_real_cumple_la_guardiana` |
+| metadatos | estado inventado | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
+| metadatos | el estado vuelve a Borrador | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
 | metadatos | aprobadores inventados | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_real_cumple_la_guardiana` |
-| metadatos | revisión inventada | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_real_cumple_la_guardiana` |
+| metadatos | falta un aprobador | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_real_cumple_la_guardiana` |
+| metadatos | falta la aclaración de que la aprobación se registra después | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_real_cumple_la_guardiana` |
+| metadatos | revisión pendiente | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
+| metadatos | revisión sin fecha | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
+| metadatos | revisión de otra persona | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_real_cumple_la_guardiana` |
+| metadatos | versión sin fecha | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_real_cumple_la_guardiana` |
 | cita | una segunda mención del artículo | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_real_cumple_la_guardiana` |
 | índice | un ADR que no existe en el índice | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_real_cumple_la_guardiana` |
 | índice | origen distinto en el índice | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_la_numeracion_de_los_adr_es_consecutiva_y_el_indice_del_documento_los_lista_todos` |
@@ -119,6 +161,13 @@ La prueba que comprueba la cita de este mismo registro en la sección 17 del doc
 | ADR | falta el rótulo de razonamiento actual | `docs/arquitectura/adr/adr-005_orquestacion_con_airflow.md` | DETECTADA | `test_los_adr_reales_cumplen_su_estructura_y_su_origen` |
 | ADR | un origen que no existe | `docs/arquitectura/adr/adr-003_almacenamiento_dual_sin_orm.md` | DETECTADA | `test_los_adr_reales_cumplen_su_estructura_y_su_origen` |
 | ADR | revisión inventada | `docs/arquitectura/adr/adr-010_api_de_solo_lectura_local.md` | DETECTADA | `test_los_adr_reales_cumplen_su_estructura_y_su_origen` |
+| ADR | revisión pendiente en un ADR existente | `docs/arquitectura/adr/adr-003_almacenamiento_dual_sin_orm.md` | DETECTADA | `test_los_adr_reales_cumplen_su_estructura_y_su_origen` |
+| ADR | revisión sin fecha en un ADR | `docs/arquitectura/adr/adr-012_panel_solo_sobre_la_api.md` | DETECTADA | `test_los_adr_reales_cumplen_su_estructura_y_su_origen` |
+| ADR-015 | revisión pendiente en el ADR-015, sin excepción | `docs/arquitectura/adr/adr-015_calidad_de_datos_en_silver.md` | DETECTADA | `test_los_adr_reales_cumplen_su_estructura_y_su_origen` |
+| ADR-015 | origen inexistente en el ADR-015 | `docs/arquitectura/adr/adr-015_calidad_de_datos_en_silver.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
+| ADR-015 | falta el rótulo de razonamiento actual en el ADR-015 | `docs/arquitectura/adr/adr-015_calidad_de_datos_en_silver.md` | DETECTADA | `test_los_adr_reales_cumplen_su_estructura_y_su_origen` |
+| ADR-015 | el ADR-015 deja de decir que no se registraron alternativas | `docs/arquitectura/adr/adr-015_calidad_de_datos_en_silver.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
+| ADR-015 | el índice del documento con otro título para el ADR-015 | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_la_numeracion_de_los_adr_es_consecutiva_y_el_indice_del_documento_los_lista_todos` |
 | ADR | una alternativa alterada | `docs/arquitectura/adr/adr-007_reproducibilidad_de_versiones.md` | DETECTADA | `test_los_adr_reales_cumplen_su_estructura_y_su_origen` |
 | ADR | ADR-014 sin la frase exacta de sin alternativas | `docs/arquitectura/adr/adr-014_gold_lee_solo_silver.md` | DETECTADA | `test_los_hechos_citados_por_adr_007_y_adr_014_estan_en_el_registro_y_en_las_evidencias` |
 | ADR | ADR-014 con el tamaño de una página de Bronze alterado | `docs/arquitectura/adr/adr-014_gold_lee_solo_silver.md` | DETECTADA | `test_el_volumen_y_la_calidad_de_los_datos_del_documento_son_los_medidos` |
@@ -167,6 +216,9 @@ Vueltas de esta serie (las series de arriba son las de la última vuelta; las an
 - Vuelta 4 (2026-11-17): 111 definidas, 111 detectadas, 0 y 0, sobre el estado final de las pruebas del documento de arquitectura.
 - Vuelta 5 (2026-11-17): 126 definidas (84 + 21 + 6 + 15), 126 detectadas, 0 no detectadas y 0 que no aplicaban: la serie del README (apartado de reintentos y párrafo de datos de personas) se añadió aquí.
 - Vuelta 6 (2026-11-17): 136 definidas (89 + 21 + 6 + 20), 135 detectadas, 0 no detectadas y 1 que no aplicaba: 136 = 135 + 0 + 1. Esta vuelta añadió las mutaciones de la cláusula por capa de los predios (4 en el README, 4 en el documento y 2 de las pruebas). No aplicaba la que cambiaba lo que Gold conserva en el documento, porque la frase escrita en la mutación terminaba con «;» y en el documento termina con «.» (sección 12) o con «(el detalle» (sección 3). Corrección: se reescribió como dos mutaciones, una por sección.
-- Vuelta 7 (2026-11-17): las series de arriba, sobre el estado final de todo lo vigilado, con las dos mutaciones corregidas.
+- Vuelta 7 (2026-11-17): 137 definidas (90 + 21 + 6 + 20), 137 detectadas, 0 no detectadas y 0 que no aplicaban, sobre el estado final de entonces, con las dos mutaciones corregidas.
+- Vuelta 8 (2026-11-18): 183 definidas (123 de cifras, 34 de forma y redacción, 6 de Gold y 20 del README), 182 detectadas, 1 no detectada y 0 que no aplicaban: 183 = 182 + 1 + 0. Esta vuelta añadió las mutaciones del ADR-015 (cifras, reparto de las reglas, umbrales, condiciones que detienen Silver, huérfanos), de la portada (estado Revisado, revisión con nombre y fecha, tres aprobadores, versión y fecha), de la línea Revisión de los ADR, de lo que dicen los demás documentos del estado y de las pruebas nuevas. No detectada: los 295 barrios sin construcciones en la consecuencia positiva del ADR-015 (la prueba solo vigilaba la otra mención). Corrección: la prueba exige también la frase de la consecuencia positiva.
+- Vuelta 9 (2026-11-18): 183 definidas, 183 detectadas, 0 no detectadas y 0 que no aplicaban, sobre el estado con 15 ADR y la prueba del ADR-015 reforzada.
+- Vuelta 10 (2026-11-18): las series de arriba, sobre el estado final: añaden tres mutaciones de la fila de contratos de la sección 7 (la cobertura de la llave se registra y no detiene, el mínimo de filas de Gold detiene), que la prueba del ADR-015 vigila ahora.
 
 Qué NO demuestra: que no existan cifras del documento que ninguna prueba vigile; solo las que se mutaron. Una cifra escrita con otro formato que el esperado por las expresiones de las pruebas no se detectaría.

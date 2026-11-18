@@ -139,8 +139,8 @@
 ### `arquitectura/` · arquitectura del sistema y registros de decisión
 | archivo | qué contiene |
 |---|---|
-| [arquitectura_del_sistema.md](arquitectura/arquitectura_del_sistema.md) | documento de arquitectura de 18 secciones, con diagramas en texto; Borrador hasta su revisión |
-| [adr/](arquitectura/adr/) | 14 registros de decisión (ADR), uno por archivo, con sus alternativas registradas y las que hoy descartamos |
+| [arquitectura_del_sistema.md](arquitectura/arquitectura_del_sistema.md) | documento de arquitectura de 18 secciones, con diagramas en texto; revisado, con la aprobación pendiente |
+| [adr/](arquitectura/adr/) | 15 registros de decisión (ADR), uno por archivo, con sus alternativas registradas y las que hoy descartamos |
 
 ### Decisiones
 [DECISIONES.md](DECISIONES.md): todas las decisiones con alternativas, razón, riesgo y fecha (D1 a D106; las nuevas continúan desde D107).
@@ -157,7 +157,7 @@
 ## Componentes en construcción
 | componente | estado |
 |---|---|
-| Documentación y demostración | en construcción: el documento de arquitectura y el README están escritos (el documento, en Borrador hasta su revisión); falta el guion de demostración |
+| Documentación y demostración | en construcción: el documento de arquitectura y el README están escritos (el documento, revisado y con la aprobación pendiente); falta el guion de demostración |
 | Cierre y paquete | en construcción: falta publicar el repositorio y armar el paquete final |
 
 Las evidencias del almacenamiento relacional están en `docs/evidencias/almacenamiento/`; las de la orquestación están en `docs/evidencias/orquestacion/`; las del panel, en `docs/evidencias/panel/`; las del endurecimiento (instalación desde cero, mutaciones y Airflow en vivo), en `docs/evidencias/endurecimiento/`; las de los servicios locales, en `docs/evidencias/servicios/`; las de la evaluación del panel y sus ajustes, en `docs/evidencias/usuarios/` y `docs/evidencias/ajustes_ux/`; las de la auditoría intermedia (independencia del repositorio), en `docs/evidencias/auditoria/`.

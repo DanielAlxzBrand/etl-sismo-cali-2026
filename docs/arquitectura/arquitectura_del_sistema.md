@@ -4,13 +4,13 @@
 | Campo | Valor |
 |---|---|
 | Título | Arquitectura del sistema ETL medallion del sismo M7.4 de Cali (10 de agosto de 2026) |
-| Versión y fecha | 0.1, 2026-11-16 |
+| Versión y fecha | 0.2, 2026-11-18 |
 | Autor y owner técnico | Daniel Alexander Brand García |
-| Revisión de la documentación | pendiente (Jhoan Sebastián Castellanos Mayor, por acuerdo del equipo de aquí en adelante) |
-| Aprobadores | pendiente |
-| Estado | Borrador |
+| Revisión de la documentación | Jhoan Sebastián Castellanos Mayor, 2026-11-18 |
+| Aprobadores | Daniel Alexander Brand García, Jhoan Sebastián Castellanos Mayor y Diego Fernando Gordillo Londoño; la aprobación se registra al pasar el estado a Aprobado |
+| Estado | Revisado |
 | Repositorio | aún no está publicado; cuando se publique, esta tabla enlazará a sus issues (ver el [README](../../README.md#19-contacto-y-responsables)) |
-| Registros de decisión | los 14 ADR de [adr/](adr/), listados en la sección 10; las decisiones completas están en [docs/DECISIONES.md](../DECISIONES.md) (D1 a D106) |
+| Registros de decisión | los 15 ADR de [adr/](adr/), listados en la sección 10; las decisiones completas están en [docs/DECISIONES.md](../DECISIONES.md) (D1 a D106) |
 
 Este documento describe cómo está construido el sistema hoy y por qué lo construimos así. Lo escribimos como estudiantes que hicimos el proyecto: donde algo no existe decimos «no lo hicimos» o «no aplica» y damos la razón, y no rellenamos con contenido genérico. Para cada cifra o afirmación indicamos de dónde sale (un archivo, una evidencia o una decisión del repositorio), y varias cifras las comparan pruebas automáticas con lo medido. Lo que no pudimos verificar, o depende de la máquina de quien lo ejecute, lo marcamos como límite.
 
@@ -28,7 +28,7 @@ Este documento describe cómo está construido el sistema hoy y por qué lo cons
 - Idempotencia: repetir la extracción o la carga no duplica nada.
 - API de solo lectura (11 rutas GET) y panel de 8 páginas que solo habla con la API.
 - Mínimo privilegio: tres cuentas de MySQL y un repositorio montado en solo lectura en Airflow.
-- Cifras de los documentos vigiladas por pruebas: **1381 pruebas** automáticas.
+- Cifras de los documentos vigiladas por pruebas: **1386 pruebas** automáticas.
 
 ## 3. Contexto y drivers
 **Objetivos.** Entregar un análisis reproducible de impacto sísmico por zonas, con incertidumbre explícita, y que se pueda repetir de punta a punta ([docs/estrategia/03_objetivo_alcance_okr_kpi.md](../estrategia/03_objetivo_alcance_okr_kpi.md) y [05_mvp_criterios_aceptacion.md](../estrategia/05_mvp_criterios_aceptacion.md)).
@@ -200,7 +200,7 @@ El historial es la suma de corridas en MySQL y los snapshots inmutables de Bronz
 |---|---|---|
 | Respuestas de la API | modelos pydantic en `src/api/esquemas.py` | pruebas de estructura y de coincidencia con las salidas |
 | Esquemas SQL | `src/load/sql/esquema_mysql.sql` y `esquema_sqlite.sql` | prueba de paridad entre los dos y con el diccionario |
-| Reporte de calidad de Silver | `data/silver/quality_report.json` y los umbrales de `config/config.yaml` | cobertura de la llave, mínimo de filas, indicadores en rango |
+| Reporte de calidad de Silver | `data/silver/quality_report.json` y los umbrales de `config/config.yaml` | cobertura de la llave (se registra, no detiene), mínimo de filas de Gold (detiene), indicadores en rango |
 | Salidas del pipeline | los nueve archivos de la línea base con sha256 | `tests/test_pipeline_reproducible.py` |
 
 Responsable de mantenerlos: Daniel Alexander Brand García. No hay un acuerdo de nivel de servicio de frescura; la fecha de corte (la de la última edición de la capa, 2026-09-02) la entrega `/health`.
@@ -306,8 +306,11 @@ Cada ADR vive en su archivo, con Contexto, Decisión, Consecuencias, las alterna
 | [ADR-012](adr/adr-012_panel_solo_sobre_la_api.md) | El panel Streamlit solo habla con la API | D20, D69, D70 |
 | [ADR-013](adr/adr-013_dos_modos_de_instalacion.md) | Dos modos de instalación y Python 3.13 solo en paralelo | D93 |
 | [ADR-014](adr/adr-014_gold_lee_solo_silver.md) | Gold lee solo Silver y el paso espacial vive en Silver | D5, sección «Diseño», sección «Otras decisiones de Silver» |
+| [ADR-015](adr/adr-015_calidad_de_datos_en_silver.md) | Silver valida la calidad con 18 reglas ligadas a hallazgos, un reporte y umbrales en la configuración | sección «Otras decisiones de Silver», D-FUENTES |
 
 La separación de capas (Gold solo desde Silver) tiene su [ADR-014](adr/adr-014_gold_lee_solo_silver.md): DECISIONES.md la registró como una decisión de diseño sin alternativas, así que ese ADR dice «No se registraron alternativas.» y sus alternativas de hoy están rotuladas como razonamiento actual. D21 y D5 quedaron marcadas como modificadas en [D106](../DECISIONES.md): D21 planeó una variante de Airflow que no implementamos y D5 decía que `shapely` ya no se usaba, cuando la regla R09 de Silver sí lo usa.
+
+La validación de la calidad en Silver (las 18 reglas, el reporte `quality_report.json` y los umbrales de `config/config.yaml`) tiene su [ADR-015](adr/adr-015_calidad_de_datos_en_silver.md): no tiene un D propio en DECISIONES.md, así que ese ADR lo dice, cita la sección «Otras decisiones de Silver» y el criterio G5 de D-FUENTES, dice «No se registraron alternativas.» y sus alternativas de hoy son razonamiento actual. También deja escrito lo que el repositorio no respalda, como que `min_edificios_por_barrio` no tiene decisión registrada.
 
 ## 11. Requisitos no funcionales
 ### Disponibilidad y resiliencia
@@ -377,7 +380,7 @@ El modelo de costos tiene siete categorías y fórmulas con símbolos; los preci
 | API sin autenticación ([ADR-010](adr/adr-010_api_de_solo_lectura_local.md)) | un servicio simple y sin secretos | no puede salir del equipo | es local y de una persona a la vez; si se despliega hay que decidir de nuevo |
 | Una conexión por solicitud a MySQL ([ADR-010](adr/adr-010_api_de_solo_lectura_local.md)) | sin estado de conexiones que caduquen | unos 80 ms más por consulta con MySQL (88,2 ms frente a 6,1 ms, EV-032) | el servicio es local y de un solo usuario |
 | Proxy satelital con 7 comunas ([ADR-009](adr/adr-009_fuentes_por_criterios_de_aceptacion.md)) | la única fuente abierta a nivel de construcción | no es una evaluación estructural y no cubre toda Cali | lo declaramos en cada resultado y no extrapolamos |
-| Documentación vigilada por pruebas ([ADR-008](adr/adr-008_pruebas_sin_servidor_y_regresion.md)) | cifras que no se desactualizan en silencio | más pruebas que mantener (**1381 pruebas** en total) | una cifra vieja ya se coló una vez en un documento y la prueba la detectó |
+| Documentación vigilada por pruebas ([ADR-008](adr/adr-008_pruebas_sin_servidor_y_regresion.md)) | cifras que no se desactualizan en silencio | más pruebas que mantener (**1386 pruebas** en total) | una cifra vieja ya se coló una vez en un documento y la prueba la detectó |
 
 ## 16. Riesgos y mitigaciones
 La probabilidad y el impacto son juicio del equipo, sin cifras; se basan en las limitaciones, defectos y riesgos registrados.
@@ -405,14 +408,14 @@ La probabilidad y el impacto son juicio del equipo, sin cifras; se basan en las 
 **Propuesta del equipo, no compromiso:**
 | Plazo | Mejora propuesta |
 |---|---|
-| Corto | publicar el repositorio y enlazar sus issues desde el README; comprobar la ejecución desde cero en otros equipos; hacer las sesiones con personas usuarias; revisar este documento y pasarlo de Borrador a revisado; grabar la demostración |
+| Corto | publicar el repositorio y enlazar sus issues desde el README; comprobar la ejecución desde cero en otros equipos; hacer las sesiones con personas usuarias; aprobar el documento y los ADR entre los tres autores, pasando el estado de Revisado a Aprobado; grabar la demostración |
 | Medio | ampliar la cobertura a la Comuna 2 y a las demás comunas ausentes; repetir el análisis con un estrato actualizado; agregar una validación explícita de las columnas de la fuente; evaluar reintentos de tareas en el DAG |
 | Largo | incorporar la amenaza sísmica oficial; comparar el proxy con las inspecciones de la Alcaldía; si el sistema se despliega, agregar autenticación, integración continua y alertas |
 
 **Posibles cambios de arquitectura futuros:** autenticación en la API si sale de `127.0.0.1`; un conjunto de conexiones si crece el uso; carga incremental solo si aparece una fuente que cambie; sustituir el compose por infraestructura como código si se despliega.
 
 ### Evidencias de pruebas, retroalimentación recibida y feedback de personas usuarias
-- **Evidencias de pruebas técnicas:** [informe de pruebas](../validacion/informe_pruebas.md), [matriz de casos](../validacion/matriz_casos_prueba.md) (179 casos), [registro de defectos](../validacion/registro_defectos.md) (25 defectos; para 15 se demostró que su prueba de regresión falla sin la corrección y para los otros 10 no se demostró (DEF-003, DEF-006, DEF-009, DEF-010, DEF-011, DEF-014 y DEF-022 a DEF-025), con el motivo de cada uno en el registro), las mutaciones de [EV-103](../evidencias/modo_completo/EV-103_mutaciones_modo_completo.txt) (132 en total), la suite en un clon y en un zip ([EV-113](../evidencias/readme/EV-113_primera_vez_y_suite_en_clon_y_zip.txt)) la cobertura de `src/` es de 78 % de las líneas, medida con la suite completa y sin red ([EV-114](../evidencias/readme/EV-114_cobertura_de_src_repetida.txt)); es una cota inferior, porque `clean_api.py` e `integrate.py` se ejecutan en subprocesos que la medición no sigue y `extract_api.py` necesita red; y las mutaciones de las pruebas de este documento y de sus ADR ([EV-115](../evidencias/arquitectura/EV-115_mutaciones_de_las_pruebas_de_arquitectura.txt)): 137 de 137 detectadas.
+- **Evidencias de pruebas técnicas:** [informe de pruebas](../validacion/informe_pruebas.md), [matriz de casos](../validacion/matriz_casos_prueba.md) (179 casos), [registro de defectos](../validacion/registro_defectos.md) (25 defectos; para 15 se demostró que su prueba de regresión falla sin la corrección y para los otros 10 no se demostró (DEF-003, DEF-006, DEF-009, DEF-010, DEF-011, DEF-014 y DEF-022 a DEF-025), con el motivo de cada uno en el registro), las mutaciones de [EV-103](../evidencias/modo_completo/EV-103_mutaciones_modo_completo.txt) (132 en total), la suite en un clon y en un zip ([EV-113](../evidencias/readme/EV-113_primera_vez_y_suite_en_clon_y_zip.txt)) la cobertura de `src/` es de 78 % de las líneas, medida con la suite completa y sin red ([EV-114](../evidencias/readme/EV-114_cobertura_de_src_repetida.txt)); es una cota inferior, porque `clean_api.py` e `integrate.py` se ejecutan en subprocesos que la medición no sigue y `extract_api.py` necesita red; y las mutaciones de las pruebas de este documento y de sus ADR ([EV-115](../evidencias/arquitectura/EV-115_mutaciones_de_las_pruebas_de_arquitectura.txt)): 186 de 186 detectadas.
 - **Retroalimentación recibida sobre la entrega anterior:** el texto está en [retroalimentacion_recibida.txt](../retroalimentacion/retroalimentacion_recibida.txt) y no se edita. Trae aspectos positivos y cinco observaciones por mejorar; cada una está atendida en [registro_de_cambios.md](../retroalimentacion/registro_de_cambios.md), con qué hicimos, qué archivos cambiaron y su evidencia. Atenderlas no cambió ningún dato, indicador, umbral, regla de Silver ni columna.
 - **Feedback de personas usuarias:** **no existe todavía y sigue pendiente.** La retroalimentación recibida sobre la entrega anterior no es feedback de personas usuarias. El protocolo, el guion, el consentimiento y el análisis (probado solo con datos sintéticos rotulados) están en [docs/usuarios/](../usuarios/README.md); cuando haya sesiones reales, sus resultados se registran ahí y este apartado se actualiza.
 
@@ -438,7 +441,7 @@ La probabilidad y el impacto son juicio del equipo, sin cifras; se basan en las 
 El glosario del análisis (Wilson, Newcombe, Mantel-Haenszel, K1 a K6) está en [docs/gold/resultados.md](../gold/resultados.md).
 
 ### Referencias
-- Decisiones: [docs/DECISIONES.md](../DECISIONES.md) y los 14 ADR de la sección 10.
+- Decisiones: [docs/DECISIONES.md](../DECISIONES.md) y los 15 ADR de la sección 10.
 - Diagramas: los de las secciones 6 y 9 de este documento, en texto.
 - Documentación por componente: [API](../api/arquitectura.md), [panel](../panel/arquitectura_panel.md), [orquestación](../orquestacion/README.md), [modelo de datos](../almacenamiento/modelo_datos.md) y [seguridad](../seguridad/gestion_credenciales.md).
 - Documentación de las herramientas (páginas principales; no las verificamos con una consulta de hoy): Apache Airflow (https://airflow.apache.org/docs/), FastAPI (https://fastapi.tiangolo.com/), Streamlit (https://docs.streamlit.io/), pandas (https://pandas.pydata.org/docs/), pytest (https://docs.pytest.org/) y MySQL 8.0 (https://dev.mysql.com/doc/refman/8.0/en/).

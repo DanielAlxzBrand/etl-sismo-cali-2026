@@ -1,6 +1,6 @@
 # ADR-003: SQLite como almacén de referencia, MySQL como almacén relacional y SQL explícito sin ORM
 
-**Estado:** Vigente (implementada). **Fecha de la decisión:** 2026-10-15 (salida en CSV y SQLite) y 2026-11-13 (MySQL). **D de origen:** D10, D19, D40, D41. **Propietario técnico:** Daniel Alexander Brand García. **Revisión:** pendiente.
+**Estado:** Vigente (implementada). **Fecha de la decisión:** 2026-10-15 (salida en CSV y SQLite) y 2026-11-13 (MySQL). **D de origen:** D10, D19, D40, D41. **Propietario técnico:** Daniel Alexander Brand García. **Revisión:** Jhoan Sebastián Castellanos Mayor, 2026-11-18.
 
 ## Contexto
 Gold se entrega como archivos CSV. Necesitábamos además una base de datos para recalcular los indicadores con SQL de forma independiente (D10) y, después, un almacén relacional con historial, claves y restricciones (D19). MySQL 8.0 ya estaba instalado y escuchando en el equipo, y el pipeline ya estaba validado con SQLite.

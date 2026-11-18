@@ -1,6 +1,6 @@
 # ADR-005: Airflow en Docker orquesta el pipeline con cuatro tareas
 
-**Estado:** Vigente (implementada). **Fecha de la decisión:** 2026-11-12 (D21), reemplazada en parte el 2026-11-13 (D57) y el 2026-11-15 (D92). **D de origen:** D21, D57, D64, D92. **Propietario técnico:** Daniel Alexander Brand García. **Revisión:** pendiente.
+**Estado:** Vigente (implementada). **Fecha de la decisión:** 2026-11-12 (D21), reemplazada en parte el 2026-11-13 (D57) y el 2026-11-15 (D92). **D de origen:** D21, D57, D64, D92. **Propietario técnico:** Daniel Alexander Brand García. **Revisión:** Jhoan Sebastián Castellanos Mayor, 2026-11-18.
 
 ## Contexto
 El ítem 5.4 del checklist pide orquestación con flujos programados. Queríamos un DAG que ejecutara el pipeline sin escribir en el repositorio y que cualquier persona pudiera levantar desde el zip. D21 planeó una variante ligera de Airflow (ejecutor local, sin Redis ni Celery) por la memoria libre medida entonces; al seguir el procedimiento del artículo citado en la [sección 18 del documento de arquitectura](../arquitectura_del_sistema.md#18-glosario-y-referencias), el compose real usa CeleryExecutor, Postgres y Redis (D57). Por eso D21 quedó marcada como modificada por D57 y D92.

@@ -1,6 +1,6 @@
 # ADR-006: El DAG trabaja sobre una copia y compara lo que produce con lo versionado
 
-**Estado:** Vigente (implementada). **Fecha de la decisión:** 2026-11-13. **D de origen:** D58, D59. **Propietario técnico:** Daniel Alexander Brand García. **Revisión:** pendiente.
+**Estado:** Vigente (implementada). **Fecha de la decisión:** 2026-11-13. **D de origen:** D58, D59. **Propietario técnico:** Daniel Alexander Brand García. **Revisión:** Jhoan Sebastián Castellanos Mayor, 2026-11-18.
 
 ## Contexto
 Las salidas del pipeline son la línea base del proyecto: nueve archivos cuyos sha256 se comprueban. Un DAG que escribiera en el repositorio podía alterarlas sin que nadie lo notara, y SQLite no escribe el archivo de base de datos igual byte a byte entre ejecuciones.

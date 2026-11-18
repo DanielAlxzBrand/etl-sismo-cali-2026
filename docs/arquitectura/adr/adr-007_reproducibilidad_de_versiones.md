@@ -1,6 +1,6 @@
 # ADR-007: Versiones exactas, pandas fijado en 3.0.6 y Python 3.13 como única versión soportada
 
-**Estado:** Vigente (implementada). **Fecha de la decisión:** 2026-11-13 (D56) y 2026-11-14 (D81). **D de origen:** D56, D81. **Propietario técnico:** Daniel Alexander Brand García. **Revisión:** pendiente.
+**Estado:** Vigente (implementada). **Fecha de la decisión:** 2026-11-13 (D56) y 2026-11-14 (D81). **D de origen:** D56, D81. **Propietario técnico:** Daniel Alexander Brand García. **Revisión:** Jhoan Sebastián Castellanos Mayor, 2026-11-18.
 
 ## Contexto
 La línea base se produjo con pandas 3.0.6. Al reinstalar con pandas 3.1.1, `gold_final.csv` cambiaba en 3 celdas del decimal 12 y `etl_sismo.db` en 799 celdas de `indice_escombros` (DEF-011, 2026-11-13; EV-035 es la corrida estable con 3.0.6 tras restaurar la versión). No registramos la magnitud de las 799 celdas. Además, una instalación desde cero con versiones mínimas ya había hecho fallar una prueba, y varios paquetes se usaban sin estar declarados.

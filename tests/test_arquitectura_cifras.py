@@ -121,7 +121,7 @@ def test_defectos_mutaciones_cobertura_casos_y_reglas_del_documento_son_los_medi
 
 def test_el_numero_de_adr_y_la_ultima_decision_del_documento_y_de_los_enlaces_son_los_reales():
     n = len(archivos_adr())
-    assert n == 14
+    assert n == 15
     assert cifras_con_patron(DOC_TEXTO, r"los (\d+) ADR") == [str(n)]
     filas = re.findall(r"(?m)^\| \[ADR-\d{3}\]\(adr/", DOC_TEXTO)
     assert len(filas) == n
@@ -225,7 +225,7 @@ def test_los_enlaces_al_documento_existen_en_el_readme_el_indice_y_la_checklist(
         assert "docs/arquitectura/arquitectura_del_sistema.md" in _leer(ruta), ruta
     fila = next(l for l in _leer("docs/checklist/trazabilidad.csv").splitlines() if l.startswith("7.3,"))
     assert "docs/arquitectura/arquitectura_del_sistema.md" in fila and "tests/test_arquitectura_cifras.py" in fila and "tests/test_arquitectura_guardiana.py" in fila and "En curso" in fila
-    assert "Borrador" in fila
+    assert "revisado por Jhoan Sebastián Castellanos Mayor" in fila and "Borrador" not in fila
 
 
 # ---------------------------------------------------------------- pruebas negativas con textos sintéticos
@@ -431,3 +431,139 @@ def test_el_detector_de_columnas_de_predio_del_documento_las_encuentra_y_no_inve
     assert columnas_de_predio("objectid,PREDIO,lon") == ["PREDIO"]
     assert columnas_de_predio("a,ID_PREDIO,NUMEPRED,b") == ["ID_PREDIO", "NUMEPRED"]
     assert columnas_de_predio("comuna,barrio,codigo_barrio,lon,lat") == []
+
+
+# ---------------------------------------------------------------- ADR-015: la calidad de Silver, y el estado del documento frente a lo que dicen los demás documentos
+ADR_015 = "adr-015_calidad_de_datos_en_silver.md"
+
+
+def reparto_de_reglas(reglas_por_archivo):
+    """Texto del reparto de las reglas por archivo de código: «R01 a R10 están en `a.py`, R11 a R15 en `b.py` y R16 a R18 en `c.py`»."""
+    partes = []
+    for i, (archivo, ids) in enumerate(reglas_por_archivo.items()):
+        numeros = sorted(int(x) for x in ids)
+        rango = f"R{numeros[0]:02d} a R{numeros[-1]:02d}"
+        partes.append(f"{rango} están en `{archivo}`" if i == 0 else f"{rango} en `{archivo}`")
+    return ", ".join(partes[:-1]) + " y " + partes[-1] if len(partes) > 1 else partes[0]
+
+
+def texto_de_umbrales(cfg):
+    """Umbrales de la configuración como los escribe el ADR-015 (decimales con coma y dos cifras)."""
+    f = lambda v: f"{v:.2f}".replace(".", ",") if isinstance(v, float) else str(v)   # noqa: E731
+    t, s, ll = cfg["thresholds"], cfg["silver"], cfg["llave"]
+    return (f"`join_coverage_min` {f(t['join_coverage_min'])}, `gold_min_rows` {f(t['gold_min_rows'])}, `min_edificios_por_barrio` {f(t['min_edificios_por_barrio'])}, "
+            f"`silver.muestra_baja_severos` {f(s['muestra_baja_severos'])} y, en `llave`, `similitud_nombre_min` {f(ll['similitud_nombre_min'])}, "
+            f"`confianza_alta` {f(ll['confianza_alta'])} y `confianza_media` {f(ll['confianza_media'])}")
+
+
+def test_los_hechos_del_adr_015_son_los_del_repositorio():
+    from src.common import load_config
+
+    adr = ADR_TEXTO[ADR_015]
+    cfg = load_config()
+    # las 18 reglas y su reparto por archivo de código
+    assert len(REP["reglas_aplicadas"]) == 18 and "Silver aplica 18 reglas (R01 a R18)" in adr
+    por_archivo = {a: re.findall(r'registrar_regla\(reglas, "R(\d+)"', _leer(f"src/transform/{a}")) for a in ("clean_api.py", "clean_excel.py", "integrate.py")}
+    assert reparto_de_reglas(por_archivo) in adr
+    filas = [l for l in _leer("docs/silver/reglas_silver.md").splitlines() if re.match(r"\| R\d\d \|", l)]
+    assert len(filas) == 18
+    # los umbrales de la configuración
+    assert texto_de_umbrales(cfg) in adr
+    # R01: columnas y capa exactas, sin la palabra «llave», con la cifra de las filas repetidas calculada sobre Bronze
+    h1 = next(l for l in _leer("docs/silver/hallazgos_eda.md").splitlines() if l.startswith("| H1 |"))
+    columnas = re.search(r"llave catastral \(([A-Z, ]+)\) se repite en ([\d.]+) filas", h1)
+    cols, n_h1 = [c.strip() for c in columnas.group(1).split(",")], columnas.group(2)
+    enumeradas = ", ".join(f"`{c}`" for c in cols[:-1]) + f" y `{cols[-1]}`"
+    assert f"las columnas {enumeradas} de Bronze, que se repite en {n_h1} filas" in adr
+    filas_bronze = []
+    for pagina in sorted((ROOT / "data" / "bronze" / "api" / "edificaciones").glob("snap_*/page_000*.json")):
+        filas_bronze += [f["attributes"] for f in json.loads(pagina.read_text(encoding="utf-8"))["features"]]
+    clave = pd.DataFrame(filas_bronze)[cols].astype("string").fillna("<nulo>").agg("|".join, axis=1)
+    assert _miles(int(clave.duplicated(keep=False).sum())) == n_h1
+    r01 = next(l for l in adr.splitlines() if "R01 fija" in l)
+    assert "llave" not in r01, "en el glosario «llave» es comuna por 100 más barrio, no esta combinación de columnas"
+    # lo que detiene Silver, en el código
+    assert 'raise ValueError(f"Estado_Estructural desconocido' in _leer("src/transform/clean_api.py")
+    integrate = _leer("src/transform/integrate.py")
+    assert 'assert enc == "utf-8"' in integrate and "assert cons.objectid.is_unique and barr.codigo_barrio.is_unique" in integrate
+    assert "nombres con codificación dañada" in _leer("src/transform/clean_excel.py")
+    # y lo que no detiene: ninguna línea de Silver que nombre el umbral de cobertura levanta un error
+    assert not [l for l in integrate.splitlines() if "umbral" in l and ("assert" in l or "raise" in l)], "la cobertura de la llave no detiene Silver"
+    assert "def test_cobertura_join_supera_umbral" in _leer("tests/test_quality.py")
+    assert 'assert len(gold) >= cfg["thresholds"]["gold_min_rows"]' in _leer("src/transform/build_gold.py")
+    # los huérfanos y dónde está su causa
+    izq, der = pd.read_csv(ROOT / "data/silver/silver_orphans_left.csv"), pd.read_csv(ROOT / "data/silver/silver_orphans_right.csv")
+    assert len(izq) == 6 and len(der) == 295 and REP["fuentes"]["estrato_barrio"]["filas_resumen_separadas"] == 23
+    assert "las 23 filas resumen del CSV ni los 295 barrios" in adr and "los 6 huérfanos a la izquierda" in adr
+    assert "las 6 construcciones sin llave y los 295 barrios del CSV sin construcciones" in adr, "la consecuencia positiva dice lo mismo que la alternativa"
+    con_causa = [p.name for p in sorted((ROOT / "data" / "silver").glob("*.csv")) if "causa" in pd.read_csv(p, nrows=0).columns]
+    assert con_causa == ["silver_orphans_left.csv"], "la causa de los huérfanos solo está en silver_orphans_left.csv"
+    assert "cruza_llave" in pd.read_csv(ROOT / "data/silver/silver_integrated.csv", nrows=0).columns
+    assert "cruza_llave" in adr and "`causa` de `silver_orphans_left.csv`" in adr
+    # requisitos: 26 paquetes con versión exacta, ninguno de calidad de datos
+    paquetes = [l for l in _leer("requirements.txt").splitlines() if l.strip() and not l.startswith("#")]
+    assert len(paquetes) == 26 and all("==" in l for l in paquetes) and "fija 26 paquetes con `==`" in adr
+    # la API lee el reporte, y la honestidad del ADR sobre lo que no está decidido
+    assert "quality_report" in _leer("src/api/app.py") and "`/calidad`" in adr
+    assert "min_edificios_por_barrio" not in DECISIONES, "si se registra una decisión, el ADR-015 debe dejar de decir que no existe"
+    assert re.search(r"G5 \| cobertura JOIN de prueba ≥80 % sobre 500 filas", DECISIONES) and "sobre una prueba de 500 filas" in adr
+    assert "No se registraron alternativas.\n" in adr and "sección «Otras decisiones de Silver», D-FUENTES." in adr
+    # lo que el ADR dice que detiene Silver y lo que no, una condición por frase
+    for frase in ("si aparece una etiqueta de `Estado_Estructural` que no conoce", "si `OBJECTID` o el código de barrio del CSV dejan de ser únicos", "si el CSV no se lee como UTF-8",
+                  "si hay nombres con codificación dañada", "Todo lo demás se registra y no detiene Silver", "La cobertura de la llave no detiene Silver",
+                  "Gold sí se detiene, con una aserción, si queda con menos de `gold_min_rows` filas"):
+        assert frase in adr, frase
+    # la fila de contratos de la sección 7 del documento dice lo mismo: la cobertura se registra y no detiene, el mínimo de filas de Gold sí detiene
+    assert "| cobertura de la llave (se registra, no detiene), mínimo de filas de Gold (detiene), indicadores en rango |" in DOC_TEXTO, "fila de contratos de la sección 7"
+
+
+def test_el_reparto_de_reglas_y_los_umbrales_alterados_se_detectan():
+    assert reparto_de_reglas({"a.py": ["01", "02", "10"], "b.py": ["11", "15"], "c.py": ["16", "18"]}) == "R01 a R10 están en `a.py`, R11 a R15 en `b.py` y R16 a R18 en `c.py`"
+    assert reparto_de_reglas({"a.py": ["01", "09"], "b.py": ["10", "18"]}) == "R01 a R09 están en `a.py` y R10 a R18 en `b.py`"
+    assert reparto_de_reglas({"a.py": ["01", "10"]}) == "R01 a R10 están en `a.py`"
+    cfg = {"thresholds": {"join_coverage_min": 0.8, "gold_min_rows": 200, "min_edificios_por_barrio": 10}, "silver": {"muestra_baja_severos": 30},
+           "llave": {"similitud_nombre_min": 0.85, "confianza_alta": 0.9, "confianza_media": 0.8}}
+    texto = texto_de_umbrales(cfg)
+    assert "`join_coverage_min` 0,80" in texto and "`confianza_alta` 0,90" in texto and "`min_edificios_por_barrio` 10," in texto
+    cambiado = {**cfg, "thresholds": {**cfg["thresholds"], "join_coverage_min": 0.75}}
+    assert texto_de_umbrales(cambiado) != texto
+
+
+FRASES_DE_ESTADO = {"Revisado": {
+    "README.md": ["Está revisado, con la aprobación pendiente.", "| escritos y revisados, con la aprobación pendiente |"],
+    "docs/README.md": ["revisado, con la aprobación pendiente"],
+    "docs/checklist/estado_checklist.md": ["escrito y revisado, con la aprobación pendiente"],
+    "docs/checklist/guia_de_evidencias.md": ["está revisado; la aprobación de los tres autores está pendiente", "documentada y revisada"],
+    "docs/checklist/trazabilidad.csv": ["revisado por Jhoan Sebastián Castellanos Mayor desde el {fecha}"]}}
+
+
+def problemas_del_estado(portada, leer):
+    """Lo que el README, el índice de docs, la checklist, su guía y la trazabilidad dicen del estado del documento debe ser lo que dice su portada."""
+    estado = re.search(r"(?m)^\| Estado \| (\w+) \|$", portada).group(1)
+    fecha = re.search(r"(?m)^\| Revisión de la documentación \| .+, (\d{4}-\d{2}-\d{2}) \|$", portada).group(1)
+    if estado not in FRASES_DE_ESTADO:
+        return [f"el estado {estado} no tiene frases definidas para los demás documentos: hay que actualizarlos y esta tabla"]
+    errores = []
+    for ruta, frases in FRASES_DE_ESTADO[estado].items():
+        texto = leer(ruta)
+        errores += [f"{ruta}: falta «{f.format(fecha=fecha)}»" for f in frases if f.format(fecha=fecha) not in texto]
+        if "Borrador" in texto:
+            errores.append(f"{ruta}: todavía dice Borrador")
+    return errores
+
+
+def test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada():
+    portada = DOC_TEXTO.split("## 2.")[0]
+    assert problemas_del_estado(portada, _leer) == []
+    assert "aprobar el documento y los ADR entre los tres autores, pasando el estado de Revisado a Aprobado" in DOC_TEXTO
+    assert cifras_con_patron(README, r"con (\d+) registros de decisión") == [str(len(archivos_adr()))]
+
+
+def test_un_estado_o_una_fecha_que_no_coinciden_en_otro_documento_se_detectan():
+    portada = "| Revisión de la documentación | Alguien, 2026-11-18 |\n| Estado | Revisado |\n"
+    buenos = {ruta: " ".join(f.format(fecha="2026-11-18") for f in frases) for ruta, frases in FRASES_DE_ESTADO["Revisado"].items()}
+    assert problemas_del_estado(portada, lambda r: buenos[r]) == []
+    assert problemas_del_estado(portada, lambda r: buenos[r] + " Borrador"), "un documento que sigue diciendo Borrador"
+    assert problemas_del_estado(portada, lambda r: buenos[r].replace("aprobación pendiente", "aprobación hecha") if r == "README.md" else buenos[r]), "el README dice otra cosa"
+    assert problemas_del_estado(portada, lambda r: buenos[r].replace("2026-11-18", "2026-11-10")), "la trazabilidad con otra fecha de revisión"
+    assert problemas_del_estado(portada.replace("Revisado", "Aprobado"), lambda r: buenos[r]), "un estado nuevo exige actualizar los demás documentos"

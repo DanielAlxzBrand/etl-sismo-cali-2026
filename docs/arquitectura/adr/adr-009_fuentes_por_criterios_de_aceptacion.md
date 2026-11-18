@@ -1,6 +1,6 @@
 # ADR-009: Las fuentes se aceptan por criterios verificados, sin bajar ningún umbral
 
-**Estado:** Vigente (implementada). **Fecha de la decisión:** 2026-10-15. **D de origen:** D2, D9, D-FUENTES. **Propietario técnico:** Daniel Alexander Brand García. **Revisión:** pendiente.
+**Estado:** Vigente (implementada). **Fecha de la decisión:** 2026-10-15. **D de origen:** D2, D9, D-FUENTES. **Propietario técnico:** Daniel Alexander Brand García. **Revisión:** Jhoan Sebastián Castellanos Mayor, 2026-11-18.
 
 ## Contexto
 El proyecto parte de datos abiertos de terceros. Antes de construir el pipeline había que saber si las fuentes se podían leer sin token, con columnas y cobertura suficientes. La fuente prevista, el conjunto `5vy8-gpw8` de datos.gov.co, no es tabular: responde HTTP 403 en `/resource/*.json`.

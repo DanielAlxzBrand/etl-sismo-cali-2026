@@ -1,6 +1,6 @@
 # ADR-001: Bronze guarda lo descargado sin tocarlo
 
-**Estado:** Vigente (implementada). **Fecha de la decisión:** 2026-10-15. **D de origen:** D6. **Propietario técnico:** Daniel Alexander Brand García. **Revisión:** pendiente.
+**Estado:** Vigente (implementada). **Fecha de la decisión:** 2026-10-15. **D de origen:** D6. **Propietario técnico:** Daniel Alexander Brand García. **Revisión:** Jhoan Sebastián Castellanos Mayor, 2026-11-18.
 
 ## Contexto
 Descargamos tres fuentes de terceros (una capa ArcGIS, un CSV de estrato y los polígonos de barrios) que pueden cambiar o desaparecer. Si el proyecto leyera siempre la versión viva de la fuente, no podríamos demostrar de dónde salió cada cifra ni repetir un análisis. Además, los resultados que entregamos se calculan una sola vez sobre una captura del evento.

@@ -1,6 +1,6 @@
 # ADR-010: La API es de solo lectura, la fuerza la conexión y escucha solo en 127.0.0.1
 
-**Estado:** Vigente (implementada). **Fecha de la decisión:** 2026-11-12. **D de origen:** D18, D27, D28, D29, D52, D54. **Propietario técnico:** Daniel Alexander Brand García. **Revisión:** pendiente.
+**Estado:** Vigente (implementada). **Fecha de la decisión:** 2026-11-12. **D de origen:** D18, D27, D28, D29, D52, D54. **Propietario técnico:** Daniel Alexander Brand García. **Revisión:** Jhoan Sebastián Castellanos Mayor, 2026-11-18.
 
 ## Contexto
 Queríamos exponer los resultados de Gold sin poner en riesgo la línea base. La API no tiene autenticación, y el panel corre en el mismo equipo.

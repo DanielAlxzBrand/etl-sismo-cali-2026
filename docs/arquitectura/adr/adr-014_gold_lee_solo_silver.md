@@ -1,6 +1,6 @@
 # ADR-014: Gold lee solo Silver y el paso espacial vive en Silver
 
-**Estado:** Vigente (implementada). **Fecha de la decisión:** 2026-10-15. **D de origen:** D5, sección «Diseño», sección «Otras decisiones de Silver». **Propietario técnico:** Daniel Alexander Brand García. **Revisión:** pendiente.
+**Estado:** Vigente (implementada). **Fecha de la decisión:** 2026-10-15. **D de origen:** D5, sección «Diseño», sección «Otras decisiones de Silver». **Propietario técnico:** Daniel Alexander Brand García. **Revisión:** Jhoan Sebastián Castellanos Mayor, 2026-11-18.
 
 ## Contexto
 Gold calcula los indicadores K1 a K6 sobre construcciones ya limpias y unidas con el estrato. Había que decidir qué capa lee a cuál, y dónde ubicar el único paso que necesita los polígonos de barrios: ubicar el centroide de cada construcción en un polígono de 2026 para validar la llave del JOIN.

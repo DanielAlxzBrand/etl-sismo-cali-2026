@@ -1,6 +1,6 @@
 # ADR-013: Dos modos de instalación y Python 3.13 solo en paralelo
 
-**Estado:** Vigente (implementada). **Fecha de la decisión:** 2026-11-15. **D de origen:** D93. **Propietario técnico:** Daniel Alexander Brand García. **Revisión:** pendiente.
+**Estado:** Vigente (implementada). **Fecha de la decisión:** 2026-11-15. **D de origen:** D93. **Propietario técnico:** Daniel Alexander Brand García. **Revisión:** Jhoan Sebastián Castellanos Mayor, 2026-11-18.
 
 ## Contexto
 Reproducir las cifras no requiere MySQL ni Docker, pero el proyecto también incluye la carga relacional, Airflow y phpMyAdmin. Las otras dos personas del equipo tienen una versión de Python más nueva que la 3.13 con la que se fijaron las salidas, y necesitaban saber qué les faltaba antes de ejecutar.

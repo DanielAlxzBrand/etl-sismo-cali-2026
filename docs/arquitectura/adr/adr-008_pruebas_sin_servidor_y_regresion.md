@@ -1,6 +1,6 @@
 # ADR-008: Pruebas sin servidor, casos generados y regresión por reintroducción
 
-**Estado:** Vigente (implementada). **Fecha de la decisión:** 2026-11-13. **D de origen:** D49, D61, D62, D63. **Propietario técnico:** Daniel Alexander Brand García. **Revisión:** pendiente.
+**Estado:** Vigente (implementada). **Fecha de la decisión:** 2026-11-13. **D de origen:** D49, D61, D62, D63. **Propietario técnico:** Daniel Alexander Brand García. **Revisión:** Jhoan Sebastián Castellanos Mayor, 2026-11-18.
 
 ## Contexto
 Queríamos una suite que cualquiera pudiera correr sin red, sin MySQL y sin Docker, y que demostrara que cada corrección está protegida. Una prueba que se omite sin servidor, o que no falla cuando el defecto vuelve, no sirve como evidencia.

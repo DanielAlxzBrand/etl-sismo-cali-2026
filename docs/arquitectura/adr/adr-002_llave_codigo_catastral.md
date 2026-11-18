@@ -1,6 +1,6 @@
 # ADR-002: La llave del JOIN es el código catastral, no el nombre del barrio
 
-**Estado:** Vigente (implementada). **Fecha de la decisión:** 2026-10-15. **D de origen:** D4, D-FUENTES, sección «Llave del JOIN». **Propietario técnico:** Daniel Alexander Brand García. **Revisión:** pendiente.
+**Estado:** Vigente (implementada). **Fecha de la decisión:** 2026-10-15. **D de origen:** D4, D-FUENTES, sección «Llave del JOIN». **Propietario técnico:** Daniel Alexander Brand García. **Revisión:** Jhoan Sebastián Castellanos Mayor, 2026-11-18.
 
 ## Contexto
 Para saber el estrato de cada construcción hay que unir la capa satelital con el CSV de estrato por barrio. La decisión inicial (D4) era unir por el nombre normalizado del barrio y usar lo espacial solo si faltaba. Al verificar las fuentes resultó que las construcciones no traen el nombre del barrio, sino `COMUNA` y `BARRIO` como códigos de dos dígitos, y que el CSV trae un `Código único`.

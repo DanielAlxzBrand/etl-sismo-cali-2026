@@ -1,6 +1,6 @@
 # ADR-004: Cada carga a MySQL es una corrida completa, con clave determinista y una sola transacción
 
-**Estado:** Vigente (implementada). **Fecha de la decisión:** 2026-11-13. **D de origen:** D43, D44, D45, D53. **Propietario técnico:** Daniel Alexander Brand García. **Revisión:** pendiente.
+**Estado:** Vigente (implementada). **Fecha de la decisión:** 2026-11-13. **D de origen:** D43, D44, D45, D53. **Propietario técnico:** Daniel Alexander Brand García. **Revisión:** Jhoan Sebastián Castellanos Mayor, 2026-11-18.
 
 ## Contexto
 El almacén relacional debía conservar historia y poder repetirse sin duplicar datos ni dejar cargas a medias. El volumen de una carga es de unas cinco mil filas, y los datos son una captura del evento, no un flujo de cambios.
