@@ -703,3 +703,37 @@ def test_el_detector_de_reintentos_calcula_las_pausas_y_nota_cada_dato_cambiado(
     assert problemas_de_reintentos(renglon, 3, 0.5, 60), "otro tiempo máximo"
     assert problemas_de_reintentos(renglon.replace("por intento", "en total"), 3, 0.5, 30), "el tiempo máximo presentado como total"
     assert problemas_de_reintentos(renglon.replace("no el tiempo total", ""), 3, 0.5, 30), "sin aclarar que no es el total"
+
+
+CLAUSULA_POR_CAPA = ("en Bronze vienen las columnas catastrales que publica la fuente, entre ellas identificadores de predio (`PREDIO`, `NUMEPRED` e `ID_PREDIO`); "
+                     "Silver los descarta (regla R10) y Gold conserva las coordenadas del centroide de cada construcción")
+
+
+def columnas_de_predio(cabecera):
+    """Columnas de una cabecera CSV que identifican o describen un predio catastral."""
+    return [c for c in cabecera.split(",") if re.search(r"(?i)pred|catast|manzana|terreno|matric", c)]
+
+
+def test_la_clausula_por_capa_de_los_predios_es_la_de_los_archivos():
+    import json
+
+    assert CLAUSULA_POR_CAPA in README
+    for capa in ("data/silver/silver_integrated.csv", "data/silver/silver_construcciones.csv", "data/gold/gold_final.csv"):
+        with open(ROOT / capa, encoding="utf-8") as f:
+            cabecera = f.readline().strip()
+        assert columnas_de_predio(cabecera) == [], f"{capa} conserva una columna de predio"
+        if capa.endswith("gold_final.csv"):
+            assert {"lon", "lat"} <= set(cabecera.split(",")), "Gold conserva las coordenadas"
+    pagina = sorted((ROOT / "data" / "bronze" / "api" / "edificaciones").glob("snap_*/page_0001.json"))[0]
+    campos = {c["name"] for c in json.loads(pagina.read_text(encoding="utf-8"))["fields"]}
+    assert {"PREDIO", "NUMEPRED", "ID_PREDIO"} <= campos, "Bronze trae los identificadores de predio"
+    r10 = next(l for l in (ROOT / "docs" / "silver" / "reglas_silver.md").read_text(encoding="utf-8").splitlines() if l.startswith("| R10 |"))
+    assert "ID_PREDIO" in r10 and "columnas catastrales" in r10, "la regla R10 descarta los identificadores de predio"
+    assert "centroide" in (ROOT / "src" / "transform" / "clean_api.py").read_text(encoding="utf-8"), "las coordenadas de Silver son el centroide del anillo exterior"
+
+
+def test_el_detector_de_columnas_de_predio_las_encuentra_y_no_inventa():
+    assert columnas_de_predio("objectid,PREDIO,lon") == ["PREDIO"]
+    assert columnas_de_predio("a,ID_PREDIO,NUMEPRED,b") == ["ID_PREDIO", "NUMEPRED"]
+    assert columnas_de_predio("comuna,barrio,codigo_barrio,lon,lat") == []
+    assert README.replace("entre ellas identificadores de predio", "sin identificadores", 1) != README

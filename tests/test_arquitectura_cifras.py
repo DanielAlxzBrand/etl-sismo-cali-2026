@@ -400,3 +400,34 @@ def test_los_hechos_citados_por_adr_007_y_adr_014_estan_en_el_registro_y_en_las_
     assert "columnas vacías, en grados o sin uso de la regla R10" in catorce and "geopandas y consulta por punto" in catorce
     assert "geopandas; consulta por punto" in DECISIONES and "D5 registró alternativas para la herramienta" in catorce
     assert "No se registraron alternativas.\n" in catorce
+
+
+CLAUSULA_POR_CAPA = ("en Bronze vienen las columnas catastrales que publica la fuente, entre ellas identificadores de predio (`PREDIO`, `NUMEPRED` e `ID_PREDIO`); "
+                     "Silver los descarta (regla R10) y Gold conserva las coordenadas del centroide de cada construcción")
+
+
+def columnas_de_predio(cabecera):
+    """Columnas de una cabecera CSV que identifican o describen un predio catastral."""
+    return [c for c in cabecera.split(",") if re.search(r"(?i)pred|catast|manzana|terreno|matric", c)]
+
+
+def test_la_clausula_por_capa_de_los_predios_del_documento_es_la_de_los_archivos():
+    import json
+
+    assert CLAUSULA_POR_CAPA in DOC_TEXTO, "sección 12"
+    assert "Bronze trae columnas catastrales con identificadores de predio, que Silver descarta (regla R10), y Gold conserva las coordenadas del centroide de cada construcción" in DOC_TEXTO, "sección 3"
+    assert "con su ubicación y las columnas catastrales" not in DOC_TEXTO, "la redacción anterior no dice en qué capa están"
+    for capa in ("data/silver/silver_integrated.csv", "data/gold/gold_final.csv"):
+        with open(ROOT / capa, encoding="utf-8") as f:
+            cabecera = f.readline().strip()
+        assert columnas_de_predio(cabecera) == [], f"{capa} conserva una columna de predio"
+    assert {"lon", "lat"} <= set(GOLD.columns)
+    pagina = sorted((ROOT / "data" / "bronze" / "api" / "edificaciones").glob("snap_*/page_0001.json"))[0]
+    campos = {c["name"] for c in json.loads(pagina.read_text(encoding="utf-8"))["fields"]}
+    assert {"PREDIO", "NUMEPRED", "ID_PREDIO"} <= campos
+
+
+def test_el_detector_de_columnas_de_predio_del_documento_las_encuentra_y_no_inventa():
+    assert columnas_de_predio("objectid,PREDIO,lon") == ["PREDIO"]
+    assert columnas_de_predio("a,ID_PREDIO,NUMEPRED,b") == ["ID_PREDIO", "NUMEPRED"]
+    assert columnas_de_predio("comuna,barrio,codigo_barrio,lon,lat") == []

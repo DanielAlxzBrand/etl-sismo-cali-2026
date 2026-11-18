@@ -28,7 +28,7 @@ Este documento describe cómo está construido el sistema hoy y por qué lo cons
 - Idempotencia: repetir la extracción o la carga no duplica nada.
 - API de solo lectura (11 rutas GET) y panel de 8 páginas que solo habla con la API.
 - Mínimo privilegio: tres cuentas de MySQL y un repositorio montado en solo lectura en Airflow.
-- Cifras de los documentos vigiladas por pruebas: **1377 pruebas** automáticas.
+- Cifras de los documentos vigiladas por pruebas: **1381 pruebas** automáticas.
 
 ## 3. Contexto y drivers
 **Objetivos.** Entregar un análisis reproducible de impacto sísmico por zonas, con incertidumbre explícita, y que se pueda repetir de punta a punta ([docs/estrategia/03_objetivo_alcance_okr_kpi.md](../estrategia/03_objetivo_alcance_okr_kpi.md) y [05_mvp_criterios_aceptacion.md](../estrategia/05_mvp_criterios_aceptacion.md)).
@@ -48,7 +48,7 @@ No hubo sesiones con personas usuarias que probaran el sistema (ver la sección 
 **Restricciones.**
 - Frescura: no hay requisito de frescura. Los datos son una captura única descargada el 2026-10-15 (hora de Bogotá); la capa se editó por última vez el 2026-09-02.
 - Presupuesto: el repositorio no define ninguno. El costo es tiempo del equipo y una máquina local; los precios son parámetros vacíos ([docs/finanzas/estructura_costos.md](../finanzas/estructura_costos.md)).
-- Regulaciones: en ninguna capa hay nombres, documentos ni datos de contacto de personas (el detalle está en la sección 12). No hacemos afirmaciones jurídicas; lo que cada publicador declara sobre licencias está en [docs/bronze/atribucion_y_terminos_de_datos.md](../bronze/atribucion_y_terminos_de_datos.md).
+- Regulaciones: en ninguna capa hay nombres, documentos ni datos de contacto de personas; Bronze trae columnas catastrales con identificadores de predio, que Silver descarta (regla R10), y Gold conserva las coordenadas del centroide de cada construcción (el detalle está en la sección 12). No hacemos afirmaciones jurídicas; lo que cada publicador declara sobre licencias está en [docs/bronze/atribucion_y_terminos_de_datos.md](../bronze/atribucion_y_terminos_de_datos.md).
 - Entorno: Windows 11 con PowerShell y Python 3.13; en otros sistemas no lo probamos.
 
 **Volumen actual (medido).**
@@ -342,7 +342,7 @@ El modelo de costos tiene siete categorías y fórmulas con símbolos; los preci
 - **Deuda técnica conocida y reconocida:** el DAG sin reintentos; Airflow pesado para cuatro tareas; sin validación explícita de columnas de la fuente; dependencias transitivas sin fijar; dos almacenes que mantener sincronizados; el panel sin desplegar.
 
 ## 12. Seguridad y cumplimiento
-- **Clasificación de datos:** datos abiertos. En ninguna capa hay nombres, documentos ni datos de contacto de personas. Trabajamos con huellas de construcciones (con su ubicación y las columnas catastrales que publica la fuente, entre ellas identificadores de predio) y con el estrato por barrio. Una huella identifica un lugar y no a quien vive allí; no evaluamos si, cruzada con otras fuentes, podría asociarse a una persona. Los secretos son las contraseñas de las tres cuentas de MySQL y los de Airflow: la clave Fernet, el secreto JWT y las contraseñas de la interfaz y de Postgres. El compose adaptado no trae ninguno escrito: los exige desde el `.env` de Airflow.
+- **Clasificación de datos:** datos abiertos. En ninguna capa hay nombres, documentos ni datos de contacto de personas. Trabajamos con huellas de construcciones y con el estrato por barrio: en Bronze vienen las columnas catastrales que publica la fuente, entre ellas identificadores de predio (`PREDIO`, `NUMEPRED` e `ID_PREDIO`); Silver los descarta (regla R10) y Gold conserva las coordenadas del centroide de cada construcción. Una huella identifica un lugar y no a quien vive allí; no evaluamos si, cruzada con otras fuentes, podría asociarse a una persona. Los secretos son las contraseñas de las tres cuentas de MySQL y los de Airflow: la clave Fernet, el secreto JWT y las contraseñas de la interfaz y de Postgres. El compose adaptado no trae ninguno escrito: los exige desde el `.env` de Airflow.
 - **Controles de acceso:** tres cuentas de MySQL con el mínimo privilegio y ningún origen `%` (ver [ADR-011](adr/adr-011_cuentas_de_mysql_minimo_privilegio.md)); API y panel de solo lectura publicados solo en `127.0.0.1`. No hay IAM ni RBAC de nube porque no hay nube.
 - **Cifrado:** en tránsito, las fuentes se descargan por HTTPS; lo que levanta el proyecto (API, panel, phpMyAdmin y Airflow) se publica solo en loopback y sin TLS. Las conexiones a MySQL (desde el pipeline y la API, y desde los contenedores por `host.docker.internal`) no usan TLS configurado por el proyecto; no medimos si el servidor lo negocia. En reposo no ciframos nada (CSV, SQLite, MySQL ni `.env`). Es una decisión de alcance: los datos son abiertos, sin nombres ni datos de contacto de personas, y todo corre en una máquina local; si el proyecto se despliega, hay que reconsiderarla.
 - **Auditoría y registro de accesos:** la API registra cada solicitud (método, ruta, estado y duración) en el registro de ejecución; la interfaz de Airflow guarda un registro de auditoría de las acciones. No configuramos el registro de consultas de MySQL.
@@ -377,7 +377,7 @@ El modelo de costos tiene siete categorías y fórmulas con símbolos; los preci
 | API sin autenticación ([ADR-010](adr/adr-010_api_de_solo_lectura_local.md)) | un servicio simple y sin secretos | no puede salir del equipo | es local y de una persona a la vez; si se despliega hay que decidir de nuevo |
 | Una conexión por solicitud a MySQL ([ADR-010](adr/adr-010_api_de_solo_lectura_local.md)) | sin estado de conexiones que caduquen | unos 80 ms más por consulta con MySQL (88,2 ms frente a 6,1 ms, EV-032) | el servicio es local y de un solo usuario |
 | Proxy satelital con 7 comunas ([ADR-009](adr/adr-009_fuentes_por_criterios_de_aceptacion.md)) | la única fuente abierta a nivel de construcción | no es una evaluación estructural y no cubre toda Cali | lo declaramos en cada resultado y no extrapolamos |
-| Documentación vigilada por pruebas ([ADR-008](adr/adr-008_pruebas_sin_servidor_y_regresion.md)) | cifras que no se desactualizan en silencio | más pruebas que mantener (**1377 pruebas** en total) | una cifra vieja ya se coló una vez en un documento y la prueba la detectó |
+| Documentación vigilada por pruebas ([ADR-008](adr/adr-008_pruebas_sin_servidor_y_regresion.md)) | cifras que no se desactualizan en silencio | más pruebas que mantener (**1381 pruebas** en total) | una cifra vieja ya se coló una vez en un documento y la prueba la detectó |
 
 ## 16. Riesgos y mitigaciones
 La probabilidad y el impacto son juicio del equipo, sin cifras; se basan en las limitaciones, defectos y riesgos registrados.
