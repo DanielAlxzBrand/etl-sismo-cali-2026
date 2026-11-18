@@ -56,7 +56,13 @@ def commits_con_pie(repo):
     return git(repo, "log", "--branches", "--tags", "-i", "--grep=co-authored-by", "--reverse", "--topo-order", "--format=%H").split()
 
 
+def commits_alcanzables(repo):
+    """Hashes de siete caracteres de los commits que alcanzan las ramas y las etiquetas: lo que el historial «tiene». Un commit viejo puede seguir existiendo como objeto\n    (por `refs/original` o hasta el `gc`) sin que ningún nombre lo alcance; ese ya no está en el historial."""
+    return {h[:7] for h in git(repo, "rev-list", "--branches", "--tags").split()}
+
+
 def existe_commit(repo, hash_):
+    """True si el objeto commit existe, alcanzable o no."""
     return subprocess.run(["git", "cat-file", "-e", f"{hash_}^{{commit}}"], cwd=repo, capture_output=True).returncode == 0
 
 

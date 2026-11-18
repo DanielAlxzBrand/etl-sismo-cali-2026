@@ -134,19 +134,20 @@ def test_todo_hash_citado_existe_en_el_historial_o_esta_en_el_mapa_de_commits():
     _, filas = _leer_inventario()
     mapa_ruta = ROOT / lp.MAPA
     mapa = lp.leer_mapa(mapa_ruta.read_text(encoding="utf-8")) if mapa_ruta.is_file() else {}
-    faltan = sorted({(f["archivo"], f["hash"]) for f in filas if not lp.existe_commit(ROOT, f["hash"]) and f["hash"] not in mapa})
-    assert faltan == [], f"estos hashes citados no existen y no están en el mapa de commits: {faltan[:6]}"
-    nuevos = [n for v, n in mapa.items() if not lp.existe_commit(ROOT, n)]
-    assert nuevos == [], f"hashes nuevos del mapa que no existen: {nuevos[:6]}"
-    viejos_que_existen = [v for v in mapa if lp.existe_commit(ROOT, v)]
-    assert viejos_que_existen == [], "un hash anterior del mapa todavía existe: el mapa no corresponde a este historial"
+    en_el_historial = lp.commits_alcanzables(ROOT)
+    faltan = sorted({(f["archivo"], f["hash"]) for f in filas if f["hash"] not in en_el_historial and f["hash"] not in mapa})
+    assert faltan == [], f"estos hashes citados no están en el historial y no figuran en el mapa de commits: {faltan[:6]}"
+    nuevos = [n for n in mapa.values() if n not in en_el_historial]
+    assert nuevos == [], f"hashes nuevos del mapa que no están en el historial: {nuevos[:6]}"
+    viejos_en_el_historial = [v for v in mapa if v in en_el_historial]
+    assert viejos_en_el_historial == [], "un hash anterior del mapa sigue en el historial: el mapa no corresponde a este historial"
 
 
 def test_el_inventario_incluye_toda_cita_a_un_commit_del_rango_mientras_esos_commits_existan_hash():
     if not _hay_git():
         return
     primero, filas = _leer_inventario()
-    if not lp.existe_commit(ROOT, primero):
+    if primero not in lp.commits_alcanzables(ROOT):
         return   # el historial ya se reescribió: las citas se comprueban contra el mapa
     rango = lp.git(ROOT, "rev-list", f"{primero}^..HEAD").split()
     citadas = {(f, h) for f, h in lp.citas_de_commits(ROOT, {h[:7] for h in rango})}
