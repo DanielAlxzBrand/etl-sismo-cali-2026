@@ -3,6 +3,7 @@ EV-115 · Mutaciones de las pruebas del documento de arquitectura y de sus ADR (
 Qué es: cada mutación cambia a propósito una cifra o un texto del documento de arquitectura, de un ADR, del README, del índice de docs, de la checklist o de DECISIONES.md, corre `tests/test_arquitectura_cifras.py` y
 `tests/test_arquitectura_guardiana.py`, y debe hacer fallar al menos una prueba; después el archivo se restaura (al terminar, `git status` queda sin cambios). El script que las ejecuta no se versiona: son mutaciones de un día.
 La tercera serie no toca el repositorio: copia `src`, `config`, `data/silver`, `data/gold` y la prueba `tests/test_gold_sin_bronze.py` a una carpeta temporal, muta la copia y corre esa prueba; la carpeta se borra al terminar.
+La cuarta serie muta el README, `config/config.yaml` y `tests/test_readme_cifras.py` y corre las pruebas del README (`tests/test_readme_cifras.py` y `tests/test_readme_guardiana.py`); el archivo de configuración se restaura igual que los demás.
 Las mutaciones de EV-103 (132) no se repitieron; estas son las de las pruebas nuevas.
 La prueba que comprueba la cita de este mismo registro en la sección 17 del documento se mutó aparte, una vez escrita la cita, y no cuenta en las series de abajo.
 
@@ -129,10 +130,30 @@ La prueba que comprueba la cita de este mismo registro en la sección 17 del doc
 | Gold cambia | Gold produce otro resultado (K1 con una cifra distinta) | `copia de src/transform/build_gold.py` | DETECTADA | `test_gold_se_regenera_desde_silver_sin_data_bronze_con_los_mismos_sha256` |
 | detector | el detector de shapely deja de ver los imports dentro de funciones | `copia de tests/test_gold_sin_bronze.py` | DETECTADA | `test_el_detector_de_shapely_reconoce_cada_forma_de_importarlo` |
 
+## README, apartado de reintentos y párrafo de datos de personas, sobre el README, la configuración y la prueba: 15 de 15 detectadas
+| Grupo | Mutación | Archivo | Resultado | Prueba que falla |
+|---|---|---|---|---|
+| texto de reintentos | el número de intentos del README | `README.md` | DETECTADA | `test_los_reintentos_de_la_descarga_del_readme_son_los_de_la_configuracion_y_del_codigo` |
+| texto de reintentos | las pausas del README | `README.md` | DETECTADA | `test_los_reintentos_de_la_descarga_del_readme_son_los_de_la_configuracion_y_del_codigo` |
+| texto de reintentos | el tiempo máximo del README | `README.md` | DETECTADA | `test_los_reintentos_de_la_descarga_del_readme_son_los_de_la_configuracion_y_del_codigo` |
+| texto de reintentos | el tiempo máximo presentado como total | `README.md` | DETECTADA | `test_los_reintentos_de_la_descarga_del_readme_son_los_de_la_configuracion_y_del_codigo` |
+| texto de reintentos | se quita que no es el tiempo total | `README.md` | DETECTADA | `test_los_reintentos_de_la_descarga_del_readme_son_los_de_la_configuracion_y_del_codigo` |
+| texto de reintentos | se quita el origen en la configuración | `README.md` | DETECTADA | `test_los_reintentos_de_la_descarga_del_readme_son_los_de_la_configuracion_y_del_codigo` |
+| configuración | los intentos de config.yaml | `config/config.yaml` | DETECTADA | `test_los_reintentos_de_la_descarga_del_readme_son_los_de_la_configuracion_y_del_codigo` |
+| configuración | el tiempo máximo de config.yaml | `config/config.yaml` | DETECTADA | `test_los_reintentos_de_la_descarga_del_readme_son_los_de_la_configuracion_y_del_codigo` |
+| configuración | la pausa de config.yaml | `config/config.yaml` | DETECTADA | `test_los_reintentos_de_la_descarga_del_readme_son_los_de_la_configuracion_y_del_codigo` |
+| la prueba de reintentos | las pausas se calculan sumando | `tests/test_readme_cifras.py` | DETECTADA | `test_los_reintentos_de_la_descarga_del_readme_son_los_de_la_configuracion_y_del_codigo` |
+| la prueba de reintentos | el detector deja de exigir que no es el total | `tests/test_readme_cifras.py` | DETECTADA | `test_el_detector_de_reintentos_calcula_las_pausas_y_nota_cada_dato_cambiado` |
+| la prueba de reintentos | el detector compara otro tiempo máximo | `tests/test_readme_cifras.py` | DETECTADA | `test_los_reintentos_de_la_descarga_del_readme_son_los_de_la_configuracion_y_del_codigo` |
+| párrafo de personas | el párrafo vuelve a afirmar que no hay datos personales | `README.md` | DETECTADA | `test_una_mencion_desactualizada_de_las_sesiones_se_detecta_en_cualquier_lugar` |
+| párrafo de personas | el párrafo pierde su primera frase | `README.md` | DETECTADA | `test_una_mencion_desactualizada_de_las_sesiones_se_detecta_en_cualquier_lugar` |
+| párrafo de personas | la frase de sesiones deja de decir que aún no existen | `README.md` | DETECTADA | `test_la_linea_de_sesiones_reales_dice_lo_que_hay_en_el_repositorio` |
+
 Vueltas de esta serie (las series de arriba son las de la última vuelta; las anteriores se conservan porque mostraron huecos de las pruebas, que se corrigieron y se volvió a correr todo):
-- Vuelta 1 (2026-11-17): cifras 81 de 84, forma y redacción 19 de 20, Gold 6 de 6. No detectadas (2): la mediana de MySQL del documento (88,2 cambiada a 88,3 en su primera aparición) y la diferencia por consulta del documento («unos 80 ms» cambiada a «unos 70 ms»). No aplicaban (2), porque el texto que mutaban ya había cambiado: la cobertura del documento y el hecho medible de ADR-014. Corrección: la prueba de latencias exige ahora el par de medianas en sus dos apariciones y la frase de la diferencia por consulta, y las dos mutaciones se reescribieron sobre el texto vigente.
-- Vuelta 2 (2026-11-17): cifras 84 de 84, forma y redacción 20 de 21, Gold 6 de 6. No detectada (1): las reglas de Silver de ADR-014 cambiadas de 18 a 17. Corrección: la prueba de reglas exige ahora «Silver aplica N reglas sobre ellos» en ADR-014.
-- Vuelta 3 (2026-11-17): 84 de 84, 21 de 21 y 6 de 6, sobre un estado anterior al cambio de nombre de una prueba y a la partición de una lista de rutas que pidió el escáner de secretos.
-- Vuelta 4 (2026-11-17): las series de arriba, sobre el estado final de las pruebas, del documento y de los ADR.
+- Vuelta 1 (2026-11-17): 110 mutaciones definidas (84 de cifras, 20 de forma y redacción y 6 de Gold), 106 detectadas, 2 no detectadas y 2 que no aplicaban: 110 = 106 + 2 + 2. Por serie: cifras 84 = 81 + 2 + 1 que no aplicaba (de ahí «81 de 84»); forma y redacción 20 = 19 + 0 + 1 que no aplicaba (de ahí «19 de 20»); Gold 6 = 6. No detectadas (2): la mediana de MySQL del documento (88,2 cambiada a 88,3 en su primera aparición) y la diferencia por consulta del documento («unos 80 ms» cambiada a «unos 70 ms»). No aplicaban (2), porque el texto que mutaban ya había cambiado: la cobertura del documento (serie de cifras) y el hecho medible de ADR-014 (serie de forma y redacción). Corrección: la prueba de latencias exige ahora el par de medianas en sus dos apariciones y la frase de la diferencia por consulta, y las dos mutaciones se reescribieron sobre el texto vigente; la mutación de ADR-014 pasó a ser dos.
+- Vuelta 2 (2026-11-17): 111 definidas (84 + 21 + 6), 110 detectadas, 1 no detectada y 0 que no aplicaban: 111 = 110 + 1 + 0. No detectada: las reglas de Silver de ADR-014 cambiadas de 18 a 17. Corrección: la prueba de reglas exige ahora «Silver aplica N reglas sobre ellos» en ADR-014.
+- Vuelta 3 (2026-11-17): 111 definidas, 111 detectadas, 0 no detectadas, 0 que no aplicaban, sobre un estado anterior al cambio de nombre de una prueba y a la partición de una lista de rutas que pidió el escáner de secretos.
+- Vuelta 4 (2026-11-17): 111 definidas, 111 detectadas, 0 y 0, sobre el estado final de las pruebas del documento de arquitectura.
+- Vuelta 5 (2026-11-17): las series de arriba, que añaden la del README (apartado de reintentos y párrafo de datos de personas), sobre el estado final de todo lo vigilado.
 
 Qué NO demuestra: que no existan cifras del documento que ninguna prueba vigile; solo las que se mutaron. Una cifra escrita con otro formato que el esperado por las expresiones de las pruebas no se detectaría.
