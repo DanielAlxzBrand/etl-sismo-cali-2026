@@ -224,7 +224,7 @@ def test_los_enlaces_al_documento_existen_en_el_readme_el_indice_y_la_checklist(
     for ruta in ("docs/checklist/estado_checklist.md", "docs/checklist/guia_de_evidencias.md"):
         assert "docs/arquitectura/arquitectura_del_sistema.md" in _leer(ruta), ruta
     fila = next(l for l in _leer("docs/checklist/trazabilidad.csv").splitlines() if l.startswith("7.3,"))
-    assert "docs/arquitectura/arquitectura_del_sistema.md" in fila and "tests/test_arquitectura_cifras.py" in fila and "tests/test_arquitectura_guardiana.py" in fila and "En curso" in fila
+    assert "docs/arquitectura/arquitectura_del_sistema.md" in fila and "tests/test_arquitectura_cifras.py" in fila and "tests/test_arquitectura_guardiana.py" in fila and "Cumple con matiz" in fila
     assert "revisado por Jhoan Sebastián Castellanos Mayor" in fila and "Borrador" not in fila
 
 
@@ -505,7 +505,8 @@ def test_los_hechos_del_adr_015_son_los_del_repositorio():
     assert len(paquetes) == 26 and all("==" in l for l in paquetes) and "fija 26 paquetes con `==`" in adr
     # la API lee el reporte, y la honestidad del ADR sobre lo que no está decidido
     assert "quality_report" in _leer("src/api/app.py") and "`/calidad`" in adr
-    assert "min_edificios_por_barrio" not in DECISIONES, "si se registra una decisión, el ADR-015 debe dejar de decir que no existe"
+    otras_decisiones = re.sub(r"(?m)^\*\*D107 · .*$", "", DECISIONES)   # D107 es la que declara que no existe
+    assert "min_edificios_por_barrio" not in otras_decisiones, "si otra decisión lo registra, el ADR-015 debe dejar de decir que no existe"
     assert re.search(r"G5 \| cobertura JOIN de prueba ≥80 % sobre 500 filas", DECISIONES) and "sobre una prueba de 500 filas" in adr
     assert "No se registraron alternativas.\n" in adr and "sección «Otras decisiones de Silver», D-FUENTES." in adr
     # lo que el ADR dice que detiene Silver y lo que no, una condición por frase
@@ -532,7 +533,7 @@ def test_el_reparto_de_reglas_y_los_umbrales_alterados_se_detectan():
 FRASES_DE_ESTADO = {"Revisado": {
     "README.md": ["Está revisado, con la aprobación pendiente.", "| escritos y revisados, con la aprobación pendiente |"],
     "docs/README.md": ["revisado, con la aprobación pendiente"],
-    "docs/checklist/estado_checklist.md": ["escrito y revisado, con la aprobación pendiente"],
+    "docs/checklist/estado_checklist.md": ["escrito y revisado por Jhoan Sebastián Castellanos Mayor el {fecha}"],
     "docs/checklist/guia_de_evidencias.md": ["está revisado; la aprobación de los tres autores está pendiente", "documentada y revisada"],
     "docs/checklist/trazabilidad.csv": ["revisado por Jhoan Sebastián Castellanos Mayor desde el {fecha}"]}}
 

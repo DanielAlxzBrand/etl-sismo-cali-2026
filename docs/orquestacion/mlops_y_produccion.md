@@ -2,7 +2,7 @@
 
 **Ítem del checklist (5.4):** «Implementamos metodologías de producción (MLOps, LLMOps), orquestación y flujos programados (DAGs de Airflow).»
 
-> **Procedimiento basado en la guía de Airflow de la asignatura (artículo de Juan Manuel Núñez Velasco).** Esta página describe las prácticas de producción del proyecto; la orquestación sigue la guía y sus diferencias están en [diferencias_con_la_guia.md](diferencias_con_la_guia.md).
+> **Procedimiento basado en el artículo de Airflow acreditado en el [README](../../README.md#20-licencia-y-créditos), al que estas páginas llaman «la guía» (Juan Manuel Núñez Velasco).** Esta página describe las prácticas de producción del proyecto; la orquestación sigue la guía y sus diferencias están en [diferencias_con_la_guia.md](diferencias_con_la_guia.md).
 
 El proyecto no entrena modelos: calcula indicadores estadísticos sobre construcciones evaluadas por satélite. Por eso aplicamos las prácticas de MLOps que sí tienen sentido sin modelos y declaramos N/A lo que no (D22).
 

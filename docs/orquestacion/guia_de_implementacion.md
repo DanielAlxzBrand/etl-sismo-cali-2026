@@ -1,6 +1,6 @@
 # Guía de implementación de Airflow: pasos 13 a 44
 
-> **Procedimiento basado en la guía de Airflow de la asignatura (artículo de Juan Manuel Núñez Velasco).** Los pasos se citan por su número y se parafrasean. Los pasos 1 a 12 (instalación de WSL2 y Docker Desktop) ya los hizo el equipo y no se repiten. En la guía falta el paso 16 y están repetidos el 28 y el 41 (H-1 y H-2 de [diferencias_con_la_guia.md](diferencias_con_la_guia.md)).
+> **Procedimiento basado en el artículo de Airflow acreditado en el [README](../../README.md#20-licencia-y-créditos), al que estas páginas llaman «la guía» (Juan Manuel Núñez Velasco).** Los pasos se citan por su número y se parafrasean. Los pasos 1 a 12 (instalación de WSL2 y Docker Desktop) ya los hizo el equipo y no se repiten. En la guía falta el paso 16 y están repetidos el 28 y el 41 (H-1 y H-2 de [diferencias_con_la_guia.md](diferencias_con_la_guia.md)).
 
 **Estado.** Cada paso queda con su estado final («tal cual» o «con diferencia DF-n», más los hallazgos H-n) y su evidencia. Las ejecuciones se hacen desde `..\airflow-medallon` como indica la guía.
 

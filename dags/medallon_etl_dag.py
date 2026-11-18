@@ -1,6 +1,6 @@
 """DAG medallon_etl_sismo: Bronze -> Silver -> Gold -> Carga (SQLite y MySQL) del ETL del sismo de Cali.
 
-Procedimiento basado en la guía de Airflow de la asignatura (artículo de Juan Manuel Núñez Velasco); las diferencias con la guía están en docs/orquestacion/diferencias_con_la_guia.md.
+Procedimiento basado en el artículo de Airflow acreditado en el README (sección 20, Juan Manuel Núñez Velasco), al que los documentos llaman «la guía»; las diferencias con la guía están en docs/orquestacion/diferencias_con_la_guia.md.
 El repositorio se monta en solo lectura en /opt/airflow/medallon y NUNCA se escribe: validar_bronze crea una copia de trabajo mínima en el contenedor, las demás tareas
 producen sus salidas allí y las comparan con los archivos versionados del repositorio. `src` se importa solo dentro de las tareas y desde la copia.
 """

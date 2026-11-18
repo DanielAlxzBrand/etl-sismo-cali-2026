@@ -2,7 +2,7 @@
 
 **Componente:** Pruebas y orquestación · **Ítems del checklist:** 5.1, 5.2, 5.4, 5.5 y 5.6; criterios AC26 y AC27; revalidación del 2.3 y avance del 7.1.
 
-> **Procedimiento basado en la guía de Airflow de la asignatura (artículo de Juan Manuel Núñez Velasco).** La guía no se copia aquí: citamos sus pasos por número, parafraseamos y adaptamos el código a nuestro proyecto.
+> **Procedimiento basado en el artículo de Airflow acreditado en el [README](../../README.md#20-licencia-y-créditos), al que estas páginas llaman «la guía» (Juan Manuel Núñez Velasco).** La guía no se copia aquí: citamos sus pasos por número, parafraseamos y adaptamos el código a nuestro proyecto.
 
 Este componente orquesta con Apache Airflow (Docker Compose) el pipeline medallion del sismo del 10-ago-2026 y reúne las pruebas que lo respaldan. El DAG `medallon_etl_sismo` tiene las cuatro tareas de la guía (`validar_bronze → transformar_a_silver → integrar_a_gold → cargar_datawarehouse`), trabaja sobre una copia del proyecto y compara sus salidas con lo versionado, de modo que el repositorio **nunca se escribe**.
 

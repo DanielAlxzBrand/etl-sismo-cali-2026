@@ -43,7 +43,7 @@
 - **Si resulta inviable:** el respaldo.
 
 ## (d) Orquestación con Airflow 3.x en Windows
-> **Actualización del 2026-11-13.** Esta sección conserva el plan de partida. Lo implementado sigue la guía de Airflow de la asignatura y difiere de este plan: el compose oficial con **CeleryExecutor** (Postgres y Redis; los 7,6 GB de memoria disponibles para Docker lo permitieron), un DAG `medallon_etl_sismo` con **cuatro tareas** (no cinco) y **sin reintentos** (la guía no los incluye) y los secretos de la interfaz en `airflow-medallon/.env`. Ver `docs/orquestacion/` y las decisiones D56 a D66 de `docs/DECISIONES.md`.
+> **Actualización del 2026-11-13.** Esta sección conserva el plan de partida. Lo implementado sigue el artículo de Airflow acreditado en el README (sección 20) y difiere de este plan: el compose oficial con **CeleryExecutor** (Postgres y Redis; los 7,6 GB de memoria disponibles para Docker lo permitieron), un DAG `medallon_etl_sismo` con **cuatro tareas** (no cinco) y **sin reintentos** (la guía no los incluye) y los secretos de la interfaz en `airflow-medallon/.env`. Ver `docs/orquestacion/` y las decisiones D56 a D66 de `docs/DECISIONES.md`.
 
 **Evidencia de partida.** Windows con 15,7 GB de RAM en total y **3,7 GB libres** en la revisión; hipervisor presente; WSL con versión predeterminada 2 y **sin distribución**; Docker **no instalado**. [Evidencia en el repo: `docs/proyecto/entorno.md`] El material de clase usa Docker Compose con la imagen `apache/airflow:3.3.2`, el compose oficial y un DAG de cinco tareas con cron horario; no impone un ejecutor concreto. [Criterio aplicado: resumen del laboratorio de clase, material fuera del repositorio]
 

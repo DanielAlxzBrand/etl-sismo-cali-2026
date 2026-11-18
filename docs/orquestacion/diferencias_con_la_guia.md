@@ -1,6 +1,6 @@
 # Diferencias con la guía de Airflow
 
-> **Procedimiento basado en la guía de Airflow de la asignatura (artículo de Juan Manuel Núñez Velasco).** Citamos los pasos por número y parafraseamos; la guía es la fuente de verdad y solo nos apartamos de ella en lo que se lista aquí.
+> **Procedimiento basado en el artículo de Airflow acreditado en el [README](../../README.md#20-licencia-y-créditos), al que estas páginas llaman «la guía» (Juan Manuel Núñez Velasco).** Citamos los pasos por número y parafraseamos; la guía es la fuente de verdad y solo nos apartamos de ella en lo que se lista aquí.
 
 **Regla.** Airflow se implementa como en la guía: mismos pasos, orden, comandos, estructura, nombres de archivos, imagen, volúmenes y forma de ejecutar y comprobar. Los pasos 1 a 12 (instalación de WSL2 y Docker) ya los hizo el equipo. Solo se permiten las diferencias DF-1 a DF-12. Si la guía falla o es ambigua, lo registramos como hallazgo **H-n**, aplicamos la corrección mínima y seguimos.
 

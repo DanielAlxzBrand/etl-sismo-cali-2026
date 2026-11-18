@@ -7,7 +7,7 @@ La cuarta serie muta el README, `config/config.yaml` y `tests/test_readme_cifras
 Las mutaciones de EV-103 (132) no se repitieron; estas son las de las pruebas nuevas.
 La prueba que comprueba la cita de este mismo registro en la sección 17 del documento se mutó aparte, una vez escrita la cita, y no cuenta en las series de abajo.
 
-## Cifras y errores ya corregidos en el README: 126 de 126 detectadas
+## Cifras y errores ya corregidos en el README: 128 de 128 detectadas
 | Grupo | Mutación | Archivo | Resultado | Prueba que falla |
 |---|---|---|---|---|
 | pruebas | recuento de pruebas del documento | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_numero_de_pruebas_del_documento_es_el_de_la_recoleccion` |
@@ -125,6 +125,8 @@ La prueba que comprueba la cita de este mismo registro en la sección 17 del doc
 | fila de contratos de la sección 7 | la cobertura de la llave pasa a detener | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
 | fila de contratos de la sección 7 | el mínimo de filas de Gold pasa a no detener | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
 | fila de contratos de la sección 7 | la fila vuelve a la redacción ambigua | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
+| estado en los demás documentos | la fila 7.3 de la trazabilidad vuelve a En curso | `docs/checklist/trazabilidad.csv` | DETECTADA | `test_los_enlaces_al_documento_existen_en_el_readme_el_indice_y_la_checklist` |
+| estado en los demás documentos | la hoja de ruta ya no menciona la aprobación | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
 | estado en los demás documentos | el README dice Borrador en su resumen | `README.md` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
 | estado en los demás documentos | el README dice Borrador en su tabla de estado | `README.md` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
 | estado en los demás documentos | docs/README.md dice Borrador | `docs/README.md` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
@@ -155,7 +157,7 @@ La prueba que comprueba la cita de este mismo registro en la sección 17 del doc
 | metadatos | revisión de otra persona | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_real_cumple_la_guardiana` |
 | metadatos | versión sin fecha | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_real_cumple_la_guardiana` |
 | cita | una segunda mención del artículo | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_real_cumple_la_guardiana` |
-| índice | un ADR que no existe en el índice | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_real_cumple_la_guardiana` |
+| índice | un ADR que no existe en el índice | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_numero_de_pruebas_del_documento_es_el_de_la_recoleccion` |
 | índice | origen distinto en el índice | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_la_numeracion_de_los_adr_es_consecutiva_y_el_indice_del_documento_los_lista_todos` |
 | ADR | una alternativa que DECISIONES.md no registra | `docs/arquitectura/adr/adr-002_llave_codigo_catastral.md` | DETECTADA | `test_los_adr_reales_cumplen_su_estructura_y_su_origen` |
 | ADR | falta el rótulo de razonamiento actual | `docs/arquitectura/adr/adr-005_orquestacion_con_airflow.md` | DETECTADA | `test_los_adr_reales_cumplen_su_estructura_y_su_origen` |
@@ -219,6 +221,7 @@ Vueltas de esta serie (las series de arriba son las de la última vuelta; las an
 - Vuelta 7 (2026-11-17): 137 definidas (90 + 21 + 6 + 20), 137 detectadas, 0 no detectadas y 0 que no aplicaban, sobre el estado final de entonces, con las dos mutaciones corregidas.
 - Vuelta 8 (2026-11-18): 183 definidas (123 de cifras, 34 de forma y redacción, 6 de Gold y 20 del README), 182 detectadas, 1 no detectada y 0 que no aplicaban: 183 = 182 + 1 + 0. Esta vuelta añadió las mutaciones del ADR-015 (cifras, reparto de las reglas, umbrales, condiciones que detienen Silver, huérfanos), de la portada (estado Revisado, revisión con nombre y fecha, tres aprobadores, versión y fecha), de la línea Revisión de los ADR, de lo que dicen los demás documentos del estado y de las pruebas nuevas. No detectada: los 295 barrios sin construcciones en la consecuencia positiva del ADR-015 (la prueba solo vigilaba la otra mención). Corrección: la prueba exige también la frase de la consecuencia positiva.
 - Vuelta 9 (2026-11-18): 183 definidas, 183 detectadas, 0 no detectadas y 0 que no aplicaban, sobre el estado con 15 ADR y la prueba del ADR-015 reforzada.
-- Vuelta 10 (2026-11-18): las series de arriba, sobre el estado final: añaden tres mutaciones de la fila de contratos de la sección 7 (la cobertura de la llave se registra y no detiene, el mínimo de filas de Gold detiene), que la prueba del ADR-015 vigila ahora.
+- Vuelta 10 (2026-11-18): 186 definidas (126 + 34 + 6 + 20), 186 detectadas, 0 no detectadas y 0 que no aplicaban, sobre el estado con 15 ADR y la fila de contratos de la sección 7.
+- Vuelta 11 (2026-11-18): las series de arriba, sobre el estado final del cierre de documentación: las pruebas ya vigilan que 7.3 figure en Cumple con matiz, la última decisión (D110) y la frase de la checklist sobre la revisión.
 
 Qué NO demuestra: que no existan cifras del documento que ninguna prueba vigile; solo las que se mutaron. Una cifra escrita con otro formato que el esperado por las expresiones de las pruebas no se detectaría.

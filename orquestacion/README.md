@@ -1,6 +1,6 @@
 # Carpeta `orquestacion/`
 
-> **Procedimiento basado en la guía de Airflow de la asignatura (artículo de Juan Manuel Núñez Velasco).**
+> **Procedimiento basado en el artículo de Airflow acreditado en el [README](../README.md#20-licencia-y-créditos), al que estas páginas llaman «la guía» (Juan Manuel Núñez Velasco).**
 
 Archivos con los que `scripts/orquestacion/preparar_airflow.py` arma la carpeta de Airflow (`airflow-medallon`, junto al proyecto) para construir la imagen y levantar el DAG. Esa carpeta **se genera**: no es un requisito previo ni se versiona. La documentación completa está en [docs/orquestacion/](../docs/orquestacion/README.md) y la guía de instalación, en [docs/instalacion/](../docs/instalacion/README.md).
 

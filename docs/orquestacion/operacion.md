@@ -1,6 +1,6 @@
 # Operación de Airflow
 
-> **Procedimiento basado en la guía de Airflow de la asignatura (artículo de Juan Manuel Núñez Velasco).** Los comandos son los de los pasos 27 a 43 y se ejecutan en PowerShell desde la carpeta `airflow-medallon`, junto al proyecto.
+> **Procedimiento basado en el artículo de Airflow acreditado en el [README](../../README.md#20-licencia-y-créditos), al que estas páginas llaman «la guía» (Juan Manuel Núñez Velasco).** Los comandos son los de los pasos 27 a 43 y se ejecutan en PowerShell desde la carpeta `airflow-medallon`, junto al proyecto.
 
 ## Antes de empezar
 1. Docker Desktop en marcha (no pausado): `docker info` debe responder.
