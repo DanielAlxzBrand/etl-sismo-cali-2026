@@ -19,7 +19,7 @@ scripts/mysql/configurar_mysql.py,348,38,89.1,
 scripts/mysql/respaldar_restaurar.py,183,40,78.1,
 scripts/mysql/verificar_mysql.py,208,151,27.4,batería contra MySQL en vivo; su evidencia es EV-028 y se prueban su operación solo sobre la base de prueba y el fallo sin servidor
 scripts/orquestacion/generar_compose.py,80,35,56.2,
-scripts/orquestacion/preparar_airflow.py,291,28,90.4,
+scripts/orquestacion/preparar_airflow.py,291,29,90.0,
 scripts/orquestacion/sincronizar_dag.py,51,31,39.2,
 scripts/panel/contraste.py,34,17,50.0,
 scripts/panel/ejecutar_panel.py,106,8,92.5,
