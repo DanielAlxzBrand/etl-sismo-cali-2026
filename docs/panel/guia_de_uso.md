@@ -25,13 +25,24 @@ Todas tienen el mismo marco: título, la pregunta de negocio que responden, el e
 | Sensibilidades (S0 a S5) | ¿Cambia la conclusión según el filtro o la definición de daño? | la diferencia por escenario con su intervalo, la razón ajustada por comuna con su advertencia y una lectura por escenario |
 | Concentración (K3 y K4) | ¿Se concentran los casos en pocos barrios? | los barrios con más casos y su participación, y la correlación de Spearman |
 | Calidad de la llave | ¿Qué tan confiable es la unión con el estrato? | cobertura de la llave, estrato válido, nombre validado y los códigos por revisar |
-| Construcciones | ¿Qué hay detrás de las cifras? | tabla paginada con filtros, dispersión de ubicaciones y descarga en CSV de lo mostrado |
-| Fuentes y sistema | ¿De dónde salen los datos y qué no se puede concluir? | fuentes con licencia y fechas, estado del sistema, los puntos de «qué no se puede concluir» y las limitaciones del panel |
+| Construcciones | ¿Qué hay detrás de las cifras? | tabla paginada con tres filtros (Comuna, Estrato y Cambio satelital severo) y, encima, cuántas construcciones cumplen los filtros; dispersión de ubicaciones (un gráfico de puntos por longitud y latitud de las construcciones de la página, no un mapa con calles) y descarga en CSV de lo mostrado |
+| Fuentes y sistema | ¿De dónde salen los datos y qué no se puede concluir? | fuentes con su publicador, licencia y fechas, estado del sistema, los puntos de «qué no se puede concluir» y las limitaciones del panel |
+
+### Dónde se ve cada respuesta
+Esta guía describe qué hay en cada página, pero **no repite las cifras ni los nombres que el panel muestra**: cambian si cambian los datos. Para leerlos hay que abrir la página; la lectura de la captura de datos vigente está en [`docs/gold/resultados.md`](../gold/resultados.md).
+- **¿Se nota diferencia entre los estratos 3-5 y 1-2?** Página Respuesta: las dos tasas, la diferencia con su intervalo y la lectura generada.
+- **¿Qué estratos no se deben ordenar frente a los demás?** Página Estratos (K1): los grupos con pocos casos severos llevan el texto «muestra baja».
+- **¿En qué comuna se concentran los estratos 1-2?** Página Comunas (K6): la composición por grupo de estrato y el texto que dice qué comuna concentra los estratos 1-2.
+- **¿Cuántas construcciones severas hay en una comuna y un estrato?** Página Construcciones: se eligen Comuna, Estrato y Cambio satelital severo, y la línea encima de la tabla dice cuántas construcciones cumplen esos filtros.
+- **¿Cambia la conclusión si cambia la definición de daño?** Página Sensibilidades: cada escenario (S0 a S5) trae su diferencia con su intervalo y una lectura propia.
+- **¿Quién entrega los datos?** Página Fuentes y sistema: cada fuente con su publicador, su licencia y su fecha; el detalle está en [`docs/bronze/atribucion_y_terminos_de_datos.md`](../bronze/atribucion_y_terminos_de_datos.md).
 
 ## 3. Cómo leer los números
-- **Tasa:** construcciones con cambio satelital severo (severo estricto, proxy de daño) entre las que tienen datos satelitales. Las construcciones sin datos no cuentan como «sin daño»: se informan aparte.
+- **Unidad:** la cifra cuenta **construcciones**, cada una una huella del catastro; el panel no dice si una construcción es una vivienda.
+- **Proxy de daño:** una medida indirecta. El panel no inspecciona edificios: compara imágenes de satélite de antes y después del sismo y marca las construcciones cuya huella cambió mucho; no sustituye una evaluación estructural.
+- **Tasa:** construcciones con cambio satelital severo (severo estricto, proxy de daño) entre las que tienen datos satelitales. Las construcciones sin datos no cuentan como «sin daño»: se informan aparte. «Sin datos» son las construcciones para las que la imagen no permitió clasificar el cambio; la documentación no explica por qué falta la imagen en cada caso.
 - **Intervalo de Wilson (barras de error):** muestra la incertidumbre de una tasa en esta muestra. Un intervalo ancho significa que la tasa se conoce poco.
-- **Intervalo de Newcombe:** es el de la diferencia entre dos tasas. Si incluye 0, el panel escribe «con este proxy y esta muestra no se detecta diferencia»; eso no significa que el estrato no influya.
+- **Intervalo de Newcombe:** es el de la diferencia entre dos tasas. Si incluye 0, el panel escribe «con este proxy y esta muestra no se detecta diferencia»; eso no significa que el estrato no influya. Incluir 0 no quiere decir que la diferencia sea pequeña: quiere decir que el rango de diferencias compatibles con los datos va de valores negativos a positivos, así que con esta muestra no se puede decir cuál grupo tiene la tasa mayor.
 - **Muestra baja:** el grupo tiene pocos casos severos; se muestra, pero no se ordena frente a otros. Se marca con el texto «muestra baja», no solo con el color.
 - **Cotas por «sin datos»:** valores extremos si todas las construcciones sin datos fueran sin daño o con daño; no son estimaciones. Si las cotas de dos grupos se solapan, el orden entre ellos no es identificable.
 - **Formato:** coma decimal, punto de miles y signo menos «−»; las diferencias se dan en puntos porcentuales (pp).
