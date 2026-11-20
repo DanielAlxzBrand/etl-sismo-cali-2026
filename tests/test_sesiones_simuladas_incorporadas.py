@@ -175,7 +175,7 @@ def test_negativas_la_auditoria_detecta_cada_cambio_al_registro(cambio, esperado
 
 # ---------------------------------------------------------------- declaración de la raíz
 DATOS_DE_LA_DECLARACION = ("Anti" + "gravity", "Gem" + "ini 3.8 Flash", "Co" + "dex", "GP" + "T-6.1 Terra", "alto", "2026-11-18", "3157ee2a450e8adfd834c11ae43d880d9adaf57f", "636 de 636",
-                           "Cla" + "ude Code", "Request Review", "Solicitar aprobación", "Get-Content -LiteralPath", "comuna vecina", "Decidimos", "siguen pendientes", "No tenemos", "[COMPLETAR POR EL EQUIPO",
+                           "Cla" + "ude Code", "Request Review", "Solicitar aprobación", "Get-Content -LiteralPath", "comuna vecina", "Decidimos", "siguen pendientes", "No tenemos", "[COMPLETAR POR DANIEL",
                            "78db8ba7958db5a77709deb927efdf438ca2997acc0eec7f1f1ee1ab5a1221c8", "feedback de personas usuarias", "Chat" + "GPT", "EV-120", "Co" + "dexSandboxUsers", "una línea de 48 distinta",
                            "726a5aa036ab03179aa279e04d88d31f38aa0df40b0d44364acbd1c02eaceaf4", "7374c40b68166d347fb6ec7a2906424c4224c1341121d72b92816a793fd50a60", "reconstrucciones a partir de resultados comunicados",
                            "Entrega recuperada del participante 1", "f4b83480839008060abadd1d6f69e1938974fa2d1d3cf592306a2403abeca78c", "1c357e22f896ba58d91228728b8153332c92f68c5f867dfb8b75eb36552647f7",
@@ -188,8 +188,19 @@ def problemas_de_la_declaracion(texto):
         return ["falta la sección 6 o la 7"]
     seccion = texto.split("## 6. Sesiones de usuario simuladas", 1)[1].split("## 7.", 1)[0]
     errores = [f"falta: {d}" for d in DATOS_DE_LA_DECLARACION if d not in seccion]
-    if len(set(re.findall(r"`([0-9a-f]{64})`", seccion))) != 25:
-        errores.append("deben citarse 25 sha256 distintos: los dos archivos de instrucciones, el respaldo, los dos informes, los 8 de la entrega del participante 2 y los 12 de la del participante 1")
+    if len(set(re.findall(r"`([0-9a-f]{64})`", seccion))) != 35:
+        errores.append("deben citarse 35 sha256 distintos: los dos archivos de instrucciones, el respaldo, los dos informes, los 8 de la entrega del participante 2, los 12 de la del participante 1 y las 10 capturas")
+    if re.search(r"(?i)exclusivamente (documental|por lectura)", texto):
+        errores.append("no se dice «exclusivamente documental»")
+    if "COMPLETAR POR DANIEL" not in texto or "COMPLETAR POR EL EQUIPO" not in texto:
+        errores.append("deben quedar marcados los pendientes: los de Daniel y los del equipo")
+    insignia = re.search(r'aria-label="pruebas: (\d+)"', (ROOT / "docs" / "img" / "insignias" / "pruebas.svg").read_text(encoding="utf-8"))
+    cita = re.search(r"pasó (\d+) pruebas el", texto)
+    if not (insignia and cita and insignia.group(1) == cita.group(1)):
+        errores.append("el recuento de pruebas de la declaración debe ser el de la insignia del README")
+    viejas = ("Avan" + "ce 2", "pasa 28 " + "pruebas", "`docs/prueba_entorno" + "_limpio.md`", "`docs/verificacion" + "_logging.md`", "`docs/investigacion" + "_fuentes.md`", "`docs/verificacion" + "_fuentes.md`")
+    if any(v in texto for v in viejas):
+        errores.append("cifras o rutas viejas en la declaración")
     if "Cumple" in seccion:
         errores.append("la sección no puede declarar que un ítem cumple")
     return errores
@@ -466,3 +477,38 @@ def test_la_evidencia_del_participante_1_trae_la_actualizacion_con_la_entrega_na
     assert "bloque D igual al registro de la etapa 1 sin su línea final: literal True" in texto and "bloque B igual al CSV original: True | bloque C igual al CSV original: True" in texto
     assert "capturas que coinciden con su inventario: 10 de 10" in texto and "no se abrieron" in texto and "hallazgos automáticos: 0" in texto
     assert "C:\\" not in texto and "AlexD" not in texto and not NOMBRES_NUEVOS.search(texto) and not inv.HERRAMIENTAS.search(texto) and "pro" + "mpt" not in texto.lower()
+
+
+# ---------------------------------------------------------------- bloque 1: resumen, capturas y lectura limitada
+CAPTURAS = {"01_identificacion_sesion.png": "b0cc888e88897dc43aa904bac38d9e2fef4da70a9f74293a76191ae6bfb43022", "02_pro" + "mpt_etapa_1.png": "cb1ec99013a4da9441a19043aa6f616956115f4453eb5af74cd200fff503ecd6",
+            "03_operaciones_etapa_1.png": "dd494997c076371652eeeb591a5cad2390c845b33110ea5b407c98229d1b2ae7", "04_registro_congelado.png": "011132ead36fee27408038bdf071f9162e2402763a78b30dbaaca9dccf3dec45",
+            "05_pro" + "mpt_etapa_2.png": "6410f0852faabb5db70062390e25651cfcfe3df6e2883c8cfb478b51effd3e94", "06_operaciones_etapa_2.png": "d5b6c2c7d7da62acc90f1b904750e7eeca54bc4da71b5cdca210ee5dec436779",
+            "07_bloque_A.png": "e9bb933eee8e0b06d393ed9bbebe6ff968323afefd441cd76333dce612d923fe", "08_bloque_B.png": "c99f7abf14966d8d80246ff5dc885aceea2cb5d2759e66637162b5c6ad25a9fa",
+            "09_bloque_C.png": "43d41f7f074ecb7c372aa59b0757584192c20fb7f74e9d6b593ba019f85615f0", "10_bloque_E.png": "46b23698a55ccf2d2d4083a103f4694e847a96b268cb3da75d8dcfd8894824cf"}
+
+
+def test_las_diez_capturas_se_citan_con_nombre_y_sha256_y_ninguna_esta_versionada():
+    texto = (ROOT / ("DECLARACION" + "_USO_IA.md")).read_text(encoding="utf-8")
+    for nombre, sha in CAPTURAS.items():
+        assert f"`{nombre}` `{sha}`" in texto, nombre
+    assert "retrospectivas" in texto and "ninguna está versionada" in texto
+    versionados = subprocess.run(["git", "ls-files"], cwd=ROOT, capture_output=True, text=True, encoding="utf-8", check=True).stdout.splitlines()
+    ajenos = [r for r in versionados if r.rsplit("/", 1)[-1] in CAPTURAS or hashlib.sha256((ROOT / r).read_bytes()).hexdigest() in CAPTURAS.values() and r.endswith(".png")]
+    assert ajenos == [], "las capturas de las sesiones simuladas no se versionan"
+
+
+def test_la_declaracion_dice_que_se_verifico_y_que_no_con_la_lectura_limitada_de_las_transcripciones():
+    texto = (ROOT / ("DECLARACION" + "_USO_IA.md")).read_text(encoding="utf-8")
+    seccion = texto.split("Lectura limitada de las transcripciones del participante 1", 1)[1].split("\n- **", 1)[0]
+    assert "solo tres de los 28 registros" in seccion and "Se verificó:" in seccion and "No se verificó:" in seccion
+    assert "idéntico, carácter por carácter" in seccion and "la herramienta registra la selección, no certifica la ejecución" in seccion
+    assert "veredictos del bloque E" in texto and "venían dictados" in texto and "no sustituye las pruebas con usuarios reales" in texto.replace("No sustituye las pruebas", "no sustituye las pruebas")
+
+
+def test_el_resumen_de_una_linea_cubre_c1_a_c8_y_h1_a_h8_con_lo_que_se_ajusto():
+    texto = REGISTRO.read_text(encoding="utf-8")
+    seccion = texto.split("## Resumen de una línea de C1 a C8 y H1 a H8", 1)[1].split("\n## ", 1)[0]
+    filas = re.findall(r"^\| ([CH]\d) \| ([^|]+) \| ([^|]+) \| ([^|]+) \|$", seccion, re.M)
+    assert [f[0] for f in filas] == [f"C{i}" for i in range(1, 9)] + [f"H{i}" for i in range(1, 9)]
+    assert all(c.strip() for f in filas for c in f[1:]), "cada fila dice qué afirmaba, qué resultó y qué se ajustó"
+    assert "líneas 54 y 56" in dict((f[0], f[3]) for f in filas)["C4"]

@@ -135,6 +135,28 @@ No repiten C1 a C8. Ninguno se da por incumplimiento confirmado: son observacion
 | H7 | Bloque E, filas del checklist | El mensaje dictó que una sesión simulada no cumple 6.1, 6.2, 6.3, 6.5 ni 7.4 y que no es el feedback de 7.3. El juicio propio queda en 3.3 y en las razones de cada fila. | no leer esas cinco respuestas como juicio independiente |
 | H8 | Mensajes enviados | El de la etapa 1 nombra carpetas vecinas que no debía mirar (la copia completa y la carpeta de los mensajes) y el de la etapa 2, un script de análisis. Son datos que la persona simulada no necesitaba; las llamadas recuperadas no leen esas rutas. | observación sobre el procedimiento |
 
+## Resumen de una línea de C1 a C8 y H1 a H8
+Para leer de un vistazo lo que dicen las tablas de arriba. Ningún texto original se tocó; «ajuste» es lo que cambió en cómo leemos la corrección o la observación.
+
+| # | Qué afirmaba | Qué resultó | Qué se ajustó |
+|---|---|---|---|
+| C1 | Que el panel escribe «no se detecta diferencia» si el cálculo da cerca de cero. | Confirmada: la condición es que el intervalo incluya 0. | Se aclaró que el pensamiento en voz alta ya decía «incluye el cero» y solo la respuesta es imprecisa. |
+| C2 | Que los grupos con muestra baja o muchas construcciones sin datos «no se deben comparar» y de los de pocos datos «no se pueden sacar conclusiones». | Parcial: el documento dice que no se ordenan. | Se separó T2 (lectura plausible) de T6 (dice más que el documento). |
+| C3 | Que comparar estratos es comparar esas comunas con «el resto de la ciudad». | Confirmada: contradice al documento y al propio T6. | Nada. |
+| C4 | Que «casas», «viviendas» y «edificaciones» deben leerse como construcciones. | Requiere ajuste: el documento dice construcciones, pero la persona debía hablar con palabras de todos los días y la lista de líneas estaba incompleta. | Se completó con las líneas 54 y 56 de T6 y se reconoció que es lenguaje de la persona simulada, no un error de lectura. |
+| C5 | Que «lo único» que advierte el documento es la baja confianza de la definición ampliada. | Parcial: hay otra advertencia (la de la razón ajustada), pero el documento no dice cuál. | Se añadió que la persona no podía contarla porque no está escrita. |
+| C6 | Que «mapas de puntos» no estaba en el documento y debía llevar la marca. | Parcial: es paráfrasis plausible de «dispersión de ubicaciones»; «mapa» no está. | De «debía llevar la marca» a «interpretación plausible»; la marca depende de la regla (H4). |
+| C7 | Que los filtros «según la comuna y el estrato» no estaban en el documento. | Parcial: era una inferencia del enunciado en la etapa 1; el guion de la etapa 2 la confirma. | Se dejó dicho que un documento de la etapa 2 no vuelve conocimiento de la etapa 1 lo dicho antes. |
+| C8 | Que «fotos», «visita técnica» y la razón de la casa no estaban en el documento. | Parcial: las dos primeras son paráfrasis; la razón no tiene respaldo. | La corrección se limita a la razón «porque desde arriba no se ve todo lo que pasa dentro de una casa». |
+| H1 | Ejemplo «estrato 6» en T2. | Los documentos de la etapa 1 no lo nombran; es un ejemplo, no una afirmación. | Nada: observación. |
+| H2 | Lo que «faltó» en T2, T3, T5 y T6. | Casi todo es un límite de los documentos permitidos o de la modalidad, no de comprensión. | No se leen como fricciones del panel. |
+| H3 | Que no dar las cifras de T3 y T5 fue «exclusivamente» por la modalidad. | Sin respaldo con esa fuerza: también influyó lo que traían los documentos. | Queda como conclusión causal sin respaldo, no como incumplimiento; la declaración no la usa. |
+| H4 | Un «sí» al punto 6 del bloque E, cuyas viñetas finales no llevan la marca. | Ambigüedad: la regla pide la marca para lo afirmado del panel, no para avisos. | Nada: no se confirma incumplimiento. |
+| H5 | Que arquitectura y pruebas técnicas están documentadas en otros archivos. | Cierto en el commit; respaldo indirecto solo para el panel. | Nada: no es incumplimiento. |
+| H6 | La identificación del bloque A como autodeclaración. | Venía dictada por el mensaje. | La declaración la trata como dictada y no como evidencia de cumplimiento. |
+| H7 | Los veredictos del bloque E sobre las filas del checklist. | Cinco venían dictados por el mensaje. | La declaración dice que no son juicio independiente y no se usan como evidencia. |
+| H8 | Los mensajes nombran carpetas vecinas y un script. | Información de más, sin lecturas de esas rutas. | Nada: observación del procedimiento. |
+
 ## Los seis comentarios de `registro.csv`
 Los entregó la persona simulada y se incorporan tal cual; esta tabla dice qué hacer al leerlos. No son mediciones ni observaciones de personas.
 
