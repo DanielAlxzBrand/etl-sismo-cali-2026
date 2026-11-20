@@ -110,12 +110,19 @@ def cargar_simuladas(carpeta):
     return registro, cuestionarios
 
 
-def redactar_simuladas(registro, cuestionarios):
+def registros_de_etapa_1(carpeta):
+    """Nombres de los registros de la etapa 1 en texto (`participante_simulado_N_etapa_1.md`) de la carpeta de sesiones simuladas; no traen cifras y no se cuentan como filas."""
+    return sorted(p.name for p in carpeta.glob("participante_simulado_*_etapa_1.md")) if carpeta.is_dir() else []
+
+
+def redactar_simuladas(registro, cuestionarios, registros_etapa_1=()):
     """Texto Markdown del resumen de las sesiones simuladas: cuántas filas y participantes hay y que ninguna cifra se midió; no calcula tasas, tiempos ni puntuaciones."""
     personas = sorted({f["participante"] for f in registro} | {f["participante"] for f in cuestionarios})
     L = ["# Sesiones simuladas (no realizadas con personas reales)", "", f"> **{ENCABEZADO_SIMULADA}.** Lo que está aquí no cuenta para ningún ítem del checklist ni es feedback de personas usuarias: ni las sesiones reales ni los datos sintéticos de prueba se mezclan con esto.", ""]
     if not personas:
         L += ["**No hay sesiones simuladas registradas.** Cuando el equipo guarde `registro.csv` y `cuestionarios.csv` en `docs/usuarios/sesiones_simuladas/` con `origen = simulada`, este archivo contará lo registrado.", ""]
+        if registros_etapa_1:
+            L += [f"**Registros de la etapa 1 en texto:** {len(registros_etapa_1)} ({', '.join(f'`{n}`' for n in registros_etapa_1)}). No traen cifras, no son filas de `registro.csv` y todavía no tienen su `registro.csv` ni su `cuestionarios.csv`, por eso aquí no se cuentan como sesiones registradas.", ""]
     else:
         L += [f"**Participantes simulados:** {len(personas)} ({', '.join(personas)}). **Filas de tareas:** {len(registro)}. **Cuestionarios:** {len(cuestionarios)}.", "",
               f"Ninguna cifra se midió: cada resultado, tiempo, número de ayudas y de errores, respuesta del SUS y CSAT vale «{NO_MEDIDO}». Por eso no se calcula ninguna tasa, tiempo ni puntuación.", ""]
@@ -197,7 +204,7 @@ def main(argv=None):
             print(f"error: {e}", file=sys.stderr)
             return 2
         salida = base / "resultados_sesiones_simuladas.md"
-        salida.write_text(redactar_simuladas(registro, cuestionarios), encoding="utf-8", newline="\n")
+        salida.write_text(redactar_simuladas(registro, cuestionarios, registros_de_etapa_1(base / "sesiones_simuladas")), encoding="utf-8", newline="\n")
         print(f"escrito {salida.name}: sesiones simuladas, {len({f['participante'] for f in registro} | {f['participante'] for f in cuestionarios})} participantes simulados")
         return 0
     carpeta = base / ("simulacion" if a.simulado else "sesiones_reales")

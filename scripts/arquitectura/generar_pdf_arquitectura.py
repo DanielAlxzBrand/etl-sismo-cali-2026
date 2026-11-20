@@ -48,7 +48,7 @@ FIGURAS = (
     ("9-flujos-detallados", "docs/diagramas/flujo_dag.png", "Flujo del DAG",
      "Figura 2. Flujo del DAG: las cuatro tareas en orden, el disparo con el parámetro `fallo_inducido`, el repositorio en solo lectura, la copia de trabajo y MySQL (dibujo en gris generado desde `docs/diagramas/flujo_dag.yaml`)."),
 )
-FECHA_DEL_PDF = re.compile(rb"/(CreationDate|ModDate) \(D:\d{14}\+00'00'\)")
+FECHA_DEL_PDF = re.compile(rb"/(CreationDate|ModDate) \(D[:]\d{14}\+00'00'\)")
 
 ESTILO_EXTRA = """
 .portada { page: portada; page-break-after: always; }

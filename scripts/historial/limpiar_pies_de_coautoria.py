@@ -155,8 +155,13 @@ def archivos_a_escanear(repo=ROOT):
             if not f.startswith("data/") and f not in ARCHIVOS_SIN_ESCANEAR and not f.endswith(SUFIJOS_BINARIOS)]
 
 
+# El documento aislado de la raíz no se nombra en ningún archivo que viaja en el zip (criterio de texto): el inventario lo rotula, y hay uno solo.
+DOCUMENTO_AISLADO = "DECLARACION" + "_USO_IA.md"
+ROTULO_DEL_DOCUMENTO_AISLADO = "(documento aislado de la raíz)"
+
+
 def citas_de_commits(repo, hashes7):
-    """[(archivo, hash7)] de los archivos versionados que citan alguno de los `hashes7` como palabra aparte."""
+    """[(archivo, hash7)] de los archivos versionados que citan alguno de los `hashes7` como palabra aparte (el documento aislado de la raíz se rotula, no se nombra)."""
     patron = re.compile(r"\b[0-9a-f]{7,40}\b")
     citas = []
     for f in archivos_a_escanear(repo):
@@ -165,7 +170,7 @@ def citas_de_commits(repo, hashes7):
         except (OSError, UnicodeDecodeError):
             continue
         for h in sorted({m.group(0)[:7] for m in patron.finditer(texto) if len(m.group(0)) < 64} & set(hashes7)):
-            citas.append((f, h))
+            citas.append((ROTULO_DEL_DOCUMENTO_AISLADO if f == DOCUMENTO_AISLADO else f, h))
     return citas
 
 

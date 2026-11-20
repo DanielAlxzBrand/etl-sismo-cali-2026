@@ -1,0 +1,52 @@
+Inventario de la carpeta de las sesiones simuladas (solo lectura)
+Commit de la copia maestra: 3157ee2a450e8adfd834c11ae43d880d9adaf57f
+Rutas relativas a la carpeta; sha256 completo; la fecha es la de modificación del archivo.
+
+== Archivos fuera de la copia maestra (ruta | tamaño en bytes | sha256 | fecha) ==
+(1 carpeta(s) de primer nivel omitida(s) aquí y citada(s) aparte, archivo por archivo, en la sección de externos)
+habitante_etapa_1/docs/checklist/estado_checklist.md | 44740 | b66fe783e672e93f70959a305c505c678bfa2dd690256da9534e026b1443a044 | 2026-11-18 18:42:16
+habitante_etapa_1/docs/panel/guia_de_uso.md | 6144 | 10ea771f0fa7e0eb443cba459913f53a93dd16b87ce6c45ea5078e7b943ab965 | 2026-11-18 18:42:16
+habitante_etapa_1/docs/panel/README.md | 2684 | 18053856fc24907ad2387e91e3724009113037062426ba57fce66b286880e484 | 2026-11-18 18:42:16
+habitante_etapa_1/docs/usuarios/consentimiento.md | 3385 | 0d1225e860a842342de39424f2faa5c4fbc67b6acdf9b65e0abebe9fbdf56846 | 2026-11-18 18:42:16
+habitante_etapa_1/docs/usuarios/guia_simulacion/03_parte_b_primera_vez_con_el_panel.md | 4565 | 57e53ff496fb2a63db00464b3a97a700682df125791001a6488e5bd01221adc6 | 2026-11-18 18:42:16
+habitante_etapa_1/docs/usuarios/guia_simulacion/07_anexo_lista_del_participante.md | 1520 | 8f49475c70dc0014393bcd4404c58882a87c352e2d848991a8484ecdd33d7b92 | 2026-11-18 18:42:16
+habitante_etapa_1/docs/usuarios/guion_sesion.md | 5255 | 8db2085487278ea04801e831e046e532c57b0ee5f01cb86d8add46466e95ed3c | 2026-11-18 18:42:16
+habitante_etapa_1/docs/usuarios/instrumentos.md | 4051 | 0e4762739033b7ed4dfeab28d256284a48350dc41c1f550f92a1192df35cb1fb | 2026-11-18 18:42:16
+habitante_etapa_1/docs/usuarios/protocolo_sesiones.md | 7673 | 1670af204c08c291557f2da304aa47ea4f98a71d9c1aff292c03cae888aa98a2 | 2026-11-18 18:42:16
+habitante_etapa_1/docs/usuarios/sesiones_reales/plantilla_cuestionarios.csv | 99 | 9d53691a42021b7cf5560859c421175ae5d369f35edc5b909838cb7f10fb7435 | 2026-11-18 18:42:16
+habitante_etapa_1/docs/usuarios/sesiones_simuladas/plantilla_registro.csv | 231 | d26b2b8741398055b7430a565326f4c333a10503b011e5e58f57d163867fd7b0 | 2026-11-18 18:42:16
+habitante_etapa_1/docs/usuarios/sesiones_simuladas/plantilla_registro.md | 1110 | ef5a8df5aed2e81a583e4f40cedb05165740cdf91b510e06f6fc4323a712cd89 | 2026-11-18 18:42:16
+habitante_etapa_1/docs/usuarios/sesiones_simuladas/README.md | 2600 | 39c03f23be531e7ddc9f8dec3dc34b425f4631f3e398abda7d290b65e3b4d431 | 2026-11-18 18:42:16
+institucional_etapa_1/docs/checklist/estado_checklist.md | 44740 | b66fe783e672e93f70959a305c505c678bfa2dd690256da9534e026b1443a044 | 2026-11-18 18:42:16
+institucional_etapa_1/docs/gold/resultados.md | 36516 | e9cf08be3075e2663dab09c4e36a5a8d35b5442c311b60ea5a7d072d768cc8f2 | 2026-11-18 18:42:16
+institucional_etapa_1/docs/panel/guia_de_uso.md | 6144 | 10ea771f0fa7e0eb443cba459913f53a93dd16b87ce6c45ea5078e7b943ab965 | 2026-11-18 18:42:16
+institucional_etapa_1/docs/panel/README.md | 2684 | 18053856fc24907ad2387e91e3724009113037062426ba57fce66b286880e484 | 2026-11-18 18:42:16
+institucional_etapa_1/docs/usuarios/consentimiento.md | 3385 | 0d1225e860a842342de39424f2faa5c4fbc67b6acdf9b65e0abebe9fbdf56846 | 2026-11-18 18:42:16
+institucional_etapa_1/docs/usuarios/guia_simulacion/03_parte_b_primera_vez_con_el_panel.md | 4565 | 57e53ff496fb2a63db00464b3a97a700682df125791001a6488e5bd01221adc6 | 2026-11-18 18:42:16
+institucional_etapa_1/docs/usuarios/guia_simulacion/07_anexo_lista_del_participante.md | 1520 | 8f49475c70dc0014393bcd4404c58882a87c352e2d848991a8484ecdd33d7b92 | 2026-11-18 18:42:16
+institucional_etapa_1/docs/usuarios/guion_sesion.md | 5255 | 8db2085487278ea04801e831e046e532c57b0ee5f01cb86d8add46466e95ed3c | 2026-11-18 18:42:16
+institucional_etapa_1/docs/usuarios/instrumentos.md | 4051 | 0e4762739033b7ed4dfeab28d256284a48350dc41c1f550f92a1192df35cb1fb | 2026-11-18 18:42:16
+institucional_etapa_1/docs/usuarios/protocolo_sesiones.md | 7673 | 1670af204c08c291557f2da304aa47ea4f98a71d9c1aff292c03cae888aa98a2 | 2026-11-18 18:42:16
+institucional_etapa_1/docs/usuarios/sesiones_reales/plantilla_cuestionarios.csv | 99 | 9d53691a42021b7cf5560859c421175ae5d369f35edc5b909838cb7f10fb7435 | 2026-11-18 18:42:16
+institucional_etapa_1/docs/usuarios/sesiones_simuladas/plantilla_registro.csv | 231 | d26b2b8741398055b7430a565326f4c333a10503b011e5e58f57d163867fd7b0 | 2026-11-18 18:42:16
+institucional_etapa_1/docs/usuarios/sesiones_simuladas/plantilla_registro.md | 1110 | ef5a8df5aed2e81a583e4f40cedb05165740cdf91b510e06f6fc4323a712cd89 | 2026-11-18 18:42:16
+institucional_etapa_1/docs/usuarios/sesiones_simuladas/README.md | 2600 | 39c03f23be531e7ddc9f8dec3dc34b425f4631f3e398abda7d290b65e3b4d431 | 2026-11-18 18:42:16
+respaldo_etapa_1_participante_1.txt | 12345 | 78db8ba7958db5a77709deb927efdf438ca2997acc0eec7f1f1ee1ab5a1221c8 | 2026-11-18 21:29:02
+total: 28 archivos
+
+== Cada carpeta de participante frente a la copia maestra ==
+habitante_etapa_1: 13 iguales, 0 modificados, 0 de más
+institucional_etapa_1: 14 iguales, 0 modificados, 0 de más
+
+== Copia maestra frente al commit (hash de blob sin filtros) ==
+636 archivos esperados, 636 idénticos, 0 distintos, 0 que faltan, 0 de más
+
+== Archivos externos citados (etiqueta | tamaño en bytes | sha256) ==
+instrucciones_del_participante_1 | 13786 | 203d9b96313b09a632b44f54547f649bbbfc3d410f6e2ad36ffef8411a43d08b
+instrucciones_del_participante_2 | 13735 | a389a4fff5e4387612f5dc42d76792656bf0ac3b3687a89e19ac169fe900b698
+informe_de_la_ejecucion_del_participante_1 | 13174 | e47916832e38f7664bc6621b344e0f7cf68a2257bbbbfbf4a84e4f76af550f2f
+informe_de_la_ejecucion_del_participante_2 | 5503 | e4f7ac570b5bf1fd20711e23a73a1f8a8b40d16da2db15e38196aa36db923e0f
+
+== Auditoría del registro de la etapa 1 frente al guion ==
+hallazgos automáticos: 0
+

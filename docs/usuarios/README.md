@@ -14,7 +14,7 @@
 | [instrumentos.md](instrumentos.md) | SUS (con su fuente y fórmula) y CSAT | preparado |
 | [`sesiones_reales/`](sesiones_reales/README.md) | Donde el equipo guarda los registros reales; hoy solo plantillas | **vacía** |
 | [resultados.md](resultados.md) | Lo genera `scripts/usuarios/analizar_sesiones.py`; hoy dice «no hay sesiones reales» | sin datos |
-| [`sesiones_simuladas/`](sesiones_simuladas/README.md) y [resultados_sesiones_simuladas.md](resultados_sesiones_simuladas.md) | Sesiones **simuladas, no realizadas con una persona real** (D109): participantes «Participante simulado N», cifras «simulado, no medido» y `origen = simulada`; no cuentan | **solo plantillas** |
+| [`sesiones_simuladas/`](sesiones_simuladas/README.md) y [resultados_sesiones_simuladas.md](resultados_sesiones_simuladas.md) | Sesiones **simuladas, no realizadas con una persona real** (D109): participantes «Participante simulado N», cifras «simulado, no medido» y `origen = simulada`; no cuentan | plantillas y **un registro de la etapa 1** (Participante simulado 1); sin filas en los CSV |
 | [`simulacion/`](simulacion/README.md) y [resultados_simulacion.md](resultados_simulacion.md) | **Datos sintéticos rotulados** para probar el script; no son personas y no cuentan | ensayo |
 | [`guia_simulacion/`](guia_simulacion/README.md) | Guía en PDF y su generador para que las tres personas del equipo hagan sesiones de uso del panel en su equipo (modo mínimo); sesgo declarado | preparada; sin sesiones |
 | [registro_de_friccion.md](registro_de_friccion.md) y `.csv` | Las 14 fricciones de la evaluación heurística, cada una con su decisión (D87); ninguna viene de personas usuarias | con decisión |

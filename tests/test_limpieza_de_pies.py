@@ -124,7 +124,8 @@ def _hay_git():
 def test_cada_cita_del_inventario_sigue_en_su_archivo():
     _, filas = _leer_inventario()
     assert len(filas) >= 30
-    faltan = [(f["archivo"], f["hash"]) for f in filas if not re.search(rf"\b{f['hash']}[0-9a-f]*\b", (ROOT / f["archivo"]).read_text(encoding="utf-8"))]
+    real = lambda a: lp.DOCUMENTO_AISLADO if a == lp.ROTULO_DEL_DOCUMENTO_AISLADO else a   # noqa: E731  (el inventario rotula el documento aislado de la raíz)
+    faltan = [(f["archivo"], f["hash"]) for f in filas if not re.search(rf"\b{f['hash']}[0-9a-f]*\b", (ROOT / real(f["archivo"])).read_text(encoding="utf-8"))]
     assert faltan == [], "el inventario cita algo que el archivo ya no dice: hay que regenerarlo con --inventariar"
 
 

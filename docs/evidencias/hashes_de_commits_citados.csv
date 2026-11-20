@@ -1,5 +1,6 @@
 # primer_commit_afectado: abb1d78
 archivo,hash
+(documento aislado de la raíz),3157ee2
 docs/DECISIONES.md,90bd057
 docs/evidencias/ajustes_ux/EV-081_mutaciones_ajustes.txt,5d7eb1e
 docs/evidencias/ajustes_ux/EV-082_suite_en_entorno_nuevo.txt,93967ef
@@ -21,6 +22,7 @@ docs/evidencias/historial/EV-118_ensayo_de_la_limpieza_de_pies.txt,102d781
 docs/evidencias/historial/EV-118_ensayo_de_la_limpieza_de_pies.txt,abb1d78
 docs/evidencias/historial/EV-118_ensayo_de_la_limpieza_de_pies.txt,b564037
 docs/evidencias/manifiesto.md,0b392e1
+docs/evidencias/manifiesto.md,3157ee2
 docs/evidencias/manifiesto.md,90bd057
 docs/evidencias/modo_completo/EV-100_guia_seguida_desde_un_zip_nuevo.txt,90bd057
 docs/evidencias/modo_completo/EV-100_guia_seguida_desde_un_zip_nuevo.txt,cafd740
