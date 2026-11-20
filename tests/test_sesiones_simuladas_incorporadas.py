@@ -512,3 +512,19 @@ def test_el_resumen_de_una_linea_cubre_c1_a_c8_y_h1_a_h8_con_lo_que_se_ajusto():
     assert [f[0] for f in filas] == [f"C{i}" for i in range(1, 9)] + [f"H{i}" for i in range(1, 9)]
     assert all(c.strip() for f in filas for c in f[1:]), "cada fila dice qué afirmaba, qué resultó y qué se ajustó"
     assert "líneas 54 y 56" in dict((f[0], f[3]) for f in filas)["C4"]
+
+
+# ---------------------------------------------------------------- bloque 2: observaciones simuladas y cambios de documentación
+def test_las_observaciones_simuladas_tienen_decision_razon_y_commit_real_y_no_entran_al_csv_de_fricciones():
+    registro = (USUARIOS / "registro_de_friccion.md").read_text(encoding="utf-8")
+    seccion = registro.split("## Observaciones de las sesiones simuladas", 1)[1].split("\n## ", 1)[0]
+    assert BANNER in seccion and "no cuentan para 6.1, 6.2, 6.3, 6.5 ni 7.4" in seccion
+    filas = re.findall(r"^\| (S-\d\d) \| [^|]+ \| [^|]+ \| ([^|]+) \| ([^|]+) \| ([^|]+) \| ([^|]+) \|$", seccion, re.M)
+    assert [f[0] for f in filas] == [f"S-0{i}" for i in range(1, 10)]
+    for _, decision, razon, commit, _estado in filas:
+        assert decision.strip().split()[0] in {"corregir", "aplazar", "descartar"} and razon.strip(), "cada observación lleva decisión y razón"
+        if commit.strip() != "—":
+            assert subprocess.run(["git", "cat-file", "-e", commit.strip() + "^{commit}"], cwd=ROOT).returncode == 0, f"el commit {commit} debe existir"
+    assert "S-0" not in (USUARIOS / "registro_de_friccion.csv").read_text(encoding="utf-8"), "no son fricciones de personas"
+    cambios = (USUARIOS / "trazabilidad_de_cambios.md").read_text(encoding="utf-8").split("## Cambios de documentación a partir de las sesiones simuladas", 1)[1].split("\n## ", 1)[0]
+    assert BANNER in cambios and "no vienen de personas usuarias" in cambios and re.findall(r"^\| (S-\d\d) \|", cambios, re.M) == [f"S-0{i}" for i in range(1, 7)]

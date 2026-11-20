@@ -32,6 +32,21 @@ Todos los cambios son una **iteración técnica a partir de evaluación heuríst
 | F-11 | heuristica | aplazar: Streamlit 1.67.0 escribe esos textos dentro de su front, no ofrece opción de idioma ni parámetro para ocultar la barra de herramientas, y `embedOptions` no la quita. | — | EV-066_capturas_anchos.txt | EV-080_controles_de_streamlit.txt | EV-080 (prueba en vivo con una aplicación mínima) | aplazada (razón técnica) |
 | F-14 | heuristica | aplazar: Los tiempos medidos son de unos dos segundos y no hay evidencia de que molesten; acelerar exige caché de gráficos o cambiar el cliente. | — | EV-074_mediciones_anchos.txt | EV-078_mediciones_anchos.txt | — | aplazada |
 
+## Cambios de documentación a partir de las sesiones simuladas
+
+> **Sesión simulada, no realizada con una persona real.** Estos cambios salen de observaciones de dos participantes simulados (registro de fricciones, ids `S-`): son solo de documentación (`docs/panel/guia_de_uso.md`), no tocan `src/`, `data/`, las salidas ni el pipeline, **no vienen de personas usuarias** y no cuentan para 6.1, 6.2, 6.3, 6.5 ni 7.4.
+
+| Observación | Cambio (commit) | Qué cambió en el documento | Prueba o comprobación | Estado |
+|---|---|---|---|---|
+| S-01 | 48a292a | §3: definición de proxy en palabras sencillas y qué significa que el intervalo de Newcombe incluya 0 | `tests/test_usuarios_estructura.py` y `tests/test_criterio_de_texto.py` pasan; la definición repite la del glosario del panel | corregida; falta saber si se entiende |
+| S-02 | 48a292a | §3: la unidad es la construcción, no necesariamente una vivienda | igual a `docs/gold/KPIs.md`, línea de la unidad | corregida |
+| S-03 | 48a292a | §2: filtros de Construcciones, total encima de la tabla y gráfico de puntos sin mapa | leído en `src/panel/paginas/construcciones.py` sin modificarlo | corregida |
+| S-04 | 48a292a | §2: sección «Dónde se ve cada respuesta» y publicador en Fuentes | sin cifras ni nombres que cambien con los datos | corregida |
+| S-05 | 48a292a | §3: qué es «sin datos» y que el porqué de cada caso no está documentado | no se inventa una causa | corregida en parte |
+| S-06 | 48a292a | §2: dónde se ve cada escenario, con enlace a `docs/gold/resultados.md` | no se copia el resultado de cada escenario | atendida con un enlace |
+
+Las observaciones S-07, S-08 y S-09 no tienen cambio y su razón está en el [registro](registro_de_friccion.md#observaciones-de-las-sesiones-simuladas-no-son-fricciones-de-personas). Si una sesión real repite alguna, esa sí contaría como fricción de una persona.
+
 ## Alcance y límites
 - **Qué afirmamos:** dejamos el formato para trazar cada fricción hasta su cambio, su captura antes y después y su prueba.
 - **Con qué evidencia:** este documento y el [registro de fricciones](registro_de_friccion.md).

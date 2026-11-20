@@ -32,6 +32,22 @@ Severidad antes → después según la [reevaluación](evaluacion_heuristica.md#
 | F-13 | Construcciones | 1 → 0 | corregir | Con tres decimales «3,440» se lee como miles; cuatro decimales y «grados decimales» lo evitan. | 6309c79 y 298b458 | corregida |
 | F-14 | Estratos, Comunas, Sensibilidades y Construcciones | 1 → 1 | aplazar | Los tiempos medidos son de unos dos segundos y no hay evidencia de que molesten; acelerar exige caché de gráficos o cambiar el cliente. | — | aplazada |
 
+## Observaciones de las sesiones simuladas (no son fricciones de personas)
+
+> **Sesión simulada, no realizada con una persona real.** Lo que sigue sale de lo que dijeron los dos participantes simulados al leer los documentos ([participante 1](sesiones_simuladas/participante_simulado_1_etapa_1.md) y [participante 2](sesiones_simuladas/participante_simulado_2_etapa_1.md)); nadie usó el panel y nada se midió. Son **observaciones sobre la documentación**, con su decisión, y **no** son fricciones de observación ni de entrevista: no cuentan para 6.1, 6.2, 6.3, 6.5 ni 7.4, y sus ids (`S-`) no entran en el CSV de arriba. Las que no se atienden aquí tienen su razón.
+
+| Id | De dónde sale | Qué se observó | Decisión | Razón | Cambio (commit) | Estado |
+|---|---|---|---|---|---|---|
+| S-01 | participante 1, T1 | «Newcombe» y «proxy» confunden, y la respuesta se quedó en «cerca de cero» en vez de «incluye el 0». | corregir | Es solo texto de la guía de uso; el glosario del panel ya trae las definiciones y se reutilizan sus palabras. | 48a292a | corregida en la guía; falta saber si se entiende |
+| S-02 | participante 1, T1, T3 y T5, y participante 2, T3 | Se habla de «casas» y «viviendas» y la guía no dice cuál es la unidad. | corregir | `docs/gold/KPIs.md` define la unidad: la construcción (huella catastral); la guía solo lo repite. | 48a292a | corregida en la guía |
+| S-03 | participante 1, T5 | No sabe qué filtros tiene Construcciones, que dice cuántas construcciones cumplen ni si el gráfico es un mapa. | corregir | Se leyó en `src/panel/paginas/construcciones.py` (sin modificarlo): tres filtros, el total encima de la tabla y un gráfico de puntos por longitud y latitud. | 48a292a | corregida en la guía |
+| S-04 | participante 1, T2, T3 y T6 | La guía no dice en qué página se ve cada respuesta ni quién publica los datos. | corregir | Se añade dónde mirar sin repetir cifras ni nombres que cambian con los datos; la fuente de la lectura vigente es `docs/gold/resultados.md`. | 48a292a | corregida en la guía |
+| S-05 | participante 2, T2 | Quiere saber por qué faltan datos satelitales. | corregir en parte | La guía ahora dice qué es «sin datos»; el porqué de cada caso no está en ninguna documentación y no se inventa. | 48a292a | corregida en parte; el porqué sigue sin documentar |
+| S-06 | participante 1, T4 | La guía no dice si la conclusión cambia en cada escenario. | corregir en parte | La guía indica dónde se ve (página Sensibilidades); el resultado de cada escenario es una cifra que cambia con los datos y no se copia aquí. | 48a292a | atendida con un enlace, no con el resultado |
+| S-07 | participante 1, T2, T3 y T5 | No ve qué estrato, qué comuna ni cuántas construcciones, porque no usó el panel. | descartar | Es el límite de la modalidad (leer sin abrir el panel), no una fricción del panel ni de la guía; cuenta solo si una persona real lo vive. | — | descartada |
+| S-08 | participante 1, cierre | Pide ejemplos con los nombres de las comunas y los barrios. | aplazar | El nombre del barrio no viene en la nota de K3 (F-09): pedirlo exige cambiar la API o el panel, que este bloque no toca. | — | aplazada |
+| S-09 | participante 2, T3 a T6 | Echa de menos una muestra con ambos grupos en las mismas comunas, información comparable de toda la ciudad y el contraste con inspecciones en terreno. | aplazar | Exige datos que no tenemos (otras comunas, inspecciones); ya figura en las limitaciones («Qué no se puede concluir») y no se arregla con documentación. | — | aplazada |
+
 ## Fricciones de sesiones reales
 
 Ninguna todavía: no se han hecho sesiones con personas usuarias.
