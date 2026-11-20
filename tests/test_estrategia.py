@@ -596,4 +596,4 @@ def test_negativas_de_las_subfilas_de_detalle_y_el_conteo_las_ignora(tmp_path):
     contar = _script_de_conteo()
     # una etiqueta de subfila no entra al conteo de los 30 ítems: cambiarla no mueve el conteo, y el estado vigente de 6.3 sigue siendo el de la tabla principal
     assert contar.contar(_copia(tmp_path, t, [(fila, inventado)])) == contar.contar(t)
-    assert contar.estados_por_item(t)["6.3"] == "Pendiente (hecho externo)"
+    assert contar.estados_por_item(t)["6.3"] == "Cumple con matiz"

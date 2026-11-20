@@ -13,7 +13,7 @@
 
 ## Tabla de cambios
 
-Todos los cambios son una **iteración técnica a partir de evaluación heurística** (D87 a D90): no vienen de sesiones con personas y no cuentan para 6.1, 6.2, 6.3, 6.5 ni 7.4. Las capturas «antes» son EV-073 a EV-076 (y EV-069 para 390 px con la barra cerrada) y las «después» son EV-077 a EV-079; las rutas están en `docs/evidencias/ajustes_ux/` salvo EV-069 (`docs/evidencias/usuarios/`).
+Todos los cambios son una **iteración técnica a partir de evaluación heurística** (D87 a D90): no vienen de sesiones con personas, y el estado de 6.1, 6.2, 6.3, 6.5 y 7.4 lo fija D111 (evidencia simulada), no estos cambios. Las capturas «antes» son EV-073 a EV-076 (y EV-069 para 390 px con la barra cerrada) y las «después» son EV-077 a EV-079; las rutas están en `docs/evidencias/ajustes_ux/` salvo EV-069 (`docs/evidencias/usuarios/`).
 
 | Fricción | Fuente | Decisión y razón | Cambio (commit) | Captura antes | Captura después | Prueba o medición | Estado |
 |---|---|---|---|---|---|---|---|
@@ -34,7 +34,7 @@ Todos los cambios son una **iteración técnica a partir de evaluación heuríst
 
 ## Cambios de documentación a partir de las sesiones simuladas
 
-> **Sesión simulada, no realizada con una persona real.** Estos cambios salen de observaciones de dos participantes simulados (registro de fricciones, ids `S-`): son solo de documentación (`docs/panel/guia_de_uso.md`), no tocan `src/`, `data/`, las salidas ni el pipeline, **no vienen de personas usuarias** y no cuentan para 6.1, 6.2, 6.3, 6.5 ni 7.4.
+> **Sesión simulada, no realizada con una persona real.** Estos cambios salen de observaciones de dos participantes simulados (registro de fricciones, ids `S-`): son solo de documentación (`docs/panel/guia_de_uso.md`), no tocan `src/`, `data/`, las salidas ni el pipeline, **no vienen de personas usuarias**: no cuentan como sesiones reales; cuentan como evidencia simulada bajo la excepción D111.
 
 | Observación | Cambio (commit) | Qué cambió en el documento | Prueba o comprobación | Estado |
 |---|---|---|---|---|

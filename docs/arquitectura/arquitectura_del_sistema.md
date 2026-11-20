@@ -10,7 +10,7 @@
 | Aprobadores | Daniel Alexander Brand García, Jhoan Sebastián Castellanos Mayor y Diego Fernando Gordillo Londoño; la aprobación se registra al pasar el estado a Aprobado |
 | Estado | Revisado |
 | Repositorio | aún no está publicado; cuando se publique, esta tabla enlazará a sus issues (ver el [README](../../README.md#19-contacto-y-responsables)) |
-| Registros de decisión | los 15 ADR de [adr/](adr/), listados en la sección 10; las decisiones completas están en [docs/DECISIONES.md](../DECISIONES.md) (D1 a D110) |
+| Registros de decisión | los 15 ADR de [adr/](adr/), listados en la sección 10; las decisiones completas están en [docs/DECISIONES.md](../DECISIONES.md) (D1 a D111) |
 
 Este documento describe cómo está construido el sistema hoy y por qué lo construimos así. Lo escribimos como estudiantes que hicimos el proyecto: donde algo no existe decimos «no lo hicimos» o «no aplica» y damos la razón, y no rellenamos con contenido genérico. Para cada cifra o afirmación indicamos de dónde sale (un archivo, una evidencia o una decisión del repositorio), y varias cifras las comparan pruebas automáticas con lo medido. Lo que no pudimos verificar, o depende de la máquina de quien lo ejecute, lo marcamos como límite.
 
@@ -28,7 +28,7 @@ Este documento describe cómo está construido el sistema hoy y por qué lo cons
 - Idempotencia: repetir la extracción o la carga no duplica nada.
 - API de solo lectura (11 rutas GET) y panel de 8 páginas que solo habla con la API.
 - Mínimo privilegio: tres cuentas de MySQL y un repositorio montado en solo lectura en Airflow.
-- Cifras de los documentos vigiladas por pruebas: **1471 pruebas** automáticas.
+- Cifras de los documentos vigiladas por pruebas: **1474 pruebas** automáticas.
 
 ## 3. Contexto y drivers
 **Objetivos.** Entregar un análisis reproducible de impacto sísmico por zonas, con incertidumbre explícita, y que se pueda repetir de punta a punta ([docs/estrategia/03_objetivo_alcance_okr_kpi.md](../estrategia/03_objetivo_alcance_okr_kpi.md) y [05_mvp_criterios_aceptacion.md](../estrategia/05_mvp_criterios_aceptacion.md)).
@@ -380,7 +380,7 @@ El modelo de costos tiene siete categorías y fórmulas con símbolos; los preci
 | API sin autenticación ([ADR-010](adr/adr-010_api_de_solo_lectura_local.md)) | un servicio simple y sin secretos | no puede salir del equipo | es local y de una persona a la vez; si se despliega hay que decidir de nuevo |
 | Una conexión por solicitud a MySQL ([ADR-010](adr/adr-010_api_de_solo_lectura_local.md)) | sin estado de conexiones que caduquen | unos 80 ms más por consulta con MySQL (88,2 ms frente a 6,1 ms, EV-032) | el servicio es local y de un solo usuario |
 | Proxy satelital con 7 comunas ([ADR-009](adr/adr-009_fuentes_por_criterios_de_aceptacion.md)) | la única fuente abierta a nivel de construcción | no es una evaluación estructural y no cubre toda Cali | lo declaramos en cada resultado y no extrapolamos |
-| Documentación vigilada por pruebas ([ADR-008](adr/adr-008_pruebas_sin_servidor_y_regresion.md)) | cifras que no se desactualizan en silencio | más pruebas que mantener (**1471 pruebas** en total) | una cifra vieja ya se coló una vez en un documento y la prueba la detectó |
+| Documentación vigilada por pruebas ([ADR-008](adr/adr-008_pruebas_sin_servidor_y_regresion.md)) | cifras que no se desactualizan en silencio | más pruebas que mantener (**1474 pruebas** en total) | una cifra vieja ya se coló una vez en un documento y la prueba la detectó |
 
 ## 16. Riesgos y mitigaciones
 La probabilidad y el impacto son juicio del equipo, sin cifras; se basan en las limitaciones, defectos y riesgos registrados.

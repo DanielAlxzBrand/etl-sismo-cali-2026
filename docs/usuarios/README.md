@@ -2,7 +2,7 @@
 
 **Ítems del checklist:** 3.3 (usabilidad, capacidad de respuesta y coherencia visual) y 6.1 a 6.3 (sesiones con personas usuarias, métricas de experiencia y fricciones). Los costos están en [docs/finanzas/](../finanzas/estructura_costos.md).
 
-> **Dónde estamos, dicho sin rodeos.** Preparamos todo lo que el equipo necesita para hacer sesiones con personas usuarias y evaluamos el panel por dentro con las heurísticas de Nielsen, pero **todavía no hubo ninguna sesión con personas**: no hay participantes, tiempos ni respuestas. Los ítems 6.1, 6.2, 6.3, 6.5 y 7.4 siguen pendientes por un hecho externo y no los marcamos como cumplidos.
+> **Dónde estamos, dicho sin rodeos.** Preparamos todo lo que el equipo necesita para hacer sesiones con personas usuarias y evaluamos el panel por dentro con las heurísticas de Nielsen, pero **todavía no hubo ninguna sesión con personas**: no hay participantes, tiempos ni respuestas. Los ítems 6.1, 6.2, 6.3, 6.5 y 7.4 están en «Cumple con matiz» solo por la excepción D111 (evidencia simulada, sin personas reales); los hechos externos siguen sin ocurrir y nunca los marcamos «Cumple».
 
 ## Qué hay en esta carpeta
 | Archivo o carpeta | Para qué sirve | Estado |

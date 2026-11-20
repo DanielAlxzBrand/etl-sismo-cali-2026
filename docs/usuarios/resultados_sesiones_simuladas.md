@@ -1,6 +1,6 @@
 # Sesiones simuladas (no realizadas con personas reales)
 
-> **Sesión simulada, no realizada con una persona real.** Lo que está aquí no cuenta para ningún ítem del checklist ni es feedback de personas usuarias: ni las sesiones reales ni los datos sintéticos de prueba se mezclan con esto.
+> **Sesión simulada, no realizada con una persona real.** Lo que está aquí no cuenta como sesión real; cuenta como evidencia simulada bajo la excepción D111, y no es feedback de personas usuarias: ni las sesiones reales ni los datos sintéticos de prueba se mezclan con esto.
 
 **Participantes simulados:** 2 (Participante simulado 1, Participante simulado 2). **Filas de tareas:** 12. **Cuestionarios:** 2.
 

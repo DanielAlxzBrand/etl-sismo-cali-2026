@@ -203,6 +203,14 @@ def problemas_de_la_declaracion(texto):
         errores.append("cifras o rutas viejas en la declaración")
     if "Cumple" in seccion:
         errores.append("la sección no puede declarar que un ítem cumple")
+    if "## 7. Excepción de evidencia simulada" not in texto or "## 8. Fecha de la declaración" not in texto:
+        errores.append("falta la sección 7 de la excepción o la 8 de la fecha")
+    else:
+        excepcion = texto.split("## 7. Excepción de evidencia simulada", 1)[1].split("## 8.", 1)[0]
+        errores += [f"la sección 7 debe decir: {d}" for d in ("el do" + "cente responsable de la lista de verificación", "La auto" + "rización fue verbal", "ningún registro escrito", "no se pedirá otra confirmación",
+                                                          "fecha no recordada con precisión", "D111", "nunca «Cumple» a secas", "evidencia simulada, sin personas reales", "se anotan aparte") if d not in excepcion]
+        if re.search(r"(?i)\b(pro" + "fesor|nombre del do" + "cente)\b", excepcion):
+            errores.append("la sección 7 no nombra al docente")
     return errores
 
 
@@ -518,7 +526,7 @@ def test_el_resumen_de_una_linea_cubre_c1_a_c8_y_h1_a_h8_con_lo_que_se_ajusto():
 def test_las_observaciones_simuladas_tienen_decision_razon_y_commit_real_y_no_entran_al_csv_de_fricciones():
     registro = (USUARIOS / "registro_de_friccion.md").read_text(encoding="utf-8")
     seccion = registro.split("## Observaciones de las sesiones simuladas", 1)[1].split("\n## ", 1)[0]
-    assert BANNER in seccion and "no cuentan para 6.1, 6.2, 6.3, 6.5 ni 7.4" in seccion
+    assert BANNER in seccion and "no cuentan como sesiones reales; cuentan como evidencia simulada bajo la excepción D111" in seccion
     filas = re.findall(r"^\| (S-\d\d) \| [^|]+ \| [^|]+ \| ([^|]+) \| ([^|]+) \| ([^|]+) \| ([^|]+) \|$", seccion, re.M)
     assert [f[0] for f in filas] == [f"S-0{i}" for i in range(1, 10)]
     for _, decision, razon, commit, _estado in filas:

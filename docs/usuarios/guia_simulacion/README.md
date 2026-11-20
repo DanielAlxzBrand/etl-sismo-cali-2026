@@ -1,6 +1,6 @@
 # Guía de simulación: sesiones de uso del panel
 
-**Ítems del checklist:** 6.1, 6.2, 6.3, 6.5 y 7.4 (material de apoyo; **ningún estado cambia**) · **Decisiones:** [D82 a D90](../../DECISIONES.md), [D99 y D100](../../DECISIONES.md) · **Estado:** material preparado; las sesiones todavía no se han hecho.
+**Ítems del checklist:** 6.1, 6.2, 6.3, 6.5 y 7.4 (material de apoyo; el estado de estos ítems lo fija D111, no esta guía) · **Decisiones:** [D82 a D90](../../DECISIONES.md), [D99 y D100](../../DECISIONES.md) · **Estado:** material preparado; las sesiones todavía no se han hecho.
 
 Esta carpeta es la **única fuente** de la guía en PDF para las sesiones de uso del panel entre las tres personas del equipo: un archivo `.md` por parte, en el orden de sus nombres. La guía no repite lo que ya está escrito en otros documentos: lo trae por inclusión (`{{incluir: ruta#sección}}`) al generar el PDF, porque dos copias de un mismo hecho se desactualizan.
 

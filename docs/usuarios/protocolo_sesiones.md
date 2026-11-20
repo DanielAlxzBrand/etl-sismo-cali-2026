@@ -49,7 +49,7 @@ Una persona queda en el perfil que ella misma diga que describe mejor su relaci�
 | Primer uso con el navegador recién abierto | Cada persona empieza igual; no medimos el aprendizaje en usos repetidos |
 
 ## 9. Qué se hace después
-El equipo corre `python scripts/usuarios/analizar_sesiones.py` (genera [resultados.md](resultados.md)), anota cada fricción en [registro_de_friccion.md](registro_de_friccion.md) con su fuente y decide por cada una; los cambios al panel se enlazan en [trazabilidad_de_cambios.md](trazabilidad_de_cambios.md) con capturas antes y después. Hasta que existan sesiones reales, los ítems 6.1, 6.2, 6.3, 6.5 y 7.4 **siguen pendientes por un hecho externo** y no se marcan como cumplidos. Los datos sintéticos de [`simulacion/`](simulacion/) solo sirven para probar el script y **no cuentan**.
+El equipo corre `python scripts/usuarios/analizar_sesiones.py` (genera [resultados.md](resultados.md)), anota cada fricción en [registro_de_friccion.md](registro_de_friccion.md) con su fuente y decide por cada una; los cambios al panel se enlazan en [trazabilidad_de_cambios.md](trazabilidad_de_cambios.md) con capturas antes y después. Hasta que existan sesiones reales, los ítems 6.1, 6.2, 6.3, 6.5 y 7.4 están en «Cumple con matiz» **solo por la excepción D111** (evidencia simulada, sin personas reales) y nunca en «Cumple». Los datos sintéticos de [`simulacion/`](simulacion/) solo sirven para probar el script y **no cuentan**.
 
 ## Alcance y límites
 - **Qué afirmamos:** dejamos escrito cómo se harán las sesiones, con qué tareas y qué instrumentos, y que el análisis está preparado y probado con datos sintéticos rotulados.

@@ -2,7 +2,7 @@
 
 **Ítem del checklist:** 6.3 (registro con severidad, fuente con consentimiento, priorización y decisión por fricción, y trazabilidad a cambios del panel) · **Estado:** las 14 fricciones vienen de la [evaluación heurística interna](evaluacion_heuristica.md) y ya tienen decisión; **sin fricciones de observación ni de entrevista, porque no hay sesiones reales**.
 
-> El CSV es [registro_de_friccion.csv](registro_de_friccion.csv). Se precargó con `scripts/usuarios/precargar_friccion.py` y después se actualizó a mano con las decisiones, los commits y las capturas; por eso el script ya no lo sobrescribe. Una fricción de fuente `heuristica` es una **iteración técnica** y **no** una validación con personas usuarias: 6.1, 6.2, 6.3, 6.5 y 7.4 siguen pendientes.
+> El CSV es [registro_de_friccion.csv](registro_de_friccion.csv). Se precargó con `scripts/usuarios/precargar_friccion.py` y después se actualizó a mano con las decisiones, los commits y las capturas; por eso el script ya no lo sobrescribe. Una fricción de fuente `heuristica` es una **iteración técnica** y **no** una validación con personas usuarias: el estado de 6.1, 6.2, 6.3, 6.5 y 7.4 lo fija D111 (evidencia simulada), no esta iteración técnica.
 
 ## Cómo se usa
 
@@ -34,7 +34,7 @@ Severidad antes → después según la [reevaluación](evaluacion_heuristica.md#
 
 ## Observaciones de las sesiones simuladas (no son fricciones de personas)
 
-> **Sesión simulada, no realizada con una persona real.** Lo que sigue sale de lo que dijeron los dos participantes simulados al leer los documentos ([participante 1](sesiones_simuladas/participante_simulado_1_etapa_1.md) y [participante 2](sesiones_simuladas/participante_simulado_2_etapa_1.md)); nadie usó el panel y nada se midió. Son **observaciones sobre la documentación**, con su decisión, y **no** son fricciones de observación ni de entrevista: no cuentan para 6.1, 6.2, 6.3, 6.5 ni 7.4, y sus ids (`S-`) no entran en el CSV de arriba. Las que no se atienden aquí tienen su razón.
+> **Sesión simulada, no realizada con una persona real.** Lo que sigue sale de lo que dijeron los dos participantes simulados al leer los documentos ([participante 1](sesiones_simuladas/participante_simulado_1_etapa_1.md) y [participante 2](sesiones_simuladas/participante_simulado_2_etapa_1.md)); nadie usó el panel y nada se midió. Son **observaciones sobre la documentación**, con su decisión, y **no** son fricciones de observación ni de entrevista: no cuentan como sesiones reales; cuentan como evidencia simulada bajo la excepción D111, y sus ids (`S-`) no entran en el CSV de arriba. Las que no se atienden aquí tienen su razón.
 
 | Id | De dónde sale | Qué se observó | Decisión | Razón | Cambio (commit) | Estado |
 |---|---|---|---|---|---|---|

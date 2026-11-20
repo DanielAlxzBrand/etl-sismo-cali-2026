@@ -56,12 +56,22 @@ def sin_la_linea_autorizada(rel, texto):
     return "\n".join(lineas)
 
 
+# D111: la frase de la excepción de 6.1, 6.2, 6.3, 6.5 y 7.4 puede aparecer, tal cual, solo en estos archivos; cualquier variante o cualquier otro archivo conserva todo su texto.
+FRASE_DE_LA_EXCEPCION = "excepción declarada en " + "DECLARACION" + "_USO_IA.md, sección 7"
+ARCHIVOS_CON_LA_EXCEPCION = {"docs/DECISIONES.md", "docs/checklist/estado_checklist.md", "docs/checklist/trazabilidad.csv", "docs/checklist/trazabilidad.md"}
+
+
+def sin_la_frase_de_la_excepcion(rel, texto):
+    """El texto sin la frase exacta de la excepción si es uno de los archivos autorizados; en cualquier otro archivo no se quita nada."""
+    return texto.replace(FRASE_DE_LA_EXCEPCION, "") if rel in ARCHIVOS_CON_LA_EXCEPCION else texto
+
+
 def problemas_de_texto(rel, texto):
     """Reglas que incumple un archivo del zip (lista vacía si cumple); aplica las excepciones atadas a sha256 y la línea autorizada del README."""
     permitidas = set()
     if rel in EXCEPCIONES and sha_lf(texto) == EXCEPCIONES[rel][0]:
         permitidas = EXCEPCIONES[rel][1]
-    texto = sin_la_linea_autorizada(rel, texto)
+    texto = sin_la_frase_de_la_excepcion(rel, sin_la_linea_autorizada(rel, texto))
     errores = []
     for nombre, patron in REGLAS.items():
         if nombre in permitidas:
@@ -139,3 +149,25 @@ def test_el_zip_arma_el_documento_aislado_pero_la_prueba_no_lo_recorre_ni_lo_nom
     aislados = [n for n in nombres if make_dist.es_documento_aislado(n)]
     assert len(aislados) == 1
     assert aislados[0] not in {rel for rel, _ in _archivos()}
+
+
+def test_la_frase_de_la_excepcion_solo_vale_tal_cual_y_en_los_archivos_autorizados():
+    base = "Cumple con matiz: evidencia simulada, sin personas reales (" + FRASE_DE_LA_EXCEPCION + ")."
+    for rel in sorted(ARCHIVOS_CON_LA_EXCEPCION):
+        assert problemas_de_texto(rel, base) == [], rel
+        assert problemas_de_texto(rel, base.replace("sección 7", "sección 6")), "una variante de la frase"
+        assert problemas_de_texto(rel, base + " Ver " + "DECLARACION" + "_USO_IA.md."), "otra remisión en el mismo archivo"
+    assert problemas_de_texto("docs/usuarios/README.md", base), "la frase en un archivo no autorizado"
+    assert problemas_de_texto("README.md", base), "ni siquiera el README la hereda"
+    for rel in sorted(ARCHIVOS_CON_LA_EXCEPCION):
+        assert FRASE_DE_LA_EXCEPCION in _real(rel), f"{rel} debe citar la excepción"
+
+
+def test_ningun_archivo_fuera_de_la_declaracion_trae_la_autorizacion_de_la_excepcion():
+    rol = r"(?:do" + r"cente|pro" + r"fe\w*)"
+    corto = r"[^\n.]{0,100}"
+    patron = re.compile(r"(?i)" + rol + corto + r"autoriz|autoriz\w*" + corto + rol + r"|autorizaci[oó]n\s+(?:verbal|" + "do" + "cente)")
+    hallazgos = [rel for rel, texto in _archivos() if patron.search(texto)]
+    assert hallazgos == []
+    assert patron.search("el do" + "cente autorizó terminar con evidencia simulada") and patron.search("una autorización " + "verbal"), "la regla se dispara con lo que vigila"
+    assert not patron.search("Equipo do" + "cente (evaluación del curso)"), "el equipo de los interesados no se confunde"

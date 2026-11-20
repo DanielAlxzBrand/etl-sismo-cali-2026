@@ -165,18 +165,34 @@ def test_negativa_un_parametro_con_valor_y_sin_fuente_se_detecta():
 
 # ---------------------------------------------------------------- (e) estado del checklist
 DEPENDEN_DE_SESIONES = ("6.1", "6.2", "6.3", "6.5", "7.4")
+# D111: estos cinco ítems solo pueden estar en «Cumple con matiz» por la excepción declarada; nunca en «Cumple» a secas y siempre citándola.
+EXCEPCION = "excepción declarada en " + "DECLARACION" + "_USO_IA.md, sección 7"
+MATIZ = "evidencia simulada, sin personas reales (" + EXCEPCION + ")"
 
 
-def items_marcados_como_cumplidos(texto):
-    """Ids de los ítems que dependen de sesiones reales con alguna celda «Cumple» o «Cumple con matiz» en cualquier tabla del documento."""
+def _celdas(linea):
+    return [c.strip().replace("*", "") for c in linea.strip().strip("|").split("|")]
+
+
+def items_marcados_como_cumple_a_secas(texto):
+    """Ids de los ítems que dependen de sesiones con alguna celda «Cumple» a secas en cualquier tabla del documento (con la excepción, solo valen «Cumple con matiz»)."""
     marcados = set()
     for linea in texto.splitlines():
         m = re.match(r"^\| (\d\.\d) \|", linea)
-        if m and m.group(1) in DEPENDEN_DE_SESIONES:
-            celdas = [c.strip().replace("*", "") for c in linea.strip().strip("|").split("|")]
-            if any(c in ("Cumple", "Cumple con matiz") for c in celdas):
-                marcados.add(m.group(1))
+        if m and m.group(1) in DEPENDEN_DE_SESIONES and "Cumple" in _celdas(linea):
+            marcados.add(m.group(1))
     return sorted(marcados)
+
+
+def items_con_matiz_sin_excepcion(texto):
+    """Ids de la tabla principal que dependen de sesiones y no están en «Cumple con matiz» con el matiz y la referencia a la declaración."""
+    mal = []
+    for i in DEPENDEN_DE_SESIONES:
+        linea = next((l for l in texto.splitlines() if l.startswith(f"| {i} | «")), "")
+        celdas = _celdas(linea) if linea else []
+        if len(celdas) < 6 or celdas[5] != "Cumple con matiz" or MATIZ not in linea:
+            mal.append(i)
+    return mal
 
 
 def _hay_sesiones_reales():
@@ -184,26 +200,41 @@ def _hay_sesiones_reales():
     return any(f for n, f in filas.items() if not n.startswith("plantilla_"))
 
 
-def test_el_estado_no_marca_cumplidos_los_items_que_dependen_de_sesiones_reales():
-    if _hay_sesiones_reales():
-        return      # con sesiones reales ya registradas, el equipo puede actualizar estos ítems: la comprobación aplica solo mientras no las haya (sin saltar la prueba)
-    assert items_marcados_como_cumplidos(ESTADO.read_text(encoding="utf-8")) == []
+def test_ninguna_fila_que_depende_de_sesiones_dice_cumple_a_secas():
+    assert items_marcados_como_cumple_a_secas(ESTADO.read_text(encoding="utf-8")) == []
 
 
-def test_el_estado_dice_que_el_material_esta_preparado_y_faltan_las_sesiones():
+def test_las_cinco_filas_estan_en_cumple_con_matiz_y_citan_la_excepcion_en_el_estado_la_trazabilidad_y_la_decision():
+    assert items_con_matiz_sin_excepcion(ESTADO.read_text(encoding="utf-8")) == []
+    import csv
+    with open(ROOT / "docs" / "checklist" / "trazabilidad.csv", encoding="utf-8-sig", newline="") as f:
+        filas = {r["item"]: r for r in csv.DictReader(f)}
+    for i in DEPENDEN_DE_SESIONES:
+        assert filas[i]["estado"] == "Cumple con matiz" and MATIZ in filas[i]["que_no_demuestra"], i
+    decision = (ROOT / "docs" / "DECISIONES.md").read_text(encoding="utf-8")
+    d111 = next(l for l in decision.splitlines() if l.startswith("**D111 "))
+    assert EXCEPCION in d111 and "nunca «Cumple» a secas" in d111
+    regla = ESTADO.read_text(encoding="utf-8").splitlines()[4]
+    assert regla.startswith("**Regla de estado.**") and "mientras ese evento no ocurra, el estado es «Pendiente (hecho externo)»" in regla and "D111" not in regla, "la regla de la línea 5 no se edita"
+
+
+def test_el_estado_dice_que_el_material_esta_preparado_y_faltan_las_sesiones_reales():
     texto = ESTADO.read_text(encoding="utf-8")
     for i in ("6.1", "6.2", "6.3"):
         linea = next(l for l in texto.splitlines() if l.startswith(f"| {i} | «"))
-        assert "Pendiente" in linea or "Requiere hecho externo" in linea, i
+        assert "Cumple con matiz" in linea and "faltan las sesiones reales" in linea, i
     assert "material preparado y script probado; faltan las sesiones reales" in texto.lower()
 
 
-def test_negativa_un_estado_cumple_en_6_1_se_detecta_aunque_cambie_el_formato_de_la_fila():
-    base = "| 6.1 | «texto» | Pendiente (hecho externo) | x | y | Pendiente (hecho externo) | z |"
-    assert items_marcados_como_cumplidos(base) == []
-    assert items_marcados_como_cumplidos(base.replace("Pendiente (hecho externo) | z", "**Cumple** | z")) == ["6.1"]
-    assert items_marcados_como_cumplidos("| 6.1 | Casos | Cumple con matiz | a |") == ["6.1"]
-    assert items_marcados_como_cumplidos("| 5.1 | Casos | Cumple | a |") == []
+def test_negativas_de_la_excepcion_cumple_a_secas_matiz_sin_referencia_o_estado_pendiente_se_detectan():
+    base = "| 6.1 | «texto» | Requiere hecho externo | x | y | Cumple con matiz | Matiz: " + MATIZ + ". z |"
+    assert items_marcados_como_cumple_a_secas(base) == [] and items_con_matiz_sin_excepcion(base).count("6.1") == 0
+    assert items_marcados_como_cumple_a_secas(base.replace("Cumple con matiz | Matiz", "**Cumple** | Matiz")) == ["6.1"], "«Cumple» a secas aunque cambie el formato de la fila"
+    assert items_marcados_como_cumple_a_secas("| 6.1 | Casos | Cumple | a |") == ["6.1"] and items_marcados_como_cumple_a_secas("| 5.1 | Casos | Cumple | a |") == []
+    assert items_con_matiz_sin_excepcion(base.replace(EXCEPCION, "otra cosa")).count("6.1") == 1, "el matiz sin la referencia a la declaración"
+    assert items_con_matiz_sin_excepcion(base.replace("evidencia simulada, sin personas reales", "evidencia")).count("6.1") == 1, "el matiz incompleto"
+    assert items_con_matiz_sin_excepcion(base.replace("| Cumple con matiz |", "| Pendiente (hecho externo) |")).count("6.1") == 1, "un estado que no es «Cumple con matiz»"
+    assert items_con_matiz_sin_excepcion(base.replace("sección 7", "sección 6")).count("6.1") == 1, "otra sección de la declaración"
 
 
 # ---------------------------------------------------------------- (f) evaluación heurística

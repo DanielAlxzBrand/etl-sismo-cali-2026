@@ -191,7 +191,7 @@ Fichas de los ítems 1.1 a 1.5 (Estrategia), 2.1 a 2.3 (API, fuentes y credencia
 - **(e) Validar:** `.\.venv\Scripts\python.exe -m pytest tests/test_usuarios_estructura.py -q -p no:cacheprovider`.
 
 ### Ítems 6.1, 6.2 y 6.3 · Sesiones, métricas y fricciones (pendientes por un hecho externo)
-- **(a) Archivo principal:** `docs/usuarios/README.md` (índice) con `protocolo_sesiones.md`, `guion_sesion.md`, `consentimiento.md` e `instrumentos.md`. Demuestra: material preparado para 2 o 3 sesiones reales (seis tareas con criterio de éxito, consentimiento, SUS y CSAT), un script de análisis probado y un registro de las 14 fricciones de la evaluación heurística con su decisión. **No demuestra:** que se haya hecho alguna sesión; `docs/usuarios/sesiones_reales/` solo tiene plantillas y los ítems siguen «Pendiente (hecho externo)».
+- **(a) Archivo principal:** `docs/usuarios/README.md` (índice) con `protocolo_sesiones.md`, `guion_sesion.md`, `consentimiento.md` e `instrumentos.md`. Demuestra: material preparado para 2 o 3 sesiones reales (seis tareas con criterio de éxito, consentimiento, SUS y CSAT), un script de análisis probado y un registro de las 14 fricciones de la evaluación heurística con su decisión. **No demuestra:** que se haya hecho alguna sesión; `docs/usuarios/sesiones_reales/` solo tiene plantillas; los ítems están en «Cumple con matiz» solo por la excepción D111 (evidencia simulada, sin personas reales), no por sesiones reales.
 - **(b) Apoyo:**
   - `scripts/usuarios/analizar_sesiones.py` y `tests/test_usuarios.py` (SUS con vectores conocidos, cero sesiones, rechazo de filas simuladas, n pequeño y Wilson).
   - `docs/usuarios/simulacion/` y `docs/usuarios/resultados_simulacion.md`: **datos sintéticos rotulados, no son personas; no cuentan**.
@@ -275,7 +275,7 @@ Fichas de los ítems 1.1 a 1.5 (Estrategia), 2.1 a 2.3 (API, fuentes y credencia
 Estas seis fichas se escribieron en la auditoría intermedia. Ninguna de las seis está en «Cumple»: cada una dice qué hay y qué falta. La tabla ítem → requisito → archivos → pruebas → evidencias → comando de los 30 ítems está en [trazabilidad.md](trazabilidad.md) y se comprueba con `python scripts/validar_checklist.py --item N`.
 
 ### Ítem 6.5 · Retroalimentación y verificación de los ajustes (Pendiente por un hecho externo)
-- **(a) Archivo principal:** `docs/usuarios/trazabilidad_de_cambios.md` (Markdown). Demuestra: la tabla fricción → cambio → commit → captura antes y después → prueba está llena con los 8 ajustes de la iteración técnica (D87 a D90). **No demuestra:** que alguien haya dado retroalimentación ni que los ajustes se hayan verificado con personas: salen de una evaluación heurística interna. Estado: Pendiente (hecho externo).
+- **(a) Archivo principal:** `docs/usuarios/trazabilidad_de_cambios.md` (Markdown). Demuestra: la tabla fricción → cambio → commit → captura antes y después → prueba está llena con los 8 ajustes de la iteración técnica (D87 a D90). **No demuestra:** que alguien haya dado retroalimentación ni que los ajustes se hayan verificado con personas: salen de una evaluación heurística interna. Estado: Cumple con matiz por la excepción D111 (evidencia simulada, sin personas reales); estos ajustes no son retroalimentación de personas.
 - **(b) Apoyo:** `tests/test_usuarios_estructura.py` (el estado no marca como cumplido lo que depende de sesiones reales), `tests/test_panel_ajustes.py` (cada ajuste falla si el defecto vuelve) y EV-073 a EV-082 (capturas y mediciones antes y después de los ajustes; son iteración técnica y no cuentan para este ítem).
 - **(c) Texto sugerido:** «Los ajustes al panel salen de una evaluación heurística interna; la retroalimentación de personas usuarias y la verificación posterior están pendientes de las sesiones reales: `docs/usuarios/trazabilidad_de_cambios.md`.»
 - **(d) Captura opcional:** ninguna: no hay sesiones que capturar.
@@ -303,7 +303,7 @@ Estas seis fichas se escribieron en la auditoría intermedia. Ninguna de las sei
 - **(e) Validar:** `.\.venv\Scripts\python.exe scripts\validar_checklist.py --item 7.3 --ejecutar`.
 
 ### Ítem 7.4 · Cambios e iteraciones tras las sesiones con usuarios (Pendiente por un hecho externo)
-- **(a) Archivo principal:** `docs/usuarios/trazabilidad_de_cambios.md`. Demuestra: la estructura para registrar cada cambio con su commit y su verificación. **No demuestra:** iteraciones tras sesiones con personas: no hubo sesiones; los cambios registrados son de la evaluación heurística interna. Estado: Pendiente (hecho externo).
+- **(a) Archivo principal:** `docs/usuarios/trazabilidad_de_cambios.md`. Demuestra: la estructura para registrar cada cambio con su commit y su verificación. **No demuestra:** iteraciones tras sesiones con personas: no hubo sesiones; los cambios registrados son de la evaluación heurística interna. Estado: Cumple con matiz por la excepción D111 (evidencia simulada, sin personas reales).
 - **(b) Apoyo:** `docs/retroalimentacion/registro_de_cambios.md` (cambios atendidos de la retroalimentación recibida, que no es una sesión con usuarios) y `tests/test_usuarios_estructura.py`.
 - **(c) Texto sugerido:** «Aún no hay iteraciones tras sesiones con personas; la tabla de cambios está lista y hoy solo trae ajustes de una evaluación heurística interna: `docs/usuarios/trazabilidad_de_cambios.md`.»
 - **(d) Captura opcional:** ninguna.
