@@ -225,3 +225,66 @@ def test_una_fila_simulada_se_rechaza_en_sesiones_reales_y_en_los_datos_sintetic
     assert an.main(["--base", str(tmp_path)]) == 2
     _escribir(tmp_path / "simulacion", [_fila_registro("S01", "T1", "exito", 60, "simulada")], [])
     assert an.main(["--base", str(tmp_path), "--simulado"]) == 2
+
+
+# ---------------------------------------------------------------- D112: estimaciones «simulado: N» del SUS y del CSAT y sus tres guardas
+def _cuestionario_simulado(p="Participante simulado 3", sus=(4, 2, 4, 2, 4, 2, 4, 2, 4, 2), csat=4, **cambios):
+    f = {"participante": p, "perfil": "otro", "fecha": "2000-01-01", "csat": f"simulado: {csat}", "origen": "simulada"}
+    f.update({f"sus_{i}": f"simulado: {v}" for i, v in enumerate(sus, 1)})
+    f.update(cambios)
+    return f
+
+
+def test_el_modo_simulado_acepta_estimaciones_simulado_n_solo_en_el_sus_y_el_csat_y_las_marca_en_el_resumen(tmp_path):
+    _escribir(tmp_path / "sesiones_simuladas", [_fila_simulada("Participante simulado 3")], [_cuestionario_simulado(), _cuestionario_simulado("Participante simulado 4", sus=(5, 1, 5, 1, 5, 1, 5, 1, 5, 1), csat=5)])
+    assert an.main(["--base", str(tmp_path), "--simuladas"]) == 0
+    texto = (tmp_path / "resultados_sesiones_simuladas.md").read_text(encoding="utf-8")
+    assert "estimaciones de la persona simulada" in texto and "SUS simulado: 75,0 de 100" in texto and "SUS simulado: 100,0 de 100" in texto and "CSAT simulado: 4 de 5" in texto
+    assert "Promedio de estas estimaciones" in texto and "SUS simulado: 87,5 de 100" in texto and "CSAT simulado: 4,5 de 5" in texto, "el promedio también lleva la marca"
+    assert not (tmp_path / "resultados.md").exists(), "solo escribe su archivo"
+
+
+def test_las_cifras_simuladas_no_se_aceptan_fuera_de_su_sitio_ni_a_medias(tmp_path):
+    for cambios in ({"sus_3": "simulado: 0"}, {"sus_3": "simulado: 6"}, {"sus_3": "simulado: 3,5"}, {"sus_3": "simulado:3"}, {"sus_3": "Simulado: 3"}, {"csat": "3"}, {"csat": "simulado: tres"},
+                    {"sus_3": NM}, {"origen": "real"}, {"origen": "sintetico"}):
+        _escribir(tmp_path / "sesiones_simuladas", [_fila_simulada("Participante simulado 3")], [_cuestionario_simulado() | cambios])
+        assert an.main(["--base", str(tmp_path), "--simuladas"]) == 2, cambios
+    for campo in ("resultado", "tiempo_s", "ayudas", "errores"):
+        _escribir(tmp_path / "sesiones_simuladas", [_fila_simulada("Participante simulado 3", **{campo: "simulado: 3"})], [])
+        assert an.main(["--base", str(tmp_path), "--simuladas"]) == 2, f"«simulado: N» no vale en {campo}: tiempos, ayudas, errores y resultado siguen «{NM}»"
+
+
+def test_las_tres_guardas_modo_real_rechaza_modo_simulado_exige_prefijo_y_origen_y_el_resumen_marca_todo(tmp_path):
+    # guarda 1: el modo real y el sintético siguen rechazando cifras de SUS y CSAT sin medición, aunque la fila diga origen real o sintetico
+    for carpeta, origen, opcion in (("sesiones_reales", "real", None), ("simulacion", "sintetico", "--simulado")):
+        reales = tmp_path / carpeta / "x"
+        _escribir(tmp_path / carpeta, [_fila_registro("P01", "T1", "exito", 60, origen)], [_cuestionario_simulado("P01", origen=origen)])
+        argumentos = ["--base", str(tmp_path)] + ([opcion] if opcion else [])
+        assert an.main(argumentos) == 2, f"{carpeta}: una cifra simulada no entra en el análisis"
+        assert not (tmp_path / ("resultados.md" if carpeta == "sesiones_reales" else "resultados_simulacion.md")).exists()
+        assert not reales.exists()
+    for valor in ("simulado: 3", NM, "Simulado: 3"):
+        _escribir(tmp_path / "sesiones_reales", [_fila_registro("P01", "T1", "exito", 60, "real")], [_fila_cuestionario("P01", [3] * 10, 4, "real") | {"sus_5": valor}])
+        assert an.main(["--base", str(tmp_path)]) == 2, valor
+    # guarda 2: el modo simulado solo acepta la cifra con el prefijo «simulado:» y el origen `simulada`
+    base = tmp_path / "otra"
+    _escribir(base / "sesiones_simuladas", [_fila_simulada("Participante simulado 3")], [_cuestionario_simulado()])
+    assert an.main(["--base", str(base), "--simuladas"]) == 0
+    for cambios in ({"sus_1": "4"}, {"csat": "4"}, {"origen": "real"}):
+        _escribir(base / "sesiones_simuladas", [_fila_simulada("Participante simulado 3")], [_cuestionario_simulado() | cambios])
+        assert an.main(["--base", str(base), "--simuladas"]) == 2, cambios
+    # guarda 3: todo número del resumen que viene de esas cifras lleva la marca «simulado:», y nada se calcula junto con filas que no son simuladas
+    _escribir(base / "sesiones_simuladas", [_fila_simulada("Participante simulado 3")], [_cuestionario_simulado(), _cuestionario_simulado("Participante simulado 4", csat=2)])
+    assert an.main(["--base", str(base), "--simuladas"]) == 0
+    seccion = (base / "resultados_sesiones_simuladas.md").read_text(encoding="utf-8").split("## Estimaciones simuladas", 1)[1].split("## Qué NO demuestra", 1)[0]
+    sin_nombres = re.sub(r"Participante simulado \d+", "Participante simulado", seccion)
+    sin_escalas = re.sub(r" de (100|5)\b", " de ESCALA", sin_nombres)
+    sin_marcadas = re.sub(r"simulado: \d+(,\d+)?", "CIFRA_MARCADA", re.sub(r"con \d+ personas simuladas", "con N personas simuladas", sin_escalas))
+    assert not re.search(r"\d", sin_marcadas), f"una cifra del resumen sin la marca «simulado:»: {sin_marcadas!r}"
+    assert "CIFRA_MARCADA" in sin_marcadas and "no son mediciones" in seccion
+    with pytest.raises(an.FilaNoValida):
+        an.estimaciones_simuladas([_cuestionario_simulado(), _fila_cuestionario("P01", [3] * 10, 4, "real")])
+    with pytest.raises(an.FilaNoValida):
+        an.estimaciones_simuladas([_cuestionario_simulado(origen="real")])
+    with pytest.raises(an.FilaNoValida):
+        an.estimaciones_simuladas([_cuestionario_simulado(participante="P01")])

@@ -536,3 +536,17 @@ def test_las_observaciones_simuladas_tienen_decision_razon_y_commit_real_y_no_en
     assert "S-0" not in (USUARIOS / "registro_de_friccion.csv").read_text(encoding="utf-8"), "no son fricciones de personas"
     cambios = (USUARIOS / "trazabilidad_de_cambios.md").read_text(encoding="utf-8").split("## Cambios de documentación a partir de las sesiones simuladas", 1)[1].split("\n## ", 1)[0]
     assert BANNER in cambios and "no vienen de personas usuarias" in cambios and re.findall(r"^\| (S-\d\d) \|", cambios, re.M) == [f"S-0{i}" for i in range(1, 7)]
+
+
+# ---------------------------------------------------------------- D112: la plantilla, el README, el protocolo y la decisión dicen lo mismo que el analizador
+def test_la_plantilla_el_readme_el_protocolo_y_la_decision_dicen_las_tres_guardas_del_formato_simulado_n():
+    plantilla = (SIMULADAS / "plantilla_registro.md").read_text(encoding="utf-8")
+    leeme = (SIMULADAS / "README.md").read_text(encoding="utf-8")
+    protocolo = (USUARIOS / "protocolo_sesiones.md").read_text(encoding="utf-8")
+    assert "simulado: N" in plantilla and "todos" in plantilla and "El prefijo `simulado:` es obligatorio" in plantilla and "siguen valiendo `simulado, no medido`" in plantilla
+    assert "con la marca `simulado:`" in plantilla and "rechaza cualquier valor simulado" in plantilla
+    assert "simulado: N" in leeme and "origen = simulada" in leeme and "nunca se mezcla con sesiones reales" in leeme and "D112" in leeme
+    assert "simulado: N" in protocolo and "nunca es una medición" in protocolo
+    d112 = next(l for l in (ROOT / "docs" / "DECISIONES.md").read_text(encoding="utf-8").splitlines() if l.startswith("**D112 "))
+    assert "(1)" in d112 and "(2)" in d112 and "(3)" in d112 and "prefijo «simulado:»" in d112 and "nunca junto con datos reales" in d112
+    assert "Tres guardas" in (ROOT / "scripts" / "usuarios" / "analizar_sesiones.py").read_text(encoding="utf-8")

@@ -5,8 +5,11 @@ Uso:  python scripts/usuarios/analizar_sesiones.py             lee docs/usuarios
       python scripts/usuarios/analizar_sesiones.py --simuladas lee docs/usuarios/sesiones_simuladas/ y escribe SOLO docs/usuarios/resultados_sesiones_simuladas.md
 Las tres fuentes nunca se mezclan. Con cero sesiones reales NO calcula nada y escribe «no hay sesiones reales». Con menos de 5 personas muestra «k de n» y no porcentajes.
 Rechaza (código de salida 2) cualquier fila que no sea `real` en `sesiones_reales`, cualquier fila que no sea `sintetico` en `simulacion` y cualquier fila que no sea `simulada` en `sesiones_simuladas`.
-Una sesión simulada (D109) no se hizo con una persona real: sus participantes se llaman «Participante simulado N» y toda cifra (resultado, tiempo, ayudas, errores, SUS y CSAT) vale exactamente
-«simulado, no medido»; el script rechaza una cifra de verdad en esa carpeta y no calcula nunca tasas, tiempos ni puntuaciones con ellas: solo cuenta lo registrado.
+Una sesión simulada (D109 y D112) no se hizo con una persona real: sus participantes se llaman «Participante simulado N» y toda cifra vale exactamente «simulado, no medido», con una sola excepción: las diez
+respuestas del SUS y el CSAT pueden ser una estimación de la persona simulada escrita «simulado: N» (N entero de 1 a 5), todas o ninguna de una fila. Tres guardas: (1) el modo real y el sintético rechazan
+cualquier valor «simulado…», así que ninguna cifra simulada entra en el análisis de sesiones reales; (2) el modo simulado acepta una cifra solo con el prefijo «simulado:» y con origen `simulada`, y los resultados,
+tiempos, ayudas y errores siguen valiendo «simulado, no medido»; (3) todo resumen o promedio que imprime con esas estimaciones lleva la marca «simulado:» y se calcula solo con filas simuladas. Rechaza una cifra de
+verdad en esa carpeta y no calcula nunca tasas ni tiempos con ellas.
 Archivos que lee en cada carpeta: `registro.csv` (una fila por tarea y persona) y `cuestionarios.csv` (una fila por persona); las plantillas no se leen.
 """
 import argparse
@@ -26,6 +29,8 @@ RESULTADOS = ("exito", "exito_con_ayuda", "fracaso")
 N_MINIMO_PORCENTAJE = 5
 ORIGEN_SIMULADA = "simulada"
 NO_MEDIDO = "simulado, no medido"
+ESTIMACION_SIMULADA = re.compile(r"simulado: ([1-5])")   # D112: la estimación del SUS y del CSAT de una persona simulada; nunca una medición
+CIFRAS_ESTIMABLES = tuple(f"sus_{i}" for i in range(1, 11)) + ("csat",)
 PARTICIPANTE_SIMULADO = re.compile(r"Participante simulado \d+")
 ENCABEZADO_SIMULADA = "Sesión simulada, no realizada con una persona real"
 AVISO_SINTETICO = "DATOS SINTÉTICOS: no son personas. Los generó `scripts/usuarios/generar_datos_sinteticos.py` con una semilla fija solo para probar este script; no cuentan para ningún ítem del checklist."
@@ -66,6 +71,14 @@ def validar_origen(filas, origen, ruta):
             raise FilaNoValida(f"{ruta.name}, fila {i}: origen «{f['origen']}»; esta carpeta solo admite «{origen}»")
 
 
+def rechazar_valores_simulados(filas, donde):
+    """Guarda 1: ninguna celda que empiece por «simulado» entra en el análisis de sesiones reales ni sintéticas, aunque la fila diga otro origen."""
+    for i, f in enumerate(filas, 2):
+        for campo, valor in f.items():
+            if isinstance(valor, str) and valor.strip().lower().startswith("simulado"):
+                raise FilaNoValida(f"fila {i}: el campo {campo} trae un valor simulado ({valor!r}); una cifra simulada no entra en {donde}")
+
+
 def validar_registro(filas):
     for i, f in enumerate(filas, 2):
         if f["tarea"] not in TAREAS or f["resultado"] not in RESULTADOS:
@@ -83,6 +96,7 @@ def cargar(carpeta, origen):
     cuestionarios = leer_csv(carpeta / "cuestionarios.csv", CAMPOS_CUESTIONARIOS)
     validar_origen(registro, origen, carpeta / "registro.csv")
     validar_origen(cuestionarios, origen, carpeta / "cuestionarios.csv")
+    rechazar_valores_simulados(registro + cuestionarios, "una sesión real o sintética")
     validar_registro(registro)
     for f in cuestionarios:
         puntuar_sus([f[f"sus_{i}"] for i in range(1, 11)])
@@ -92,7 +106,7 @@ def cargar(carpeta, origen):
 
 
 def cargar_simuladas(carpeta):
-    """(registro, cuestionarios) de `sesiones_simuladas`, validados: origen `simulada`, «Participante simulado N» y toda cifra igual a «simulado, no medido»."""
+    """(registro, cuestionarios) de `sesiones_simuladas`, validados: origen `simulada`, «Participante simulado N», toda cifra igual a «simulado, no medido» y, solo en el SUS y el CSAT, una estimación «simulado: N» (guarda 2)."""
     registro = leer_csv(carpeta / "registro.csv", CAMPOS_REGISTRO)
     cuestionarios = leer_csv(carpeta / "cuestionarios.csv", CAMPOS_CUESTIONARIOS)
     validar_origen(registro, ORIGEN_SIMULADA, carpeta / "registro.csv")
@@ -105,9 +119,28 @@ def cargar_simuladas(carpeta):
             if nombre == "registro.csv" and f["tarea"] not in TAREAS:
                 raise FilaNoValida(f"{nombre}, fila {i}: la tarea {f['tarea']!r} no es de T1 a T6")
             for c in cifras:
-                if f[c] != NO_MEDIDO:
-                    raise FilaNoValida(f"{nombre}, fila {i}: la cifra {c} de una sesión simulada debe valer «{NO_MEDIDO}», no {f[c]!r}: no se midió nada")
+                if f[c] != NO_MEDIDO and not (c in CIFRAS_ESTIMABLES and ESTIMACION_SIMULADA.fullmatch(f[c])):
+                    raise FilaNoValida(f"{nombre}, fila {i}: la cifra {c} de una sesión simulada debe valer «{NO_MEDIDO}»" + (" o «simulado: N» con N de 1 a 5" if c in CIFRAS_ESTIMABLES else "") + f", no {f[c]!r}: no se midió nada")
+            if nombre == "cuestionarios.csv" and len({f[c] == NO_MEDIDO for c in CIFRAS_ESTIMABLES}) > 1:
+                raise FilaNoValida(f"{nombre}, fila {i}: los diez ítems del SUS y el CSAT son todos «{NO_MEDIDO}» o todos «simulado: N», no una mezcla")
     return registro, cuestionarios
+
+
+def estimaciones_simuladas(cuestionarios):
+    """[(participante, SUS simulado de 0 a 100, CSAT simulado)] de las filas con estimaciones «simulado: N». Guarda 3: solo calcula con filas simuladas; una fila real o sintética (o con otro origen) lo rechaza."""
+    salida = []
+    for f in cuestionarios:
+        if f["origen"] != ORIGEN_SIMULADA or not PARTICIPANTE_SIMULADO.fullmatch(f["participante"]):
+            raise FilaNoValida(f"{f['participante']!r} no es una fila simulada: una cifra simulada no se calcula junto con datos reales")
+        if all(ESTIMACION_SIMULADA.fullmatch(f[c]) for c in CIFRAS_ESTIMABLES):
+            n = {c: int(ESTIMACION_SIMULADA.fullmatch(f[c]).group(1)) for c in CIFRAS_ESTIMABLES}
+            salida.append((f["participante"], puntuar_sus([n[f"sus_{i}"] for i in range(1, 11)]), n["csat"]))
+    return salida
+
+
+def _simulado(x, d=1):
+    """Una cifra simulada, siempre con su marca."""
+    return f"simulado: {_coma(x, d)}"
 
 
 def registros_de_etapa_1(carpeta):
@@ -118,14 +151,22 @@ def registros_de_etapa_1(carpeta):
 def redactar_simuladas(registro, cuestionarios, registros_etapa_1=()):
     """Texto Markdown del resumen de las sesiones simuladas: cuántas filas y participantes hay y que ninguna cifra se midió; no calcula tasas, tiempos ni puntuaciones."""
     personas = sorted({f["participante"] for f in registro} | {f["participante"] for f in cuestionarios})
+    est = estimaciones_simuladas(cuestionarios)
     L = ["# Sesiones simuladas (no realizadas con personas reales)", "", f"> **{ENCABEZADO_SIMULADA}.** Lo que está aquí no cuenta como sesión real; cuenta como evidencia simulada bajo la excepción D111, y no es feedback de personas usuarias: ni las sesiones reales ni los datos sintéticos de prueba se mezclan con esto.", ""]
     if not personas:
         L += ["**No hay sesiones simuladas registradas.** Cuando el equipo guarde `registro.csv` y `cuestionarios.csv` en `docs/usuarios/sesiones_simuladas/` con `origen = simulada`, este archivo contará lo registrado.", ""]
     else:
         L += [f"**Participantes simulados:** {len(personas)} ({', '.join(personas)}). **Filas de tareas:** {len(registro)}. **Cuestionarios:** {len(cuestionarios)}.", "",
-              f"Ninguna cifra se midió: cada resultado, tiempo, número de ayudas y de errores, respuesta del SUS y CSAT vale «{NO_MEDIDO}». Por eso no se calcula ninguna tasa, tiempo ni puntuación.", ""]
+              (f"Ninguna cifra se midió: el resultado, el tiempo, el número de ayudas y de errores valen «{NO_MEDIDO}». Las respuestas del SUS y el CSAT de {len(est)} de {len(cuestionarios)} cuestionarios son "
+               "**estimaciones de la persona simulada** escritas «simulado: N», no mediciones." if est else
+               f"Ninguna cifra se midió: cada resultado, tiempo, número de ayudas y de errores, respuesta del SUS y CSAT vale «{NO_MEDIDO}». Por eso no se calcula ninguna tasa, tiempo ni puntuación."), ""]
     if registros_etapa_1:
         L += [f"**Registros de la etapa 1 en texto:** {len(registros_etapa_1)} ({', '.join(f'`{n}`' for n in registros_etapa_1)}). No traen cifras y no son filas de los CSV: un participante que no tenga filas en `registro.csv` y `cuestionarios.csv` no se cuenta aquí como sesión registrada.", ""]
+    if est:
+        L += ["## Estimaciones simuladas del SUS y del CSAT (no son mediciones)", "",
+              "Cada cifra de esta sección es una estimación de una persona simulada y lleva la marca «simulado:». No se mezclan con sesiones reales ni cuentan como satisfacción de personas usuarias.", ""]
+        L += [f"- {p}: SUS {_simulado(s)} de 100; CSAT {_simulado(c, 0)} de 5." for p, s, c in est]
+        L += ["", f"Promedio de estas estimaciones (con {len(est)} personas simuladas, sin intervalo): SUS {_simulado(statistics.mean(s for _, s, _ in est))} de 100; CSAT {_simulado(statistics.mean(c for _, _, c in est))} de 5.", ""]
     L += ["## Qué NO demuestra", "Que el panel sea usable o no lo sea, ni que alguien lo haya usado: una sesión simulada no se hizo con una persona real y no mide nada.", ""]
     return "\n".join(L)
 
