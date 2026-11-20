@@ -310,9 +310,11 @@ def test_sesiones_reales_no_contiene_nada_simulado():
         assert "simulad" not in texto and NO_MEDIDO not in texto and "participante simulado" not in texto, ruta.name
 
 
-def test_la_carpeta_de_sesiones_simuladas_trae_solo_plantillas_y_registros_de_etapa_1_rotulados_y_los_conteos_reales_siguen_en_cero():
-    assert sorted(p.name for p in SIMULADAS.iterdir()) == ["README.md", "participante_simulado_1_etapa_1.md", "plantilla_registro.csv", "plantilla_registro.md"], "ningún registro.csv ni cuestionarios.csv: su texto original está pendiente"
-    assert BANNER in (SIMULADAS / "participante_simulado_1_etapa_1.md").read_text(encoding="utf-8")
+def test_la_carpeta_de_sesiones_simuladas_trae_solo_plantillas_registros_de_etapa_1_rotulados_y_las_filas_del_participante_2_y_los_conteos_reales_siguen_en_cero():
+    assert sorted(p.name for p in SIMULADAS.iterdir()) == ["README.md", "cuestionarios.csv", "participante_simulado_1_etapa_1.md", "participante_simulado_2_etapa_1.md", "plantilla_registro.csv", "plantilla_registro.md", "registro.csv"], \
+        "los CSV son solo del participante 2: el texto original de la etapa 2 del 1 está pendiente"
+    for nombre in ("participante_simulado_1_etapa_1.md", "participante_simulado_2_etapa_1.md"):
+        assert BANNER in (SIMULADAS / nombre).read_text(encoding="utf-8")
     leer = lambda n: (SIMULADAS / n).read_text(encoding="utf-8")   # noqa: E731
     assert BANNER in leer("README.md") and leer("plantilla_registro.md").startswith(f"# {BANNER}\n")
     with open(SIMULADAS / "plantilla_registro.csv", encoding="utf-8", newline="") as f:
@@ -320,7 +322,8 @@ def test_la_carpeta_de_sesiones_simuladas_trae_solo_plantillas_y_registros_de_et
     assert len(filas) == 1 and re.fullmatch(r"Participante simulado \d+", filas[0]["participante"]) and filas[0]["origen"] == "simulada"
     assert all(filas[0][c] == NO_MEDIDO for c in ("resultado", "tiempo_s", "ayudas", "errores"))
     an = _cargar(ROOT / "scripts" / "usuarios" / "analizar_sesiones.py", "analizar_sesiones_estructura")
-    assert (USUARIOS / "resultados_sesiones_simuladas.md").read_text(encoding="utf-8") == an.redactar_simuladas([], [], an.registros_de_etapa_1(SIMULADAS)), "el resumen versionado es el que escribe el script sin filas de sesiones"
+    registro, cuestionarios = an.cargar_simuladas(SIMULADAS)
+    assert (USUARIOS / "resultados_sesiones_simuladas.md").read_text(encoding="utf-8") == an.redactar_simuladas(registro, cuestionarios, an.registros_de_etapa_1(SIMULADAS)), "el resumen versionado es el que escribe el script con las filas de la carpeta"
     assert "No hay sesiones reales" in (USUARIOS / "resultados.md").read_text(encoding="utf-8")
     from tests.test_readme_cifras import hay_sesiones_reales
     assert hay_sesiones_reales(REALES) is False and hay_sesiones_reales(SIMULADAS) is False, "ninguna sesión real, y las simuladas no cuentan como reales"

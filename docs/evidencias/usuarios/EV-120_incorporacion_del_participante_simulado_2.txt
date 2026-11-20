@@ -1,0 +1,65 @@
+Verificación de la carpeta de entrega de un participante simulado (solo lectura)
+Rutas relativas a la carpeta de entrega; ningún archivo se corrige ni se regenera.
+En este informe, en las rutas, la carpeta y los nombres de los mensajes enviados figuran con la palabra «mensaje» y el nombre de una herramienta figura como «herramienta»; los archivos conservan su nombre real.
+
+== Manifiestos y archivos ==
+archivos presentes: 26 | manifestados: 24 | faltan: 0 | de más: 0 | con tamaño o sha256 distinto: 0
+manifiesto CSV igual al TXT (rutas y hashes): True | rutas repetidas: 0
+sha256 esperados proporcionados aparte: 8 | que no coinciden: 0
+
+== Archivos de la entrega (ruta | tamaño en bytes | sha256) ==
+auditoria/sha256_final_recuperado.txt | 1375 | a37a19628ee61d1dc62837757bf2bacfab00cc8d992a05f25fde1400a107437d
+auditoria/sha256_inicial_recuperado.txt | 927 | 3b55f0383768ead87d94f1900fb3098dc1eaa6bf9b0f9408b970f38baeb1a5be
+auditoria/sha256_intermedia_recuperado.txt | 1052 | 95ebee10bdeaf1ad31989404fe08e0e2004c8fcc9b4265fc3f2f574d2519a8c2
+auditoria/validacion_operaciones_y_registro_v1_error_auditoria.txt | 2964 | ac87c45656054a161754ca28b11539e5251e523632e4412e79681c11d6062983
+auditoria/validacion_operaciones_y_registro_v2.txt | 3527 | 168d882168448bec6b00ce1d6e10aeaa5f243c2a4987d5b392a68fe5c31efc24
+capturas/01_configuracion_herramienta_.png | 7523 | 1e6b703243699c2114cf127fc72aaafcb325905e9c2810df99e79b1a513ff0a9
+capturas/02_carpeta_trabajo.png | 21026 | 75d8a848f3229ad485678a012e8c1b5e784cc4e89be9ea6091fd4762c52915ed
+capturas/03_etapa_1_mensaje.png | 48453 | fe38e416e3f2e283329b24d5773008ce39218f8ce6ceeee2f715832fdaeaebd0
+capturas/04_etapa_1_operacion_01 y 02.png | 76271 | af1a50d93023643627c910366c956472b22d1a46656032c1e2feeaa787459f10
+capturas/06_etapa_1_registro_congelado.png | 109035 | 1110f517415662178508b5e2b3c52ba414c5280e6e2bd25feab7f6f5b9a1c379
+capturas/07_etapa_2_mensaje.png | 40291 | 8a456f9c9ccad0372121b21ca6c81f8633714873a9d32d73fafdfd2f14bd4c60
+capturas/08_etapa_2_operacion_01.png | 37046 | 9cbdf63157d2d1cd4d5c57d9cde1a89d67415badd1f5073ec4f348e9ccb754f0
+capturas/09_etapa_2_respuesta_final.png | 64668 | 36d06c1d20b14cc1a330f62f24fc0f660aeb87843c5f3765fd6948aacfb651fc
+capturas/10_etapa_2_autocomprobacion.png | 84506 | 4750faf9f53dacdcb0cfab26aa64994f0f89fe92ef98a3a1339d4dbf4e6563fd
+informes/informe_supervision.md | 4683 | 2d4df6011cd227128611e06a82f26b757e7a2c3136b274dfd72ce89c5e9e4cb4
+informes/registro_incidencias.md | 4651 | 0246e2c22c2a51deab1a3b72eb11ecb3f68720d757c2e877e647c6f532d293f9
+manifiesto_sha256.csv | 3497 | 726a5aa036ab03179aa279e04d88d31f38aa0df40b0d44364acbd1c02eaceaf4
+manifiesto_sha256.txt | 2510 | e1289a32709991ebdba4889ed5698a616aab4858d95c3f97445990a6cb512d6c
+operaciones/etapa_1_comando_01.txt | 273 | a1e19b0652d10a33de5f8ccdad674a36868cb67995d649ff3296d5083f2b301f
+operaciones/etapa_1_comando_02.txt | 66 | 76c88323d7e5dc34d082216be777f747694141688895c9ff24d78f6fbc8b354c
+operaciones/etapa_1_traza_recuperada.txt | 73890 | c653085d9faedb68bbb29d9c40c50d36142f4bddb30b0cb0794d4da8b3bd8fc7
+operaciones/etapa_2_comando_01.txt | 346 | 0a79f97a7a84fed212c027353c4029a178d16b0bf78f66d4631947c455974c72
+mensajes/etapa_1_enviado.txt | 8649 | d31eb59469177f71b659b35f49be75516463f0dc72a90d06cb30d7463069250c
+mensajes/etapa_2_enviado.txt | 10368 | 28c99188534f52a028c28bc00d6def15692cdd4e3a562ef9148272099d47d97f
+respuestas/etapa_1_original.md | 8603 | 328649c9e1d071ecc95733a76365ce57cea3d0644aa465729dc24ab500d779d5
+respuestas/etapa_2_original.md | 13528 | 7374c40b68166d347fb6ec7a2906424c4224c1341121d72b92816a793fd50a60
+
+== Comandos recuperados frente a los mensajes enviados ==
+comandos: 3 | referencias a archivos: 14 | archivos distintos: 13 | no autorizadas: 0 | otros cmdlets: ninguno
+se cita el documento completo de la lista de comprobación: False
+  etapa_1_comando_01.txt: docs/usuarios/consentimiento.md
+  etapa_1_comando_01.txt: docs/usuarios/guia_simulacion/03_parte_b_primera_vez_con_el_panel.md
+  etapa_1_comando_01.txt: docs/usuarios/guia_simulacion/07_anexo_lista_del_participante.md
+  etapa_1_comando_01.txt: docs/panel/README.md
+  etapa_1_comando_01.txt: docs/panel/guia_de_uso.md
+  etapa_1_comando_01.txt: docs/gold/resultados.md
+  etapa_1_comando_02.txt: docs/gold/resultados.md
+  etapa_2_comando_01.txt: docs/usuarios/protocolo_sesiones.md
+  etapa_2_comando_01.txt: docs/usuarios/instrumentos.md
+  etapa_2_comando_01.txt: docs/usuarios/guion_sesion.md
+  etapa_2_comando_01.txt: docs/usuarios/sesiones_simuladas/README.md
+  etapa_2_comando_01.txt: docs/usuarios/sesiones_simuladas/plantilla_registro.md
+  etapa_2_comando_01.txt: docs/usuarios/sesiones_simuladas/plantilla_registro.csv
+  etapa_2_comando_01.txt: docs/usuarios/sesiones_reales/plantilla_cuestionarios.csv
+
+== Registro de la etapa 1 frente al bloque D de la etapa 2 ==
+caracteres del original: 8369 | del bloque D: 8368 | normalizados (espacios colapsados): 8365 y 8364
+coincidencia literal: False | normalizada: False | líneas no vacías: 48 y 48
+líneas que difieren:
+  -- Lo que me piden: «¿En qué comuna se concentran las construcciones de los estratos 1 y 2? ¿Qué implica para comparar estratos?»
+  +- Lo que me piden: «En qué comuna se concentran las construcciones de los estratos 1 y 2? ¿Qué implica para comparar estratos?»
+
+== Auditoría automática del registro de la etapa 1 frente al guion ==
+hallazgos automáticos: 0
+

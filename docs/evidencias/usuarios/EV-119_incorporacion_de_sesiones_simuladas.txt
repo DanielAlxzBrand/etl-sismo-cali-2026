@@ -50,3 +50,126 @@ informe_de_la_ejecucion_del_participante_2 | 5503 | e4f7ac570b5bf1fd20711e23a73a
 == Auditoría del registro de la etapa 1 frente al guion ==
 hallazgos automáticos: 0
 
+
+== Actualización del 2026-11-20: entrega con fuentes nativas del participante simulado 1 ==
+Lo de arriba es el contenido original de esta evidencia y no se cambió; lo que sigue se añadió al recuperar la entrega del participante (46 archivos fuera del repositorio).
+Comando: python scripts/usuarios/inventariar_sesiones_simuladas.py --entrega <carpeta de entrega> --nativa --trabajo <carpeta de la etapa 1> --copia-maestra <copia maestra> --esperado <ruta>=<sha256> ...
+
+Verificación de una entrega con fuentes nativas de un participante simulado (solo lectura)
+Rutas relativas a la carpeta de entrega; ningún archivo se corrige ni se regenera.
+No se abrieron las transcripciones nativas ni los registros nativos de los mensajes: de ellos solo se calcula tamaño y sha256. Las capturas se miden (firma, ancho, alto y sha256) sin interpretarlas.
+En este informe, en las rutas, la carpeta y los nombres de los mensajes enviados figuran con la palabra «mensaje»; los archivos conservan su nombre real.
+
+== Manifiestos y archivos ==
+archivos presentes: 46 | manifestados: 44 | faltan: 0 | de más: 0 | con tamaño o sha256 distinto: 0
+manifiesto CSV igual al TXT (rutas y hashes): True | rutas repetidas: 0
+sha256 esperados proporcionados aparte: 12 | que no coinciden: 0
+
+== Archivos de la entrega (ruta | tamaño en bytes | sha256) ==
+antecedentes/auditoria_sesion_1_resumen.md | 1445 | 7b57b9998c4e5700f51b3658271dc7a0baa615b02d1b23bb6dc47936f8a73565
+antecedentes/candidato_participante_1_registro.csv | 1832 | 61b33af5154a77c3cd924cafcaa470f328df3d08cbf47b14e9f0684a0d645621
+antecedentes/mensaje_participante_simulado_1.txt | 13786 | 203d9b96313b09a632b44f54547f649bbbfc3d410f6e2ad36ffef8411a43d08b
+antecedentes/respaldo_etapa_1_participante_1.txt | 12345 | 78db8ba7958db5a77709deb927efdf438ca2997acc0eec7f1f1ee1ab5a1221c8
+auditoria/comparacion_mensajes.md | 1921 | af9c8013c70167724d4b11bf84dd760fec458dbe01745568bb46adb8991f9548
+auditoria/comparacion_respaldo_historico.md | 1597 | d24eda01c1126e9ebcb483f4615e5fc77cec4233c166df01ed07863d81c1849a
+auditoria/comparacion_transcripciones.md | 1429 | 849b13102f5f0b141f2e786f303fd15f3a53c2cf352ff3acf616464642e38b4c
+auditoria/identificacion_modelo_y_alcance.md | 2431 | de2942de96ceb0e6e5d679924a59e225c3902d0c08bcdc1a46aa0ce7a3b5375b
+auditoria/integridad_documentos.csv | 4106 | 815dc3d828be6f2e2cb94ec44efcfff33230c90d2c78c820c942695bd97f8601
+auditoria/inventario_capturas.csv | 2533 | a0980281e9af9a0699666c683deb232beec660bb047ea773fdc32fbc3d7095f4
+auditoria/validacion_aislamiento.md | 1725 | d67c475f784aeb3fd77a80dd745f169a91ce0f9816343be4806cbe6e9ad1401b
+auditoria/validacion_capturas.md | 1396 | 7ffb2696ada63c7d9dc32fdcd766c0c37d2a87b632346d439c276ecb42e88c48
+auditoria/validacion_csv.md | 1441 | e474ca84c9a849192cc5ba6418409aa7a62ba2b79a02b2560ed21cb78bed3b3c
+auditoria/validacion_documentos.md | 1314 | 6c4638523cc9fa3954400094ebecef438a85d28a85c56ec6dabd5b2ec6351bbd
+auditoria/validacion_operaciones.md | 2507 | e04b3c0671050aafad6d11e36e47ff7e628009db26f92b828b3335fc0a098a54
+auditoria/validacion_registro_congelado.md | 1366 | 902eb390eeaaed95e57848e0993cc17e02deb3080ce03b6e81fdf852d220b864
+capturas/01_identificacion_sesion.png | 30837 | b0cc888e88897dc43aa904bac38d9e2fef4da70a9f74293a76191ae6bfb43022
+capturas/02_mensaje_etapa_1.png | 100638 | cb1ec99013a4da9441a19043aa6f616956115f4453eb5af74cd200fff503ecd6
+capturas/03_operaciones_etapa_1.png | 31322 | dd494997c076371652eeeb591a5cad2390c845b33110ea5b407c98229d1b2ae7
+capturas/04_registro_congelado.png | 220186 | 011132ead36fee27408038bdf071f9162e2402763a78b30dbaaca9dccf3dec45
+capturas/05_mensaje_etapa_2.png | 137362 | 6410f0852faabb5db70062390e25651cfcfe3df6e2883c8cfb478b51effd3e94
+capturas/06_operaciones_etapa_2.png | 42494 | d5b6c2c7d7da62acc90f1b904750e7eeca54bc4da71b5cdca210ee5dec436779
+capturas/07_bloque_A.png | 97608 | e9bb933eee8e0b06d393ed9bbebe6ff968323afefd441cd76333dce612d923fe
+capturas/08_bloque_B.png | 149734 | c99f7abf14966d8d80246ff5dc885aceea2cb5d2759e66637162b5c6ad25a9fa
+capturas/09_bloque_C.png | 36481 | 43d41f7f074ecb7c372aa59b0757584192c20fb7f74e9d6b593ba019f85615f0
+capturas/10_bloque_E.png | 53955 | 46b23698a55ccf2d2d4083a103f4694e847a96b268cb3da75d8dcfd8894824cf
+fuentes_nativas/transcript.jsonl | 66947 | 51091f0bf556dedf8304135124b40bd32eabd6e81fcb684461b3c0636662d374
+fuentes_nativas/transcript_full.jsonl | 128914 | f16e7f70141f7754621394e6b0317f98c711b3d52394f12aabb10ec1e8434863
+informes/informe_general_trazabilidad.md | 5573 | e97165c005e30e420d057f5cce2f674ff1632c1d5ced8c634cb400523820cb75
+informes/informe_incidencias_y_limitaciones.md | 5845 | ed8560c3062f0ab396c8a914cccadd9ede0ee8e24fa67e63cb540c4be0eeb6cd
+manifiesto_sha256.csv | 5607 | f4b83480839008060abadd1d6f69e1938974fa2d1d3cf592306a2403abeca78c
+manifiesto_sha256.txt | 4555 | ba60015683663338b805d6017ee0b4b217207d6506a17d25c97947b4e31140ca
+operaciones/cronologia_operaciones.csv | 3172 | 9ea96dc133c9e71648df12ee31bdb2fad5f39ac8dff5ecef49985d9077ad18f4
+operaciones/etapa_1_llamadas.json | 2988 | 3db3d926d4bbbe3148037866ce003203ef51f27fe9782276bc6cb4baf8636292
+operaciones/etapa_1_traza_recuperada.txt | 21797 | 4e2f05effa5c7d946ed0a949a600a8ac6777ef87a0704ecd85f330bd65821e5a
+operaciones/etapa_2_llamadas.json | 4032 | 4d868db070387cc5c7161513f3602dd940dbc79a05ef48a60b2ffd349cc576ae
+operaciones/etapa_2_traza_recuperada.txt | 25503 | a8d112a4e8775f6d37e0cb7435dcf8d3c59bafba487044329fb5011667c04d88
+mensajes/etapa_1_enviado.txt | 9096 | bf17f2f7662f3f6d21aafb18400cf22f9a4b584e175ba424b980203dc9d69dbe
+mensajes/etapa_1_registro_nativo.txt | 9515 | c18e204405c3f62171ff6d493d34c748b0f06880771136395f5461f01e5cb5c7
+mensajes/etapa_2_enviado.txt | 7129 | ce914705628981b92604953317becc0469db95ef6e0c76c7564245d96b25c4b4
+mensajes/etapa_2_registro_nativo.txt | 7257 | 630218c711a68860680afffd3a8eb067a6824d4af3199a4c0449e474824e02dc
+respuestas/etapa_1_original.md | 12343 | 1c357e22f896ba58d91228728b8153332c92f68c5f867dfb8b75eb36552647f7
+respuestas/etapa_2_bloque_E_original.md | 3997 | a4a567a6112f8248f88293545673212cac30cfaf089d09b24c6436f25691b5aa
+respuestas/etapa_2_cuestionarios_original.csv | 395 | 3603749cabc9b406d7614111524b439a8ea2c862a4a5a79f4bcacb96651429cf
+respuestas/etapa_2_original.md | 19755 | bd816b0b20cd9179c712a4e72ac2ec453a8ea9c7dc1da056d4e07c72d737b395
+respuestas/etapa_2_registro_original.csv | 1832 | 61b33af5154a77c3cd924cafcaa470f328df3d08cbf47b14e9f0684a0d645621
+
+== Fuentes y registros nativos (4 archivos; no se abrieron) ==
+fuentes_nativas/transcript.jsonl | 66947 | 51091f0bf556dedf8304135124b40bd32eabd6e81fcb684461b3c0636662d374
+fuentes_nativas/transcript_full.jsonl | 128914 | f16e7f70141f7754621394e6b0317f98c711b3d52394f12aabb10ec1e8434863
+mensajes/etapa_1_registro_nativo.txt | 9515 | c18e204405c3f62171ff6d493d34c748b0f06880771136395f5461f01e5cb5c7
+mensajes/etapa_2_registro_nativo.txt | 7257 | 630218c711a68860680afffd3a8eb067a6824d4af3199a4c0449e474824e02dc
+
+== Documentos de la carpeta de trabajo frente a su referencia ==
+documentos: 13 | iguales a la referencia en la carpeta de trabajo: 13 | en la copia maestra: 13
+
+== Mensajes enviados ==
+caracteres del texto preparado: 13592
+caracteres del mensaje de la etapa 1: 8968 | de la etapa 2: 7026 | concatenados con un separador de un carácter: 15995
+rutas permitidas en la etapa 1: 5 | añadidas en la etapa 2: 7
+
+== Llamadas recuperadas frente a las rutas permitidas y a la traza ==
+etapa 1: pasos 5 | herramientas ['read_file'] | estados ['DONE'] | resultado en el paso siguiente: True | cronológico: True
+  rutas en el orden permitido: True | no autorizadas: 0 | lectura del documento completo de la lista de comprobación: False | argumentos adicionales: ['EndLine=400', 'StartLine=1']
+  bloques de traza: 5 | líneas devueltas: 199 | idénticas a la carpeta de trabajo: 199 | idénticas a la copia maestra: 199
+  docs/usuarios/consentimiento.md
+  docs/usuarios/guia_simulacion/03_parte_b_primera_vez_con_el_panel.md
+  docs/usuarios/guia_simulacion/07_anexo_lista_del_participante.md
+  docs/panel/README.md
+  docs/panel/guia_de_uso.md
+etapa 2: pasos 7 | herramientas ['read_file'] | estados ['DONE'] | resultado en el paso siguiente: True | cronológico: True
+  rutas en el orden permitido: True | no autorizadas: 0 | lectura del documento completo de la lista de comprobación: False | argumentos adicionales: ninguno
+  bloques de traza: 7 | líneas devueltas: 186 | idénticas a la carpeta de trabajo: 186 | idénticas a la copia maestra: 186
+  docs/usuarios/protocolo_sesiones.md
+  docs/usuarios/instrumentos.md
+  docs/usuarios/guion_sesion.md
+  docs/usuarios/sesiones_simuladas/README.md
+  docs/usuarios/sesiones_simuladas/plantilla_registro.md
+  docs/usuarios/sesiones_simuladas/plantilla_registro.csv
+  docs/usuarios/sesiones_reales/plantilla_cuestionarios.csv
+líneas idénticas en las dos carpetas (suma de las etapas): 385
+Esto se limita a las llamadas recuperadas: no demuestra que no hubiera otras operaciones.
+
+== Respuestas originales ==
+caracteres de la etapa 1: 12041 | de la etapa 2: 19349 | antes de la línea de congelación: 12009 | viñetas «- » en la etapa 1: 39
+bloque D igual al registro de la etapa 1 sin su línea final: literal True | normalizada True | caracteres 12007 y 12007 | líneas que difieren: 0
+la línea de congelación aparece dentro del bloque D: False | el bloque D lleva correcciones posteriores: False
+bloque B igual al CSV original: True | bloque C igual al CSV original: True
+candidato histórico del registro idéntico al CSV original, byte a byte: True
+respaldo histórico: caracteres 11976 | viñetas «- » 0 | idéntico al original: False | igual tras retirar viñetas y colapsar espacios: True (11955 y 11955 caracteres)
+
+== Capturas (solo propiedades técnicas; no se interpretó su contenido) ==
+01_identificacion_sesion.png | 30837 | 903x705 | b0cc888e88897dc43aa904bac38d9e2fef4da70a9f74293a76191ae6bfb43022 | coincide con su inventario: True
+02_mensaje_etapa_1.png | 100638 | 1312x529 | cb1ec99013a4da9441a19043aa6f616956115f4453eb5af74cd200fff503ecd6 | coincide con su inventario: True
+03_operaciones_etapa_1.png | 31322 | 946x253 | dd494997c076371652eeeb591a5cad2390c845b33110ea5b407c98229d1b2ae7 | coincide con su inventario: True
+04_registro_congelado.png | 220186 | 1307x795 | 011132ead36fee27408038bdf071f9162e2402763a78b30dbaaca9dccf3dec45 | coincide con su inventario: True
+05_mensaje_etapa_2.png | 137362 | 1292x524 | 6410f0852faabb5db70062390e25651cfcfe3df6e2883c8cfb478b51effd3e94 | coincide con su inventario: True
+06_operaciones_etapa_2.png | 42494 | 964x322 | d5b6c2c7d7da62acc90f1b904750e7eeca54bc4da71b5cdca210ee5dec436779 | coincide con su inventario: True
+07_bloque_A.png | 97608 | 945x411 | e9bb933eee8e0b06d393ed9bbebe6ff968323afefd441cd76333dce612d923fe | coincide con su inventario: True
+08_bloque_B.png | 149734 | 861x488 | c99f7abf14966d8d80246ff5dc885aceea2cb5d2759e66637162b5c6ad25a9fa | coincide con su inventario: True
+09_bloque_C.png | 36481 | 832x194 | 43d41f7f074ecb7c372aa59b0757584192c20fb7f74e9d6b593ba019f85615f0 | coincide con su inventario: True
+10_bloque_E.png | 53955 | 888x384 | 46b23698a55ccf2d2d4083a103f4694e847a96b268cb3da75d8dcfd8894824cf | coincide con su inventario: True
+capturas que coinciden con su inventario: 10 de 10; la inspección visual y de privacidad sigue pendiente del facilitador
+
+== Auditoría automática del registro de la etapa 1 frente al guion ==
+hallazgos automáticos: 0
+

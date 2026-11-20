@@ -121,11 +121,11 @@ def redactar_simuladas(registro, cuestionarios, registros_etapa_1=()):
     L = ["# Sesiones simuladas (no realizadas con personas reales)", "", f"> **{ENCABEZADO_SIMULADA}.** Lo que está aquí no cuenta para ningún ítem del checklist ni es feedback de personas usuarias: ni las sesiones reales ni los datos sintéticos de prueba se mezclan con esto.", ""]
     if not personas:
         L += ["**No hay sesiones simuladas registradas.** Cuando el equipo guarde `registro.csv` y `cuestionarios.csv` en `docs/usuarios/sesiones_simuladas/` con `origen = simulada`, este archivo contará lo registrado.", ""]
-        if registros_etapa_1:
-            L += [f"**Registros de la etapa 1 en texto:** {len(registros_etapa_1)} ({', '.join(f'`{n}`' for n in registros_etapa_1)}). No traen cifras, no son filas de `registro.csv` y todavía no tienen su `registro.csv` ni su `cuestionarios.csv`, por eso aquí no se cuentan como sesiones registradas.", ""]
     else:
         L += [f"**Participantes simulados:** {len(personas)} ({', '.join(personas)}). **Filas de tareas:** {len(registro)}. **Cuestionarios:** {len(cuestionarios)}.", "",
               f"Ninguna cifra se midió: cada resultado, tiempo, número de ayudas y de errores, respuesta del SUS y CSAT vale «{NO_MEDIDO}». Por eso no se calcula ninguna tasa, tiempo ni puntuación.", ""]
+    if registros_etapa_1:
+        L += [f"**Registros de la etapa 1 en texto:** {len(registros_etapa_1)} ({', '.join(f'`{n}`' for n in registros_etapa_1)}). No traen cifras y no son filas de los CSV: un participante que no tenga filas en `registro.csv` y `cuestionarios.csv` no se cuenta aquí como sesión registrada.", ""]
     L += ["## Qué NO demuestra", "Que el panel sea usable o no lo sea, ni que alguien lo haya usado: una sesión simulada no se hizo con una persona real y no mide nada.", ""]
     return "\n".join(L)
 

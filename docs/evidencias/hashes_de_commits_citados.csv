@@ -45,6 +45,8 @@ docs/evidencias/servicios/EV-088_mutaciones_servicios.txt,0352e46
 docs/evidencias/servicios/EV-089_suite_final_sin_utf8.txt,6c17fbd
 docs/evidencias/simulacion/EV-098_guia_seguida_como_tercero.txt,8af5bf0
 docs/evidencias/simulacion/EV-099_mutaciones_guia_de_simulacion.txt,c751244
+docs/evidencias/usuarios/EV-119_incorporacion_de_sesiones_simuladas.txt,3157ee2
+docs/usuarios/sesiones_simuladas/participante_simulado_1_etapa_1.md,3157ee2
 docs/validacion/informe_pruebas.md,0b392e1
 docs/validacion/registro_defectos.md,0328742
 docs/validacion/registro_defectos.md,595f565
@@ -53,3 +55,4 @@ docs/validacion/registro_defectos.md,b807fbb
 docs/validacion/registro_defectos.md,cafd740
 docs/validacion/registro_defectos.md,db5f3ac
 scripts/evidencias/registrar_manifiesto.py,90bd057
+tests/test_sesiones_simuladas_incorporadas.py,3157ee2
