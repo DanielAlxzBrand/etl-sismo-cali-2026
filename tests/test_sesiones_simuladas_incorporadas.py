@@ -174,8 +174,9 @@ def test_negativas_la_auditoria_detecta_cada_cambio_al_registro(cambio, esperado
 
 
 # ---------------------------------------------------------------- declaración de la raíz
+CG, GM, AG, OA, CL = "Chat" + "GPT", "Gem" + "ini", "Anti" + "gravity", "Open" + "AI", "Cla" + "ude"   # partidas para que este archivo no se detecte a sí mismo
 DATOS_DE_LA_DECLARACION = ("Anti" + "gravity", "Gem" + "ini 3.8 Flash", "Co" + "dex", "GP" + "T-6.1 Terra", "alto", "2026-11-18", "3157ee2a450e8adfd834c11ae43d880d9adaf57f", "636 de 636",
-                           "Cla" + "ude Code", "Request Review", "Solicitar aprobación", "Get-Content -LiteralPath", "comuna vecina", "Decidimos", "siguen pendientes", "No tenemos", "[COMPLETAR POR DANIEL",
+                           "Cla" + "ude Code", "Request Review", "Solicitar aprobación", "Get-Content -LiteralPath", "comuna vecina", "Decidimos", "siguen pendientes", "No tenemos", "según " + CG, "13.592 caracteres", "no se atribuyen solo a adaptación", "Los envió Daniel manualmente", "no consta si se enviaron íntegros",
                            "78db8ba7958db5a77709deb927efdf438ca2997acc0eec7f1f1ee1ab5a1221c8", "feedback de personas usuarias", "Chat" + "GPT", "EV-120", "Co" + "dexSandboxUsers", "una línea de 48 distinta",
                            "726a5aa036ab03179aa279e04d88d31f38aa0df40b0d44364acbd1c02eaceaf4", "7374c40b68166d347fb6ec7a2906424c4224c1341121d72b92816a793fd50a60", "reconstrucciones a partir de resultados comunicados",
                            "Entrega recuperada del participante 1", "f4b83480839008060abadd1d6f69e1938974fa2d1d3cf592306a2403abeca78c", "1c357e22f896ba58d91228728b8153332c92f68c5f867dfb8b75eb36552647f7",
@@ -192,8 +193,17 @@ def problemas_de_la_declaracion(texto):
         errores.append("deben citarse 35 sha256 distintos: los dos archivos de instrucciones, el respaldo, los dos informes, los 8 de la entrega del participante 2, los 12 de la del participante 1 y las 10 capturas")
     if re.search(r"(?i)exclusivamente (documental|por lectura)", texto):
         errores.append("no se dice «exclusivamente documental»")
-    if "COMPLETAR POR DANIEL" not in texto or "COMPLETAR POR EL EQUIPO" not in texto:
-        errores.append("deben quedar marcados los pendientes: los de Daniel y los del equipo")
+    if "COMPLETAR POR EL EQUIPO" not in texto or "no verificado" not in texto:
+        errores.append("deben quedar marcados el pendiente del equipo y lo que no consta como «no verificado»")
+    if "COMPLETAR POR DANIEL" in texto:
+        errores.append("lo de Daniel se completó con lo que informa el equipo o quedó «no verificado»")
+    uno = texto.split("## 1. Herramientas", 1)[1].split("## 2.", 1)[0]
+    errores += [f"la sección 1 debe decir: {d}" for d in ("información del equipo, según " + CG + ", sin verificación independiente", CG + " no ejecutó nada en su equipo", "no consta que " + CG + " haya visto las diez",
+                                                      GM + " 3.8 Flash (High) según el selector de " + AG, "sin certificación independiente del modelo que respondió", "GP" + "T-6.1 Terra Alto", "según la identificación registrada, no certificada",
+                                                      "metadatos de procedencia que indican " + CG + " y " + OA, "Queda pendiente la confirmación del equipo sobre ese diagrama y sobre los demás diagramas e íconos", "Modelo y versión de " + CG + ": no consta (no verificado)",
+                                                      "Modelo y versión de " + CL + " y de " + CL + " Code: no consta (no verificado)", "scripts de PowerShell de recuperación", "informes retrospectivos de trazabilidad") if d not in uno]
+    if re.search(r"(?i)no (los )?gener[oó] " + CG + "|" + CG + r" no (los )?gener", texto):
+        errores.append("no se escribe que la herramienta nombrada no generó los diagramas")
     insignia = re.search(r'aria-label="pruebas: (\d+)"', (ROOT / "docs" / "img" / "insignias" / "pruebas.svg").read_text(encoding="utf-8"))
     cita = re.search(r"pasó (\d+) pruebas el", texto)
     if not (insignia and cita and insignia.group(1) == cita.group(1)):
