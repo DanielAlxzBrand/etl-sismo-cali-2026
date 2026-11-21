@@ -1,6 +1,6 @@
 # Accesibilidad técnica y tiempos de respuesta del panel
 
-Este documento reúne **mediciones y verificaciones técnicas** reutilizables. No cierra el ítem 3.3 del checklist (usabilidad, capacidad de respuesta y coherencia visual): ese ítem necesita sesiones con personas usuarias, que no se han hecho.
+Este documento reúne **mediciones y verificaciones técnicas** reutilizables. No cierra el ítem 3.3 del checklist (usabilidad, capacidad de respuesta y coherencia visual): ese ítem necesita sesiones reales con personas usuarias, que no se han hecho (las dos sesiones simuladas no lo son).
 
 ## 1. Contrastes calculados
 Relación de contraste según la fórmula de luminancia relativa de WCAG 2.x, calculada con `python scripts/panel/contraste.py` ([EV-057](../evidencias/panel/EV-057_contrastes.txt), regenerada con la paleta actual). Se informan los valores; no se declara un nivel de conformidad. La regla que adoptamos es de **4,5 a 1 para el texto y 3 a 1 para los elementos gráficos** (D89) y una prueba la comprueba leyendo la configuración.

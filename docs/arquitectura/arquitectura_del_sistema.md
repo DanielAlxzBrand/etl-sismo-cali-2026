@@ -28,7 +28,7 @@ Este documento describe cómo está construido el sistema hoy y por qué lo cons
 - Idempotencia: repetir la extracción o la carga no duplica nada.
 - API de solo lectura (11 rutas GET) y panel de 8 páginas que solo habla con la API.
 - Mínimo privilegio: tres cuentas de MySQL y un repositorio montado en solo lectura en Airflow.
-- Cifras de los documentos vigiladas por pruebas: **1478 pruebas** automáticas.
+- Cifras de los documentos vigiladas por pruebas: **1481 pruebas** automáticas.
 
 ## 3. Contexto y drivers
 **Objetivos.** Entregar un análisis reproducible de impacto sísmico por zonas, con incertidumbre explícita, y que se pueda repetir de punta a punta ([docs/estrategia/03_objetivo_alcance_okr_kpi.md](../estrategia/03_objetivo_alcance_okr_kpi.md) y [05_mvp_criterios_aceptacion.md](../estrategia/05_mvp_criterios_aceptacion.md)).
@@ -43,7 +43,7 @@ Este documento describe cómo está construido el sistema hoy y por qué lo cons
 | Comunidad académica | tercer grupo de usuarios objetivo |
 | Equipo del proyecto | construye y mantiene el sistema |
 
-No hubo sesiones con personas usuarias que probaran el sistema (ver la sección 17).
+No hubo sesiones con personas usuarias que probaran el sistema; solo hubo dos sesiones simuladas, en una sola ronda (ver la sección 17).
 
 **Restricciones.**
 - Frescura: no hay requisito de frescura. Los datos son una captura única descargada el 2026-10-15 (hora de Bogotá); la capa se editó por última vez el 2026-09-02.
@@ -380,7 +380,7 @@ El modelo de costos tiene siete categorías y fórmulas con símbolos; los preci
 | API sin autenticación ([ADR-010](adr/adr-010_api_de_solo_lectura_local.md)) | un servicio simple y sin secretos | no puede salir del equipo | es local y de una persona a la vez; si se despliega hay que decidir de nuevo |
 | Una conexión por solicitud a MySQL ([ADR-010](adr/adr-010_api_de_solo_lectura_local.md)) | sin estado de conexiones que caduquen | unos 80 ms más por consulta con MySQL (88,2 ms frente a 6,1 ms, EV-032) | el servicio es local y de un solo usuario |
 | Proxy satelital con 7 comunas ([ADR-009](adr/adr-009_fuentes_por_criterios_de_aceptacion.md)) | la única fuente abierta a nivel de construcción | no es una evaluación estructural y no cubre toda Cali | lo declaramos en cada resultado y no extrapolamos |
-| Documentación vigilada por pruebas ([ADR-008](adr/adr-008_pruebas_sin_servidor_y_regresion.md)) | cifras que no se desactualizan en silencio | más pruebas que mantener (**1478 pruebas** en total) | una cifra vieja ya se coló una vez en un documento y la prueba la detectó |
+| Documentación vigilada por pruebas ([ADR-008](adr/adr-008_pruebas_sin_servidor_y_regresion.md)) | cifras que no se desactualizan en silencio | más pruebas que mantener (**1481 pruebas** en total) | una cifra vieja ya se coló una vez en un documento y la prueba la detectó |
 
 ## 16. Riesgos y mitigaciones
 La probabilidad y el impacto son juicio del equipo, sin cifras; se basan en las limitaciones, defectos y riesgos registrados.
@@ -417,7 +417,7 @@ La probabilidad y el impacto son juicio del equipo, sin cifras; se basan en las 
 ### Evidencias de pruebas, retroalimentación recibida y feedback de personas usuarias
 - **Evidencias de pruebas técnicas:** [informe de pruebas](../validacion/informe_pruebas.md), [matriz de casos](../validacion/matriz_casos_prueba.md) (179 casos), [registro de defectos](../validacion/registro_defectos.md) (25 defectos; para 15 se demostró que su prueba de regresión falla sin la corrección y para los otros 10 no se demostró (DEF-003, DEF-006, DEF-009, DEF-010, DEF-011, DEF-014 y DEF-022 a DEF-025), con el motivo de cada uno en el registro), las mutaciones de [EV-103](../evidencias/modo_completo/EV-103_mutaciones_modo_completo.txt) (132 en total), la suite en un clon y en un zip ([EV-113](../evidencias/readme/EV-113_primera_vez_y_suite_en_clon_y_zip.txt)); la cobertura de `src/` es de 78 % de las líneas, medida con la suite completa y sin red ([EV-114](../evidencias/readme/EV-114_cobertura_de_src_repetida.txt)); es una cota inferior, porque `clean_api.py` e `integrate.py` se ejecutan en subprocesos que la medición no sigue y `extract_api.py` necesita red; la misma suite, la cobertura, el informe y el escáner de secretos sobre un commit posterior ([EV-116](../evidencias/arquitectura/EV-116_suite_en_clon_y_zip_cobertura_y_escaner_del_commit_final.txt)); las mutaciones de las pruebas de este documento y de sus ADR ([EV-115](../evidencias/arquitectura/EV-115_mutaciones_de_las_pruebas_de_arquitectura.txt)): 188 de 188 detectadas; y el PDF del documento y de los ADR, con la comprobación de sus marcadores, enlaces y fechas ([EV-117](../evidencias/arquitectura/EV-117_pdf_del_documento_de_arquitectura.txt)).
 - **Retroalimentación recibida sobre la entrega anterior:** el texto está en [retroalimentacion_recibida.txt](../retroalimentacion/retroalimentacion_recibida.txt) y no se edita. Trae aspectos positivos y cinco observaciones por mejorar; cada una está atendida en [registro_de_cambios.md](../retroalimentacion/registro_de_cambios.md), con qué hicimos, qué archivos cambiaron y su evidencia. Atenderlas no cambió ningún dato, indicador, umbral, regla de Silver ni columna.
-- **Feedback de personas usuarias:** **no existe todavía y sigue pendiente.** La retroalimentación recibida sobre la entrega anterior no es feedback de personas usuarias. El protocolo, el guion, el consentimiento y el análisis (probado solo con datos sintéticos rotulados) están en [docs/usuarios/](../usuarios/README.md); cuando haya sesiones reales, sus resultados se registran ahí y este apartado se actualiza.
+- **Feedback de personas usuarias:** **no existe todavía y sigue pendiente.** Lo que consta: sesiones reales, 0; sesiones simuladas, 2 (participantes simulados 1 y 2, el 2026-11-18, por lectura de documentos y sin usar el panel), en una sola ronda. Esas dos no son feedback de personas usuarias y solo cuentan como evidencia simulada bajo la excepción D111. De esa ronda salieron ajustes de la guía de uso del panel (observaciones S-01 a S-06 del [registro de fricciones](../usuarios/registro_de_friccion.md)) que no se volvieron a probar con ninguna sesión. La retroalimentación recibida sobre la entrega anterior tampoco es feedback de personas usuarias. El protocolo, el guion, el consentimiento y el análisis (probado solo con datos sintéticos rotulados) están en [docs/usuarios/](../usuarios/README.md); cuando haya sesiones reales, sus resultados se registran ahí y este apartado se actualiza.
 
 ## 18. Glosario y referencias
 ### Glosario

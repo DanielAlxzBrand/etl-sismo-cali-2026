@@ -252,7 +252,7 @@ python main.py --stage all
 python -m pytest -q -p no:cacheprovider
 python scripts\panel\ejecutar_panel.py                  # API en 8000 y panel en 8501; Ctrl+C cierra los dos
 ```
-Qué debe verse: `python main.py --stage all` termina con líneas como `Salida: construcciones=5146 barrios=346 integrado=5146 | cobertura de llave=99.8834% (pasa)` y `Salida: gold_final=5146 filas | kpis_gold=23 filas (6 indicadores) | sensibilidades=107 filas`; las pruebas terminan con `1478 passed`. El pipeline no necesita red ni claves, porque Bronze ya está en el repositorio. El archivo `.env` se crea al configurar el modo completo y nunca se versiona; `.env.example` trae solo los nombres de sus 12 variables y la tabla siguiente dice para qué sirve cada una (nunca valores):
+Qué debe verse: `python main.py --stage all` termina con líneas como `Salida: construcciones=5146 barrios=346 integrado=5146 | cobertura de llave=99.8834% (pasa)` y `Salida: gold_final=5146 filas | kpis_gold=23 filas (6 indicadores) | sensibilidades=107 filas`; las pruebas terminan con `1481 passed`. El pipeline no necesita red ni claves, porque Bronze ya está en el repositorio. El archivo `.env` se crea al configurar el modo completo y nunca se versiona; `.env.example` trae solo los nombres de sus 12 variables y la tabla siguiente dice para qué sirve cada una (nunca valores):
 
 | Variable | Para qué sirve | Obligatoria | Modo |
 |---|---|---|---|
@@ -374,7 +374,7 @@ La API tiene **11 rutas GET**: `/calidad`, `/composicion`, `/comunas`, `/constru
 | `silver.muestra_baja_severos` | 30 | severos por debajo de los cuales un grupo se marca de muestra baja |
 
 ## 10. Calidad y pruebas
-Hay **1478 pruebas** automáticas, sin red ni servidor MySQL. Se ejecutan con `python -m pytest -q -p no:cacheprovider` y deben terminar con `1478 passed` en un clon con Git instalado; en un clon con Git no se omite ninguna; en el zip descomprimido con Git se omite 1 (`test_sin_hallazgos_en_el_historial_de_git`, porque el zip no trae historial) y sin Git se omiten 10: esa, 8 que arman un repositorio temporal y 1 que arma el zip y corre las demás. La lista está en la sección 3.1 de [docs/instalacion/README.md](docs/instalacion/README.md), medida con 1.007 pruebas ([EV-096](docs/evidencias/auditoria/EV-096_independencia_repetida_y_omisiones.txt)).
+Hay **1481 pruebas** automáticas, sin red ni servidor MySQL. Se ejecutan con `python -m pytest -q -p no:cacheprovider` y deben terminar con `1481 passed` en un clon con Git instalado; en un clon con Git no se omite ninguna; en el zip descomprimido con Git se omite 1 (`test_sin_hallazgos_en_el_historial_de_git`, porque el zip no trae historial) y sin Git se omiten 10: esa, 8 que arman un repositorio temporal y 1 que arma el zip y corre las demás. La lista está en la sección 3.1 de [docs/instalacion/README.md](docs/instalacion/README.md), medida con 1.007 pruebas ([EV-096](docs/evidencias/auditoria/EV-096_independencia_repetida_y_omisiones.txt)).
 
 - **Qué cubren:** el pipeline (llaves, duplicados, tipos, Wilson, Newcombe, Mantel-Haenszel), la reproducción byte a byte de la línea base, la API (estructura, solo GET, sin escritura), el panel (las ocho páginas con la API real en memoria, formato de cifras, aislamiento), la carga relacional (idempotencia, historial, reversión, integridad referencial), el DAG y los compose analizados como texto, el empaquetado y la gestión de secretos.
 - **Las cifras de los documentos se prueban contra las salidas.** Este README, el documento de resultados y la guía de instalación afirman cifras; una prueba extrae cada una del texto y la compara con la medida. Si alguien edita una cifra, o la deja desactualizada en un solo lugar, la prueba falla.
@@ -529,7 +529,7 @@ Esta sección describe cómo trabajamos hoy; no hay un flujo de solicitudes de c
 | API de solo lectura y panel | hechos; el panel no está desplegado |
 | Carga a MySQL y phpMyAdmin | hechos y verificados en vivo en una máquina |
 | Airflow | hecho; la última prueba completa desde un zip nuevo es del 2026-11-16 |
-| Sesiones con personas usuarias | material preparado (protocolo, guion, consentimiento, análisis probado con datos sintéticos rotulados); **aún sin sesiones reales** |
+| Sesiones con personas usuarias | material preparado (protocolo, guion, consentimiento, análisis probado con datos sintéticos rotulados); **aún sin sesiones reales** (hubo 2 sesiones simuladas, en una sola ronda, que no son sesiones con personas) |
 | Documento de arquitectura completo y registros de decisión por separado | escritos y revisados, con la aprobación pendiente |
 | Guion y grabación de la demostración | por hacer |
 | Publicación del repositorio | por hacer |

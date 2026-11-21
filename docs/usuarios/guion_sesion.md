@@ -1,6 +1,6 @@
 # Guion de la sesión
 
-**Ítem del checklist:** 6.1 (subcriterio 1: guion con tareas específicas y criterio de éxito) · **Estado:** material preparado; sin sesiones realizadas. Duración total prevista: de 20 a 25 minutos. Roles y reglas: [protocolo_sesiones.md](protocolo_sesiones.md).
+**Ítem del checklist:** 6.1 (subcriterio 1: guion con tareas específicas y criterio de éxito) · **Estado:** material preparado; sin sesiones reales (hubo dos sesiones simuladas, en una sola ronda, que no son sesiones reales). Duración total prevista: de 20 a 25 minutos. Roles y reglas: [protocolo_sesiones.md](protocolo_sesiones.md).
 
 ## 1. Introducción hablada (3 minutos)
 El facilitador lee, sin improvisar:

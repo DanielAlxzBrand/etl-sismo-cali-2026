@@ -123,9 +123,9 @@
 |---|---|
 | [usuarios/README.md](usuarios/README.md) | índice del componente: qué está preparado, qué falta y los cinco pasos para las sesiones reales |
 | [evaluacion_heuristica.md](usuarios/evaluacion_heuristica.md) | evaluación heurística interna del panel: hallazgos con severidad y captura, fortalezas y matriz |
-| [protocolo_sesiones.md](usuarios/protocolo_sesiones.md), [guion_sesion.md](usuarios/guion_sesion.md), [consentimiento.md](usuarios/consentimiento.md) e [instrumentos.md](usuarios/instrumentos.md) | material de las sesiones con personas usuarias (preparado; sin sesiones realizadas) |
+| [protocolo_sesiones.md](usuarios/protocolo_sesiones.md), [guion_sesion.md](usuarios/guion_sesion.md), [consentimiento.md](usuarios/consentimiento.md) e [instrumentos.md](usuarios/instrumentos.md) | material de las sesiones con personas usuarias (preparado; sin sesiones reales: 0 reales y 2 simuladas en una sola ronda) |
 | [registro_de_friccion.md](usuarios/registro_de_friccion.md) y [trazabilidad_de_cambios.md](usuarios/trazabilidad_de_cambios.md) | las 14 fricciones de la evaluación heurística con su decisión y la tabla de cambios llena (iteración técnica, no sesiones con personas) |
-| [guia_simulacion/README.md](usuarios/guia_simulacion/README.md) | guía en PDF (con su generador) para que las tres personas del equipo hagan sesiones de uso del panel en su propio equipo; material preparado, sin sesiones hechas |
+| [guia_simulacion/README.md](usuarios/guia_simulacion/README.md) | guía en PDF (con su generador) para que las tres personas del equipo hagan sesiones de uso del panel en su propio equipo; material preparado, sin sesiones reales hechas |
 | [finanzas/estructura_costos.md](finanzas/estructura_costos.md) | categorías de costo, consumo medido y fórmulas con precios como parámetros vacíos |
 
 ### Servicios locales (`instalacion/`)

@@ -1,6 +1,6 @@
 # Texto de consentimiento
 
-**Ítem del checklist:** 6.1 (subcriterio 2: consentimiento y reclutamiento) · **Estado:** texto preparado; sin sesiones realizadas.
+**Ítem del checklist:** 6.1 (subcriterio 2: consentimiento y reclutamiento) · **Estado:** texto preparado; sin sesiones reales (hubo dos sesiones simuladas, en una sola ronda, que no son sesiones reales).
 
 > Este texto lo escribimos como estudiantes para explicar con claridad en qué consiste la sesión. **No es asesoría jurídica y no afirmamos que cumpla ninguna norma de protección de datos.** Si el equipo necesita esa seguridad, debe consultarla con quien corresponda antes de hacer sesiones.
 

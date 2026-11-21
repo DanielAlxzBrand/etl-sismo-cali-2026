@@ -560,3 +560,62 @@ def test_la_plantilla_el_readme_el_protocolo_y_la_decision_dicen_las_tres_guarda
     d112 = next(l for l in (ROOT / "docs" / "DECISIONES.md").read_text(encoding="utf-8").splitlines() if l.startswith("**D112 "))
     assert "(1)" in d112 and "(2)" in d112 and "(3)" in d112 and "prefijo «simulado:»" in d112 and "nunca junto con datos reales" in d112
     assert "Tres guardas" in (ROOT / "scripts" / "usuarios" / "analizar_sesiones.py").read_text(encoding="utf-8")
+
+
+# ---------------------------------------------------------------- una sola ronda de dos sesiones simuladas: lo que consta y nada más
+def _analizador():
+    spec = importlib.util.spec_from_file_location("analizar_sesiones_una_ronda", ROOT / "scripts" / "usuarios" / "analizar_sesiones.py")
+    an = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(an)
+    return an
+
+
+def test_el_repositorio_describe_dos_sesiones_simuladas_en_una_sola_ronda_y_no_cita_otras():
+    an = _analizador()
+    registro, cuestionarios = an.cargar_simuladas(SIMULADAS)
+    assert len({f["participante"] for f in registro + cuestionarios}) == 2, "los textos dicen dos sesiones simuladas: los CSV deben tener dos participantes"
+    otra_ronda = re.compile(r"(?i)\bron" + r"da\s+[2-9](?![\d,.])|segunda ron" + r"da|dos ron" + r"das|cuatro sesiones simuladas|participantes? simulados? [3-9]\b|participantes? simulados? 3 y 4")
+    viejas = ("sin sesiones realizadas", "las sesiones todavía no se han hecho", "sin sesiones hechas", "que no se han hecho.", "ni que se hicieran sesiones")
+    hallazgos = []
+    for rel, texto in _archivos_del_zip():
+        if rel.startswith("tests/"):
+            continue   # las pruebas del analizador usan participantes simulados 3 y 4 como datos de ejemplo
+        if otra_ronda.search(texto) or any(v in texto for v in viejas):
+            hallazgos.append(rel)
+    assert hallazgos == []
+    declaracion = (ROOT / ("DECLARACION" + "_USO_IA.md")).read_text(encoding="utf-8")
+    assert "ron" + "da 1" not in declaracion and "ron" + "da 2" not in declaracion
+
+
+def test_el_parrafo_de_retroalimentacion_de_7_3_dice_sesiones_reales_0_simuladas_2_en_una_ronda_y_ajustes_sin_volver_a_probar():
+    estado = (ROOT / "docs" / "checklist" / "estado_checklist.md").read_text(encoding="utf-8")
+    fila = next(l for l in estado.splitlines() if l.startswith("| 7.3 | «"))
+    arquitectura = (ROOT / "docs" / "arquitectura" / "arquitectura_del_sistema.md").read_text(encoding="utf-8")
+    parrafo = next(l for l in arquitectura.splitlines() if l.startswith("- **Feedback de personas usuarias:**"))
+    guia = (ROOT / "docs" / "checklist" / "guia_de_evidencias.md").read_text(encoding="utf-8")
+    guia_73 = guia.split("### Ítem 7.3", 1)[1].split("### Ítem", 1)[0]
+    import csv
+    with open(ROOT / "docs" / "checklist" / "trazabilidad.csv", encoding="utf-8-sig", newline="") as f:
+        traz = next(r for r in csv.DictReader(f) if r["item"] == "7.3")["que_no_demuestra"]
+    for nombre, texto in (("estado", fila), ("arquitectura", parrafo), ("guía de evidencias", guia_73), ("trazabilidad", traz)):
+        assert "sesiones reales, 0" in texto or "sesiones reales, 0;" in texto, nombre
+        assert "sesiones simuladas, 2" in texto and "una sola ronda" in texto, nombre
+        assert "no se volvieron a probar" in texto, nombre
+    assert "S-01 a S-06" in parrafo and "D111" in parrafo and "no son feedback de personas usuarias" in parrafo
+
+
+def test_el_formato_simulado_n_y_d112_son_una_capacidad_del_analizador_mientras_no_haya_estimaciones_registradas():
+    an = _analizador()
+    _, cuestionarios = an.cargar_simuladas(SIMULADAS)
+    hay = an.estimaciones_simuladas(cuestionarios)
+    leeme = (SIMULADAS / "README.md").read_text(encoding="utf-8")
+    d112 = next(l for l in (ROOT / "docs" / "DECISIONES.md").read_text(encoding="utf-8").splitlines() if l.startswith("**D112 "))
+    resumen = (USUARIOS / "resultados_sesiones_simuladas.md").read_text(encoding="utf-8")
+    frase = "Hoy no hay ninguna estimación simulada registrada"
+    if hay:
+        assert frase not in leeme and "no hay ninguna estimación simulada" not in d112 and "Estimaciones simuladas del SUS" in resumen
+    else:
+        assert frase in leeme and "capacidad del analizador" in leeme and "no hay ninguna estimación simulada" in d112 and "capacidad del analizador" in d112
+        assert "Estimaciones simuladas del SUS" not in resumen and "simulado: " not in resumen, "el resumen no sugiere estimaciones que no existen"
+        for nombre in ("registro.csv", "cuestionarios.csv"):
+            assert not re.search(r"simulado: \d", (SIMULADAS / nombre).read_text(encoding="utf-8")), nombre

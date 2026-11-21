@@ -1,6 +1,6 @@
 # Protocolo de las sesiones con personas usuarias del panel
 
-**Ítems del checklist:** 6.1 (sesiones con personas usuarias) y, con sus resultados, 6.2, 6.3 y 3.3 (subcriterio 4). · **Estado:** material preparado; **las sesiones todavía no se han hecho**. Este documento dice cómo las haremos; no contiene ningún resultado.
+**Ítems del checklist:** 6.1 (sesiones con personas usuarias) y, con sus resultados, 6.2, 6.3 y 3.3 (subcriterio 4). · **Estado:** material preparado; **las sesiones reales todavía no se han hecho** (solo hubo dos sesiones simuladas, en una sola ronda). Este documento dice cómo las haremos; no contiene ningún resultado.
 
 > **Etiquetas de evidencia.** [Evidencia en el repo: `ruta`] = existe en el repositorio; [Criterio aplicado: …] = regla nuestra, explicada; [Hipótesis de diseño: …] = propuesta que todavía no se ejecutó.
 

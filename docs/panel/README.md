@@ -23,4 +23,4 @@ EV-051 instalación de Streamlit sin tocar la línea base · EV-052 ejecución r
 
 ## Alcance y límites
 - **Qué afirmamos:** el panel muestra las cifras de Gold tal como las sirve la API, con el alcance visible en cada página; los valores coinciden con las salidas del pipeline y con los dos almacenamientos.
-- **Qué NO afirmamos:** que la interfaz sea usable para personas reales (no se hicieron sesiones con usuarios), que esté desplegada ni que sirva para decidir sobre una comuna concreta: describe esta muestra.
+- **Qué NO afirmamos:** que la interfaz sea usable para personas reales (no se hicieron sesiones reales con usuarios; las dos simuladas no lo son), que esté desplegada ni que sirva para decidir sobre una comuna concreta: describe esta muestra.

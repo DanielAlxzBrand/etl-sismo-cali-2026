@@ -74,7 +74,7 @@ Los roles de las historias son un diseño nuestro: no hubo usuarios. [Hipótesis
 ## Alcance y límites
 - **Qué afirmamos:** definimos el MVP del proyecto con ocho funcionalidades y 29 criterios, todos ejecutados (pipeline, API, MySQL, Airflow y dashboard). El criterio AC26 se ajustó a las cuatro tareas de la guía (D66).
 - **Con qué evidencia:** los comandos y archivos de la tabla; el determinismo se comprobó en un clon temporal con dos ejecuciones completas.
-- **Qué NO afirmamos:** que el dashboard sea usable para personas reales (no se hicieron sesiones con usuarios) ni que esté desplegado. Tampoco que la orquestación se ejecute sola en cualquier equipo: depende de que Docker Desktop y los contenedores estén encendidos a las 06:00 (D64).
+- **Qué NO afirmamos:** que el dashboard sea usable para personas reales (no se hicieron sesiones reales con usuarios; las dos simuladas no lo son) ni que esté desplegado. Tampoco que la orquestación se ejecute sola en cualquier equipo: depende de que Docker Desktop y los contenedores estén encendidos a las 06:00 (D64).
 
 ## Preguntas frecuentes
 - **«¿Por qué los criterios de pipeline parecen escritos después de ver los resultados?»** Porque lo son: los formalizamos sobre pruebas y umbrales que ya existían, y lo decimos al inicio; los criterios nuevos se redactaron antes de construir los componentes.

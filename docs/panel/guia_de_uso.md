@@ -63,4 +63,4 @@ La página «Fuentes y sistema» lista los puntos; en resumen: el indicador mide
 
 ## 6. Alcance y límites
 - **Qué afirmamos:** la guía describe lo que el panel muestra hoy y cómo leerlo.
-- **Qué NO afirmamos:** que una persona sin formación estadística entienda los intervalos a la primera; eso solo lo dirán las sesiones con usuarios, que no se han hecho.
+- **Qué NO afirmamos:** que una persona sin formación estadística entienda los intervalos a la primera; eso solo lo dirán las sesiones reales con usuarios, que no se han hecho (las dos sesiones simuladas no lo son).
