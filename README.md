@@ -193,7 +193,6 @@ Docker Desktop con WSL2 se usó solo para Airflow y phpMyAdmin (Docker 29.9.3 y 
 │   ├── validacion/           # regresiones e igualdad de código
 │   ├── finanzas/             # medición de recursos
 │   ├── arquitectura/         # PDF del documento de arquitectura y de los ADR
-│   ├── historial/            # ensayo de limpieza de los mensajes de commit
 │   └── evidencias/           # scripts que producen evidencias
 ├── dags/
 │   └── medallon_etl_dag.py   # el DAG medallon_etl_sismo
