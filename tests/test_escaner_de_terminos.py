@@ -41,7 +41,7 @@ def test_una_palabra_vigilada_dentro_de_un_identificador_o_una_cadena_partida_se
 
 def test_los_identificadores_tecnicos_permitidos_no_se_marcan(tmp_path):
     # opciones de configuración de otra herramienta, comparadas enteras por sha256 en `PERMITIDOS`
-    nombre = "show" + "Email" + "Prompt"
+    nombre = "showEmailPrompt"
     (tmp_path / "c.py").write_text(f'OPCION = "{nombre}"\n', encoding="utf-8")
     assert esc.escanear_arbol(tmp_path) == []
 
