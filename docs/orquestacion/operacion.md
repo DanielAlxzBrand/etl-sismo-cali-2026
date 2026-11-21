@@ -26,7 +26,7 @@ docker compose exec airflow-scheduler airflow dags trigger medallon_etl_sismo
 docker compose exec airflow-scheduler airflow dags list-runs medallon_etl_sismo
 docker compose exec airflow-scheduler airflow dags unpause medallon_etl_sismo
 ```
-Para provocar un fallo controlado (pasos 35 y 36): `airflow dags trigger medallon_etl_sismo --conf '{"fallo_inducido":"integrar_a_gold"}'`; la tarea indicada falla antes de producir salidas y las siguientes no se ejecutan.
+Para provocar un fallo controlado (pasos 35 y 36): `airflow dags trigger medallon_etl_sismo --conf '{\"fallo_inducido\":\"integrar_a_gold\"}'` (con las comillas internas escapadas, como hay que escribirlo en PowerShell 5.1); la tarea indicada falla antes de producir salidas y las siguientes no se ejecutan.
 
 ## Registros
 ```powershell

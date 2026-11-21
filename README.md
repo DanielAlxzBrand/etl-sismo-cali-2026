@@ -303,11 +303,12 @@ Con Bronze presente, `--stage extract` verifica los sha256 y escribe «ya existe
 
 **Con Airflow** (desde la carpeta de Airflow que prepara el script, no desde la del proyecto):
 ```powershell
+docker compose exec airflow-scheduler airflow dags list-import-errors     # debe decir «No data found»; si el DAG aún no aparece en `dags list`, espere un minuto
 docker compose exec airflow-scheduler airflow dags unpause medallon_etl_sismo
 docker compose exec airflow-scheduler airflow dags trigger medallon_etl_sismo
 docker compose exec airflow-scheduler airflow dags list-runs medallon_etl_sismo
 ```
-El DAG `medallon_etl_sismo` tiene cuatro tareas, `validar_bronze`, `transformar_a_silver`, `integrar_a_gold` y `cargar_datawarehouse`, se programa a las 06:00 hora de Bogotá (`0 6 * * *`) y no recupera ejecuciones pasadas (`catchup=False`). Para probar la recuperación, `airflow dags trigger medallon_etl_sismo --conf '{"fallo_inducido":"integrar_a_gold"}'` hace fallar esa tarea antes de producir salidas.
+El DAG `medallon_etl_sismo` tiene cuatro tareas, `validar_bronze`, `transformar_a_silver`, `integrar_a_gold` y `cargar_datawarehouse`, se programa a las 06:00 hora de Bogotá (`0 6 * * *`) y no recupera ejecuciones pasadas (`catchup=False`). Para probar la recuperación, `airflow dags trigger medallon_etl_sismo --conf '{\"fallo_inducido\":\"integrar_a_gold\"}'` (así, con las comillas internas escapadas, en PowerShell 5.1) hace fallar esa tarea antes de producir salidas.
 
 ![Vista general del DAG medallon_etl_sismo en la interfaz de Airflow, con sus cuatro tareas, la programación diaria y ninguna tarea ni ejecución fallida](docs/img/readme/airflow_dag.png)
 
