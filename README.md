@@ -478,7 +478,7 @@ Con 8 GB de RAM no conviene encender todo a la vez; esa configuración no está 
 **Costos en la nube: no aplican.** Todo corre en una máquina local, así que no hay precios que medir. La estructura de costos, con las fórmulas y los precios como parámetros vacíos, está en [docs/finanzas/estructura_costos.md](docs/finanzas/estructura_costos.md); no inventamos ninguna cifra monetaria.
 
 ## 16. Decisiones de arquitectura
-Las decisiones, con sus alternativas, su razón y su riesgo, están en [docs/DECISIONES.md](docs/DECISIONES.md) (D1 a D112). Las que más condicionan el diseño:
+Las decisiones, con sus alternativas, su razón y su riesgo, están en [docs/DECISIONES.md](docs/DECISIONES.md) (D1 a D113). Las que más condicionan el diseño:
 
 | Decisión | Qué decidimos | Por qué |
 |---|---|---|
@@ -498,7 +498,7 @@ Las decisiones, con sus alternativas, su razón y su riesgo, están en [docs/DEC
 | D97 y D105 | criterio de texto de lo que viaja en el zip; el README se escribe a mano | que lo que afirmamos lo vigile una prueba |
 | D106 | el documento de arquitectura y sus registros de decisión viven en `docs/arquitectura/`; D21 y D5 quedan marcadas como modificadas | enlazar cada decisión con su origen sin duplicarla y no reescribir lo registrado |
 
-El documento de arquitectura del sistema, con 15 registros de decisión (ADR) y diagramas en texto, está en [docs/arquitectura/arquitectura_del_sistema.md](docs/arquitectura/arquitectura_del_sistema.md) y [docs/arquitectura/adr/](docs/arquitectura/adr/). Está revisado, con la aprobación pendiente.
+El documento de arquitectura del sistema, con 15 registros de decisión (ADR) y diagramas en texto, está en [docs/arquitectura/arquitectura_del_sistema.md](docs/arquitectura/arquitectura_del_sistema.md) y [docs/arquitectura/adr/](docs/arquitectura/adr/). Está aprobado (versión 1.0, 2026-11-20).
 
 ## 17. Contribución y estándares
 Esta sección describe cómo trabajamos hoy; no hay un flujo de solicitudes de cambio porque no hay un repositorio publicado.
@@ -530,7 +530,7 @@ Esta sección describe cómo trabajamos hoy; no hay un flujo de solicitudes de c
 | Carga a MySQL y phpMyAdmin | hechos y verificados en vivo en una máquina |
 | Airflow | hecho; la última prueba completa desde un zip nuevo es del 2026-11-16 |
 | Sesiones con personas usuarias | material preparado (protocolo, guion, consentimiento, análisis probado con datos sintéticos rotulados); **aún sin sesiones reales** (hubo 2 sesiones simuladas, en una sola ronda, que no son sesiones con personas) |
-| Documento de arquitectura completo y registros de decisión por separado | escritos y revisados, con la aprobación pendiente |
+| Documento de arquitectura completo y registros de decisión por separado | escritos, revisados y aprobados (versión 1.0, 2026-11-20) |
 | Guion y grabación de la demostración | por hacer |
 | Publicación del repositorio | por hacer |
 

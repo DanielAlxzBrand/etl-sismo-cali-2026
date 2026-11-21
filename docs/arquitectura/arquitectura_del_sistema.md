@@ -4,13 +4,13 @@
 | Campo | Valor |
 |---|---|
 | Título | Arquitectura del sistema ETL medallion del sismo M7.4 de Cali (10 de agosto de 2026) |
-| Versión y fecha | 0.2, 2026-11-18 |
+| Versión y fecha | 1.0, 2026-11-20 |
 | Autor y owner técnico | Daniel Alexander Brand García |
 | Revisión de la documentación | Jhoan Sebastián Castellanos Mayor, 2026-11-18 |
-| Aprobadores | Daniel Alexander Brand García, Jhoan Sebastián Castellanos Mayor y Diego Fernando Gordillo Londoño; la aprobación se registra al pasar el estado a Aprobado |
-| Estado | Revisado |
+| Aprobadores | Daniel Alexander Brand García, Jhoan Sebastián Castellanos Mayor y Diego Fernando Gordillo Londoño, 2026-11-20 |
+| Estado | Aprobado |
 | Repositorio | aún no está publicado; cuando se publique, esta tabla enlazará a sus issues (ver el [README](../../README.md#19-contacto-y-responsables)) |
-| Registros de decisión | los 15 ADR de [adr/](adr/), listados en la sección 10; las decisiones completas están en [docs/DECISIONES.md](../DECISIONES.md) (D1 a D112) |
+| Registros de decisión | los 15 ADR de [adr/](adr/), listados en la sección 10; las decisiones completas están en [docs/DECISIONES.md](../DECISIONES.md) (D1 a D113) |
 
 Este documento describe cómo está construido el sistema hoy y por qué lo construimos así. Lo escribimos como estudiantes que hicimos el proyecto: donde algo no existe decimos «no lo hicimos» o «no aplica» y damos la razón, y no rellenamos con contenido genérico. Para cada cifra o afirmación indicamos de dónde sale (un archivo, una evidencia o una decisión del repositorio), y varias cifras las comparan pruebas automáticas con lo medido. Lo que no pudimos verificar, o depende de la máquina de quien lo ejecute, lo marcamos como límite.
 
@@ -408,7 +408,7 @@ La probabilidad y el impacto son juicio del equipo, sin cifras; se basan en las 
 **Propuesta del equipo, no compromiso:**
 | Plazo | Mejora propuesta |
 |---|---|
-| Corto | publicar el repositorio y enlazar sus issues desde el README; comprobar la ejecución desde cero en otros equipos; hacer las sesiones con personas usuarias; aprobar el documento y los ADR entre los tres autores, pasando el estado de Revisado a Aprobado; grabar la demostración |
+| Corto | publicar el repositorio y enlazar sus issues desde el README; comprobar la ejecución desde cero en otros equipos; hacer las sesiones con personas usuarias; grabar la demostración |
 | Medio | ampliar la cobertura a la Comuna 2 y a las demás comunas ausentes; repetir el análisis con un estrato actualizado; agregar una validación explícita de las columnas de la fuente; evaluar reintentos de tareas en el DAG |
 | Largo | incorporar la amenaza sísmica oficial; comparar el proxy con las inspecciones de la Alcaldía; si el sistema se despliega, agregar autenticación, integración continua y alertas |
 

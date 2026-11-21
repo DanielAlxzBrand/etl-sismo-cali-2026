@@ -530,24 +530,25 @@ def test_el_reparto_de_reglas_y_los_umbrales_alterados_se_detectan():
     assert texto_de_umbrales(cambiado) != texto
 
 
-FRASES_DE_ESTADO = {"Revisado": {
-    "README.md": ["Está revisado, con la aprobación pendiente.", "| escritos y revisados, con la aprobación pendiente |"],
-    "docs/README.md": ["revisado, con la aprobación pendiente"],
-    "docs/checklist/estado_checklist.md": ["escrito y revisado por Jhoan Sebastián Castellanos Mayor el {fecha}"],
-    "docs/checklist/guia_de_evidencias.md": ["está revisado; la aprobación de los tres autores está pendiente", "documentada y revisada"],
-    "docs/checklist/trazabilidad.csv": ["revisado por Jhoan Sebastián Castellanos Mayor desde el {fecha}"]}}
+FRASES_DE_ESTADO = {"Aprobado": {
+    "README.md": ["Está aprobado (versión 1.0, {aprobacion}).", "| escritos, revisados y aprobados (versión 1.0, {aprobacion}) |"],
+    "docs/README.md": ["aprobado (versión 1.0, {aprobacion})"],
+    "docs/checklist/estado_checklist.md": ["escrito y revisado por Jhoan Sebastián Castellanos Mayor el {fecha} y aprobado por los tres autores el {aprobacion}"],
+    "docs/checklist/guia_de_evidencias.md": ["está revisado y aprobado por los tres autores (versión 1.0, {aprobacion})", "documentada, revisada y aprobada"],
+    "docs/checklist/trazabilidad.csv": ["revisado por Jhoan Sebastián Castellanos Mayor desde el {fecha} y aprobado por los tres autores el {aprobacion}"]}}
 
 
 def problemas_del_estado(portada, leer):
     """Lo que el README, el índice de docs, la checklist, su guía y la trazabilidad dicen del estado del documento debe ser lo que dice su portada."""
     estado = re.search(r"(?m)^\| Estado \| (\w+) \|$", portada).group(1)
     fecha = re.search(r"(?m)^\| Revisión de la documentación \| .+, (\d{4}-\d{2}-\d{2}) \|$", portada).group(1)
+    aprobacion = re.search(r"(?m)^\| Aprobadores \| .+, (\d{4}-\d{2}-\d{2}) \|$", portada).group(1)
     if estado not in FRASES_DE_ESTADO:
         return [f"el estado {estado} no tiene frases definidas para los demás documentos: hay que actualizarlos y esta tabla"]
     errores = []
     for ruta, frases in FRASES_DE_ESTADO[estado].items():
         texto = leer(ruta)
-        errores += [f"{ruta}: falta «{f.format(fecha=fecha)}»" for f in frases if f.format(fecha=fecha) not in texto]
+        errores += [f"{ruta}: falta «{f.format(fecha=fecha, aprobacion=aprobacion)}»" for f in frases if f.format(fecha=fecha, aprobacion=aprobacion) not in texto]
         if "Borrador" in texto:
             errores.append(f"{ruta}: todavía dice Borrador")
     return errores
@@ -556,15 +557,15 @@ def problemas_del_estado(portada, leer):
 def test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada():
     portada = DOC_TEXTO.split("## 2.")[0]
     assert problemas_del_estado(portada, _leer) == []
-    assert "aprobar el documento y los ADR entre los tres autores, pasando el estado de Revisado a Aprobado" in DOC_TEXTO
+    assert "pasando el estado de Revisado a Aprobado" not in DOC_TEXTO and "| Estado | Aprobado |" in portada, "la aprobación ya no figura como pendiente en la hoja de ruta"
     assert cifras_con_patron(README, r"con (\d+) registros de decisión") == [str(len(archivos_adr()))]
 
 
 def test_un_estado_o_una_fecha_que_no_coinciden_en_otro_documento_se_detectan():
-    portada = "| Revisión de la documentación | Alguien, 2026-11-18 |\n| Estado | Revisado |\n"
-    buenos = {ruta: " ".join(f.format(fecha="2026-11-18") for f in frases) for ruta, frases in FRASES_DE_ESTADO["Revisado"].items()}
+    portada = "| Revisión de la documentación | Alguien, 2026-11-18 |\n| Aprobadores | Alguien, 2026-11-20 |\n| Estado | Aprobado |\n"
+    buenos = {ruta: " ".join(f.format(fecha="2026-11-18", aprobacion="2026-11-20") for f in frases) for ruta, frases in FRASES_DE_ESTADO["Aprobado"].items()}
     assert problemas_del_estado(portada, lambda r: buenos[r]) == []
     assert problemas_del_estado(portada, lambda r: buenos[r] + " Borrador"), "un documento que sigue diciendo Borrador"
-    assert problemas_del_estado(portada, lambda r: buenos[r].replace("aprobación pendiente", "aprobación hecha") if r == "README.md" else buenos[r]), "el README dice otra cosa"
-    assert problemas_del_estado(portada, lambda r: buenos[r].replace("2026-11-18", "2026-11-10")), "la trazabilidad con otra fecha de revisión"
-    assert problemas_del_estado(portada.replace("Revisado", "Aprobado"), lambda r: buenos[r]), "un estado nuevo exige actualizar los demás documentos"
+    assert problemas_del_estado(portada, lambda r: buenos[r].replace("versión 1.0", "versión 0.9") if r == "README.md" else buenos[r]), "el README dice otra cosa"
+    assert problemas_del_estado(portada, lambda r: buenos[r].replace("2026-11-20", "2026-11-10")), "los documentos con otra fecha de aprobación"
+    assert problemas_del_estado(portada.replace("| Estado | Aprobado |", "| Estado | Revisado |"), lambda r: buenos[r]), "un estado nuevo exige actualizar los demás documentos"

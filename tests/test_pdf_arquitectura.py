@@ -122,20 +122,20 @@ def test_el_pie_y_los_parametros_de_impresion_piden_marcadores_pie_en_todas_las_
     assert p["generateDocumentOutline"] is True and p["displayHeaderFooter"] is True and p["preferCSSPageSize"] is True and p["printBackground"] is True
     assert "Página" in p["footerTemplate"] and "pageNumber" in p["footerTemplate"] and "totalPages" in p["footerTemplate"]
     version, fecha, estado = gen.version_y_estado(DATOS)
-    assert (version, estado) == ("0.2", "Revisado") and re.fullmatch(r"\d{4}-\d{2}-\d{2}", fecha)
+    assert (version, estado) == ("1.0", "Aprobado") and re.fullmatch(r"\d{4}-\d{2}-\d{2}", fecha)
     assert f"versión {version} · {estado}" in p["footerTemplate"], "el pie lleva la versión y el estado de la portada"
     assert "@page portada" in gen.ESTILO_EXTRA and "size: A4" in gen.gen.ESTILO
 
 
 def test_los_metadatos_de_la_portada_se_exigen_y_se_leen_bien():
     assert set(gen.CAMPOS_DE_PORTADA) <= set(DATOS)
-    sin_estado = DOC.read_text(encoding="utf-8").replace("| Estado | Revisado |\n", "")
+    sin_estado = DOC.read_text(encoding="utf-8").replace("| Estado | Aprobado |\n", "")
     with pytest.raises(ValueError):
         gen.metadatos(sin_estado)
     with pytest.raises(ValueError):
         gen.version_y_estado({**DATOS, "Versión y fecha": "0.2"})
     assert gen.version_y_estado({**DATOS, "Versión y fecha": "1.0, 2027-01-02", "Estado": "Aprobado"}) == ("1.0", "2027-01-02", "Aprobado")
-    assert gen.pie_del_pdf({**DATOS, "Estado": "Aprobado"}) != gen.pie_del_pdf(DATOS)
+    assert gen.pie_del_pdf({**DATOS, "Estado": "Revisado"}) != gen.pie_del_pdf(DATOS)
 
 
 def test_las_fechas_del_pdf_se_fijan_sin_cambiar_la_longitud_y_exigen_las_dos():

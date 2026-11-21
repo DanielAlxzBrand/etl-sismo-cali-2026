@@ -193,8 +193,12 @@ def problemas_de_la_declaracion(texto):
         errores.append("deben citarse 35 sha256 distintos: los dos archivos de instrucciones, el respaldo, los dos informes, los 8 de la entrega del participante 2, los 12 de la del participante 1 y las 10 capturas")
     if re.search(r"(?i)exclusivamente (documental|por lectura)", texto):
         errores.append("no se dice «exclusivamente documental»")
-    if "COMPLETAR POR EL EQUIPO" not in texto or "no verificado" not in texto:
-        errores.append("deben quedar marcados el pendiente del equipo y lo que no consta como «no verificado»")
+    if "COMPLETAR POR" in texto or "no verificado" not in texto:
+        errores.append("no debe quedar ningún pendiente marcado y lo que no consta figura como «no verificado»")
+    cuatro = texto.split("## 4. Responsabilidad del equipo", 1)[1].split("## 5.", 1)[0].strip()
+    if cuatro != ("Los tres integrantes del equipo leímos todo el contenido del proyecto antes de aprobarlo, y ninguno se centró en una parte específica. Respondemos por todo el contenido, "
+                  "lo hayamos escrito nosotros o lo haya generado una herramienta. Fecha de la aprobación del texto final: 2026-11-20."):
+        errores.append("la sección 4 debe ser el texto del equipo, sin añadidos")
     if "COMPLETAR POR DANIEL" in texto:
         errores.append("lo de Daniel se completó con lo que informa el equipo o quedó «no verificado»")
     uno = texto.split("## 1. Herramientas", 1)[1].split("## 2.", 1)[0]
