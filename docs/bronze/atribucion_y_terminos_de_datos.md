@@ -25,6 +25,7 @@ Los metadatos del CSV de estrato se contradicen (una página dice Creative Commo
 - Polígonos de barrios: IDESC / DAPM Cali (consulta del 15-oct-2026).
 - Evento: USGS `us6000tjl2` (consulta del 15-oct-2026).
 - Contexto externo: El País Cali, 11-oct-2026 y 23-sep-2026.
+- Muestra editada: en `docs/bronze/muestras/v4_socrata_views_6esn.json` se enmascaró el campo `Contact Email`, que traía el correo de una persona de la entidad; el resto de la respuesta del catálogo está tal como se recibió.
 
 ## Otros componentes con su propia licencia
 
