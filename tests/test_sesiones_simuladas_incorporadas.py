@@ -537,7 +537,7 @@ def test_el_resumen_de_una_linea_cubre_c1_a_c8_y_h1_a_h8_con_lo_que_se_ajusto():
 
 
 # ---------------------------------------------------------------- bloque 2: observaciones simuladas y cambios de documentación
-def test_las_observaciones_simuladas_tienen_decision_razon_y_commit_real_y_no_entran_al_csv_de_fricciones():
+def test_las_observaciones_simuladas_tienen_decision_razon_y_cambio_descrito_y_no_entran_al_csv_de_fricciones():
     registro = (USUARIOS / "registro_de_friccion.md").read_text(encoding="utf-8")
     seccion = registro.split("## Observaciones de las sesiones simuladas", 1)[1].split("\n## ", 1)[0]
     assert BANNER in seccion and "no cuentan como sesiones reales; cuentan como evidencia simulada bajo la excepción D111" in seccion
@@ -546,7 +546,7 @@ def test_las_observaciones_simuladas_tienen_decision_razon_y_commit_real_y_no_en
     for _, decision, razon, commit, _estado in filas:
         assert decision.strip().split()[0] in {"corregir", "aplazar", "descartar"} and razon.strip(), "cada observación lleva decisión y razón"
         if commit.strip() != "—":
-            assert subprocess.run(["git", "cat-file", "-e", commit.strip() + "^{commit}"], cwd=ROOT).returncode == 0, f"el commit {commit} debe existir"
+            assert not re.fullmatch(r"[0-9a-f]{7,40}", commit.strip()), f"el cambio se cita por su descripcion, no por un hash: {commit}"
     assert "S-0" not in (USUARIOS / "registro_de_friccion.csv").read_text(encoding="utf-8"), "no son fricciones de personas"
     cambios = (USUARIOS / "trazabilidad_de_cambios.md").read_text(encoding="utf-8").split("## Cambios de documentación a partir de las sesiones simuladas", 1)[1].split("\n## ", 1)[0]
     assert BANNER in cambios and "no vienen de personas usuarias" in cambios and re.findall(r"^\| (S-\d\d) \|", cambios, re.M) == [f"S-0{i}" for i in range(1, 7)]

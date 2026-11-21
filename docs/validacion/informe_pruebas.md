@@ -1,6 +1,6 @@
 # Informe de pruebas: resultado esperado, obtenido y evidencia
 
-Salida real registrada el 2026-11-17 (2026-11-17T22:07:20-05:00, America/Bogota), commit `0b392e1`. Generado con `python scripts/informe_pruebas.py`; no se edita a mano.
+Salida real registrada el 2026-11-17 (2026-11-17T22:07:20-05:00, America/Bogota). Generado con `python scripts/informe_pruebas.py`; no se edita a mano.
 
 ## Resumen
 

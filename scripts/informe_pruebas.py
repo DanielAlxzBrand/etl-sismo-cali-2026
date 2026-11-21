@@ -43,15 +43,6 @@ MOTIVOS = {
 TZ = ZoneInfo("America/Bogota")
 
 
-def commit():
-    """Commit corto del repositorio, o «sin-commit» si no hay `.git` o el equipo no tiene git (el zip del proyecto no trae historial)."""
-    try:
-        r = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT, capture_output=True, text=True, encoding="utf-8")
-    except OSError:
-        return "sin-commit"
-    return r.stdout.strip() or "sin-commit"
-
-
 def ejecutar(sin_cobertura, tmp):
     """Corre pytest (con coverage) y devuelve (ruta del xml, ruta del json de cobertura o None, duración, código)."""
     xml = Path(tmp) / "junit.xml"
@@ -149,7 +140,7 @@ def generar(pruebas, cobertura, dur_total, codigo, con_cobertura, salida):
     pasan = sum(p["resultado"] == "passed" for p in pruebas)
     fallan = [p for p in pruebas if p["resultado"] in ("failed", "error")]
     L = ["# Informe de pruebas: resultado esperado, obtenido y evidencia", "",
-         f"Salida real registrada el {ahora.strftime('%Y-%m-%d')} ({ahora.isoformat(timespec='seconds')}, America/Bogota), commit `{commit()}`. Generado con `python scripts/informe_pruebas.py`; no se edita a mano.", "",
+         f"Salida real registrada el {ahora.strftime('%Y-%m-%d')} ({ahora.isoformat(timespec='seconds')}, America/Bogota). Generado con `python scripts/informe_pruebas.py`; no se edita a mano.", "",
          "## Resumen", "",
          f"- **Pruebas ejecutadas:** {total}; **pasan:** {pasan}; **fallan:** {len(fallan)}; **omitidas:** {sum(p['resultado'] == 'skipped' for p in pruebas)}. Duración: {dur_total:.1f} s. Código de salida de pytest: {codigo}.",
          f"- **Casos de la matriz:** {len(casos)} (funciones críticas: {len(matriz.FUNCIONES)}); el resultado esperado de cada uno está en [matriz_casos_prueba.md](matriz_casos_prueba.md).", ""]

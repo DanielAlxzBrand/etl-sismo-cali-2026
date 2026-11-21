@@ -7,7 +7,7 @@
 | Participante | Participante simulado 2 |
 | Perfil (código) | `institucional` |
 | Fecha del ensayo | 2026-11-18 |
-| Copia de los documentos | commit `3157ee2a450e8adfd834c11ae43d880d9adaf57f` |
+| Copia de los documentos | el estado del repositorio al 2026-11-18 |
 | Documentos permitidos en la etapa 1 | `docs/usuarios/consentimiento.md`, `docs/usuarios/guia_simulacion/03_parte_b_primera_vez_con_el_panel.md`, `docs/usuarios/guia_simulacion/07_anexo_lista_del_participante.md`, `docs/panel/README.md`, `docs/panel/guia_de_uso.md` y `docs/gold/resultados.md` |
 | Lecturas recuperadas | tres comandos de lectura sobre archivos permitidos (los seis de la etapa 1, una relectura de las primeras 115 líneas de `docs/gold/resultados.md` y los siete adicionales de la etapa 2); no se acredita que no hubiera otras operaciones |
 | Tareas | T1 a T6 del [guion](../guion_sesion.md), con su enunciado literal |

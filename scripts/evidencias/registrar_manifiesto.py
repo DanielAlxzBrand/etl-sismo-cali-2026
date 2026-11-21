@@ -238,7 +238,7 @@ FILAS_SIM = {
 CARPETA_MC = "docs/evidencias/modo_completo"
 FILAS_MC = {
     "EV-100": ("5.4, 7.1", "La guía del modo completo seguida desde un zip nuevo en una carpeta con espacios y ñ (sin .git ni .env, Docker apagado al empezar): 33 comandos con su salida enmascarada, código y tiempo, los antes y después de los hallazgos 1 a 3 y 5 y 6, el DAG con las cuatro tareas en éxito, permisos, escáner con canario y la declaración del .env leído en memoria", "archivo",
-               "los comandos de `docs/instalacion/guia_modo_completo.md` sobre el zip de `make_dist.empaquetar` del commit `90bd057` descomprimido; la contraseña de `root` la tecleó Daniel", "EV-100_guia_seguida_desde_un_zip_nuevo.txt"),
+               "los comandos de `docs/instalacion/guia_modo_completo.md` sobre el zip de `make_dist.empaquetar` del commit «Guía del modo completo ajustada» descomprimido; la contraseña de `root` la tecleó Daniel", "EV-100_guia_seguida_desde_un_zip_nuevo.txt"),
     "EV-101": ("5.4, 5.6", "Hallazgo 4 y DF-20: con un volumen de Postgres de otra instalación, `airflow-init` salía con 0 y el servidor quedaba «unhealthy»; con `airflow db check` sale con 1 y los demás servicios no arrancan; con el volumen nuevo todo queda sano; las dos líneas conocidas que el escáner marca (la URL de la base con la clave ya tapada)", "archivo",
                "`docker compose up airflow-init`, `docker compose up -d` y `/entrypoint airflow db check` con el compose sellado y con el de DF-20, sin `down -v`", "EV-101_hallazgo_4_y_df20_antes_y_despues.txt"),
     "EV-102": ("4.2, 5.4", "Descripción de las tres capturas manuales de Daniel (cuadrícula del DAG con las cuatro tareas en verde, las siete tablas de `sismo_cali` en phpMyAdmin y el `INSERT` rechazado con #1142)", "archivo",

@@ -7,7 +7,7 @@
 | Participante | Participante simulado 1 |
 | Perfil (código) | `habitante` |
 | Fecha del ensayo | 2026-11-18 |
-| Copia de los documentos | commit `3157ee2a450e8adfd834c11ae43d880d9adaf57f` |
+| Copia de los documentos | el estado del repositorio al 2026-11-18 |
 | Documentos permitidos en la etapa 1 | `docs/usuarios/consentimiento.md`, `docs/usuarios/guia_simulacion/03_parte_b_primera_vez_con_el_panel.md`, `docs/usuarios/guia_simulacion/07_anexo_lista_del_participante.md`, `docs/panel/README.md` y `docs/panel/guia_de_uso.md`; `docs/gold/resultados.md` quedaba fuera porque es de otro perfil |
 | Tareas | T1 a T6 del [guion](../guion_sesion.md), con su enunciado literal |
 | Qué hay | el registro de la etapa 1 (abajo) y, desde el 2026-11-20, sus filas de [`registro.csv`](registro.csv) y [`cuestionarios.csv`](cuestionarios.csv), tomadas del texto original de la etapa 2 |
