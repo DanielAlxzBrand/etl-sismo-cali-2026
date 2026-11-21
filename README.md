@@ -4,7 +4,7 @@
 
 [Documentación](docs/README.md) · [Análisis](docs/gold/resultados.md) · [Datos](data/) · [Guía de instalación](docs/instalacion/README.md)
 
-Pipeline ETL con capas Bronze, Silver y Gold que integra una capa satelital de impacto en construcciones y el estrato socioeconómico por barrio, con una API de solo lectura, un panel, dos almacenes (SQLite y MySQL) y orquestación con Airflow.
+Un pipeline ETL con capas Bronze, Silver y Gold que junta una capa satelital de impacto en construcciones con el estrato socioeconómico del barrio. Incluye una API de solo lectura, un panel, dos almacenes (SQLite y MySQL) y orquestación con Airflow.
 
 ## 1. Descripción y madurez
 Estudiamos, con un indicador satelital, el cambio visible en **5.146 construcciones de 7 comunas de Cali** tras el sismo de magnitud 7,4 del 10 de agosto de 2026, y lo comparamos entre los estratos 1 a 6 del barrio. El proyecto descarga las fuentes abiertas, las guarda sin tocarlas (Bronze), las limpia y las une (Silver), calcula indicadores con intervalos de confianza (Gold) y los entrega por una API de solo lectura, un panel y dos bases de datos. El análisis completo, con su lectura y sus límites, está en [docs/gold/resultados.md](docs/gold/resultados.md).
@@ -66,7 +66,7 @@ Las insignias están bajo el título. Cada valor sale de un archivo del reposito
 
 *Figura 1. Muestra cómo las tres fuentes llegan a Bronze, cómo pasan por Silver y Gold, dónde se almacenan los resultados, quién los consume y qué orquesta Airflow.*
 
-La extracción de Bronze se ejecuta con `main.py`, fuera del DAG: el DAG parte de un Bronze ya descargado y lo valida. Airflow también levanta, en su compose, una base Postgres y un Redis que el diagrama no dibuja (los usa el propio Airflow para sus metadatos y su cola).
+La extracción de Bronze la corremos con `main.py`, fuera del DAG: el DAG arranca desde un Bronze que ya está descargado y lo valida. Además, en su compose Airflow levanta una base Postgres y un Redis que el diagrama no dibuja; los usa el propio Airflow para sus metadatos y su cola.
 
 | Capa | Entra | Qué se hace | Sale |
 |---|---|---|---|
@@ -90,7 +90,7 @@ Los servicios locales escuchan solo en `127.0.0.1`:
 
 Detalle por componente: [API](docs/api/arquitectura.md), [panel](docs/panel/arquitectura_panel.md), [orquestación](docs/orquestacion/README.md) y [modelo de datos](docs/almacenamiento/modelo_datos.md).
 
-**Calidad, linaje y monitoreo.** La calidad vive en `data/silver/quality_report.json` y en las pruebas de `tests/`. El linaje, en el manifiesto de Bronze con el sha256 de cada archivo y en la trazabilidad de [docs/checklist/trazabilidad.md](docs/checklist/trazabilidad.md). El monitoreo, en los registros de `logs/`, en `/health` y `/calidad` de la API y en la interfaz de Airflow. No hay un servicio aparte para ninguno de los tres.
+**Calidad, linaje y monitoreo.** La calidad está en `data/silver/quality_report.json` y en las pruebas de `tests/`. El linaje, en el manifiesto de Bronze con el sha256 de cada archivo y en la trazabilidad de [docs/checklist/trazabilidad.md](docs/checklist/trazabilidad.md). El monitoreo, en los registros de `logs/`, en `/health` y `/calidad` de la API y en la interfaz de Airflow. Ninguno de los tres tiene un servicio aparte.
 
 ## 5. Stack tecnológico
 Las versiones son las de `requirements.txt`, `orquestacion/Dockerfile` y los compose; una prueba comprueba que esta tabla coincida con ellos.
@@ -146,7 +146,7 @@ Las versiones son las de `requirements.txt`, `orquestacion/Dockerfile` y los com
 | `coverage` | 7.17.3 | cobertura de `src/` |
 | `jupyter` | 1.1.1 | los cinco notebooks de análisis y validación, entre ellos el recálculo independiente |
 
-Decisión de alcance: calidad con `pytest` y `quality_report.json`. No usamos herramientas externas de calidad de datos ni de transformación declarativa (por ejemplo Great Expectations o dbt): las reglas de Silver viven en el código y cada una tiene su prueba.
+Decisión de alcance: la calidad la hacemos con `pytest` y `quality_report.json`. No usamos herramientas externas de calidad de datos ni de transformación declarativa (por ejemplo Great Expectations o dbt): las reglas de Silver están en el código y cada una tiene su prueba.
 
 **Observabilidad.** El módulo `logging` de la biblioteca estándar de Python (`src/logger.py`), la interfaz de Airflow y `/health` de la API. No usamos herramientas externas (sección 11).
 
@@ -239,7 +239,7 @@ No se versionan los archivos `.log` de `logs/`, ni `dist/`, `.venv/` ni `.env`.
 
 La ruta de la carpeta debe tener menos de unos 120 caracteres: Windows corta las rutas completas en 260 y el archivo más largo del repositorio tiene 130 de ruta relativa. Los espacios y las tildes en el nombre de la carpeta no dan problema.
 
-Hay dos modos. El **modo mínimo** (pipeline, API, panel y pruebas con SQLite) basta para reproducir las cifras. El **modo completo** agrega MySQL, Airflow y phpMyAdmin y no cambia ninguna cifra. Las guías son [docs/instalacion/README.md](docs/instalacion/README.md), [modo mínimo](docs/instalacion/modo_minimo.md) y [modo completo paso a paso](docs/instalacion/guia_modo_completo.md).
+Hay dos modos. Con el **modo mínimo** (pipeline, API, panel y pruebas con SQLite) alcanza para reproducir las cifras. El **modo completo** suma MySQL, Airflow y phpMyAdmin y no cambia ninguna cifra. Las guías son [docs/instalacion/README.md](docs/instalacion/README.md), [modo mínimo](docs/instalacion/modo_minimo.md) y [modo completo paso a paso](docs/instalacion/guia_modo_completo.md).
 
 ### Primera vez en el modo mínimo
 Desde la raíz del proyecto, en PowerShell:
@@ -300,7 +300,7 @@ python main.py --stage extract --refresh    # snapshot nuevo de Bronze (necesita
 ```
 Con Bronze presente, `--stage extract` verifica los sha256 y escribe «ya existe, sha256 coincide»: no descarga ni agrega líneas al manifiesto. Con `--refresh` crea un snapshot nuevo sin tocar el anterior; después hay que volver a ejecutar `--stage transform` y `--stage gold`, y los resultados pueden cambiar si la fuente cambió.
 
-**No existe un modo de simulación (dry-run).** `--stage all` escribe en `data/silver/` y `data/gold/`. Aunque los datos salgan iguales, `git status` puede mostrar dos cambios: `data/gold/etl_sismo.db` (SQLite no escribe el archivo igual byte a byte en cada carga; cambian los bytes, no las tablas) y una línea de `docs/silver/reglas_silver.md`. Para volver a lo versionado: `git checkout -- data/gold/etl_sismo.db docs/silver/reglas_silver.md`. Lo más parecido a una ejecución sin riesgo es el DAG de Airflow, que trabaja en una copia y compara con lo versionado sin escribir en el repositorio.
+**No existe un modo de simulación (dry-run).** `--stage all` escribe en `data/silver/` y `data/gold/`. Aunque los datos salgan iguales, `git status` puede mostrar dos cambios: `data/gold/etl_sismo.db` (SQLite no escribe el archivo igual byte a byte en cada carga; cambian los bytes, no las tablas) y una línea de `docs/silver/reglas_silver.md`. Para volver a lo versionado: `git checkout -- data/gold/etl_sismo.db docs/silver/reglas_silver.md`. Lo más parecido a correrlo sin riesgo es el DAG de Airflow, que trabaja en una copia y compara con lo versionado sin escribir en el repositorio.
 
 **Con Airflow** (desde la carpeta de Airflow que prepara el script, no desde la del proyecto):
 ```powershell
@@ -405,10 +405,10 @@ Lo que no hay: pruebas de carga, de fuzzing ni de otro sistema operativo distint
 - **Impacto de un cambio:** `tests/test_pipeline_reproducible.py` compara en una copia los nueve archivos de la línea base con lo regenerado, así que un cambio que altere una salida se ve como una diferencia de sha256; después se busca el archivo cambiado en la trazabilidad para saber qué ítems, pruebas y evidencias lo citan, y `python scripts\validar_checklist.py --todos` comprueba que siguen en pie. No hay una herramienta que dibuje el grafo de dependencias.
 - **Registros:** un archivo por día; no hay rotación ni borrado automático y los `.log` no se versionan.
 
-Decidimos no incluir alertas ni métricas externas (Slack, PagerDuty, Prometheus): el proyecto corre en una máquina local, sin un servicio desplegado que alguien deba vigilar. Si se despliega, esta sección es la primera que habría que ampliar.
+Decidimos no incluir alertas ni métricas externas (Slack, PagerDuty, Prometheus): el proyecto corre en una máquina local y no hay un servicio desplegado que alguien tenga que vigilar. Si algún día se despliega, esta sección es la primera que habría que ampliar.
 
 ## 12. Despliegue e integración continua
-**No hay despliegue en un servidor ni integración continua.** Existe un solo entorno, el local; no hay staging ni producción. Tampoco hay repositorio remoto publicado, así que no hay flujos automáticos. Lo que sí hay es un procedimiento manual que se repite igual cada vez:
+**No hay despliegue en un servidor ni integración continua.** Tenemos un solo entorno, el local: no hay staging ni producción. Tampoco hay repositorio remoto publicado, así que no hay flujos automáticos. Lo que sí tenemos es un procedimiento manual que repetimos igual cada vez:
 
 1. Las pruebas completas en un clon y en el zip.
 2. `python scripts\make_dist.py` arma el zip por lista de inclusión: nunca entran `.env`, `.git`, `.venv`, `logs` ni `dist`.
@@ -473,7 +473,7 @@ Con 8 GB de RAM no conviene encender todo a la vez; esa configuración no está 
 - La API pagina `/construcciones` (50 por omisión, 200 como máximo) y abre cada conexión de solo lectura por solicitud.
 - Con Bronze presente, `--stage extract` no vuelve a descargar: verifica los sha256.
 
-**Escalado.** Todo se midió con 5.146 construcciones. No medimos más datos, más personas usuarias a la vez ni otro motor de base de datos, y no prometemos cómo escala. Lo único medido que apunta a un límite es el consumo en reposo: unos 160 MiB para la API y el panel y 1.970 MiB para Airflow.
+**Escalado.** Todo lo medimos con 5.146 construcciones. No medimos más datos, más personas usuarias a la vez ni otro motor de base de datos, así que no prometemos cómo escala. Lo único medido que apunta a un límite es el consumo en reposo: unos 160 MiB para la API y el panel y 1.970 MiB para Airflow.
 
 **Costos en la nube: no aplican.** Todo corre en una máquina local, así que no hay precios que medir. La estructura de costos, con las fórmulas y los precios como parámetros vacíos, está en [docs/finanzas/estructura_costos.md](docs/finanzas/estructura_costos.md); no inventamos ninguna cifra monetaria.
 
@@ -501,7 +501,7 @@ Las decisiones, con sus alternativas, su razón y su riesgo, están en [docs/DEC
 El documento de arquitectura del sistema, con 15 registros de decisión (ADR) y diagramas en texto, está en [docs/arquitectura/arquitectura_del_sistema.md](docs/arquitectura/arquitectura_del_sistema.md) y [docs/arquitectura/adr/](docs/arquitectura/adr/). Está aprobado (versión 1.0, 2026-11-20).
 
 ## 17. Contribución y estándares
-Esta sección describe cómo trabajamos hoy; no hay un flujo de solicitudes de cambio porque no hay un repositorio publicado.
+Esta sección cuenta cómo trabajamos hoy; no tenemos un flujo de solicitudes de cambio porque no hay un repositorio publicado.
 
 - **Ramas y commits:** el trabajo vive en la rama `desarrollo`; la rama `master` conserva un punto anterior y no se ha vuelto a integrar. No hay rama `main`. Cada commit es pequeño, va en español y nombra el componente que cambia.
 - **Pruebas primero:** una regla, una prueba. Las reglas de documentos también se prueban (cifras, enlaces, términos prohibidos) y cada prueba nueva trae su caso negativo.
@@ -520,7 +520,7 @@ Esta sección describe cómo trabajamos hoy; no hay un flujo de solicitudes de c
 6. `python scripts\escanear_secretos.py` termina en `hallazgos: 0`.
 7. Si hay una evidencia nueva, se registra con su sha256 en el manifiesto y `python scripts\validar_checklist.py --todos` pasa.
 
-**No hay linter ni formateador configurados** (ni ruff, ni black, ni pre-commit). Las convenciones anteriores se cumplen por costumbre y por las pruebas.
+**No hay linter ni formateador configurados** (ni ruff, ni black, ni pre-commit). Las convenciones anteriores las cumplimos por costumbre y con ayuda de las pruebas.
 
 ## 18. Estado y hoja de ruta
 | Componente | Estado |
