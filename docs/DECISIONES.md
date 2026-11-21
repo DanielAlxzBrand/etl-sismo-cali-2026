@@ -32,7 +32,7 @@ Estado: heredadas el 2026-10-15; las que la verificación previa de las fuentes 
 | G4 | polígonos de barrios (solo si G2 es solo geométrico) | **No aplica a la llave** (G2 trae código). Contingencia verificada: WFS `ws-idesc.cali.gov.co` entrega 342 polígonos en EPSG:4326 pedido al servidor | `v6_wfs_barrios_20.json` |
 | G5 | cobertura JOIN de prueba ≥80 % sobre 500 filas | **Pasa**: 100 % en 500 filas (semilla 0); 99,88 % sobre las 5.146 (6 sin coincidencia: 4 con COMUNA 19/BARRIO 20, 2 con código vacío) | prueba de cobertura de la verificación previa (ver `verificacion_fuentes.md` V4/V7) |
 
-No se bajó ningún umbral. G1 se evaluó sobre el endpoint real del mismo dataset porque el endpoint Socrata previsto no es tabular; se declara como desviación, no como "pasa" automático.
+No bajamos ningún umbral. G1 lo evaluamos sobre el endpoint real del mismo dataset porque el endpoint Socrata previsto no es tabular; lo declaramos como desviación, no como "pasa" automático.
 
 ### Fuentes finales
 - **API principal**: ArcGIS FeatureServer `https://services3.arcgis.com/Hf3YbZrlZ0OA2COM/arcgis/rest/services/Impacto_Satelital_en_Edificaciones_por_Terremoto_Cali_2026/FeatureServer/0` (paginación `resultOffset`/`resultRecordCount`, `maxRecordCount` 2000, `orderByFields=OBJECTID`; 3 páginas: 2000/2000/1146).
@@ -49,15 +49,15 @@ No se bajó ningún umbral. G1 se evaluó sobre el endpoint real del mismo datas
 5. **Cobertura geográfica de ficha 1**: solo **7 comunas** (19, 03, 10, 20, 09, 18, 17) y 52 códigos de barrio, extensión lon −76,563…−76,524, lat 3,389…3,445. No es toda la ciudad (sesgo de selección ya anticipado, ahora cuantificado).
 6. **Variable de daño (proxy satelital)**: `Estado_Estructural` (4 clases: "Sin cambio aparente / Daño interno" 3.357; "Posible desaparición de techo" 1.058; "Sin datos satelitales" 435; "Alta probabilidad de escombros" 296) y `Indice_Escombros` (double). Umbral de "severo" a definir tras el EDA y en la etapa Silver (D7).
 7. **SGC eval_int (V9)**: 58.500 puntos; 13.085 con `FECHA_ACTUALIZACION` ≥ 2026-08-01; ningún `ID_SISMO` identificable como el M7.4 del 10-ago (intensidad máx. 7 solo en un evento del 14-oct, `SGC2026pqqmro`). `ID_CENTRO_POBLADO`: 8 dígitos en 11.746 filas, 7 en 1.339 (cero a la izquierda perdido por ser double). Irrelevante para Plan A; se documenta por si se activara Plan B.
-8. **Encabezado de la estructura**: `tests/test_quality.p` (sin la y) se renombró a `tests/test_quality.py`.
-9. **`.env`** estaba vacío y sin `HTTP_USER_AGENT`; las pruebas usaron un User-Agent genérico del proyecto. Se creó `.env.example`.
+8. **Encabezado de la estructura**: `tests/test_quality.p` (sin la y) lo renombramos a `tests/test_quality.py`.
+9. **`.env`** estaba vacío y sin `HTTP_USER_AGENT`; en las pruebas usamos un User-Agent genérico del proyecto. Creamos el `.env.example`.
 10. **Python**: el equipo usa 3.13.0 (cumple ≥3.11). `shapely` 2.2.0 instaló sin problema (V13).
 
 ## Bronze y EDA — decisiones (2026-10-15)
 
 ### Cambios de contexto confirmados al extraer Bronze
 - **Codificación del CSV de estrato: UTF-8**, no latin-1 (corrige la diferencia 4 anterior y el comentario de `config.yaml`). El header HTTP decía ISO-8859-1 por defecto, pero los bytes decodifican como UTF-8 sin errores (H7). Las muestras `docs/bronze/muestras/v4_*` y `v5_*` se regeneraron en UTF-8 (las primeras versiones tenían tildes dañadas).
-- **Paginación:** la especificación inicial de la extracción prohibía `resultOffset` (válido para la capa de SGC). La capa de edificaciones sí lo soporta (`supportsPagination: true`, confirmado en la verificación previa de las fuentes), así que se usa `resultOffset` + `orderByFields=OBJECTID`; la prohibición queda solo para la capa SGC.
+- **Paginación:** la especificación inicial de la extracción prohibía `resultOffset` (válido para la capa de SGC). La capa de edificaciones sí lo soporta (`supportsPagination: true`, confirmado en la verificación previa de las fuentes), así que usamos `resultOffset` + `orderByFields=OBJECTID`; la prohibición queda solo para la capa SGC.
 - **Layout de Bronze:** `data/bronze/{api,tabular,geo}/<fuente>/snap_<UTC>/…`; los conteos antes/después y el metadato de la capa son archivos Bronze con su propia línea de manifiesto (`edificaciones_count_antes`, `edificaciones_count_despues`, `edificaciones_capa_meta`). Una extracción cuenta como completa solo si existe `count_despues`.
 - Resultado: 5.146 filas en 3 páginas (2.000/2.000/1.146), conteo antes = después = 5.146; 342 polígonos; CSV 369 filas (16.030 bytes). Segunda ejecución: "ya existe, sha256 coincide", manifiesto sin cambios (8 líneas).
 
@@ -81,8 +81,8 @@ No se bajó ningún umbral. G1 se evaluó sobre el endpoint real del mismo datas
 ### Otras decisiones de Silver
 - **Licencia (corrige H17 y V3):** el catálogo de datos.gov.co declara CC BY 4.0 en `metadata.custom_fields.Common Core.License`; el servicio ArcGIS solo tiene `copyrightText` vacío. Se cita la licencia con ese origen. Fechas en `config.yaml`: edición de la capa 2026-09-02 (`America/Bogota`), imagen post 2026-08-11, imagen pre 2026-03-22.
 - **Terminología:** la unidad de análisis es la "construcción" (huella catastral), no el edificio (H1); las tablas se llaman `silver_construcciones.csv` y `silver_integrated.csv`.
-- **Paso espacial en Silver:** se calcula con `shapely` (centroide a 7 decimales y punto en polígono) para que Gold no lea Bronze. Solo valida la llave; no entra al JOIN.
-- **`geom_duplicada`:** marca las 18 construcciones (9 pares) con geometría idéntica; se conservan.
+- **Paso espacial en Silver:** lo calculamos con `shapely` (centroide a 7 decimales y punto en polígono) para que Gold no lea Bronze. Solo valida la llave; no entra al JOIN.
+- **`geom_duplicada`:** marca las 18 construcciones (9 pares) con geometría idéntica; las conservamos.
 - **Verificaciones del CSV:** los dos barrios con vacío en los lados (5607 en e1, 202 en e4) conservan su estrato moda al tratar el vacío como 0; los dos "Camino Real" son barrios distintos (1922 y 1923).
 - **Huérfanos:** 6 a la izquierda (4 con código 1920 ausente del CSV 2015, 2 con COMUNA/BARRIO en blanco) y 295 barrios del CSV sin construcciones a la derecha. 8 construcciones sin estrato válido (6 + 2 en el barrio NR 1999).
 
@@ -104,14 +104,14 @@ Solo la comuna 18 tiene construcciones con datos en ambos grupos (3-5 y 1-2); la
 Diferencia 3-5 menos 1-2 = +0,49 pp [−2,36; +2,55] (Newcombe); los intervalos de Wilson y las cotas por "sin datos" se solapan; en S0-S5 el intervalo siempre incluye 0. Redacción permitida: "con este proxy y esta muestra no se detecta diferencia".
 
 ### Otras decisiones
-- Banderas de Silver `severo_estricto` y `dano_visible` son nulas en las 435 construcciones sin datos, por lo que `COUNT(severo_estricto)` en SQL equivale al denominador "con datos".
+- Banderas de Silver `severo_estricto` y `dano_visible` son nulas en las 435 construcciones sin datos, así que `COUNT(severo_estricto)` en SQL equivale al denominador "con datos".
 - K6 excluye las 2 construcciones sin comuna; K3 excluye 1 severo sin barrio (295 de 296).
-- `docs/silver/reglas_silver.md` y `docs/silver/validacion_llave.md` se actualizan desde sus generadores en `integrate.py`; los CSV de Silver conservan el mismo sha256.
+- Actualizamos `docs/silver/reglas_silver.md` y `docs/silver/validacion_llave.md` desde sus generadores en `integrate.py`; los CSV de Silver conservan el mismo sha256.
 
 ## Validación y entrega (2026-10-15)
 
 ### Pruebas
-26 pruebas (`pytest -q`, sin red, sin skip/xfail): Bronze (manifiesto, sha256, filas, sin paths duplicados), Silver (llaves, duplicados, tipos, zona horaria), calidad (cobertura, Gold, reporte, KPI en rango), regresión numérica de KPI (`tests/test_kpis.py`) y cifras del README (`tests/test_readme_cifras.py`). Pasaron a la primera; no hubo que alterar lógica, umbrales ni datos esperados.
+26 pruebas (`pytest -q`, sin red, sin skip/xfail): Bronze (manifiesto, sha256, filas, sin paths duplicados), Silver (llaves, duplicados, tipos, zona horaria), calidad (cobertura, Gold, reporte, KPI en rango), regresión numérica de KPI (`tests/test_kpis.py`) y cifras del README (`tests/test_readme_cifras.py`). Pasaron a la primera; no tuvimos que alterar lógica, umbrales ni datos esperados.
 - **Regresión del defecto en Mantel-Haenszel detectado en el recálculo independiente** (Mantel-Haenszel contando construcciones "sin datos" en n1, n0 y N): `test_regresion_defecto_mh_sin_datos_no_entra_en_mh` construye una comuna con 44 expuestas (5 severas) y 52 de referencia (3 severas) → RR = 260/132 = 1,9697, y verifica que agregar 30 filas `sin_datos` por grupo NO cambia RR_MH.
 - **Zona horaria:** Silver y Gold no tienen columnas datetime; la prueba verifica `timezone: America/Bogota` en la configuración y que `lastEditDate` de la capa convertido a esa zona da la `fecha_edicion_capa` (2026-09-02, UTC−5).
 
@@ -123,7 +123,7 @@ Se añadió el punto 8 a "Qué NO se puede concluir" de `docs/gold/KPIs.md` (el 
 - Verificación: `gold_final.csv` conserva su sha256 (496ab49e…); cambian `kpis_gold.csv` (e5c89826… → 6db3dbee…) y `kpis_sensibilidad.csv` (04d1dfc1… → 0cf75f2d…) solo por el texto de `nota`; dos corridas de `--stage gold` y de `--stage all` dan el mismo sha256 en Silver y Gold.
 
 ### README generado
-Hasta D104 el README se generó con un script desde `kpis_gold.csv`, `kpis_sensibilidad.csv`, `quality_report.json`, `gold_final.csv` y `docs/gold/KPIs.md`, para que las cifras no se escribieran a mano. Desde D105 el script se retiró: el README se escribe a mano, el análisis vive en `docs/gold/resultados.md` y `tests/test_resultados_cifras.py` falla si sus cifras difieren de los archivos.
+Hasta D104 el README se generó con un script desde `kpis_gold.csv`, `kpis_sensibilidad.csv`, `quality_report.json`, `gold_final.csv` y `docs/gold/KPIs.md`, para que las cifras no se escribieran a mano. Desde D105 retiramos el script: el README lo escribimos a mano, el análisis vive en `docs/gold/resultados.md` y `tests/test_resultados_cifras.py` falla si sus cifras difieren de los archivos.
 
 ### Licencias
 - Capa de construcciones: CC BY 4.0 según `metadata.custom_fields.Common Core.License` del catálogo; el servicio ArcGIS tiene `copyrightText` vacío.

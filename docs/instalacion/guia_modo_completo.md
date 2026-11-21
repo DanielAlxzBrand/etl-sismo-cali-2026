@@ -7,8 +7,8 @@ por primera vez, desde el zip y en otra carpeta, tropezó con seis cosas que nin
 lo que debe verse al ejecutarlo y qué hacer cuando no se ve.
 
 ## Cómo leer esta guía
-- Todos los comandos son de **PowerShell** y cada uno está en su propio bloque. Antes de cada comando hay una línea **«Para qué sirve»**; debajo, un bloque **«Qué debe verse»** con lo que imprime.
-- Cada bloque «Qué debe verse» dice si es **(visto)**, porque lo copiamos de una ejecución real desde un zip nuevo en otra carpeta, o **(no probado)**. Nada se afirma sin haberlo ejecutado. Los comandos que no imprimen nada (cambiar de carpeta, copiar al portapapeles) llevan el bloque `(sin salida)`, también marcado.
+- Todos los comandos son de **PowerShell** y cada uno está en su propio bloque. Antes de cada comando ponemos una línea **«Para qué sirve»** y, debajo, un bloque **«Qué debe verse»** con lo que imprime.
+- Cada bloque «Qué debe verse» dice si es **(visto)**, porque lo copiamos de una ejecución real desde un zip nuevo en otra carpeta, o **(no probado)**. No afirmamos nada que no hayamos ejecutado. Los comandos que no imprimen nada (cambiar de carpeta, copiar al portapapeles) llevan el bloque `(sin salida)`, también marcado.
 - Lo que cambia de un equipo a otro está enmascarado con marcadores fijos: `<usuario>` (el nombre de usuario de Windows), `<ruta>` (una carpeta de su equipo), `<ID>` (un identificador que genera el programa), `<PID>` (un número de proceso), `<hash>` (una huella)
   y `<contraseña>` (cualquier contraseña o clave: nunca se imprime). Debajo de cada bloque «visto» una línea **Varía:** dice qué partes cambian en su equipo (tiempos, identificadores, fechas) y otra **Tiempo:** cuánto tardó.
 - **El nombre del proyecto de Compose que sale en las salidas (`airflow-zip`) es el nombre de ejemplo de esta guía.** En las capturas reales fue `airflow-zip`, `airflow-zip2` o `airflow-zip3` según la pasada, y se muestra siempre como `airflow-zip`; el suyo es el que elija con `--nombre-compose`.
@@ -44,7 +44,7 @@ No broken requirements found.
 **Si falta MySQL 8 o Docker Desktop con WSL2.** El repositorio **no trae pasos para instalarlos** (solo los requisitos de arriba y, en [errores comunes](errores_comunes.md), qué hacer si Docker no responde): instálelos desde las páginas oficiales de MySQL y de Docker y vuelva a la sección 2. No probamos instalarlos.
 
 **Orden de los pasos:** requisito previo (zip descomprimido y entorno) → revisar el `.gitignore` y el `.env` (1) → comprobar que no hay nada levantado y que el equipo está listo (2) → cuentas de MySQL (3) → carpeta de Airflow (4) → construir y levantar (5) → contraseña de la interfaz (6) → DAG (7) → phpMyAdmin (8) → apagar (9).
-Los pasos 1 a 9 se hacen desde la raíz del proyecto, salvo donde dice que se entre a la carpeta de Airflow.
+Los pasos 1 a 9 se hacen desde la raíz del proyecto, salvo donde decimos que hay que entrar a la carpeta de Airflow.
 
 **Qué conserva y qué borra cada comando de apagado**
 | Comando | Detiene los contenedores | Borra los contenedores | Borra los volúmenes (la base de metadatos de Airflow) |

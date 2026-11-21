@@ -4,13 +4,13 @@
 
 **Rótulos.** Una captura que tome el equipo se rotula «captura tomada por el equipo» con la fecha. La captura de `/docs` incluida en el repositorio (EV-017) y las del panel (EV-054) se rotulan «captura automatizada del navegador». Las imágenes generadas desde salidas reales (EV-021 a EV-024, EV-045 a EV-048, EV-058 a EV-060, los diagramas de `docs/orquestacion/img/` y `docs/panel/img/` y los de `docs/estrategia/img/`) se rotulan «imagen generada a partir de la salida registrada; no es una captura de pantalla».
 
-**Cómo se lee cada ficha.** (a) archivo principal para adjuntar a la plantilla; (b) archivos de apoyo; (c) texto sugerido para la columna «Evidencia / observaciones»; (d) captura opcional, con comando probado; (e) cómo validar la evidencia con un comando de solo lectura. Las rutas son relativas a la raíz del repositorio. El índice de todas las evidencias con su sha256 está en `docs/evidencias/manifiesto.md`.
+**Cómo se lee cada ficha.** (a) archivo principal para adjuntar a la plantilla; (b) archivos de apoyo; (c) texto sugerido para la columna «Evidencia / observaciones»; (d) captura opcional, con comando probado; (e) cómo validar la evidencia con un comando de solo lectura. Las rutas son relativas a la raíz del repositorio. El índice de todas las evidencias, cada una con su sha256, está en `docs/evidencias/manifiesto.md`.
 
 **Numeración.** EV-086 es un número no usado: no hay ninguna evidencia registrada con ese identificador ni fila en el manifiesto, y la numeración salta de EV-085 a EV-087 (ningún archivo del proyecto lo cita).
 
 **Alcance de los resultados.** Proxy satelital, no evaluación estructural; 7 comunas de Cali con polígonos de afectación preliminar; estrato de 2015. No se generaliza a Cali.
 
-**Comandos de PowerShell.** Todos se ejecutan en la raíz del repositorio con el entorno activado (`.\.venv\Scripts\Activate.ps1`) y no modifican nada. Para comprobar que no cambió nada: `git status --short` no debe imprimir nada.
+**Comandos de PowerShell.** Todos se ejecutan en la raíz del repositorio con el entorno activado (`.\.venv\Scripts\Activate.ps1`) y no modifican nada. Para confirmar que no cambió nada: `git status --short` no debe imprimir nada.
 
 ## Índice
 Fichas de los ítems 1.1 a 1.5 (Estrategia), 2.1 a 2.3 (API, fuentes y credenciales), 3.1, 3.2 y 5.3 (Panel), 3.3 y 6.1 a 6.4 (Usuarios, UX y finanzas), 4.1 a 4.3 (Carga relacional) y 5.1, 5.2, 5.4, 5.5 y 5.6 (Pruebas y orquestación). Las fichas de los ítems 6.5 y 7.1 a 7.5 (Documentación y demostración, y Cierre y paquete) se escribieron en la auditoría intermedia y dicen el estado real de cada uno; ninguno está en «Cumple».

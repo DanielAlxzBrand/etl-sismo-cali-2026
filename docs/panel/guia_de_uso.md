@@ -12,7 +12,7 @@ El lanzador arranca la API y el panel en 127.0.0.1, espera a que respondan, impr
 .\.venv\Scripts\python.exe -m uvicorn src.api.app:app --host 127.0.0.1 --port 8000
 .\.venv\Scripts\python.exe -m streamlit run src/panel/app.py
 ```
-La dirección de la API que usa el panel está en `config/config.yaml` (clave `panel.api_url`); solo se admiten direcciones locales.
+La dirección de la API que usa el panel está en `config/config.yaml` (clave `panel.api_url`); solo aceptamos direcciones locales.
 
 ## 2. Qué muestra cada página
 Todas tienen el mismo marco: título, la pregunta de negocio que responden, el estado de la API con su almacenamiento y la fecha de corte, el **recuadro de alcance** y, al pie, la fuente y las licencias.
@@ -29,7 +29,7 @@ Todas tienen el mismo marco: título, la pregunta de negocio que responden, el e
 | Fuentes y sistema | ¿De dónde salen los datos y qué no se puede concluir? | fuentes con su publicador, licencia y fechas, estado del sistema, los puntos de «qué no se puede concluir» y las limitaciones del panel |
 
 ### Dónde se ve cada respuesta
-Esta guía describe qué hay en cada página, pero **no repite las cifras ni los nombres que el panel muestra**: cambian si cambian los datos. Para leerlos hay que abrir la página; la lectura de la captura de datos vigente está en [`docs/gold/resultados.md`](../gold/resultados.md).
+Esta guía cuenta qué hay en cada página, pero **no repite las cifras ni los nombres que el panel muestra**: cambian si cambian los datos. Para leerlos hay que abrir la página; la lectura de la captura de datos vigente está en [`docs/gold/resultados.md`](../gold/resultados.md).
 - **¿Se nota diferencia entre los estratos 3-5 y 1-2?** Página Respuesta: las dos tasas, la diferencia con su intervalo y la lectura generada.
 - **¿Qué estratos no se deben ordenar frente a los demás?** Página Estratos (K1): los grupos con pocos casos severos llevan el texto «muestra baja».
 - **¿En qué comuna se concentran los estratos 1-2?** Página Comunas (K6): la composición por grupo de estrato y el texto que dice qué comuna concentra los estratos 1-2.

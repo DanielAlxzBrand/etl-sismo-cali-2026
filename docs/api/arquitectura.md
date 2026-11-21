@@ -27,7 +27,7 @@ El proyecto es un ETL con capas: **Bronze** guarda lo descargado tal cual, **Sil
 | `scripts/make_catalogo_fuentes.py` | catálogo de fuentes y metadatos | manifiesto, config, metadatos de Bronze, `quality_report.json`, `docs/gold/KPIs.md` | `catalogo_fuentes.json` y `.md` |
 | `scripts/escanear_secretos.py` | búsqueda de secretos | árbol, historial, notebooks, logs, zip | hallazgos (archivo, línea, patrón) |
 
-La API **no calcula estadística**: entrega lo que Gold ya contiene. Los únicos cálculos son conteos y sumas (`COUNT`, `SUM`) en `/composicion`, y agrupaciones de códigos en `/llave/revision`.
+La API **no calcula estadística**: entrega lo que Gold ya tiene. Los únicos cálculos que hace son conteos y sumas (`COUNT`, `SUM`) en `/composicion`, y agrupaciones de códigos en `/llave/revision`.
 
 ## 3. Flujo de datos
 1. Bronze → Silver → Gold se ejecutan con `main.py` (no desde la API).
@@ -52,7 +52,7 @@ Todos los endpoints son `GET`. Los errores usan siempre el formato de la secció
 | `/calidad` | — | coberturas y confianza de la llave |
 | `/llave/revision` | — | códigos de barrio con nombre no validado |
 
-`/kpis/sensibilidad` se declara **antes** de `/kpis/{kpi_id}`; si no, «sensibilidad» se leería como un identificador de indicador. Una prueba verifica el orden.
+`/kpis/sensibilidad` la declaramos **antes** de `/kpis/{kpi_id}`; si no, «sensibilidad» se leería como un identificador de indicador. Una prueba verifica el orden.
 
 ### Ejemplos reales de respuesta
 Capturados en un clon temporal con el servicio en `127.0.0.1` y guardados en `docs/evidencias/api/respuestas_api/`. [Evidencia en el repo: `docs/evidencias/api/EV-016_respuestas_api.txt`]

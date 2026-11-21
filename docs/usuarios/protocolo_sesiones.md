@@ -1,6 +1,6 @@
 # Protocolo de las sesiones con personas usuarias del panel
 
-**Ítems del checklist:** 6.1 (sesiones con personas usuarias) y, con sus resultados, 6.2, 6.3 y 3.3 (subcriterio 4). · **Estado:** material preparado; **las sesiones reales todavía no se han hecho** (solo hubo dos sesiones simuladas, en una sola ronda). Este documento dice cómo las haremos; no contiene ningún resultado.
+**Ítems del checklist:** 6.1 (sesiones con personas usuarias) y, con sus resultados, 6.2, 6.3 y 3.3 (subcriterio 4). · **Estado:** material preparado; **las sesiones reales todavía no se han hecho** (solo hubo dos sesiones simuladas, en una sola ronda). Este documento cuenta cómo las vamos a hacer; no trae ningún resultado.
 
 > **Etiquetas de evidencia.** [Evidencia en el repo: `ruta`] = existe en el repositorio; [Criterio aplicado: …] = regla nuestra, explicada; [Hipótesis de diseño: …] = propuesta que todavía no se ejecutó.
 
@@ -18,7 +18,7 @@ Tomamos los grupos que ya describe [02_stakeholders.md](../estrategia/02_stakeho
 | `institucional` | Usuario objetivo institucional (gestión del riesgo); **no hubo contacto con la Secretaría ni con otra entidad** | Si la tabla por comuna y las advertencias le sirven para priorizar dónde mirar primero |
 | `habitante` | Habitantes de las zonas afectadas | Si entiende qué se midió, con qué incertidumbre y qué no se puede decir de su barrio |
 | `academico` | Comunidad académica y estudiantil | Si lee la ausencia de diferencia como «no se detecta con este proxy» y no como «el estrato no influye» |
-Una persona queda en el perfil que ella misma diga que describe mejor su relación con el tema; si no encaja en ninguno, se anota `otro` y no se fuerza.
+Cada persona queda en el perfil que ella misma diga que describe mejor su relación con el tema; si no encaja en ninguno, anotamos `otro` y no la forzamos.
 
 ## 4. Cuántas personas
 - **Mínimo propuesto: de 3 a 5 personas.** El equipo planea hacer 2 o 3 sesiones reales; si solo se logran 2 o 3, el análisis muestra «k de n» y **no porcentajes** (con menos de 5 personas un porcentaje parecería más preciso de lo que es).
