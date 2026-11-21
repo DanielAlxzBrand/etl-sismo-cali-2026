@@ -1,0 +1,16 @@
+EV-121 · Tiempos medidos en la ejecución total sobre el zip, 2026-11-21
+
+Qué es: los tiempos de la ejecución de la guía sobre un zip armado desde HEAD y extraído en una carpeta nueva con espacios y ñ, con un entorno virtual nuevo, Docker 29.9.3 y un proyecto de Compose propio. Son mediciones de una máquina con Windows 11 y Python 3.13; en otro equipo cambian.
+
+| Paso | Resultado |
+|---|---|
+| Instalación de requirements.txt en el entorno nuevo (py -3.13 -m venv, activar y pip install), medida de punta a punta | 377 s, código 0 |
+| Suite completa en el zip descomprimido (1464 passed, 1 omitida y 1 fallida por la ruta `scripts/historial` del árbol del README, corregida después) | 773 s |
+| Suite completa en el repositorio (1465 passed y 1 fallida por la cifra del documento de arquitectura, corregida después) | 454,86 s |
+| Arranque de la API y del panel con ejecutar_panel.py | API arrancada a las 13:51:22 y panel a las 13:51:27 |
+| docker compose build de Airflow | 9 s, código 0 |
+| docker compose up airflow-init | 112 s, código 0 |
+| docker compose up -d de Airflow (con descarga de imágenes) | 261 s, código 0 |
+| Las cuatro tareas del DAG, primera corrida manual | 34 s (de 20:07:39 a 20:08:13) en success |
+
+No se midió de nuevo `python main.py --stage all`; su tiempo sigue siendo el de EV-113.

@@ -89,7 +89,7 @@ def test_un_env_existente_no_se_sobrescribe(proyecto):
     destino.mkdir()
     propio = "AIRFLOW_UID=50000\n_AIRFLOW_WWW_USER_PASSWORD=Contrasena-que-ya-tenia-0123\nFERNET_KEY=clave-propia-0123456789abcdef=\nPOSTGRES_PASSWORD=pg-propia-0123456789\nAIRFLOW__API_AUTH__JWT_SECRET=jwt-propio-0123456789\nPROYECTO_NOMBRE=otra\nAIRFLOW_PUERTO=9000\n"
     (destino / ".env").write_text(propio, encoding="utf-8")
-    hecho = _preparar(proyecto)
+    hecho = _preparar(proyecto, forzar=True)      # sin --forzar no se toca una carpeta ajena (tests/test_preparar_airflow_forzar.py)
     assert (destino / ".env").read_text(encoding="utf-8") == propio and hecho["env"] == "sin cambios"
     assert any("PROYECTO_NOMBRE" in a for a in hecho["avisos"]) and any("AIRFLOW_PUERTO" in a for a in hecho["avisos"])    # avisa de lo que no coincide, sin cambiarlo
     assert "Contrasena-que-ya-tenia" not in " ".join(hecho["avisos"])

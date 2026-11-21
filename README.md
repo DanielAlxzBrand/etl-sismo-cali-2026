@@ -251,7 +251,7 @@ python main.py --stage all
 python -m pytest -q -p no:cacheprovider
 python scripts\panel\ejecutar_panel.py                  # API en 8000 y panel en 8501; Ctrl+C cierra los dos
 ```
-Qué debe verse: `python main.py --stage all` termina con líneas como `Salida: construcciones=5146 barrios=346 integrado=5146 | cobertura de llave=99.8834% (pasa)` y `Salida: gold_final=5146 filas | kpis_gold=23 filas (6 indicadores) | sensibilidades=107 filas`; las pruebas terminan con `1466 passed`. El pipeline no necesita red ni claves, porque Bronze ya está en el repositorio. El archivo `.env` se crea al configurar el modo completo y nunca se versiona; `.env.example` trae solo los nombres de sus 12 variables y la tabla siguiente dice para qué sirve cada una (nunca valores):
+Qué debe verse: `python main.py --stage all` termina con líneas como `Salida: construcciones=5146 barrios=346 integrado=5146 | cobertura de llave=99.8834% (pasa)` y `Salida: gold_final=5146 filas | kpis_gold=23 filas (6 indicadores) | sensibilidades=107 filas`; las pruebas terminan con `1472 passed`. El pipeline no necesita red ni claves, porque Bronze ya está en el repositorio. El archivo `.env` se crea al configurar el modo completo y nunca se versiona; `.env.example` trae solo los nombres de sus 12 variables y la tabla siguiente dice para qué sirve cada una (nunca valores):
 
 | Variable | Para qué sirve | Obligatoria | Modo |
 |---|---|---|---|
@@ -272,17 +272,17 @@ Tiempos medidos, todos de una máquina de desarrollo con Windows 11 y 15,7 GB de
 
 | Qué | Tiempo | Origen | Fecha |
 |---|---|---|---|
-| Crear el entorno virtual e instalar `requirements.txt` | 311 s (13,9 s el entorno y 296,8 s `pip install`) | [EV-113](docs/evidencias/readme/EV-113_primera_vez_y_suite_en_clon_y_zip.txt); antes, 251 s en [EV-100](docs/evidencias/modo_completo/EV-100_guia_seguida_desde_un_zip_nuevo.txt) y 288 s en [EV-083](docs/evidencias/servicios/EV-083_suite_sin_utf8_antes.txt) | 2026-11-16 |
+| Crear el entorno virtual e instalar `requirements.txt` | 377 s (la última medición, de punta a punta con el entorno nuevo) | [EV-121](docs/evidencias/readme/EV-121_tiempos_de_la_ejecucion_sobre_el_zip.txt); antes, 311 s en [EV-113](docs/evidencias/readme/EV-113_primera_vez_y_suite_en_clon_y_zip.txt), 251 s en [EV-100](docs/evidencias/modo_completo/EV-100_guia_seguida_desde_un_zip_nuevo.txt) y 288 s en [EV-083](docs/evidencias/servicios/EV-083_suite_sin_utf8_antes.txt) | 2026-11-21 |
 | `python main.py --stage all` | 10,3 s la primera vez; mediana de 3 repeticiones: 2,9 s y 148 MB de pico | EV-113 | 2026-11-16 |
-| Suite completa en el clon | de 343 s a 409 s con 1.330 pruebas (dos pasadas) y de 323 a 452 MiB de pico | EV-113 | 2026-11-16 |
-| Suite completa en el zip descomprimido | de 267 s a 358 s con 1.329 pruebas y 1 omitida (dos pasadas) | EV-113 | 2026-11-16 |
+| Suite completa en el repositorio | unos 455 s con 1.466 pruebas (una fallaba por una cifra del documento de arquitectura, ya corregida); en 2026-11-16, de 343 s a 409 s con 1.330 pruebas y de 323 a 452 MiB de pico (EV-113) | EV-121 | 2026-11-21 |
+| Suite completa en el zip descomprimido | 773 s con 1.466 pruebas (1 omitida; una fallaba por una ruta del árbol del README, ya corregida); en 2026-11-16, de 267 s a 358 s con 1.329 pruebas y 1 omitida (EV-113) | EV-121 | 2026-11-21 |
 | API y panel con `ejecutar_panel.py` | la API responde a los 2,2 s y el panel a los 5,4 s | EV-113 | 2026-11-16 |
-| `docker compose build` de Airflow | 8,9 s | EV-100, primera pasada | 2026-11-16 |
-| `docker compose up airflow-init` | 42,2 s | EV-100, primera pasada | 2026-11-16 |
-| `docker compose up -d` de Airflow | 55 s | EV-100, primera pasada | 2026-11-16 |
-| Las cuatro tareas del DAG | unos 12 s | EV-100 | 2026-11-16 |
+| `docker compose build` de Airflow | 9 s | EV-121 | 2026-11-21 |
+| `docker compose up airflow-init` | 112 s | EV-121 | 2026-11-21 |
+| `docker compose up -d` de Airflow | 261 s (con la descarga de imágenes) | EV-121 | 2026-11-21 |
+| Las cuatro tareas del DAG | 34 s la primera corrida (unos 12 s en EV-100) | EV-121 | 2026-11-21 |
 
-Los tiempos de Docker son de EV-100 y no se volvieron a medir hoy, porque no se usó Docker; son de una máquina que ya tenía Docker, MySQL y las imágenes descargadas, y en una máquina limpia serán mayores. Lo que se ejecutó hoy en un clon nuevo es el modo mínimo; lo que necesita Docker o MySQL no se verificó hoy y lo respalda EV-100. No decimos cuánto tarda una persona en total porque depende de la conexión y de cada equipo.
+Todos los tiempos son de una máquina y varían según el equipo, la conexión y lo que Docker ya tenga descargado. Los de la instalación, las suites, Docker y el DAG son de la ejecución del 2026-11-21 sobre un zip nuevo (EV-121); el pipeline y el arranque del panel, de EV-113. No decimos cuánto tarda una persona en total porque depende de la conexión y de cada equipo.
 
 ### Modo completo en resumen
 Con el modo mínimo funcionando, el modo completo agrega, en este orden: las tres cuentas de MySQL (`.\.venv\Scripts\python.exe scripts\mysql\configurar_mysql.py`, con sus opciones `--usuario-docker` y `--usuario-lectura`; cada una pide la contraseña del administrador por teclado y guarda las credenciales solo en `.env`), la carga a MySQL, la carpeta de Airflow (`scripts\orquestacion\preparar_airflow.py`) con `docker compose build`, `docker compose up airflow-init` y `docker compose up -d`, y phpMyAdmin. La guía con lo que debe verse en cada comando y los errores comunes está en [docs/instalacion/guia_modo_completo.md](docs/instalacion/guia_modo_completo.md).
@@ -374,7 +374,7 @@ La API tiene **11 rutas GET**: `/calidad`, `/composicion`, `/comunas`, `/constru
 | `silver.muestra_baja_severos` | 30 | severos por debajo de los cuales un grupo se marca de muestra baja |
 
 ## 10. Calidad y pruebas
-Hay **1466 pruebas** automáticas, sin red ni servidor MySQL. Se ejecutan con `python -m pytest -q -p no:cacheprovider` y deben terminar con `1466 passed` en un clon con Git instalado; en un clon con Git no se omite ninguna; en el zip descomprimido con Git se omite 1 (`test_sin_hallazgos_en_el_historial_de_git`, porque el zip no trae historial) y sin Git se omiten 10: esa, 8 que arman un repositorio temporal y 1 que arma el zip y corre las demás. La lista está en la sección 3.1 de [docs/instalacion/README.md](docs/instalacion/README.md), medida con 1.007 pruebas ([EV-096](docs/evidencias/auditoria/EV-096_independencia_repetida_y_omisiones.txt)).
+Hay **1472 pruebas** automáticas, sin red ni servidor MySQL. Se ejecutan con `python -m pytest -q -p no:cacheprovider` y deben terminar con `1472 passed` en un clon con Git instalado; en un clon con Git no se omite ninguna; en el zip descomprimido con Git se omite 1 (`test_sin_hallazgos_en_el_historial_de_git`, porque el zip no trae historial) y sin Git se omiten 10: esa, 8 que arman un repositorio temporal y 1 que arma el zip y corre las demás. La lista está en la sección 3.1 de [docs/instalacion/README.md](docs/instalacion/README.md), medida con 1.007 pruebas ([EV-096](docs/evidencias/auditoria/EV-096_independencia_repetida_y_omisiones.txt)).
 
 - **Qué cubren:** el pipeline (llaves, duplicados, tipos, Wilson, Newcombe, Mantel-Haenszel), la reproducción byte a byte de la línea base, la API (estructura, solo GET, sin escritura), el panel (las ocho páginas con la API real en memoria, formato de cifras, aislamiento), la carga relacional (idempotencia, historial, reversión, integridad referencial), el DAG y los compose analizados como texto, el empaquetado y la gestión de secretos.
 - **Las cifras de los documentos se prueban contra las salidas.** Este README, el documento de resultados y la guía de instalación afirman cifras; una prueba extrae cada una del texto y la compara con la medida. Si alguien edita una cifra, o la deja desactualizada en un solo lugar, la prueba falla.

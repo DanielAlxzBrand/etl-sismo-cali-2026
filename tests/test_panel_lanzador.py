@@ -115,6 +115,23 @@ def test_un_puerto_ocupado_se_reemplaza_por_otro_libre():
         assert elegido != p and 0 < elegido < 65536
 
 
+def test_el_aviso_de_puerto_ocupado_dice_cual_se_uso_y_no_sale_si_se_uso_el_pedido():
+    assert lanzador.aviso_de_puerto("API", 8000, 8000) is None
+    aviso = lanzador.aviso_de_puerto("API", 8000, 56471)
+    assert "8000" in aviso and "56471" in aviso and aviso.startswith("AVISO")
+
+
+def test_con_el_puerto_de_la_api_ocupado_el_lanzador_avisa_y_sigue_usando_otro(monkeypatch, capsys):
+    _todo_responde(monkeypatch)
+    with socket.socket() as ocupado:
+        ocupado.bind(("127.0.0.1", 0))
+        ocupado.listen()
+        p = ocupado.getsockname()[1]
+        assert lanzador.main(["--verificar", "--puerto-api", str(p)], abrir=_abridor()) == 0
+        salida = capsys.readouterr().out
+    assert f"AVISO: el puerto {p} (API) está ocupado" in salida and f"API:   http://127.0.0.1:{p}" not in salida
+
+
 # ---------- ciclo de vida ----------
 def test_arranque_correcto_con_verificar_cierra_los_dos_procesos(monkeypatch, capsys):
     _todo_responde(monkeypatch)

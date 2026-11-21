@@ -282,18 +282,23 @@ def test_la_cobertura_del_readme_es_la_de_la_medicion_mas_reciente():
 EV100 = "docs/evidencias/modo_completo/EV-100_guia_seguida_desde_un_zip_nuevo.txt"
 RECURSOS = "docs/finanzas/recursos_medidos.csv"
 EV113 = "docs/evidencias/readme/EV-113_primera_vez_y_suite_en_clon_y_zip.txt"
+EV121 = "docs/evidencias/readme/EV-121_tiempos_de_la_ejecucion_sobre_el_zip.txt"
 TIEMPOS_CITADOS = [
     ("251 s", EV100, ["instalación de requirements.txt y pip check en 251 s"]),
-    ("| 8,9 s |", EV100, ["$ docker compose build\n# código de salida: 0 · segundos: 8.9 "]),
-    ("| 42,2 s |", EV100, ["$ docker compose up airflow-init\n# código de salida: 0 · segundos: 42.2 "]),
-    ("| 55 s |", EV100, ["$ docker compose up -d\n# código de salida: 0 · segundos: 55 "]),
     ("unos 12 s", EV100, ["terminaron en success en unos 12 s"]),
+    ("| 9 s | EV-121 |", EV121, ["| docker compose build de Airflow | 9 s, código 0 |"]),
+    ("| 112 s | EV-121 |", EV121, ["| docker compose up airflow-init | 112 s, código 0 |"]),
+    ("| 261 s (con la descarga de imágenes) |", EV121, ["| docker compose up -d de Airflow (con descarga de imágenes) | 261 s, código 0 |"]),
+    ("| 34 s la primera corrida", EV121, ["| 34 s (de 20:07:39 a 20:08:13) en success |"]),
+    ("377 s (la última medición, de punta a punta con el entorno nuevo)", EV121, ["| 377 s, código 0 |"]),
+    ("773 s con 1.466 pruebas", EV121, ["| 773 s |"]),
+    ("unos 455 s con 1.466 pruebas", EV121, ["| 454,86 s |"]),
     ("288 s en [EV-083]", "docs/evidencias/servicios/EV-083_suite_sin_utf8_antes.txt", ["288"]),
-    ("311 s (13,9 s el entorno y 296,8 s `pip install`)", EV113, ["| Entorno virtual | py -3.13 -m venv .venv | 13,9 s |", "python -m pip install -r requirements.txt | 296,8 s, código 0"]),
+    ("311 s en [EV-113]", EV113, ["| Entorno virtual | py -3.13 -m venv .venv | 13,9 s |", "python -m pip install -r requirements.txt | 296,8 s, código 0"]),
     ("10,3 s la primera vez; mediana de 3 repeticiones: 2,9 s y 148 MB de pico", EV113, ["python main.py --stage all | 10,32 s, código 0", "mediana 2,92 s y 148,4 MB"]),
     ("2,9 s y 148 MB de pico (mediana de 3 repeticiones en un clon nuevo)", EV113, ["mediana 2,92 s y 148,4 MB"]),
-    ("de 343 s a 409 s con 1.330 pruebas (dos pasadas) y de 323 a 452 MiB de pico", EV113, ["1330 passed, 0 omitidas, 1 aviso, en 343,00 s", "pico 323 MiB (185 procesos)", "1330 passed y 0 omitidas en 408,99 s", "pico 452 MiB (189 procesos)"]),
-    ("de 267 s a 358 s con 1.329 pruebas y 1 omitida (dos pasadas)", EV113, ["1329 passed y 1 omitida en 267,30 s", "test_secretos.py:44", "1329 passed y 1 omitida en 357,82 s"]),
+    ("de 343 s a 409 s con 1.330 pruebas y de 323 a 452 MiB de pico", EV113, ["1330 passed, 0 omitidas, 1 aviso, en 343,00 s", "pico 323 MiB (185 procesos)", "1330 passed y 0 omitidas en 408,99 s", "pico 452 MiB (189 procesos)"]),
+    ("de 267 s a 358 s con 1.329 pruebas y 1 omitida (EV-113)", EV113, ["1329 passed y 1 omitida en 267,30 s", "test_secretos.py:44", "1329 passed y 1 omitida en 357,82 s"]),
     ("la API responde a los 2,2 s y el panel a los 5,4 s", EV113, ["200 a los 2,2 s", "200 a los 5,4 s"]),
     ("de 3,6 a 13,9 ms", RECURSOS, ["latencia_api_sqlite_mediana_por_ruta,3.6 a 13.9,"]),
     ("2,415 s frente a 0,715 s", RECURSOS, ["carga_a_mysql_fila_a_fila_mediana,2.415,", "carga_a_mysql_lote_2000_mediana,0.715,"]),
@@ -324,9 +329,9 @@ def test_los_tiempos_del_readme_estan_en_su_evidencia():
 
 
 def test_un_tiempo_editado_del_readme_se_detecta():
-    editado = README.replace("| 42,2 s |", "| 4,2 s |", 1)
+    editado = README.replace("| 112 s | EV-121 |", "| 11 s | EV-121 |", 1)
     assert tiempos_que_no_coinciden(editado, TIEMPOS_CITADOS, _leer), "un tiempo cambiado en el README"
-    otros = [(c, a, ["segundos: 99.9"]) if c == "| 42,2 s |" else (c, a, f) for c, a, f in TIEMPOS_CITADOS]
+    otros = [(c, a, ["segundos: 99.9"]) if c == "| 112 s | EV-121 |" else (c, a, f) for c, a, f in TIEMPOS_CITADOS]
     assert tiempos_que_no_coinciden(README, otros, _leer), "una evidencia que no dice lo que el README cita"
 
 

@@ -1,7 +1,7 @@
 """Prepara la carpeta de Airflow a partir del proyecto (por ejemplo, el descomprimido del zip) para levantar el DAG `medallon_etl_sismo` con Docker (D91).
 
 Uso (PowerShell, raíz del proyecto):
-  .\\.venv\\Scripts\\python.exe scripts\\orquestacion\\preparar_airflow.py [--destino CARPETA] [--puerto 8080] [--regenerar | --completar] [--nombre-compose NOMBRE]
+  .\\.venv\\Scripts\\python.exe scripts\\orquestacion\\preparar_airflow.py [--destino CARPETA] [--puerto 8080] [--regenerar | --completar] [--forzar] [--nombre-compose NOMBRE]
   .\\.venv\\Scripts\\python.exe scripts\\orquestacion\\preparar_airflow.py --verificar          solo mira, no escribe nada (idempotente)
 
 Qué hace: crea `dags`, `logs`, `plugins` y `config` en la carpeta de destino (por defecto `airflow-medallon`, hermana del proyecto), copia el compose adaptado, el Dockerfile y
@@ -224,7 +224,18 @@ def comprobar_destino(destino, raiz):
         raise PrepararError("la carpeta de Airflow no puede ser la del proyecto")
 
 
-def preparar(raiz, destino, puerto, regenerar=False, completar=False, ejecutar=subprocess.run, comprobar_puerto=None, nombre_compose=None, creacion_env=None):
+def comprobar_carpeta_existente(destino, raiz, forzar=False):
+    """No pisa una carpeta de Airflow que ya existe con cosas dentro y que no preparó este proyecto (su `.env` no trae PROYECTO_NOMBRE igual al de la carpeta del proyecto), salvo con `forzar` (o con `regenerar` o `completar`, que piden actuar sobre una carpeta existente)."""
+    destino = Path(destino)
+    if forzar or not destino.is_dir() or not any(destino.iterdir()):
+        return
+    env = destino / ".env"
+    if env.exists() and dotenv_values(env).get("PROYECTO_NOMBRE") == Path(raiz).name:
+        return
+    raise PrepararError(f"la carpeta {destino} ya existe y no la preparó este proyecto: no se toca. Elija otro --destino o use --forzar para reutilizarla (copia encima el compose, el Dockerfile y el DAG)")
+
+
+def preparar(raiz, destino, puerto, regenerar=False, completar=False, ejecutar=subprocess.run, comprobar_puerto=None, nombre_compose=None, creacion_env=None, forzar=False):
     """Crea o actualiza la carpeta de Airflow. Devuelve un diccionario con lo hecho (solo nombres y textos, nunca valores del `.env`). Falla con PrepararError antes de escribir nada si Docker no responde,
     el puerto está ocupado, el destino no es una carpeta hermana o el nombre de Compose no es válido. El `.env` de Airflow se escribe solo si no existe (o con `regenerar`); con `completar` agrega las variables que falten.
     Con `nombre_compose` se guarda además COMPOSE_PROJECT_NAME (opcional, fuera de las siete obligatorias) y `regenerar` conserva el que ya tenía. Si ya existe un volumen de Postgres de otra instalación, lo avisa en `avisos`."""
@@ -233,6 +244,7 @@ def preparar(raiz, destino, puerto, regenerar=False, completar=False, ejecutar=s
         validar_nombre_compose(nombre_compose)
     comprobar_puerto = comprobar_puerto or puerto_libre        # se resuelve al llamar (no al definir) para que una prueba pueda sustituirlo
     comprobar_destino(destino, raiz)
+    comprobar_carpeta_existente(destino, raiz, forzar or regenerar or completar)      # regenerar y completar ya dicen que se trabaja sobre lo que existe
     ok, mensaje_docker = comprobar_docker(ejecutar)
     if not ok:
         raise PrepararError(mensaje_docker)
@@ -368,6 +380,7 @@ def main(argv=None):
     grupo.add_argument("--regenerar", action="store_true", help="vuelve a escribir el `.env` de Airflow con valores nuevos (sobrescribe el existente)")
     grupo.add_argument("--completar", action="store_true", help="agrega al `.env` existente solo las variables que le falten")
     grupo.add_argument("--verificar", action="store_true", help="solo comprueba el estado, sin escribir nada")
+    ap.add_argument("--forzar", action="store_true", help="usa una carpeta de Airflow que ya existe aunque no la haya preparado este proyecto (sin esta opción no se toca)")
     ap.add_argument("--nombre-compose", default=None, metavar="NOMBRE",
                     help="guarda COMPOSE_PROJECT_NAME en el `.env` de Airflow (opcional): con otro nombre Compose usa otro volumen de Postgres y no choca con el de otra instalación; sin esta opción nada cambia")
     a = ap.parse_args(argv)
@@ -380,7 +393,7 @@ def main(argv=None):
             print(("✓ " if ok else "! " if ok is None else "✗ ") + texto)
         return 0 if all(ok is not False for ok, _ in filas) else 1
     try:
-        hecho = preparar(ROOT, destino, a.puerto, regenerar=a.regenerar, completar=a.completar, nombre_compose=a.nombre_compose, ejecutar=subprocess.run)
+        hecho = preparar(ROOT, destino, a.puerto, regenerar=a.regenerar, completar=a.completar, nombre_compose=a.nombre_compose, ejecutar=subprocess.run, forzar=a.forzar)
     except PrepararError as e:
         log.error("%s", e)
         return 2

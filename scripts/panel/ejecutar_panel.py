@@ -38,6 +38,13 @@ def puerto_libre(preferido):
     raise OSError("no hay puertos libres en 127.0.0.1")
 
 
+def aviso_de_puerto(nombre, pedido, usado):
+    """Texto visible cuando el puerto pedido estaba ocupado y se usa otro (None si se usa el pedido)."""
+    if pedido == usado:
+        return None
+    return f"AVISO: el puerto {pedido} ({nombre}) está ocupado; se usa el {usado}. Use la dirección que se imprime abajo, no la que dice la documentación."
+
+
 def comando_api(puerto, almacenamiento="sqlite", python=None):
     """Comando de la API: el de docs/api/arquitectura.md para SQLite; para MySQL, la misma aplicación con ese almacenamiento."""
     py = python or sys.executable
@@ -106,8 +113,11 @@ def main(argv=None, abrir=subprocess.Popen):
     ap.add_argument("--duracion", type=float, help="segundos que se mantienen los procesos antes de cerrarlos solos (para evidencias y pruebas)")
     a = ap.parse_args(argv)
     cfg = cargar_panel()
-    p_api = puerto_libre(a.puerto_api or cfg["puerto_api"])
-    p_panel = puerto_libre(a.puerto_panel or cfg["puerto_panel"])
+    pedido_api, pedido_panel = a.puerto_api or cfg["puerto_api"], a.puerto_panel or cfg["puerto_panel"]
+    p_api, p_panel = puerto_libre(pedido_api), puerto_libre(pedido_panel)
+    for aviso in (aviso_de_puerto("API", pedido_api, p_api), aviso_de_puerto("panel", pedido_panel, p_panel)):
+        if aviso:
+            print(aviso, flush=True)
     url_api, url_panel = f"http://{HOST}:{p_api}", f"http://{HOST}:{p_panel}"
     api = panel = None
     try:
