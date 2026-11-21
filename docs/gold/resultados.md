@@ -268,7 +268,7 @@ Además: la capa viene de un servicio ArcGIS Online de un tercero y puede cambia
 - **Huérfano:** fila de una tabla que no encuentra pareja en el JOIN; se conserva en un archivo aparte.
 - **Snapshot:** copia fechada (UTC) de lo descargado; no se sobrescribe.
 - **Medallion:** organización por capas (Bronze crudo, Silver limpio, Gold listo para análisis).
-- **Avance 1:** documento de contexto y problema que dio origen al proyecto (`docs/proyecto/referencias/contexto_y_problema.pdf`).
+- **Avance 1:** documento de contexto del curso que dio origen al proyecto (no incluido en el repositorio).
 - **API:** programa que responde consultas por HTTP; aquí entrega los resultados de Gold sin recalcularlos.
 - **Endpoint:** una dirección concreta de la API, por ejemplo `/kpis`.
 - **Solo lectura:** la API puede entregar los datos, pero no puede cambiarlos; la conexión a la base rechaza cualquier escritura.
