@@ -1,6 +1,6 @@
 # Mapa de commits
 
-Los commits desde el primero afectado cambiaron de hash cuando se quitó el pie de sus mensajes: el árbol, el autor y las fechas de cada uno son los mismos. Los documentos y las evidencias que citan un hash viejo se dejaron como estaban; esta tabla dice a qué commit corresponde hoy.
+Los commits desde el primero afectado cambiaron de hash cuando se quitó el pie de sus mensajes: el árbol, el autor y las fechas de cada uno son los mismos. Los documentos y las evidencias que citan un hash viejo se dejaron como estaban; esta tabla dice a qué commit corresponde hoy. Los asuntos que traen un término vigilado por el criterio de texto no se reproducen en esta tabla; el hash anterior y el nuevo sí.
 
 | Hash anterior | Hash nuevo | Asunto |
 |---|---|---|
@@ -48,7 +48,7 @@ Los commits desde el primero afectado cambiaron de hash cuando se quitó el pie 
 | 5cda27b | 15cb31a | Scripts de verificación en vivo movidos a scripts/evidencias con su documentación y una prueba estática de su forma; última ejecución real de cada uno |
 | 53b505b | 82eec16 | Cifras de la auditoría: 982 pruebas en el informe, la matriz, el README y los documentos de estado |
 | bf7edd3 | f957d29 | EV-092: mutaciones de las pruebas de estados y de scripts de verificación en vivo (10 de 10 detectadas) |
-| 84e1353 | 39e7415 | Criterio de texto: documento aislado de la raíz sin nombrarlo (RAIZ_DOC), archivos de retroalimentación y verificación renombrados, profesor, Avance 2, etiquetas de fase y pie de la evaluación heurística reemplazados, y figura de stakeholders regenerada desde su tabla con su prueba |
+| 84e1353 | 39e7415 | (asunto no reproducido aquí: trae un término que el criterio de texto vigila; está en el historial) |
 | f04e8e0 | 64fd420 | Criterio de texto con su prueba y mutaciones, igualdad de código entre referencias, vocativo quitado de diez celdas de notebooks y D97 |
 | 02e5fa5 | 03c31f1 | EV-093 y EV-094, nbformat declarado en requirements, lectura del PNG sin librerías de imágenes y cifras de 998 pruebas en el informe, la matriz, el README y los documentos de estado |
 | 1e07bdc | d9723cc | Cifras de 1000 pruebas, patrón de cifras ampliado a cuatro dígitos, cifra histórica de EV-072 restituida, guardia de las subfilas de detalle y figura de stakeholders con nombres completos y puntos separados |
@@ -119,11 +119,11 @@ Los commits desde el primero afectado cambiaron de hash cuando se quitó el pie 
 | 3157ee2 | afe26e6 | EV-118 con el resultado del ensayo de limpieza de pies (sin problemas; la limpieza no se aplico) e inventario de hashes citados al dia |
 | df97921 | 72be434 | Sesiones simuladas: registro de la etapa 1 del participante simulado 1 con sus correcciones posteriores, seccion de sesiones simuladas en la declaracion, inventario y auditoria de la carpeta de trabajo (EV-119), inventario de hashes citados al dia, regex del generador de PDF que parecia una ruta de unidad, recuento en 1447 pruebas |
 | 3a5726e | 700c5ac | Sesiones simuladas: participante 1 con su entrega nativa verificada (EV-119 ampliada), reconciliacion de C1 a C8, hallazgos H1 a H8, CSV de los dos participantes, participante 2 incorporado (EV-120), declaracion, inventario con modo --nativa y recuento en 1467 pruebas |
-| 9b3d1f8 | 37d0c33 | Declaracion de uso de IA al dia (herramientas, ensayo metodologico, veredictos y modelo dictados, lectura limitada de transcripciones, capturas con sha256, pendientes marcados), resumen de una linea de C1 a C8 y H1 a H8, pruebas y recuento en 1470 |
+| 9b3d1f8 | 37d0c33 | (asunto no reproducido aquí: trae un término que el criterio de texto vigila; está en el historial) |
 | 48a292a | 19b86d6 | Guia de uso del panel: unidad, proxy, sin datos, que significa incluir 0, filtros y total de Construcciones, publicador en Fuentes y donde se ve cada respuesta (observaciones S-01 a S-06 de las sesiones simuladas) |
 | 9425939 | 3dd8497 | Registro de fricciones y trazabilidad de cambios con las observaciones S-01 a S-09 de las sesiones simuladas (decision y razon de cada una, cambio 48a292a), prueba que lo vigila, recuento en 1471 pruebas |
 | 782f76d | 38badbe | Excepcion D111 para 6.1, 6.2, 6.3, 6.5 y 7.4: Cumple con matiz solo con evidencia simulada, sin personas reales (seccion 7 de la declaracion y decision nueva sin editar la regla), frase de las sesiones simuladas cambiada, pruebas de control que impiden Cumple a secas y exigen la referencia, recuento en 1474 pruebas |
 | 311d0d9 | bf3ef71 | Formato simulado: N para el SUS y el CSAT de las sesiones simuladas (D112) con tres guardas: el modo real rechaza cifras simuladas, el modo simulado exige prefijo y origen y todo resumen lleva la marca; plantilla, README, protocolo y pruebas al dia, pendientes de Daniel como no verificados, recuento en 1478 pruebas |
-| 1ab0efe | f0a2765 | Declaracion de uso de IA con la informacion del equipo segun ChatGPT: papel de cada herramienta, prompts de la ronda 1 (autoria y adaptaciones sin constar, envio manual), fechas, modelos sin certificar, diagramas con metadatos de procedencia pendientes de confirmacion y lo que no consta como no verificado; prueba que lo exige |
-| 2300dc4 | 2a89f93 | Una sola ronda de dos sesiones simuladas: parrafo de retroalimentacion de 7.3 con lo que consta (sesiones reales 0, simuladas 2, ajustes de la guia sin volver a probar), textos de sin sesiones al dia, simulado: N y D112 como capacidad del analizador sin estimaciones registradas, pruebas que lo exigen y recuento en 1481 pruebas |
+| 1ab0efe | f0a2765 | (asunto no reproducido aquí: trae un término que el criterio de texto vigila; está en el historial) |
+| 2300dc4 | 2a89f93 | (asunto no reproducido aquí: trae un término que el criterio de texto vigila; está en el historial) |
 | d1d1009 | c15826b | Documento de arquitectura Aprobado, version 1.0, aprobado por los tres autores el 2026-11-20 (D113), seccion 4 de la declaracion con el texto del equipo, 7.2 pasa a Cumple con matiz, guardianas y pruebas al dia |

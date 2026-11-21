@@ -557,7 +557,7 @@ def problemas_del_estado(portada, leer):
 def test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada():
     portada = DOC_TEXTO.split("## 2.")[0]
     assert problemas_del_estado(portada, _leer) == []
-    assert "pasando el estado de Revisado a Aprobado" not in DOC_TEXTO and "| Estado | Aprobado |" in portada, "la aprobación ya no figura como pendiente en la hoja de ruta"
+    assert "pasando el estado de Revisado a Aprobado" not in DOC_TEXTO and "Borrador" not in DOC_TEXTO and "| Estado | Aprobado |" in portada, "la aprobación ya no figura como pendiente ni la revisión como por hacer en la hoja de ruta"
     assert cifras_con_patron(README, r"con (\d+) registros de decisión") == [str(len(archivos_adr()))]
 
 

@@ -1,4 +1,4 @@
-EV-115 · Mutaciones de las pruebas del documento de arquitectura y de sus ADR (2026-11-18)
+EV-115 · Mutaciones de las pruebas del documento de arquitectura y de sus ADR (repetidas el 2026-11-21 sobre el historial reescrito; primera serie el 2026-11-18)
 
 Qué es: cada mutación cambia a propósito una cifra o un texto del documento de arquitectura, de un ADR, del README, del índice de docs, de la checklist o de DECISIONES.md, corre `tests/test_arquitectura_cifras.py` y
 `tests/test_arquitectura_guardiana.py`, y debe hacer fallar al menos una prueba; después el archivo se restaura (al terminar, `git status` queda sin cambios). El script que las ejecuta no se versiona: son mutaciones de un día.
@@ -7,7 +7,7 @@ La cuarta serie muta el README, `config/config.yaml` y `tests/test_readme_cifras
 Las mutaciones de EV-103 (132) no se repitieron; estas son las de las pruebas nuevas.
 La prueba que comprueba la cita de este mismo registro en la sección 17 del documento se mutó aparte, una vez escrita la cita, y no cuenta en las series de abajo.
 
-## Cifras y errores ya corregidos en el README: 128 de 128 detectadas
+## Cifras y errores ya corregidos en el README: 131 de 131 detectadas
 | Grupo | Mutación | Archivo | Resultado | Prueba que falla |
 |---|---|---|---|---|
 | pruebas | recuento de pruebas del documento | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_numero_de_pruebas_del_documento_es_el_de_la_recoleccion` |
@@ -126,20 +126,23 @@ La prueba que comprueba la cita de este mismo registro en la sección 17 del doc
 | fila de contratos de la sección 7 | el mínimo de filas de Gold pasa a no detener | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
 | fila de contratos de la sección 7 | la fila vuelve a la redacción ambigua | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
 | estado en los demás documentos | la fila 7.3 de la trazabilidad vuelve a En curso | `docs/checklist/trazabilidad.csv` | DETECTADA | `test_los_enlaces_al_documento_existen_en_el_readme_el_indice_y_la_checklist` |
-| estado en los demás documentos | la hoja de ruta ya no menciona la aprobación | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
+| estado en los demás documentos | la hoja de ruta vuelve a pedir la aprobación | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
 | estado en los demás documentos | el README dice Borrador en su resumen | `README.md` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
 | estado en los demás documentos | el README dice Borrador en su tabla de estado | `README.md` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
 | estado en los demás documentos | docs/README.md dice Borrador | `docs/README.md` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
 | estado en los demás documentos | la checklist dice Borrador | `docs/checklist/estado_checklist.md` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
 | estado en los demás documentos | la guía de evidencias dice Borrador | `docs/checklist/guia_de_evidencias.md` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
 | estado en los demás documentos | la trazabilidad con otra fecha de revisión | `docs/checklist/trazabilidad.csv` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
-| estado en los demás documentos | la hoja de ruta vuelve a pedir la revisión | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
+| estado en los demás documentos | la trazabilidad con otra fecha de aprobación | `docs/checklist/trazabilidad.csv` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
+| estado en los demás documentos | la checklist con otra fecha de aprobación | `docs/checklist/estado_checklist.md` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
+| estado en los demás documentos | el README con otra versión aprobada | `README.md` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
+| estado en los demás documentos | la hoja de ruta vuelve a pedir la revisión | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
 | las pruebas nuevas | el reparto de reglas pone el primer rango en otra forma | `tests/test_arquitectura_cifras.py` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
 | las pruebas nuevas | los umbrales con una sola cifra decimal | `tests/test_arquitectura_cifras.py` | DETECTADA | `test_los_hechos_del_adr_015_son_los_del_repositorio` |
 | las pruebas nuevas | el detector del estado deja de ver Borrador | `tests/test_arquitectura_cifras.py` | DETECTADA | `test_un_estado_o_una_fecha_que_no_coinciden_en_otro_documento_se_detectan` |
 | las pruebas nuevas | la revisión de los ADR deja de exigir la fecha | `tests/test_arquitectura_guardiana.py` | DETECTADA | `test_los_adr_reales_cumplen_su_estructura_y_su_origen` |
 
-## Forma, redacción, diagramas, ADR y D106: 34 de 34 detectadas
+## Forma, redacción, diagramas, ADR y D106: 35 de 35 detectadas
 | Grupo | Mutación | Archivo | Resultado | Prueba que falla |
 |---|---|---|---|---|
 | términos | un término prohibido en el documento | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_real_cumple_la_guardiana` |
@@ -147,15 +150,16 @@ La prueba que comprueba la cita de este mismo registro en la sección 17 del doc
 | diagramas | una caja del diagrama que no está en su tabla | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_los_diagramas_reales_son_texto_ascii_coherente_con_el_dag_y_con_sus_cajas` |
 | diagramas | una tarea del DAG que falta en la secuencia | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_los_diagramas_reales_son_texto_ascii_coherente_con_el_dag_y_con_sus_cajas` |
 | diagramas | un carácter que no es ASCII en un diagrama | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_los_diagramas_reales_son_texto_ascii_coherente_con_el_dag_y_con_sus_cajas` |
-| metadatos | estado inventado | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
+| metadatos | el estado vuelve a Revisado | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
 | metadatos | el estado vuelve a Borrador | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
-| metadatos | aprobadores inventados | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_real_cumple_la_guardiana` |
+| metadatos | aprobadores inventados | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
 | metadatos | falta un aprobador | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_real_cumple_la_guardiana` |
-| metadatos | falta la aclaración de que la aprobación se registra después | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_real_cumple_la_guardiana` |
+| metadatos | falta la fecha de la aprobación | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
 | metadatos | revisión pendiente | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
 | metadatos | revisión sin fecha | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_lo_que_dicen_los_demas_documentos_del_estado_es_lo_que_dice_la_portada` |
 | metadatos | revisión de otra persona | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_real_cumple_la_guardiana` |
 | metadatos | versión sin fecha | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_real_cumple_la_guardiana` |
+| metadatos | otra versión | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_real_cumple_la_guardiana` |
 | cita | una segunda mención del artículo | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_documento_real_cumple_la_guardiana` |
 | índice | un ADR que no existe en el índice | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_numero_de_pruebas_del_documento_es_el_de_la_recoleccion` |
 | índice | origen distinto en el índice | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_la_numeracion_de_los_adr_es_consecutiva_y_el_indice_del_documento_los_lista_todos` |
@@ -223,5 +227,6 @@ Vueltas de esta serie (las series de arriba son las de la última vuelta; las an
 - Vuelta 9 (2026-11-18): 183 definidas, 183 detectadas, 0 no detectadas y 0 que no aplicaban, sobre el estado con 15 ADR y la prueba del ADR-015 reforzada.
 - Vuelta 10 (2026-11-18): 186 definidas (126 + 34 + 6 + 20), 186 detectadas, 0 no detectadas y 0 que no aplicaban, sobre el estado con 15 ADR y la fila de contratos de la sección 7.
 - Vuelta 11 (2026-11-18): las series de arriba, sobre el estado final del cierre de documentación: las pruebas ya vigilan que 7.3 figure en Cumple con matiz, la última decisión (D110) y la frase de la checklist sobre la revisión.
+- Vuelta 12 (2026-11-21), sobre el historial reescrito sin pies de coautoría y con el documento ya Aprobado (versión 1.0, 2026-11-20): 192 definidas (131 de cifras, 35 de forma y redacción, 6 de Gold y 20 del README), 191 detectadas, 1 no detectada: la hoja de ruta que volvía a pedir la revisión del documento («pasarlo de Borrador a revisado»); la prueba solo vigilaba la frase de la aprobación. Corrección: la prueba exige ahora que el documento no diga Borrador en ningún lugar. Vuelta 13 (2026-11-21): se repitió esa mutación y fue detectada por esa prueba; las otras 191 no se repitieron, porque la corrección solo añade una aserción y no puede dejar sin detectar lo que ya se detectaba. Resultado: 192 de 192. Se reescribieron 15 mutaciones de la serie de estado y de portada porque el texto que mutaban cambió con la aprobación (estado Aprobado, versión 1.0, aprobadores con fecha, recuento de pruebas y última decisión) y se añadieron las de otra fecha de aprobación, otra versión y otra versión aprobada en el README.
 
 Qué NO demuestra: que no existan cifras del documento que ninguna prueba vigile; solo las que se mutaron. Una cifra escrita con otro formato que el esperado por las expresiones de las pruebas no se detectaría.
