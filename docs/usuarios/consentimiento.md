@@ -22,8 +22,8 @@
 **¿Está de acuerdo en participar?** Sí / No (se anota que se leyó y se aceptó de palabra, o la persona firma una copia que el equipo guarda fuera del repositorio).
 
 ## Reclutamiento
-- Se invita a personas que correspondan a alguno de los perfiles del [protocolo](protocolo_sesiones.md); se les explica en una frase de qué se trata y cuánto dura antes de pedirles nada más.
-- No se ofrece pago ni presión para aceptar; si hay un agradecimiento, se dice antes de empezar.
+- Invitamos a personas que correspondan a alguno de los perfiles del [protocolo](protocolo_sesiones.md) y les explicamos en una frase de qué se trata y cuánto dura antes de pedirles nada más.
+- No ofrecemos pago ni presionamos para que acepten; si hay un agradecimiento, lo decimos antes de empezar.
 - No se invita a menores de edad ni a personas que dependan de quien las invita (por ejemplo, de quien las evalúa), porque no podríamos asegurar que su decisión fuera libre.
 - Si la persona es compañera o conocida del equipo, se anota en el origen de la sesión.
 

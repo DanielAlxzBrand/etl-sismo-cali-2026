@@ -11,7 +11,7 @@ El facilitador lee, sin improvisar:
 Se lee el texto de [consentimiento.md](consentimiento.md) y se pregunta «¿está de acuerdo en participar?». Sin un «sí» claro, la sesión no empieza. El papel firmado, si lo hay, lo guarda el equipo **fuera del repositorio**. Se le asigna un código (`P01`, `P02`…).
 
 ## 3. Tareas
-Se lee cada tarea tal como está escrita, una por una, con el panel abierto en la primera página. El anotador pone el cronómetro al terminar de leer y lo detiene cuando la persona dice que terminó o llega al tiempo máximo. Las tareas usan lenguaje natural y **no nombran las páginas**.
+Leemos cada tarea tal como está escrita, una por una, con el panel abierto en la primera página. El anotador pone el cronómetro al terminar de leer y lo detiene cuando la persona dice que terminó o llega al tiempo máximo. Las tareas usan lenguaje natural y **no nombran las páginas**.
 
 **Categorías de resultado:** `éxito` (cumple el criterio sin ayuda), `éxito con ayuda` (cumple después de una pista o de una pregunta del facilitador, que se anota como ayuda) y `fracaso` (no cumple al llegar al tiempo máximo o se rinde). Los criterios se escriben como comportamiento esperado y **no llevan cifras de los datos**: lo que la persona lee en pantalla es lo que cuenta.
 
@@ -34,7 +34,7 @@ Se lee cada tarea tal como está escrita, una por una, con el panel abierto en l
    - «¿Qué cambiaría para que le resultara más claro?»
    - «¿Qué le faltó para sentirse segura o seguro de lo que entendió?»
 
-Se agradece, se recuerda que puede pedir el retiro de sus datos mientras no se publiquen resultados agregados y se anota la hora de cierre.
+Agradecemos, recordamos que puede pedir el retiro de sus datos mientras no publiquemos resultados agregados y anotamos la hora de cierre.
 
 ## Alcance y límites
 - **Qué afirmamos:** el guion fija las tareas, el criterio de éxito y el tiempo máximo de cada una antes de ver ninguna sesión.
