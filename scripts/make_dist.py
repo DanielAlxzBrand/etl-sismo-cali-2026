@@ -1,9 +1,9 @@
-"""Empaqueta el proyecto en dist/etl_sismo_<fecha>.zip con una lista de INCLUSIÓN: solo entra lo permitido.
+"""Arma dist/etl_sismo_<fecha>.zip con una lista de INCLUSIÓN: lo que no está en la lista no entra.
 
-Primer nivel permitido: archivos `RAIZ_ARCHIVOS` y carpetas `RAIZ_CARPETAS` (`dags/`, `orquestacion/` y `servicios/` solo si existen). Dentro de ellas se excluyen cachés,
-`*.pyc`, `logs/`, el `.env` real, toda carpeta oculta (que empiece por punto) y toda carpeta que sea un entorno virtual (por nombre y, sobre todo, por su contenido:
-`pyvenv.cfg`, `site-packages`, `conda-meta`, `python.exe`, `Scripts/python*` o `bin/python*`). En `docs/` solo entran los PDF de
-`docs/proyecto/referencias/` y `docs/retroalimentacion/`. Tras armar el zip se verifica su contenido y falla con un mensaje claro si algo sobra.
+En el primer nivel dejamos pasar los archivos de `RAIZ_ARCHIVOS` y las carpetas de `RAIZ_CARPETAS` (`dags/`, `orquestacion/` y `servicios/` solo si existen). Adentro de esas carpetas se excluyen
+cachés, `*.pyc`, `logs/`, el `.env` real, toda carpeta oculta (la que empieza por punto) y todo entorno virtual, que reconocemos por el nombre y sobre todo por lo que trae:
+`pyvenv.cfg`, `site-packages`, `conda-meta`, `python.exe`, `Scripts/python*` o `bin/python*`. En `docs/` solo entran los PDF de
+`docs/proyecto/referencias/` y `docs/retroalimentacion/`. Cuando el zip está armado se revisa su contenido y, si algo sobra, falla con un mensaje claro.
 """
 import os
 import re

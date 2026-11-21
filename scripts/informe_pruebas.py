@@ -2,8 +2,8 @@
 
 Uso:  python scripts/informe_pruebas.py [--sin-cobertura] [--salida CARPETA]
 Ejecuta `pytest` (con `coverage` salvo --sin-cobertura) con salida JUnit y escribe docs/validacion/informe_pruebas.md, informe_pruebas.csv y cobertura_pruebas.csv.
-El resultado esperado de cada caso sale de la matriz (scripts/make_matriz_casos.py); lo obtenido, de la ejecución real. Las métricas del análisis se recalculan desde los archivos de salida.
-Escribe solo en la carpeta de salida (docs/validacion por defecto). Las rutas de la máquina se sustituyen por marcadores.
+Lo esperado de cada caso lo tomamos de la matriz (scripts/make_matriz_casos.py) y lo obtenido, de la ejecución real. Las métricas del análisis se recalculan desde los archivos de salida.
+Solo escribe en la carpeta de salida (docs/validacion por defecto) y cambia las rutas de la máquina por marcadores.
 """
 import argparse
 import csv
