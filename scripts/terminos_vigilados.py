@@ -44,6 +44,7 @@ DE_IA = frozenset({
     "25b53b8d9b901bedce8f4be7571d18b7813dd58d9b505b3abcb8748af62dd105",
 })
 # Identificadores técnicos de otra herramienta (opciones de configuración del panel) que contienen una palabra vigilada y no se pueden renombrar: se comparan enteros, sin guiones bajos.
+# Son exactamente dos: la variable de entorno STREAMLIT_SERVER_SHOW_EMAIL_PROMPT y la opción showEmailPrompt de la configuración de Streamlit.
 PERMITIDOS = frozenset({
     "ee6fa4e4a2a88bca906a788445ff6cdb613eb8d4b28e53c77e491b6a8a93fc86",
     "d89c489e339d2f3807b2828dbddb79b27a89911b9e3b0da3ba974575694f964d",
