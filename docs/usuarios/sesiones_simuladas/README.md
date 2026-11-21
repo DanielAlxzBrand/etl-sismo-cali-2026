@@ -1,6 +1,6 @@
 # Sesiones simuladas
 
-> **Sesión simulada, no realizada con una persona real.** Todo lo que se guarde en esta carpeta es un ensayo del proceso entre nosotros: nadie usó el panel como persona usuaria y nada se midió. No cuenta como sesión real; cuenta como evidencia simulada bajo la excepción D111, no es feedback de personas usuarias y no entra en `../resultados.md`.
+> **Sesión simulada, no realizada con una persona real.** Todo lo que se guarde en esta carpeta es un ensayo del proceso entre nosotros: nadie usó el panel como persona usuaria y nada se midió. No cuenta como sesión real; cuenta como evidencia simulada según la decisión D111, no es feedback de personas usuarias y no entra en `../resultados.md`.
 
 **Hoy esta carpeta tiene las plantillas, dos registros de la etapa 1 en texto** ([`participante_simulado_1_etapa_1.md`](participante_simulado_1_etapa_1.md), perfil `habitante`, y [`participante_simulado_2_etapa_1.md`](participante_simulado_2_etapa_1.md), perfil `institucional`, los dos del 2026-11-18) **y las filas de los dos participantes** en [`registro.csv`](registro.csv) y [`cuestionarios.csv`](cuestionarios.csv) (6 filas de tareas y 1 de cuestionario por participante). Ninguna cifra se midió: todas valen «simulado, no medido», no hay tiempos ni respuestas de cuestionario, y no se inventan (D109).
 
@@ -33,4 +33,4 @@ Cada carpeta rechaza las filas de las otras: una fila `simulada` en `sesiones_re
 2. Correr `python scripts/usuarios/analizar_sesiones.py --simuladas`; escribe [`../resultados_sesiones_simuladas.md`](../resultados_sesiones_simuladas.md), que cuenta lo registrado y no calcula tasas, tiempos ni puntuaciones.
 
 ## Qué NO demuestra
-Que el panel sea usable, que alguien lo haya usado ni que se haya hecho una sesión con personas usuarias: los ítems 6.1, 6.2, 6.3, 6.5 y 7.4 solo están en «Cumple con matiz» por la excepción D111 (evidencia simulada, sin personas reales), nunca en «Cumple», y el README sigue diciendo «aún sin sesiones reales».
+Que el panel sea usable, que alguien lo haya usado ni que se haya hecho una sesión con personas usuarias: los ítems 6.1, 6.2, 6.3, 6.5 y 7.4 solo están en «Cumple con matiz» por la decisión D111 (evidencia simulada, sin personas reales), nunca en «Cumple», y el README sigue diciendo «aún sin sesiones reales».

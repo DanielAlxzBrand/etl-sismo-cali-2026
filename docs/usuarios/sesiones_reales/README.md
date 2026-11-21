@@ -13,4 +13,4 @@
 4. Correr `python scripts/usuarios/analizar_sesiones.py`; escribe [`../resultados.md`](../resultados.md).
 
 ## Qué NO demuestra
-Que se haya hecho alguna sesión: mientras aquí solo haya plantillas no hay sesiones reales, y los ítems 6.1, 6.2, 6.3, 6.5 y 7.4 están en «Cumple con matiz» solo por la excepción D111 (evidencia simulada, sin personas reales).
+Que se haya hecho alguna sesión: mientras aquí solo haya plantillas no hay sesiones reales, y los ítems 6.1, 6.2, 6.3, 6.5 y 7.4 están en «Cumple con matiz» solo por la decisión D111 (evidencia simulada, sin personas reales).

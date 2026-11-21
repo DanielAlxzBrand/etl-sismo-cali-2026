@@ -53,7 +53,7 @@ def test_la_licencia_de_la_raiz_viaja_en_el_zip_y_sus_variantes_no():
 
 
 # --- lista de inclusión ---
-PERMITIDOS = ["main.py", "requirements.txt", "README.md", "LICENSE", "pytest.ini", ".env.example", ".gitignore", ".gitattributes", "AVISO.md",
+PERMITIDOS = ["main.py", "requirements.txt", "README.md", "LICENSE", "pytest.ini", ".env.example", ".gitignore", ".gitattributes",
               "config/c.yaml", "src/a.py", "scripts/s.py", "tests/t.py", "notebooks/n.ipynb", "docs/README.md", "data/gold/etl_sismo.db"]
 
 
@@ -163,36 +163,19 @@ def test_una_carpeta_de_configuracion_de_streamlit_o_sus_credenciales_no_entran_
     assert sorted(nombres) == sorted(PERMITIDOS)
 
 
-# --- documentos de la raíz: README.md y un único documento aislado (D97) ---
+# --- documentos de la raíz: solo README.md (D97) ---
 def documentos_de_la_raiz(nombres):
     """Nombres de los `.md` de primer nivel de un zip."""
     return sorted(n for n in nombres if "/" not in n and n.endswith(".md"))
 
 
-def sobrantes_de_la_raiz(nombres):
-    """Documentos de la raíz que no son `README.md` ni el único documento aislado permitido (vacío si hay exactamente uno aislado)."""
-    aislados = [n for n in documentos_de_la_raiz(nombres) if make_dist.es_documento_aislado(n)]
-    return aislados[1:] if len(aislados) > 1 else []
-
-
-def test_la_raiz_del_zip_es_el_readme_mas_un_unico_documento_aislado():
+def test_la_raiz_del_zip_trae_un_solo_documento_el_readme():
     nombres = [p.relative_to(ROOT).as_posix() for p in make_dist.listar(ROOT)]
-    raiz = documentos_de_la_raiz(nombres)
-    assert "README.md" in raiz and len(raiz) == 2, raiz
-    assert len([n for n in raiz if make_dist.es_documento_aislado(n)]) == 1
+    assert documentos_de_la_raiz(nombres) == ["README.md"]
     assert make_dist.fuera_de_la_lista(nombres) == []
 
 
-def test_un_documento_en_mayusculas_sobrante_en_la_raiz_se_detecta(tmp_path):
-    nombres = _empaquetar(tmp_path, ["NOTAS.md"])
-    raiz = documentos_de_la_raiz(nombres)
-    assert raiz == ["AVISO.md", "NOTAS.md", "README.md"]
-    assert sobrantes_de_la_raiz(nombres) == ["NOTAS.md"]      # el segundo documento aislado debe hacer fallar la prueba del repositorio real
-    assert sobrantes_de_la_raiz(_empaquetar(tmp_path / "otro")) == []
-
-
-def test_el_ayudante_de_documento_aislado_distingue_la_raiz_y_las_mayusculas():
-    es = make_dist.es_documento_aislado
-    assert es("AVISO.md") and es("OTRO_DOC2.md")
-    assert not es("README.md") and not es("apuntes.md") and not es("docs/AVISO.md") and not es("AVISO.txt") and not es("2AVISO.md")
-    assert make_dist.fuera_de_la_lista(["apuntes.md", "docs/a.md"]) == ["apuntes.md"]
+def test_un_documento_en_mayusculas_suelto_en_la_raiz_no_entra_al_zip(tmp_path):
+    nombres = _empaquetar(tmp_path, ["NOTAS.md", "AVISO.md"])
+    assert documentos_de_la_raiz(nombres) == ["README.md"]
+    assert make_dist.fuera_de_la_lista(["apuntes.md", "NOTAS.md", "docs/a.md"]) == ["apuntes.md", "NOTAS.md"]

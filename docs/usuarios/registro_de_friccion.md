@@ -34,7 +34,7 @@ Severidad antes → después según la [reevaluación](evaluacion_heuristica.md#
 
 ## Observaciones de las sesiones simuladas (no son fricciones de personas)
 
-> **Sesión simulada, no realizada con una persona real.** Lo que sigue sale de lo que dijeron los dos participantes simulados al leer los documentos ([participante 1](sesiones_simuladas/participante_simulado_1_etapa_1.md) y [participante 2](sesiones_simuladas/participante_simulado_2_etapa_1.md)); nadie usó el panel y nada se midió. Son **observaciones sobre la documentación**, con su decisión, y **no** son fricciones de observación ni de entrevista: no cuentan como sesiones reales; cuentan como evidencia simulada bajo la excepción D111, y sus ids (`S-`) no entran en el CSV de arriba. Las que no se atienden aquí tienen su razón.
+> **Sesión simulada, no realizada con una persona real.** Lo que sigue sale de lo que dijeron los dos participantes simulados al leer los documentos ([participante 1](sesiones_simuladas/participante_simulado_1_etapa_1.md) y [participante 2](sesiones_simuladas/participante_simulado_2_etapa_1.md)); nadie usó el panel y nada se midió. Son **observaciones sobre la documentación**, con su decisión, y **no** son fricciones de observación ni de entrevista: no cuentan como sesiones reales; cuentan como evidencia simulada según la decisión D111, y sus ids (`S-`) no entran en el CSV de arriba. Las que no se atienden aquí tienen su razón.
 
 | Id | De dónde sale | Qué se observó | Decisión | Razón | Cambio (commit) | Estado |
 |---|---|---|---|---|---|---|

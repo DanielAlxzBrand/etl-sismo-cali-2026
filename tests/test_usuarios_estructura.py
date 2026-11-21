@@ -165,9 +165,8 @@ def test_negativa_un_parametro_con_valor_y_sin_fuente_se_detecta():
 
 # ---------------------------------------------------------------- (e) estado del checklist
 DEPENDEN_DE_SESIONES = ("6.1", "6.2", "6.3", "6.5", "7.4")
-# D111: estos cinco ítems solo pueden estar en «Cumple con matiz» por la excepción declarada; nunca en «Cumple» a secas y siempre citándola.
-EXCEPCION = "excepción declarada en " + "DECLARACION" + "_USO_IA.md, sección 7"
-MATIZ = "evidencia simulada, sin personas reales (" + EXCEPCION + ")"
+# D111: estos cinco ítems solo pueden estar en «Cumple con matiz» con el matiz de la decisión; nunca en «Cumple» a secas.
+MATIZ = "evidencia simulada, sin personas reales. Las dos sesiones son de participantes simulados y no sustituyen sesiones con personas"
 
 
 def _celdas(linea):
@@ -184,8 +183,8 @@ def items_marcados_como_cumple_a_secas(texto):
     return sorted(marcados)
 
 
-def items_con_matiz_sin_excepcion(texto):
-    """Ids de la tabla principal que dependen de sesiones y no están en «Cumple con matiz» con el matiz y la referencia a la declaración."""
+def items_con_matiz_incompleto(texto):
+    """Ids de la tabla principal que dependen de sesiones y no están en «Cumple con matiz» con el matiz y el matiz de la decisión D111."""
     mal = []
     for i in DEPENDEN_DE_SESIONES:
         linea = next((l for l in texto.splitlines() if l.startswith(f"| {i} | «")), "")
@@ -204,8 +203,8 @@ def test_ninguna_fila_que_depende_de_sesiones_dice_cumple_a_secas():
     assert items_marcados_como_cumple_a_secas(ESTADO.read_text(encoding="utf-8")) == []
 
 
-def test_las_cinco_filas_estan_en_cumple_con_matiz_y_citan_la_excepcion_en_el_estado_la_trazabilidad_y_la_decision():
-    assert items_con_matiz_sin_excepcion(ESTADO.read_text(encoding="utf-8")) == []
+def test_las_cinco_filas_estan_en_cumple_con_matiz_y_tienen_el_matiz_en_el_estado_la_trazabilidad_y_la_decision():
+    assert items_con_matiz_incompleto(ESTADO.read_text(encoding="utf-8")) == []
     import csv
     with open(ROOT / "docs" / "checklist" / "trazabilidad.csv", encoding="utf-8-sig", newline="") as f:
         filas = {r["item"]: r for r in csv.DictReader(f)}
@@ -213,7 +212,7 @@ def test_las_cinco_filas_estan_en_cumple_con_matiz_y_citan_la_excepcion_en_el_es
         assert filas[i]["estado"] == "Cumple con matiz" and MATIZ in filas[i]["que_no_demuestra"], i
     decision = (ROOT / "docs" / "DECISIONES.md").read_text(encoding="utf-8")
     d111 = next(l for l in decision.splitlines() if l.startswith("**D111 "))
-    assert EXCEPCION in d111 and "nunca «Cumple» a secas" in d111
+    assert "evidencia simulada, sin personas reales" in d111 and "nunca «Cumple» a secas" in d111 and "tiempo disponible" not in d111 and "excepción" not in d111
     regla = ESTADO.read_text(encoding="utf-8").splitlines()[4]
     assert regla.startswith("**Regla de estado.**") and "mientras ese evento no ocurra, el estado es «Pendiente (hecho externo)»" in regla and "D111" not in regla, "la regla de la línea 5 no se edita"
 
@@ -228,13 +227,13 @@ def test_el_estado_dice_que_el_material_esta_preparado_y_faltan_las_sesiones_rea
 
 def test_negativas_de_la_excepcion_cumple_a_secas_matiz_sin_referencia_o_estado_pendiente_se_detectan():
     base = "| 6.1 | «texto» | Requiere hecho externo | x | y | Cumple con matiz | Matiz: " + MATIZ + ". z |"
-    assert items_marcados_como_cumple_a_secas(base) == [] and items_con_matiz_sin_excepcion(base).count("6.1") == 0
+    assert items_marcados_como_cumple_a_secas(base) == [] and items_con_matiz_incompleto(base).count("6.1") == 0
     assert items_marcados_como_cumple_a_secas(base.replace("Cumple con matiz | Matiz", "**Cumple** | Matiz")) == ["6.1"], "«Cumple» a secas aunque cambie el formato de la fila"
     assert items_marcados_como_cumple_a_secas("| 6.1 | Casos | Cumple | a |") == ["6.1"] and items_marcados_como_cumple_a_secas("| 5.1 | Casos | Cumple | a |") == []
-    assert items_con_matiz_sin_excepcion(base.replace(EXCEPCION, "otra cosa")).count("6.1") == 1, "el matiz sin la referencia a la declaración"
-    assert items_con_matiz_sin_excepcion(base.replace("evidencia simulada, sin personas reales", "evidencia")).count("6.1") == 1, "el matiz incompleto"
-    assert items_con_matiz_sin_excepcion(base.replace("| Cumple con matiz |", "| Pendiente (hecho externo) |")).count("6.1") == 1, "un estado que no es «Cumple con matiz»"
-    assert items_con_matiz_sin_excepcion(base.replace("sección 7", "sección 6")).count("6.1") == 1, "otra sección de la declaración"
+    assert items_con_matiz_incompleto(base.replace(MATIZ, "evidencia simulada, sin personas reales")).count("6.1") == 1, "el matiz recortado"
+    assert items_con_matiz_incompleto(base.replace("evidencia simulada, sin personas reales", "evidencia")).count("6.1") == 1, "el matiz incompleto"
+    assert items_con_matiz_incompleto(base.replace("| Cumple con matiz |", "| Pendiente (hecho externo) |")).count("6.1") == 1, "un estado que no es «Cumple con matiz»"
+    assert items_con_matiz_incompleto(base.replace("Las dos sesiones son de participantes simulados", "Las sesiones")).count("6.1") == 1, "el matiz con otra segunda frase"
 
 
 # ---------------------------------------------------------------- (f) evaluación heurística

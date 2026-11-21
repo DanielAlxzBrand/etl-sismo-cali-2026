@@ -21,9 +21,17 @@ ESTADO = ROOT / "docs" / "checklist" / "estado_checklist.md"
 DOCS = ["01_data_thinking.md", "02_stakeholders.md", "03_objetivo_alcance_okr_kpi.md", "04_canvas_data_innovation_board.md", "05_mvp_criterios_aceptacion.md"]
 ARCHIVOS = ["indice.md"] + DOCS
 IMAGENES = [CARPETA / "img" / "matriz_poder_interes.png", CARPETA / "img" / "canvas_modelo_negocio.png"]
-# Rastros de elaboración (las cadenas se parten para que este archivo no se detecte a sí mismo). La sigla de IA como concepto técnico está permitida.
-RASTROS = ["Cla" + "ude", "Anthro" + "pic", "Chat" + "GPT", "Co" + "pilot", "Gem" + "ini", "Open" + "AI", "pro" + "mpt",
-           "con ayuda de " + "IA", "asistente de " + "IA", "generado con " + "IA", "herramienta de " + "IA", "elaborado con " + "IA"]
+# Rastros de elaboración: están como sha256 en scripts/terminos_vigilados.py (nombres de herramientas y frases de elaboración); este archivo no los escribe.
+_spec_tv = importlib.util.spec_from_file_location("terminos_vigilados_estrategia", ROOT / "scripts" / "terminos_vigilados.py")
+tv = importlib.util.module_from_spec(_spec_tv)
+_spec_tv.loader.exec_module(tv)
+
+
+def rastros(texto):
+    """Cuántos rastros de elaboración (herramientas o frases) hay en el texto."""
+    return len(tv.encuentra(texto, tv.HERRAMIENTAS)) + len(tv.encuentra(texto, tv.FRASES_DE_ELABORACION))
+
+
 OTROS = ["por validar por el " + "equipo", "[COMPLE" + "TAR", "TO" + "DO"]
 # Lista cerrada de componentes (único lugar de las pruebas donde se define)
 COMPONENTES = ["Base y orden", "Estrategia", "API, fuentes y credenciales", "Carga relacional", "Pruebas y orquestación", "Panel", "Usuarios, UX y finanzas",
@@ -66,23 +74,22 @@ def test_cada_documento_tiene_alcance_y_limites_y_preguntas_frecuentes():
 def test_sin_rastros_de_elaboracion_ni_marcas_pendientes_en_estrategia():
     for n in ARCHIVOS:
         t = _texto(n)
-        for p in RASTROS + OTROS:
+        assert rastros(t) == 0, n
+        for p in OTROS:
             assert p not in t, (n, p)
 
 
 def test_sin_rastros_de_elaboracion_en_el_resto_del_repo():
-    """Recorre los archivos de texto versionables (sin .venv, .git, data/, dist/ ni el documento aislado de la raíz, que es del equipo)."""
+    """Recorre los archivos de texto versionables (sin .venv, .git, data/, dist/ ni los datos)."""
     saltar = {".venv", ".git", "data", "dist", "logs", "__pycache__", ".pytest_cache", ".ipynb_checkpoints"}
     hallazgos = []
     for p in ROOT.rglob("*"):
         rel = p.relative_to(ROOT)
-        if not p.is_file() or rel.parts[0] in saltar or any(x in saltar for x in rel.parts) or p.suffix not in SUFIJOS or make_dist.es_documento_aislado(rel.as_posix()):
+        if not p.is_file() or rel.parts[0] in saltar or any(x in saltar for x in rel.parts) or p.suffix not in SUFIJOS:
             continue
         t = p.read_text(encoding="utf-8", errors="ignore")
-        if rel.as_posix() == "README.md":
-            from tests.test_criterio_de_texto import sin_la_linea_autorizada   # D105: la única línea que remite a la declaración, exacta y una vez
-            t = sin_la_linea_autorizada("README.md", t)
-        hallazgos += [(rel.as_posix(), x) for x in RASTROS if x in t]
+        if rastros(t):
+            hallazgos.append(rel.as_posix())
     assert hallazgos == []
 
 
@@ -341,7 +348,7 @@ def test_ningun_documento_conserva_etiquetas_de_fase_como_fase_de_trabajo():
     hallazgos = []
     for p in ROOT.rglob("*"):
         rel = p.relative_to(ROOT)
-        if (not p.is_file() or any(x in saltar for x in rel.parts) or p.suffix not in SUFIJOS or make_dist.es_documento_aislado(rel.as_posix())
+        if (not p.is_file() or any(x in saltar for x in rel.parts) or p.suffix not in SUFIJOS
                 or rel.as_posix().startswith(("docs/evidencias/base/", "docs/evidencias/estrategia/", "docs/evidencias/api/", "tests/test_estrategia.py"))):
             continue
         if ETIQUETA_DE_FASE.search(p.read_text(encoding="utf-8", errors="ignore")):
@@ -360,7 +367,7 @@ def test_ningun_documento_conserva_terminos_de_proceso_ni_rutas_antiguas():
     hallazgos = []
     for p in ROOT.rglob("*"):
         rel = p.relative_to(ROOT)
-        if (not p.is_file() or any(x in saltar for x in rel.parts) or p.suffix not in SUFIJOS or make_dist.es_documento_aislado(rel.as_posix())
+        if (not p.is_file() or any(x in saltar for x in rel.parts) or p.suffix not in SUFIJOS
                 or rel.as_posix().startswith(("docs/evidencias/base/", "docs/evidencias/estrategia/", "docs/evidencias/api/", "docs/retroalimentacion/retroalimentacion_recibida.txt", "tests/test_estrategia.py"))):
             continue
         t = p.read_text(encoding="utf-8", errors="ignore")

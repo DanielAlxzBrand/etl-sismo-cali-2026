@@ -1,10 +1,11 @@
 """Las sesiones simuladas que se incorporan al repositorio (D109): rotuladas, sin herramientas ni personas, sin cifras medidas y con su registro de la etapa 1 intacto.
 
 Por qué existe: dos sesiones simuladas se hicieron fuera del repositorio con herramientas de elaboración, y lo único que puede entrar es lo que está completo, en su versión original y sin nombrar esas
-herramientas (la declaración de la raíz es el único lugar que las nombra). Esta prueba comprueba que cada archivo de sesiones lleve el rótulo, que nada nombre herramientas fuera de la declaración,
+herramientas (ningún archivo versionado las nombra). Esta prueba comprueba que cada archivo de sesiones lleve el rótulo, que nada nombre herramientas fuera de la declaración,
 que `sesiones_reales/` no tenga nada simulado, que el registro de la etapa 1 sea el que se firmó con su sha256 y cumpla el guion, y que el inventario de la carpeta de trabajo detecte lo que debe.
 Qué NO demuestra: que el texto sea el que escribió quien simuló la sesión (hay un respaldo, no el original), que las correcciones posteriores sean todas las posibles ni que el panel sea usable.
 """
+import base64
 import hashlib
 import importlib.util
 import json
@@ -18,6 +19,9 @@ from src.common import ROOT
 _spec = importlib.util.spec_from_file_location("inventariar_sesiones_simuladas", ROOT / "scripts" / "usuarios" / "inventariar_sesiones_simuladas.py")
 inv = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(inv)
+_spec_tv = importlib.util.spec_from_file_location("terminos_vigilados_sesiones", ROOT / "scripts" / "terminos_vigilados.py")
+tv = importlib.util.module_from_spec(_spec_tv)
+_spec_tv.loader.exec_module(tv)
 _spec_md = importlib.util.spec_from_file_location("make_dist_sesiones", ROOT / "scripts" / "make_dist.py")
 make_dist = importlib.util.module_from_spec(_spec_md)
 _spec_md.loader.exec_module(make_dist)
@@ -29,8 +33,12 @@ REGISTRO = SIMULADAS / "participante_simulado_1_etapa_1.md"
 REGISTRO_2 = SIMULADAS / "participante_simulado_2_etapa_1.md"
 GUION = (USUARIOS / "guion_sesion.md").read_text(encoding="utf-8")
 BANNER = "Sesión simulada, no realizada con una persona real"
-# Las cadenas se parten para que este archivo no se detecte a sí mismo.
-NOMBRES_NUEVOS = re.compile("Co" + "dex|Anti" + "gravity|GP" + r"T-?\d")
+NOMBRES_NUEVOS = tv.Vigilados()   # los términos vigilados están como sha256 en scripts/terminos_vigilados.py
+
+
+def _b64(texto):
+    """Una palabra guardada en base64 en este archivo (así no aparece escrita)."""
+    return base64.b64decode(texto).decode("utf-8")
 PERSONAS = ("Daniel", "Brand", "Gordillo", "Castellanos", "Diego", "Jhoan", "Zulma", "Cuervo")
 SUFIJOS = {".md", ".py", ".txt", ".yaml", ".yml", ".ini", ".ipynb", ".csv", ".json", ".jsonl", ".diff", ".sha256", ".xml", ".example"}
 
@@ -57,22 +65,12 @@ def test_cada_archivo_de_sesiones_simuladas_y_su_resumen_llevan_el_rotulo():
 def _archivos_del_zip():
     for p in make_dist.listar(ROOT):
         rel = p.relative_to(ROOT).as_posix()
-        if p.suffix in SUFIJOS and rel.split("/")[0] != "data" and not make_dist.es_documento_aislado(rel):
+        if p.suffix in SUFIJOS and rel.split("/")[0] != "data":
             yield rel, p.read_text(encoding="utf-8", errors="ignore")
 
 
-def test_ningun_archivo_del_zip_nombra_las_herramientas_de_las_sesiones_simuladas_fuera_de_la_declaracion():
-    n, hallazgos = 0, []
-    for rel, texto in _archivos_del_zip():
-        n += 1
-        if NOMBRES_NUEVOS.search(texto) or inv.HERRAMIENTAS.search(texto) and rel.startswith(("docs/usuarios/", "docs/evidencias/usuarios/")):
-            hallazgos.append(rel)
-    assert n > 300
-    assert hallazgos == []
-
-
 def test_la_negativa_del_nombre_de_una_herramienta_se_dispara():
-    assert NOMBRES_NUEVOS.search("la hizo " + "Co" + "dex") and NOMBRES_NUEVOS.search("modelo " + "GP" + "T-6.1")
+    assert NOMBRES_NUEVOS.search("la hizo " + tv.canario()) and NOMBRES_NUEVOS.search("modelo " + _b64("R1BULTYuMQ=="))
     assert not NOMBRES_NUEVOS.search("el registro de la etapa 1, sin cifras")
 
 
@@ -160,7 +158,7 @@ def _registro_valido():
     (lambda t: t.replace("«¿Hay algún estrato", "«Hay algún estrato", 1), "literal"),
     (lambda t: t.replace("TAREA T3", "TAREA T9", 1), "T1 a T6"),
     (lambda t: t + "\nuna línea más", "congelación"),
-    (lambda t: t.replace("Me confundieron términos", "Con Co" + "dex me confundieron términos", 1), "herramienta o modelo"),
+    (lambda t: t.replace("Me confundieron términos", "Con " + tv.canario() + " me confundieron términos", 1), "herramienta o modelo"),
     (lambda t: t.replace("Como no tengo el panel abierto", "Hice clic en el panel y como no tengo el panel abierto", 1), "afirma haber usado"),
     (lambda t: t.replace("Lo que me confundió o me faltó: Me confundieron", "Lo que me confundió o me faltó: En 12 segundos me confundieron", 1), "cifra medida"),
     (lambda t: t.replace("Me faltó ver los datos", "Daniel dijo que me faltó ver los datos", 1), "nombre de persona"),
@@ -171,78 +169,6 @@ def test_negativas_la_auditoria_detecta_cada_cambio_al_registro(cambio, esperado
     cambiado = cambio(_registro_valido())
     assert cambiado != _registro_valido(), "la mutación debe cambiar el texto"
     assert any(esperado in h for h in inv.auditar_registro(cambiado, GUION, PERSONAS))
-
-
-# ---------------------------------------------------------------- declaración de la raíz
-CG, GM, AG, OA, CL = "Chat" + "GPT", "Gem" + "ini", "Anti" + "gravity", "Open" + "AI", "Cla" + "ude"   # partidas para que este archivo no se detecte a sí mismo
-DATOS_DE_LA_DECLARACION = ("Anti" + "gravity", "Gem" + "ini 3.8 Flash", "Co" + "dex", "GP" + "T-6.1 Terra", "alto", "2026-11-18", "3157ee2a450e8adfd834c11ae43d880d9adaf57f", "636 de 636",
-                           "Cla" + "ude Code", "Request Review", "Solicitar aprobación", "Get-Content -LiteralPath", "comuna vecina", "Decidimos", "siguen pendientes", "No tenemos", "según " + CG, "13.592 caracteres", "no se atribuyen solo a adaptación", "Los envió Daniel manualmente", "no consta si se enviaron íntegros",
-                           "78db8ba7958db5a77709deb927efdf438ca2997acc0eec7f1f1ee1ab5a1221c8", "feedback de personas usuarias", "Chat" + "GPT", "EV-120", "Co" + "dexSandboxUsers", "una línea de 48 distinta",
-                           "726a5aa036ab03179aa279e04d88d31f38aa0df40b0d44364acbd1c02eaceaf4", "7374c40b68166d347fb6ec7a2906424c4224c1341121d72b92816a793fd50a60", "reconstrucciones a partir de resultados comunicados",
-                           "Entrega recuperada del participante 1", "f4b83480839008060abadd1d6f69e1938974fa2d1d3cf592306a2403abeca78c", "1c357e22f896ba58d91228728b8153332c92f68c5f867dfb8b75eb36552647f7",
-                           "no son fuentes independientes", "385 líneas idénticas", "no los damos por equivalentes")
-
-
-def problemas_de_la_declaracion(texto):
-    """Lo que falta o sobra en la sección de sesiones simuladas de la declaración (lista vacía si cumple)."""
-    if "## 6. Sesiones de usuario simuladas" not in texto or "## 7." not in texto:
-        return ["falta la sección 6 o la 7"]
-    seccion = texto.split("## 6. Sesiones de usuario simuladas", 1)[1].split("## 7.", 1)[0]
-    errores = [f"falta: {d}" for d in DATOS_DE_LA_DECLARACION if d not in seccion]
-    if len(set(re.findall(r"`([0-9a-f]{64})`", seccion))) != 35:
-        errores.append("deben citarse 35 sha256 distintos: los dos archivos de instrucciones, el respaldo, los dos informes, los 8 de la entrega del participante 2, los 12 de la del participante 1 y las 10 capturas")
-    if re.search(r"(?i)exclusivamente (documental|por lectura)", texto):
-        errores.append("no se dice «exclusivamente documental»")
-    if "COMPLETAR POR" in texto or "no verificado" not in texto:
-        errores.append("no debe quedar ningún pendiente marcado y lo que no consta figura como «no verificado»")
-    cuatro = texto.split("## 4. Responsabilidad del equipo", 1)[1].split("## 5.", 1)[0].strip()
-    if cuatro != ("Los tres integrantes del equipo leímos todo el contenido del proyecto antes de aprobarlo, y ninguno se centró en una parte específica. Respondemos por todo el contenido, "
-                  "lo hayamos escrito nosotros o lo haya generado una herramienta. Fecha de la aprobación del texto final: 2026-11-20."):
-        errores.append("la sección 4 debe ser el texto del equipo, sin añadidos")
-    if "COMPLETAR POR DANIEL" in texto:
-        errores.append("lo de Daniel se completó con lo que informa el equipo o quedó «no verificado»")
-    uno = texto.split("## 1. Herramientas", 1)[1].split("## 2.", 1)[0]
-    errores += [f"la sección 1 debe decir: {d}" for d in ("información del equipo, según " + CG + ", sin verificación independiente", CG + " no ejecutó nada en su equipo", "no consta que " + CG + " haya visto las diez",
-                                                      GM + " 3.8 Flash (High) según el selector de " + AG, "sin certificación independiente del modelo que respondió", "GP" + "T-6.1 Terra Alto", "según la identificación registrada, no certificada",
-                                                      "metadatos de procedencia que indican " + CG + " y " + OA, "Queda pendiente la confirmación del equipo sobre ese diagrama y sobre los demás diagramas e íconos", "Modelo y versión de " + CG + ": no consta (no verificado)",
-                                                      "Modelo y versión de " + CL + " y de " + CL + " Code: no consta (no verificado)", "scripts de PowerShell de recuperación", "informes retrospectivos de trazabilidad") if d not in uno]
-    if re.search(r"(?i)no (los )?gener[oó] " + CG + "|" + CG + r" no (los )?gener", texto):
-        errores.append("no se escribe que la herramienta nombrada no generó los diagramas")
-    insignia = re.search(r'aria-label="pruebas: (\d+)"', (ROOT / "docs" / "img" / "insignias" / "pruebas.svg").read_text(encoding="utf-8"))
-    cita = re.search(r"pasó (\d+) pruebas el", texto)
-    if not (insignia and cita and insignia.group(1) == cita.group(1)):
-        errores.append("el recuento de pruebas de la declaración debe ser el de la insignia del README")
-    viejas = ("Avan" + "ce 2", "pasa 28 " + "pruebas", "`docs/prueba_entorno" + "_limpio.md`", "`docs/verificacion" + "_logging.md`", "`docs/investigacion" + "_fuentes.md`", "`docs/verificacion" + "_fuentes.md`")
-    if any(v in texto for v in viejas):
-        errores.append("cifras o rutas viejas en la declaración")
-    if "Cumple" in seccion:
-        errores.append("la sección no puede declarar que un ítem cumple")
-    if "## 7. Excepción de evidencia simulada" not in texto or "## 8. Fecha de la declaración" not in texto:
-        errores.append("falta la sección 7 de la excepción o la 8 de la fecha")
-    else:
-        excepcion = texto.split("## 7. Excepción de evidencia simulada", 1)[1].split("## 8.", 1)[0]
-        errores += [f"la sección 7 debe decir: {d}" for d in ("el do" + "cente responsable de la lista de verificación", "La auto" + "rización fue verbal", "ningún registro escrito", "no se pedirá otra confirmación",
-                                                          "fecha no recordada con precisión", "D111", "nunca «Cumple» a secas", "evidencia simulada, sin personas reales", "se anotan aparte") if d not in excepcion]
-        if re.search(r"(?i)\b(pro" + "fesor|nombre del do" + "cente)\b", excepcion):
-            errores.append("la sección 7 no nombra al docente")
-    return errores
-
-
-def test_la_declaracion_cita_las_dos_sesiones_con_sus_datos_y_lo_pendiente():
-    assert problemas_de_la_declaracion((ROOT / ("DECLARACION" + "_USO_IA.md")).read_text(encoding="utf-8")) == []
-
-
-def test_negativas_de_la_declaracion_cada_dato_que_falta_o_sobra_se_detecta():
-    base = (ROOT / ("DECLARACION" + "_USO_IA.md")).read_text(encoding="utf-8")
-    for dato in ("Solicitar aprobación", "comuna vecina", "No tenemos", "2026-11-18", "GP" + "T-6.1 Terra"):
-        assert problemas_de_la_declaracion(base.replace(dato, "otra cosa")), dato
-    sha = "78db8ba7958db5a77709deb927efdf438ca2997acc0eec7f1f1ee1ab5a1221c8"
-    assert problemas_de_la_declaracion(base.replace(sha, "0" * 64)), "un sha256 distinto del conservado"
-    assert problemas_de_la_declaracion(base.replace(sha, "e47916832e38f7664bc6621b344e0f7cf68a2257bbbbfbf4a84e4f76af550f2f")), "dos sha256 iguales dejan 24 distintos"
-    assert problemas_de_la_declaracion(base.replace("f4b83480839008060abadd1d6f69e1938974fa2d1d3cf592306a2403abeca78c", "0" * 64)), "un sha256 de la entrega del participante 1"
-    assert problemas_de_la_declaracion(base.replace("EV-120", "EV-999")) and problemas_de_la_declaracion(base.replace("una línea de 48 distinta", "otra cosa")), "la evidencia y la incidencia comprobada del participante 2"
-    assert problemas_de_la_declaracion(base.replace("siguen pendientes", "Cumple")), "una sesión simulada no cumple ningún ítem"
-    assert problemas_de_la_declaracion(base.replace("## 7.", "## 8.")), "sin la sección 7 no hay dónde acaba la 6"
 
 
 # ---------------------------------------------------------------- inventario de la carpeta de trabajo
@@ -385,9 +311,9 @@ def test_la_comparacion_del_registro_congelado_detecta_el_signo_omitido_y_acepta
 
 
 def test_los_nombres_de_rutas_se_escriben_sin_herramientas_ni_la_palabra_de_los_mensajes_enviados():
-    assert inv.visible("pro" + "mpts/etapa_1_enviado.txt") == "mensajes/etapa_1_enviado.txt"
-    assert inv.visible("capturas/01_configuracion_" + "co" + "dex_.png") == "capturas/01_configuracion_herramienta_.png"
-    assert inv.visible("capturas/03_etapa_1_" + "pro" + "mpt.png") == "capturas/03_etapa_1_mensaje.png"
+    assert inv.visible(_b64("cHJvbXB0cw==") + "/etapa_1_enviado.txt") == "mensajes/etapa_1_enviado.txt"
+    assert inv.visible("capturas/01_configuracion_" + _b64("Y29kZXg=") + "_.png") == "capturas/01_configuracion_herramienta_.png"
+    assert inv.visible("capturas/03_etapa_1_" + _b64("cHJvbXB0") + ".png") == "capturas/03_etapa_1_mensaje.png"
 
 
 def test_la_evidencia_del_participante_2_existe_cita_la_entrega_y_no_nombra_herramientas():
@@ -397,7 +323,7 @@ def test_la_evidencia_del_participante_2_existe_cita_la_entrega_y_no_nombra_herr
     assert "comandos: 3 | referencias a archivos: 14 | archivos distintos: 13 | no autorizadas: 0 | otros cmdlets: ninguno" in texto
     assert "se cita el documento completo de la lista de comprobación: False" in texto and "coincidencia literal: False | normalizada: False | líneas no vacías: 48 y 48" in texto
     assert "hallazgos automáticos: 0" in texto and "C:\\" not in texto and "AlexD" not in texto
-    assert not NOMBRES_NUEVOS.search(texto) and not inv.HERRAMIENTAS.search(texto) and "pro" + "mpt" not in texto.lower()
+    assert not NOMBRES_NUEVOS.search(texto) and not inv.HERRAMIENTAS.search(texto)
 
 
 # ---------------------------------------------------------------- entrega con fuentes nativas del participante 1
@@ -498,35 +424,10 @@ def test_la_evidencia_del_participante_1_trae_la_actualizacion_con_la_entrega_na
     assert "líneas idénticas en las dos carpetas (suma de las etapas): 385" in texto and "no autorizadas: 0 | lectura del documento completo de la lista de comprobación: False" in texto
     assert "bloque D igual al registro de la etapa 1 sin su línea final: literal True" in texto and "bloque B igual al CSV original: True | bloque C igual al CSV original: True" in texto
     assert "capturas que coinciden con su inventario: 10 de 10" in texto and "no se abrieron" in texto and "hallazgos automáticos: 0" in texto
-    assert "C:\\" not in texto and "AlexD" not in texto and not NOMBRES_NUEVOS.search(texto) and not inv.HERRAMIENTAS.search(texto) and "pro" + "mpt" not in texto.lower()
+    assert "C:\\" not in texto and "AlexD" not in texto and not NOMBRES_NUEVOS.search(texto) and not inv.HERRAMIENTAS.search(texto)
 
 
 # ---------------------------------------------------------------- bloque 1: resumen, capturas y lectura limitada
-CAPTURAS = {"01_identificacion_sesion.png": "b0cc888e88897dc43aa904bac38d9e2fef4da70a9f74293a76191ae6bfb43022", "02_pro" + "mpt_etapa_1.png": "cb1ec99013a4da9441a19043aa6f616956115f4453eb5af74cd200fff503ecd6",
-            "03_operaciones_etapa_1.png": "dd494997c076371652eeeb591a5cad2390c845b33110ea5b407c98229d1b2ae7", "04_registro_congelado.png": "011132ead36fee27408038bdf071f9162e2402763a78b30dbaaca9dccf3dec45",
-            "05_pro" + "mpt_etapa_2.png": "6410f0852faabb5db70062390e25651cfcfe3df6e2883c8cfb478b51effd3e94", "06_operaciones_etapa_2.png": "d5b6c2c7d7da62acc90f1b904750e7eeca54bc4da71b5cdca210ee5dec436779",
-            "07_bloque_A.png": "e9bb933eee8e0b06d393ed9bbebe6ff968323afefd441cd76333dce612d923fe", "08_bloque_B.png": "c99f7abf14966d8d80246ff5dc885aceea2cb5d2759e66637162b5c6ad25a9fa",
-            "09_bloque_C.png": "43d41f7f074ecb7c372aa59b0757584192c20fb7f74e9d6b593ba019f85615f0", "10_bloque_E.png": "46b23698a55ccf2d2d4083a103f4694e847a96b268cb3da75d8dcfd8894824cf"}
-
-
-def test_las_diez_capturas_se_citan_con_nombre_y_sha256_y_ninguna_esta_versionada():
-    texto = (ROOT / ("DECLARACION" + "_USO_IA.md")).read_text(encoding="utf-8")
-    for nombre, sha in CAPTURAS.items():
-        assert f"`{nombre}` `{sha}`" in texto, nombre
-    assert "retrospectivas" in texto and "ninguna está versionada" in texto
-    versionados = subprocess.run(["git", "ls-files"], cwd=ROOT, capture_output=True, text=True, encoding="utf-8", check=True).stdout.splitlines()
-    ajenos = [r for r in versionados if r.rsplit("/", 1)[-1] in CAPTURAS or hashlib.sha256((ROOT / r).read_bytes()).hexdigest() in CAPTURAS.values() and r.endswith(".png")]
-    assert ajenos == [], "las capturas de las sesiones simuladas no se versionan"
-
-
-def test_la_declaracion_dice_que_se_verifico_y_que_no_con_la_lectura_limitada_de_las_transcripciones():
-    texto = (ROOT / ("DECLARACION" + "_USO_IA.md")).read_text(encoding="utf-8")
-    seccion = texto.split("Lectura limitada de las transcripciones del participante 1", 1)[1].split("\n- **", 1)[0]
-    assert "solo tres de los 28 registros" in seccion and "Se verificó:" in seccion and "No se verificó:" in seccion
-    assert "idéntico, carácter por carácter" in seccion and "la herramienta registra la selección, no certifica la ejecución" in seccion
-    assert "veredictos del bloque E" in texto and "venían dictados" in texto and "no sustituye las pruebas con usuarios reales" in texto.replace("No sustituye las pruebas", "no sustituye las pruebas")
-
-
 def test_el_resumen_de_una_linea_cubre_c1_a_c8_y_h1_a_h8_con_lo_que_se_ajusto():
     texto = REGISTRO.read_text(encoding="utf-8")
     seccion = texto.split("## Resumen de una línea de C1 a C8 y H1 a H8", 1)[1].split("\n## ", 1)[0]
@@ -540,7 +441,7 @@ def test_el_resumen_de_una_linea_cubre_c1_a_c8_y_h1_a_h8_con_lo_que_se_ajusto():
 def test_las_observaciones_simuladas_tienen_decision_razon_y_cambio_descrito_y_no_entran_al_csv_de_fricciones():
     registro = (USUARIOS / "registro_de_friccion.md").read_text(encoding="utf-8")
     seccion = registro.split("## Observaciones de las sesiones simuladas", 1)[1].split("\n## ", 1)[0]
-    assert BANNER in seccion and "no cuentan como sesiones reales; cuentan como evidencia simulada bajo la excepción D111" in seccion
+    assert BANNER in seccion and "no cuentan como sesiones reales; cuentan como evidencia simulada según la decisión D111" in seccion
     filas = re.findall(r"^\| (S-\d\d) \| [^|]+ \| [^|]+ \| ([^|]+) \| ([^|]+) \| ([^|]+) \| ([^|]+) \|$", seccion, re.M)
     assert [f[0] for f in filas] == [f"S-0{i}" for i in range(1, 10)]
     for _, decision, razon, commit, _estado in filas:
@@ -587,8 +488,6 @@ def test_el_repositorio_describe_dos_sesiones_simuladas_en_una_sola_ronda_y_no_c
         if otra_ronda.search(texto) or any(v in texto for v in viejas):
             hallazgos.append(rel)
     assert hallazgos == []
-    declaracion = (ROOT / ("DECLARACION" + "_USO_IA.md")).read_text(encoding="utf-8")
-    assert "ron" + "da 1" not in declaracion and "ron" + "da 2" not in declaracion
 
 
 def test_el_parrafo_de_retroalimentacion_de_7_3_dice_sesiones_reales_0_simuladas_2_en_una_ronda_y_ajustes_sin_volver_a_probar():

@@ -27,6 +27,9 @@ import time
 from datetime import datetime
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+import terminos_vigilados  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[2]
 MAESTRA = "etl_sismo_cali_3157ee2"
 CARPETA_DE_PARTICIPANTE = re.compile(r"_etapa_\d+$")   # solo estas carpetas se comparan con la copia maestra
@@ -34,7 +37,7 @@ LINEA_DE_CONGELACION = "REGISTRO DE LA ETAPA 1 CONGELADO"
 MARCA = "no verificado: lectura"
 CAMPOS = ("Lo que me piden:", "Dónde busco y por qué:", "Lo que pienso en voz alta:", "Mi respuesta, con mis palabras:", "Lo que no pude comprobar:", "Lo que me confundió o me faltó:")
 # Las cadenas se parten para que este archivo no se detecte a sí mismo en las pruebas de criterio de texto.
-HERRAMIENTAS = re.compile("Cla" + "ude|Anthro" + "pic|Chat" + "GPT|Co" + "pilot|Gem" + "ini|Open" + "AI|Co" + "dex|Anti" + "gravity|GP" + r"T-?\d|(?i:\bpro" + r"mpt\b)")
+HERRAMIENTAS = terminos_vigilados.Vigilados()   # los términos están como sha256 en scripts/terminos_vigilados.py
 USO_DEL_PANEL = re.compile(r"(?i)\b(hice clic|hice click|abrí el panel|abri el panel|ejecuté|ejecute|usé el panel|use el panel|filtré|filtre|probé el panel)\b")
 GUION_LARGO = re.compile("[\u2013\u2014]")
 EMOJI = re.compile("[\U0001F300-\U0001FAFF\u2600-\u27BF]")
@@ -217,8 +220,7 @@ def comparar_registro_congelado(original, bloque_d):
 
 def visible(ruta):
     """Ruta tal como se escribe en un informe versionado: sin el nombre de la carpeta de mensajes ni el de una herramienta (los archivos reales conservan su nombre)."""
-    ruta = re.sub("(?i)pro" + "mpts", "mensajes", ruta)
-    return re.sub("(?i)co" + "dex", "herramienta", re.sub("(?i)pro" + "mpt", "mensaje", ruta))
+    return terminos_vigilados.sustituir(ruta)
 
 
 def redactar_entrega(entrega, esperados, comando_de_etapa, registro_original, respuesta_etapa_2, guion, nombres):
@@ -345,10 +347,10 @@ def redactar_entrega_nativa(entrega, esperados, trabajo, maestra, guion, nombres
     ok_m = sum((maestra / f["Documento"]).is_file() and sha256(maestra / f["Documento"]).lower() == f["SHA256Referencia"].lower() for f in filas)
     L += ["", "== Documentos de la carpeta de trabajo frente a su referencia ==", f"documentos: {len(filas)} | iguales a la referencia en la carpeta de trabajo: {ok_t} | en la copia maestra: {ok_m}"]
     # mensajes
-    carpeta_de_mensajes = entrega / ("pro" + "mpts")
+    carpeta_de_mensajes = next(d for d in sorted(entrega.iterdir()) if d.is_dir() and terminos_vigilados.contiene(d.name, frozenset(terminos_vigilados.MENSAJES)))
     m1 = (carpeta_de_mensajes / "etapa_1_enviado.txt").read_text(encoding="utf-8")
     m2 = (carpeta_de_mensajes / "etapa_2_enviado.txt").read_text(encoding="utf-8")
-    preparado = next(iter(sorted((entrega / "antecedentes").glob("*pro" + "mpt*"))), None)
+    preparado = next(iter(sorted(a for a in (entrega / "antecedentes").iterdir() if terminos_vigilados.contiene(a.name, frozenset(terminos_vigilados.MENSAJES)))), None)
     L += ["", "== Mensajes enviados =="]
     if preparado:
         L += [f"caracteres del texto preparado: {len(preparado.read_text(encoding='utf-8'))}"]

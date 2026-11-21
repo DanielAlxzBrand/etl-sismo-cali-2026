@@ -24,7 +24,10 @@ NUEVOS = ["servicios/phpmyadmin/docker-compose.yaml", "orquestacion/docker-compo
 GUIAS = ["docs/instalacion/README.md", "docs/instalacion/modo_minimo.md", "docs/instalacion/modo_completo.md", "docs/instalacion/errores_comunes.md", "docs/almacenamiento/phpmyadmin.md",
          "docs/orquestacion/operacion.md", "docs/orquestacion/diferencias_con_la_guia.md"]
 # las cadenas se parten para que este archivo no se detecte a sí mismo (como hace test_estrategia)
-PROHIBIDAS = re.compile(r"(?i)pro" + r"fe(?:sor)?\b|\bpro" + r"mpt\b|DECLARACION" + r"_USO_IA|C:\\Us" + r"ers|Alex" + r"D|/Us" + r"ers/")
+PROHIBIDAS = re.compile(r"(?i)pro" + r"fe(?:sor)?\b|DECLARACION" + r"_USO_IA|C:\\Us" + r"ers|Alex" + r"D|/Us" + r"ers/")
+_spec_tv = importlib.util.spec_from_file_location("terminos_vigilados_servicios", ROOT / "scripts" / "terminos_vigilados.py")
+tv = importlib.util.module_from_spec(_spec_tv)
+_spec_tv.loader.exec_module(tv)   # nombres de herramientas e instrucciones a una herramienta: sha256 en scripts/terminos_vigilados.py
 
 
 @pytest.fixture(scope="module")
@@ -71,7 +74,7 @@ def test_las_guias_no_dejan_marcas_sin_llenar():
 
 def test_los_textos_nuevos_no_llevan_rutas_locales_ni_palabras_prohibidas():
     archivos = [ROOT / n for n in NUEVOS if n != ".env.example"] + [ROOT / "orquestacion" / "docker-compose.yaml"]
-    malos = [(a.relative_to(ROOT).as_posix(), n, linea.strip()[:80]) for a in archivos for n, linea in enumerate(a.read_text(encoding="utf-8").splitlines(), 1) if PROHIBIDAS.search(linea)]
+    malos = [(a.relative_to(ROOT).as_posix(), n, linea.strip()[:80]) for a in archivos for n, linea in enumerate(a.read_text(encoding="utf-8").splitlines(), 1) if PROHIBIDAS.search(linea) or tv.contiene(linea)]
     assert not malos, malos
 
 

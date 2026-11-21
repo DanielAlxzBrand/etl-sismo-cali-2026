@@ -5,3 +5,9 @@ dist/
 logs/*.log
 .ipynb_checkpoints/
 .pytest_cache/
+.coverage*
+*.bak
+*.zip
+*.db-journal
+respaldo*
+lab_*

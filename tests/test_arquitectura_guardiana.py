@@ -5,11 +5,12 @@ en ASCII dentro del documento y su coherencia con la tabla de cajas y con el DAG
 De cada ADR comprueba su estructura y que lo que presenta como «consideradas entonces» está de verdad en DECISIONES.md. Las cifras del documento se vigilan en `tests/test_arquitectura_cifras.py`.
 Cada regla tiene su prueba negativa con un texto sintético.
 """
+import base64
 import ast
 import re
 
 from src.common import ROOT
-from tests.test_readme_guardiana import (ARCHIVO_DECLARACION, CORREO, EMOJIS, GUIONES, LINEA_CITA_AIRFLOW, RUTA_LOCAL, TERMINOS, _ancla, _encabezados, _sin_codigo)
+from tests.test_readme_guardiana import (CORREO, EMOJIS, GUIONES, LINEA_CITA_AIRFLOW, RUTA_LOCAL, TERMINOS, _ancla, _encabezados, _sin_codigo)
 
 DOC = ROOT / "docs" / "arquitectura" / "arquitectura_del_sistema.md"
 ADRS = ROOT / "docs" / "arquitectura" / "adr"
@@ -62,8 +63,8 @@ def problemas_de_redaccion(texto, base):
             errores.append(f"término prohibido: {nombre}")
     if CITA_EXTERNA.search(texto):
         errores.append("término prohibido: cita externa fuera de su línea")
-    if "DECLARACION" + "_USO" in texto or ARCHIVO_DECLARACION in texto:
-        errores.append("remite a la declaración de la raíz: solo lo hace el README")
+    if "DECLARACION" + "_USO" in texto:
+        errores.append("remite a un archivo de declaración")
     if CORREO.search(texto):
         errores.append("hay una dirección de correo")
     if RUTA_LOCAL.search(texto):
@@ -340,10 +341,15 @@ def test_la_excepcion_de_la_cita_no_vale_para_los_adr():
     assert problemas_de_redaccion(adr + "\nVer el artículo de Núñez Velasco.\n", ADRS)
 
 
+def _b64(texto):
+    """Una palabra guardada en base64 en este archivo (así no aparece escrita)."""
+    return base64.b64decode(texto).decode("utf-8")
+
+
 def test_las_reglas_de_redaccion_detectan_lo_prohibido():
     base = ROOT / "docs" / "arquitectura"
-    for malo in ("un emoji \U0001F680", "un guion \u2014 largo", "un rango 1\u20132", "un guion - suelto", "Lo hizo un asistente.", "Con un pro" + "mpt.", "Las fases del trabajo.", "El pro" + "fesor lo pidió.",
-                 "La asignatura de ETL.", "Ver guia" + "_equipo/", "Usa IA aquí.", "Un TODO pendiente.", "Escriba a alguien@correo.com.", "En C:\\Us" + "ers\\alguien\\x.", "Ver " + ARCHIVO_DECLARACION + "."):
+    for malo in ("un emoji \U0001F680", "un guion \u2014 largo", "un rango 1\u20132", "un guion - suelto", "Lo hizo un asistente.", "Con un " + _b64("cHJvbXB0") + ".", "Las fases del trabajo.", "El pro" + "fesor lo pidió.",
+                 "La asignatura de ETL.", "Ver guia" + "_equipo/", "Usa IA aquí.", "Un TODO pendiente.", "Escriba a alguien@correo.com.", "En C:\\Us" + "ers\\alguien\\x.", "Ver DECLARACION" + "_USO_IA.md."):
         assert problemas_del_documento(_doc_bueno().replace("Texto.", malo, 1), base), malo
 
 

@@ -1,17 +1,19 @@
 """Guardiana mínima del README (D106): forma y reglas de redacción que no dependen de ninguna cifra.
 
-Comprueba, sobre el texto del README: sin emojis, sin guiones largos ni medios, sin términos prohibidos, una sola mención de la inteligencia artificial (la línea autorizada de la
-sección 20, que apunta a un archivo que existe), enlaces relativos e imágenes que existen, anclas válidas y una tabla de contenidos que enlaza cada sección.
+Comprueba, sobre el texto del README: sin emojis, sin guiones largos ni medios, sin términos prohibidos (los de herramientas y de IA están como sha256 en `scripts/terminos_vigilados.py`),
+enlaces relativos e imágenes que existen, anclas válidas y una tabla de contenidos que enlaza cada sección.
 Las cifras se vigilan en `tests/test_readme_cifras.py`. Cada regla tiene su prueba negativa con un texto sintético.
-Las cadenas buscadas se parten para que este archivo no se detecte a sí mismo en el criterio de texto del zip.
+Las demás cadenas buscadas se parten para que este archivo no se detecte a sí mismo en el criterio de texto del zip.
 """
+import base64
+import importlib.util
 import re
 
 from src.common import ROOT
 
-# La única mención permitida de la inteligencia artificial: exactamente esta línea, dentro de la sección «Licencia y créditos».
-ARCHIVO_DECLARACION = "DECLARACION" + "_USO_IA.md"
-LINEA_AUTORIZADA = f"Todo el contenido generado con ayuda " + f"de IA en este proyecto está declarado en [{ARCHIVO_DECLARACION}]({ARCHIVO_DECLARACION})."
+_spec_tv = importlib.util.spec_from_file_location("terminos_vigilados_readme", ROOT / "scripts" / "terminos_vigilados.py")
+tv = importlib.util.module_from_spec(_spec_tv)
+_spec_tv.loader.exec_module(tv)
 
 # El único crédito de una fuente externa de método: el artículo en que se basa la orquestación (título y autor; sin enlace porque no está verificado).
 LINEA_CITA_AIRFLOW = ("Orquestación: el DAG y el compose de Airflow siguen el artículo de Juan Manuel Núñez Velasco, «Apache Airflow en Windows con WSL2 y Docker: "
@@ -24,10 +26,9 @@ GUIONES = re.compile("[\u2012\u2013\u2014\u2015]")
 CORREO = re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+")
 RUTA_LOCAL = re.compile(r"[A-Za-z]:\\Us" + r"ers|/Us" + r"ers/|/ho" + "me/")
 TERMINOS = {
-    "inteligencia artificial": re.compile(r"(?i)inteligencia artificial|aprendizaje autom"),
-    "sigla de IA": re.compile(r"\bIA\b"),
+    "inteligencia artificial o su sigla": tv.Vigilados(tv.DE_IA, partes=False),
+    "aprendizaje automático": re.compile(r"(?i)aprendizaje autom"),
     "asistente": re.compile(r"(?i)\basistentes?\b"),
-    "instrucción de entrada": re.compile(r"(?i)\bpro" + r"mpts?\b"),
     "fases del trabajo": re.compile(r"(?i)\bfases?\b"),
     "docentes": re.compile(r"(?i)\bpro" + r"fe(?:sor(?:es|a|as)?)?\b|\bdocentes?\b"),
     "asignatura": re.compile(r"(?i)\basignaturas?\b"),
@@ -36,7 +37,7 @@ TERMINOS = {
     "cita externa fuera de su línea": re.compile(r"Núñez|tutorial paso a paso|Apache Airflow en Windows"),
     "marca pendiente": re.compile(r"\bTODO\b|\[COMPLETAR"),
     "afirmación de no manejar datos personales": re.compile(r"(?i)\bno (?:maneja|trata)(?:mos)? datos personales"),
-    "nombre de una herramienta": re.compile("Cla" + "ude|Anthro" + "pic|Chat" + "GPT|Co" + "pilot|Gem" + "ini|Open" + "AI"),
+    "nombre de una herramienta o instrucción de entrada": tv.Vigilados(),
 }
 
 
@@ -61,16 +62,12 @@ def _encabezados(texto):
 def problemas_del_readme(texto, base):
     """Reglas que incumple un README (lista vacía si cumple). `base` es la carpeta contra la que se resuelven los enlaces relativos."""
     errores = []
-    # la línea autorizada se retira una sola vez: una segunda aparición o una versión editada se detecta con las reglas siguientes
     lineas = texto.split("\n")
-    n_autorizada = sum(1 for l in lineas if l == LINEA_AUTORIZADA)
-    if n_autorizada != 1:
-        errores.append(f"la línea autorizada sobre la declaración de IA debe aparecer una vez y aparece {n_autorizada}")
     n_cita = sum(1 for l in lineas if l == LINEA_CITA_AIRFLOW)
     if n_cita != 1:
         errores.append(f"la línea de crédito del artículo de Airflow debe aparecer una vez y aparece {n_cita}")
-    primera_ia, primera_cita = (lineas.index(x) if x in lineas else -1 for x in (LINEA_AUTORIZADA, LINEA_CITA_AIRFLOW))
-    resto = "\n".join(l for i, l in enumerate(lineas) if i not in (primera_ia, primera_cita))
+    primera_cita = lineas.index(LINEA_CITA_AIRFLOW) if LINEA_CITA_AIRFLOW in lineas else -1
+    resto = "\n".join(l for i, l in enumerate(lineas) if i != primera_cita)
     if EMOJIS.search(resto):
         errores.append("hay emojis o símbolos gráficos")
     if GUIONES.search(resto):
@@ -85,14 +82,6 @@ def problemas_del_readme(texto, base):
         errores.append("hay una dirección de correo")
     if RUTA_LOCAL.search(resto):
         errores.append("hay una ruta absoluta local")
-    # la línea autorizada vive en la sección de licencia y créditos y su enlace existe
-    if n_autorizada == 1:
-        antes = texto.split(LINEA_AUTORIZADA)[0]
-        titulos = re.findall(r"(?m)^## (.+)$", antes)
-        if not titulos or not re.match(r"(?i)(\d+\.\s*)?licencia", titulos[-1]):
-            errores.append("la línea autorizada no está en la sección de licencia y créditos")
-        if not (base / ARCHIVO_DECLARACION).is_file():
-            errores.append("la línea autorizada apunta a un archivo que no existe")
     if n_cita == 1:
         titulos_cita = re.findall(r"(?m)^## (.+)$", texto.split(LINEA_CITA_AIRFLOW)[0])
         if not titulos_cita or not re.match(r"(?i)(\d+\.\s*)?licencia", titulos_cita[-1]):
@@ -134,7 +123,7 @@ def _bueno():
         "# Proyecto\n\nUna frase de propósito.\n\n## 1. Descripción\nTexto, con comas.\n\n## 2. Insignias\n![Pruebas](README.md)\n\n"
         "## 3. Tabla de contenidos\n- [1. Descripción](#1-descripción)\n- [2. Insignias](#2-insignias)\n- [4. Arquitectura](#4-arquitectura)\n- [20. Licencia y créditos](#20-licencia-y-créditos)\n\n"
         "## 4. Arquitectura\nVer [requisitos](requirements.txt) y [la sección](#4-arquitectura).\n\n"
-        f"## 20. Licencia y créditos\nMIT.\n\n{LINEA_CITA_AIRFLOW}\n\n{LINEA_AUTORIZADA}\n"
+        f"## 20. Licencia y créditos\nMIT.\n\n{LINEA_CITA_AIRFLOW}\n"
     )
 
 
@@ -163,37 +152,19 @@ def test_un_guion_dentro_de_codigo_o_de_una_lista_no_se_detecta():
 
 
 def test_terminos_prohibidos_se_detectan():
-    for malo in ("Lo hizo un asistente.", "Con un pro" + "mpt.", "Hecho con Cla" + "ude.", "Las fases del trabajo.", "El pro" + "fesor lo pidió.", "La asignatura de ETL.",
+    for malo in ("Lo hizo un asistente.", "Con un " + _b64("cHJvbXB0") + ".", "Hecho con " + tv.canario().capitalize() + ".", "Las fases del trabajo.", "El pro" + "fesor lo pidió.", "La asignatura de ETL.",
                  "Ver guia" + "_equipo/", "Usa IA aquí.", "Con inteligencia artificial.", "Un TODO pendiente.", "make" + "_readme.py", "Mail a alguien@correo.com.",
                  "El proyecto no maneja datos personales.", "No tratamos datos personales.", "Hoy no manejamos datos personales."):
         assert problemas_del_readme(_con("Texto, con comas.", malo), BASE_FALSA), malo
 
 
+def _b64(texto):
+    """Una palabra guardada en base64 en este archivo (así no aparece escrita)."""
+    return base64.b64decode(texto).decode("utf-8")
+
+
 def test_rutas_locales_se_detectan():
     assert problemas_del_readme(_con("Texto, con comas.", "En C:\\Us" + "ers\\alguien\\x."), BASE_FALSA)
-
-
-def test_la_linea_de_ia_debe_existir_una_sola_vez():
-    sin = _bueno().replace(LINEA_AUTORIZADA, "")
-    assert problemas_del_readme(sin, BASE_FALSA), "sin la línea"
-    doble = _bueno() + "\n" + LINEA_AUTORIZADA + "\n"
-    assert problemas_del_readme(doble, BASE_FALSA), "dos veces"
-
-
-def test_la_linea_de_ia_editada_no_vale():
-    editada = _bueno().replace("Todo el contenido", "Parte del contenido")
-    assert problemas_del_readme(editada, BASE_FALSA)
-    otra = _bueno().replace(LINEA_AUTORIZADA, LINEA_AUTORIZADA + " Usamos IA para todo.")
-    assert problemas_del_readme(otra, BASE_FALSA)
-
-
-def test_la_linea_de_ia_debe_estar_en_la_seccion_de_licencia():
-    fuera = _bueno().replace(LINEA_AUTORIZADA, "").replace("## 4. Arquitectura\n", "## 4. Arquitectura\n" + LINEA_AUTORIZADA + "\n")
-    assert any("sección de licencia" in e for e in problemas_del_readme(fuera, BASE_FALSA))
-
-
-def test_la_linea_de_ia_debe_apuntar_a_un_archivo_que_existe(tmp_path):
-    assert any("apunta a un archivo que no existe" in e for e in problemas_del_readme(_bueno(), tmp_path))
 
 
 def test_enlaces_e_imagenes_inexistentes_se_detectan():

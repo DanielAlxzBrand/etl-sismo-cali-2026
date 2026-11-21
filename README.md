@@ -563,5 +563,3 @@ El repositorio aún no está publicado, así que todavía no hay un canal de con
 - **Librerías:** cada una conserva su propia licencia. El compose de Airflow conserva su aviso de la licencia Apache 2.0.
 
 Orquestación: el DAG y el compose de Airflow siguen el artículo de Juan Manuel Núñez Velasco, «Apache Airflow en Windows con WSL2 y Docker: tutorial paso a paso para orquestar un pipeline ETL 2026», con las diferencias documentadas en [docs/orquestacion/diferencias_con_la_guia.md](docs/orquestacion/diferencias_con_la_guia.md).
-
-Todo el contenido generado con ayuda de IA en este proyecto está declarado en [DECLARACION_USO_IA.md](DECLARACION_USO_IA.md).

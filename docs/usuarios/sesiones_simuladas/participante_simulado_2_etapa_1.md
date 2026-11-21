@@ -1,6 +1,6 @@
 # Participante simulado 2: registro de la etapa 1
 
-> **Sesión simulada, no realizada con una persona real.** Nadie abrió ni usó el panel como persona usuaria y nada se midió. Este registro no cuenta como sesión real; cuenta como evidencia simulada bajo la excepción D111, no es feedback de personas usuarias y no entra en [`../resultados.md`](../resultados.md).
+> **Sesión simulada, no realizada con una persona real.** Nadie abrió ni usó el panel como persona usuaria y nada se midió. Este registro no cuenta como sesión real; cuenta como evidencia simulada según la decisión D111, no es feedback de personas usuarias y no entra en [`../resultados.md`](../resultados.md).
 
 | Campo | Valor |
 |---|---|

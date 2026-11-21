@@ -152,7 +152,7 @@ def redactar_simuladas(registro, cuestionarios, registros_etapa_1=()):
     """Texto Markdown del resumen de las sesiones simuladas: cuántas filas y participantes hay y que ninguna cifra se midió; no calcula tasas, tiempos ni puntuaciones."""
     personas = sorted({f["participante"] for f in registro} | {f["participante"] for f in cuestionarios})
     est = estimaciones_simuladas(cuestionarios)
-    L = ["# Sesiones simuladas (no realizadas con personas reales)", "", f"> **{ENCABEZADO_SIMULADA}.** Lo que está aquí no cuenta como sesión real; cuenta como evidencia simulada bajo la excepción D111, y no es feedback de personas usuarias: ni las sesiones reales ni los datos sintéticos de prueba se mezclan con esto.", ""]
+    L = ["# Sesiones simuladas (no realizadas con personas reales)", "", f"> **{ENCABEZADO_SIMULADA}.** Lo que está aquí no cuenta como sesión real; cuenta como evidencia simulada según la decisión D111, y no es feedback de personas usuarias: ni las sesiones reales ni los datos sintéticos de prueba se mezclan con esto.", ""]
     if not personas:
         L += ["**No hay sesiones simuladas registradas.** Cuando el equipo guarde `registro.csv` y `cuestionarios.csv` en `docs/usuarios/sesiones_simuladas/` con `origen = simulada`, este archivo contará lo registrado.", ""]
     else:

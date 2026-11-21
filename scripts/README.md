@@ -6,6 +6,8 @@ Utilidades que generan documentos, empaquetan o comprueban el repositorio. Ningu
 |---|---|
 | `make_catalogo_fuentes.py` | genera el catálogo de fuentes y metadatos (`docs/bronze/catalogo_fuentes_metadatos.md` y `.json`) desde el manifiesto de Bronze; es determinista |
 | `escanear_secretos.py` | busca secretos en el árbol, el historial de git, los notebooks, los logs y un zip; reporta archivo, línea y patrón, nunca el valor |
+| `escanear_terminos.py` | escáner determinista de términos prohibidos en el árbol (texto, cadenas de Python unidas, metadatos de PNG y PDF) y, con `--historial`, en mensajes de commit y etiquetas; `--autoprueba` planta un canario por cada vía; reporta archivo y línea, no la palabra |
+| `terminos_vigilados.py` | los términos vigilados guardados como sha256 (ninguna prueba ni script los escribe) y las funciones que los buscan en un texto |
 | `cargar_mysql.py` | carga relacional por lotes con historial a MySQL (o a un SQLite fuera de `data/` para pruebas); idempotente y de una sola transacción |
 | `make_modelo_datos.py` | genera `docs/almacenamiento/modelo_datos.md` y el diagrama entidad-relación desde el esquema SQL; con `--verificar` comprueba que no estén desactualizados |
 | `mysql/configurar_mysql.py` | lo ejecuta el equipo: crea las bases y el usuario del proyecto con privilegios mínimos (y, con `--usuario-docker --origen`, el usuario para el contenedor de Airflow) y guarda la contraseña generada solo en `.env` (pide la del administrador sin mostrarla) |
@@ -31,7 +33,7 @@ Utilidades que generan documentos, empaquetan o comprueban el repositorio. Ningu
 Para comprobar el proyecto: `python -m pytest -q -p no:cacheprovider` y `python scripts/escanear_secretos.py`.
 
 ## Qué entra y qué no en el zip (`make_dist.py`)
-- **Entra:** `README.md`, `main.py`, `requirements.txt`, `pytest.ini`, `.env.example`, `.gitignore`, `.gitattributes`, el documento aislado de la raíz (un `.md` con nombre en mayúsculas, que nada enlaza ni cita) y las carpetas `config/`, `src/`, `scripts/`, `tests/`, `notebooks/`, `docs/`, `data/` (incluida `data/gold/etl_sismo.db`), `dags/` y `orquestacion/` (solo si existen). De `docs/` solo entran los PDF de `docs/proyecto/referencias/` y `docs/retroalimentacion/`.
+- **Entra:** `README.md`, `main.py`, `requirements.txt`, `pytest.ini`, `.env.example`, `.gitignore`, `.gitattributes`, `LICENSE` y las carpetas `config/`, `src/`, `scripts/`, `tests/`, `notebooks/`, `docs/`, `data/` (incluida `data/gold/etl_sismo.db`), `dags/` y `orquestacion/` (solo si existen). De `docs/` solo entran los PDF de `docs/proyecto/referencias/` y `docs/retroalimentacion/`.
 - **No entra:** cualquier otro archivo o carpeta de la raíz (notas, borradores), el `.env` real, `logs/`, `dist/`, `.git/`, las carpetas ocultas, cachés (`__pycache__`, `.pytest_cache`, `.ipynb_checkpoints`, `*.pyc`) y los entornos virtuales (`.venv*`, `venv/`, `env/` y toda carpeta con `pyvenv.cfg`, `site-packages`, `conda-meta`, `python.exe` o `bin/python`, tengan el nombre que tengan).
 - **Verificación:** si el zip tiene entradas prohibidas, un primer nivel fuera de la lista, PDF de `docs/` no permitidos o no trae `requirements.txt`, el script falla con un mensaje claro; si pesa más de 50 MB, avisa.
 - **Carpeta nueva del proyecto:** hay que agregarla a `RAIZ_CARPETAS` en `make_dist.py` y a las pruebas de `tests/test_dist.py` (decisión D38).

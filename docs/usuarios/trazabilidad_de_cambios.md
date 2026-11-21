@@ -34,7 +34,7 @@ Todos los cambios son una **iteración técnica a partir de evaluación heuríst
 
 ## Cambios de documentación a partir de las sesiones simuladas
 
-> **Sesión simulada, no realizada con una persona real.** Estos cambios salen de observaciones de dos participantes simulados (registro de fricciones, ids `S-`): son solo de documentación (`docs/panel/guia_de_uso.md`), no tocan `src/`, `data/`, las salidas ni el pipeline, **no vienen de personas usuarias**: no cuentan como sesiones reales; cuentan como evidencia simulada bajo la excepción D111.
+> **Sesión simulada, no realizada con una persona real.** Estos cambios salen de observaciones de dos participantes simulados (registro de fricciones, ids `S-`): son solo de documentación (`docs/panel/guia_de_uso.md`), no tocan `src/`, `data/`, las salidas ni el pipeline, **no vienen de personas usuarias**: no cuentan como sesiones reales; cuentan como evidencia simulada según la decisión D111.
 
 | Observación | Cambio (commit) | Qué cambió en el documento | Prueba o comprobación | Estado |
 |---|---|---|---|---|

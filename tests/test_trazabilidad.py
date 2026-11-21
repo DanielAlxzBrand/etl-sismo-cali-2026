@@ -35,7 +35,7 @@ def _archivos_de_prueba():
 
 
 CON_EXCEPCION = ("6.1", "6.2", "6.3", "6.5", "7.4")
-MATIZ = "evidencia simulada, sin personas reales (excepción declarada en " + "DECLARACION" + "_USO_IA.md, sección 7)"
+MATIZ = "evidencia simulada, sin personas reales. Las dos sesiones son de participantes simulados y no sustituyen sesiones con personas"
 
 
 def problemas_del_csv(filas, texto_estado, manifiesto, archivos_de_prueba):
@@ -67,7 +67,7 @@ def problemas_del_csv(filas, texto_estado, manifiesto, archivos_de_prueba):
         if f["estado"] == "No iniciado" and (vc.lista(f["archivos"]) or f["evidencias"]):
             errores.append(f"{item}: «No iniciado» con archivos o evidencias")
         if item in CON_EXCEPCION and not (f["estado"] == "Cumple con matiz" and MATIZ in f["que_no_demuestra"]):
-            errores.append(f"{item}: depende de sesiones y solo puede estar en «Cumple con matiz» con el matiz y la referencia a la excepción (D111), nunca «Cumple» a secas")
+            errores.append(f"{item}: depende de sesiones y solo puede estar en «Cumple con matiz» con el matiz de la decisión D111, nunca «Cumple» a secas")
         if f["estado"] == "Pendiente (hecho externo)" and f["tipo"] != "externa":
             errores.append(f"{item}: pendiente por un hecho externo debe tener comprobación «externa»")
     usadas = {p.split("::")[0] for f in filas for p in vc.lista(f["pruebas"])}
@@ -129,12 +129,12 @@ def test_negativas_de_la_trazabilidad():
     assert problemas_del_csv(c, texto, man, tests), "«No iniciado» con archivos"
     c = _copia(filas)
     _fila(c, "6.1")["que_no_demuestra"] = _fila(c, "6.1")["que_no_demuestra"].replace(MATIZ, "evidencia simulada")
-    assert any("excepción (D111)" in e for e in problemas_del_csv(c, texto, man, tests)), "el matiz sin la referencia a la declaración"
+    assert any("decisión D111" in e for e in problemas_del_csv(c, texto, man, tests)), "el matiz recortado"
     for estado in ("Cumple", "Pendiente (hecho externo)"):
         c = _copia(filas)
         _fila(c, "6.5")["estado"] = estado
         texto_2 = texto.replace(_fila(filas, "6.5")["requisito"] + "» | Requiere hecho externo | Documentación y demostración | Documentación y demostración, Cierre y paquete | Cumple con matiz", _fila(filas, "6.5")["requisito"] + "» | Requiere hecho externo | Documentación y demostración | Documentación y demostración, Cierre y paquete | " + estado)
-        assert texto_2 != texto and any("excepción (D111)" in e for e in problemas_del_csv(c, texto_2, man, tests)), f"6.5 en «{estado}»"
+        assert texto_2 != texto and any("decisión D111" in e for e in problemas_del_csv(c, texto_2, man, tests)), f"6.5 en «{estado}»"
     c = _copia(filas)
     _fila(c, "6.5")["estado"] = "Pendiente (hecho externo)"
     _fila(c, "6.5")["tipo"] = "automática"
