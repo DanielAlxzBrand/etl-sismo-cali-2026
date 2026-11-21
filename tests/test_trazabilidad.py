@@ -87,7 +87,7 @@ def test_la_tabla_markdown_esta_generada_desde_el_csv():
 
 def test_el_grupo_de_guardianes_lista_los_guardianes_declarados():
     g = next(f for f in vc.leer_csv() if f["item"] == vc.GRUPO)
-    esperados = {"tests/test_cifras_de_estado.py", "tests/test_criterio_de_texto.py", "tests/test_decisiones.py", "tests/test_igualdad_de_codigo.py", "tests/test_scripts_de_evidencia.py", "tests/test_trazabilidad.py"}
+    esperados = {"tests/test_cifras_de_estado.py", "tests/test_criterio_de_texto.py", "tests/test_decisiones.py", "tests/test_escaner_de_terminos.py", "tests/test_igualdad_de_codigo.py", "tests/test_scripts_de_evidencia.py", "tests/test_trazabilidad.py"}
     assert set(vc.lista(g["pruebas"])) == esperados
     assert vc.expandir_evidencias(g["evidencias"]) == [91, 92, 93, 94, 95]
 
