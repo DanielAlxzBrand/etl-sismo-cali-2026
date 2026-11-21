@@ -1,23 +1,23 @@
-EV-117 · PDF del documento de arquitectura y de los ADR, su comprobación y las mutaciones de las pruebas de su generador (2026-11-18)
+EV-117 · PDF del documento de arquitectura y de los ADR, su comprobación y las mutaciones de las pruebas de su generador (generado de nuevo el 2026-11-21 con el documento Aprobado, versión 1.0; primera generación el 2026-11-18)
 
 Qué es: el PDF que sale de `docs/arquitectura/arquitectura_del_sistema.md` y de los 15 ADR con `scripts/arquitectura/generar_pdf_arquitectura.py` (D108), su comprobación con `--verificar` y las mutaciones de `tests/test_pdf_arquitectura.py`.
-Todo son mediciones de una máquina (Windows 11, PowerShell, Python 3.13.0, Microsoft Edge 157.0.4341.60, que escribe `Skia/PDF m157`). No se usó Docker. No se tocó data/, src/, el pipeline, las etiquetas ni los zips de dist/ (mismos sha256 antes y después).
-Fuente del PDF: el árbol de trabajo del cierre de documentación, a partir del commit d82d0aa; el commit que lo trae está en el historial. El PDF no se versiona: se escribió en dist/, que Git ignora, y la regla de make_dist.py deja fuera de cualquier zip un PDF de docs/arquitectura/.
+Todo son mediciones de una máquina (Windows 11, PowerShell, Python 3.13.0, Microsoft Edge 157.0.4341.60, que escribe `Skia/PDF m157`). No se usó Docker. No se tocó data/, src/ ni el pipeline. Lo que había en dist/ (zips, guías y versiones anteriores del PDF) se apartó a una carpeta fuera del repositorio antes de generar: en dist/ queda solo este PDF, con su nombre canónico.
+Fuente del PDF: el árbol de trabajo del cierre (2026-11-21), con el documento en versión 1.0, estado Aprobado, aprobado por los tres autores el 2026-11-20, y el historial ya reescrito sin los pies de coautoría (el árbol de cada commit no cambió; ver `docs/evidencias/mapa_de_commits.md`). El PDF no se versiona: se escribió en dist/, que Git ignora, y la regla de make_dist.py deja fuera de cualquier zip un PDF de docs/arquitectura/.
 
-## El PDF final (segunda versión: ADR seguidos y dos figuras en gris)
+## El PDF final (versión 1.0, Aprobado; ADR seguidos y dos figuras en gris)
 | Dato | Valor |
 |---|---|
-| Archivo | dist/arquitectura_del_sistema_y_adr_nueva.pdf (el archivo sin el sufijo «_nueva» estaba abierto en un visor y no se pudo reemplazar; la versión anterior, de 47 páginas, sigue ahí con el nombre sin sufijo) |
-| Tamaño y sha256 | 1.511.637 bytes · c5b257adece860ca69e1e7413ca6ba2b876f652cba29d0d2ca17aee10886d7d9 |
-| Páginas | 38: portada, índice, el documento y el anexo con los 15 ADR seguidos; el único salto de página nuevo del anexo es el de su título |
+| Archivo | dist/arquitectura_del_sistema_y_adr.pdf (nombre canónico; la única versión que queda en dist/) |
+| Tamaño y sha256 | 1.515.903 bytes · 5f13321f7ec734ef739517816dab75c303e9765226c420467fbe808b93453503 |
+| Páginas | 39: portada, índice, el documento y el anexo con los 15 ADR seguidos; el único salto de página nuevo del anexo es el de su título |
 | Figuras | 2 imágenes en gris incrustadas, `docs/diagramas/arquitectura.png` en la sección 6 («Figura 1») y `docs/diagramas/flujo_dag.png` en la sección 9 («Figura 2»), agregadas al PDF sin cambiar ningún archivo de Markdown; los dos diagramas en color (`*_nueva.png`) no se incrustan |
 | Marcadores | 169 títulos en el PDF = 168 encabezados del HTML más el título del documento |
 | Enlaces | 107 anotaciones de enlace; los 74 enlaces del HTML (35 del índice y 39 del texto, a un ADR o a una sección) son internos y ninguno sale del PDF |
-| Fechas | creación y modificación fijadas en D:20261118000000+00'00' (la fecha de la versión 0.2), con la misma longitud que escribe el navegador |
+| Fechas | creación y modificación fijadas en D:20261120000000+00'00' (la fecha de la versión 1.0), con la misma longitud que escribe el navegador |
 | Fuentes incrustadas | Segoe UI (normal, negrita y seminegrita), Consolas (normal y negrita) y Arial |
-| Pie | «Arquitectura del sistema ETL del sismo de Cali · versión 0.2 · Revisado» y «Página x de 38», en todas las páginas, también en la portada |
+| Pie | «Arquitectura del sistema ETL del sismo de Cali · versión 1.0 · Aprobado» y «Página x de 39», en todas las páginas, también en la portada |
 
-Comprobación (python scripts/arquitectura/generar_pdf_arquitectura.py --verificar, que abre Edge dos veces): sin problemas; 38 páginas, marcadores uno por título, enlaces internos al menos tantos como en el HTML, fechas fijadas y las dos ejecuciones con el mismo sha256 (c5b257ad...), que coincide con el del archivo escrito.
+Comprobación (python scripts/arquitectura/generar_pdf_arquitectura.py --verificar, que abre Edge dos veces): sin problemas; 39 páginas, marcadores uno por título, enlaces internos al menos tantos como en el HTML, fechas fijadas y las dos ejecuciones con el mismo sha256 (c5b257ad...), que coincide con el del archivo escrito.
 
 ## Lo que se probó antes de escribir el generador
 - Marcadores: con el parámetro generateDocumentOutline en Page.printToPDF el PDF trae /Outlines y un /Title por encabezado; sin él, ninguno.
@@ -26,8 +26,8 @@ Comprobación (python scripts/arquitectura/generar_pdf_arquitectura.py --verific
 - Páginas vistas a ojo: en la primera versión, 1, 2, 7, 9, 46 y 47; en la segunda, 2, 6, 7 y 11. Mirar el índice de la primera versión mostró un defecto que las pruebas no veían: los ADR no aparecían en él porque la etiqueta de su título llevaba la clase antes del id y el generador del índice busca el id primero. Se corrigió, la prueba exige ahora que el índice liste los 15 ADR y las 18 secciones, y hay una mutación que lo reintroduce. En la segunda versión, la figura 1 y su título de sección pasan juntos a la página siguiente cuando no caben (queda un espacio en blanco al pie de la página anterior, porque la figura no se parte).
 - Los PNG de docs/diagramas/: arquitectura.png y flujo_dag.png son copias en gris generadas desde un texto con script (`scripts/make_diagramas.py`) y son los que se incrustan; arquitectura_nueva.png y flujo_dag_nueva.png son los dos diagramas en color aportados por Daniel (EV-112), sin fuente en texto, con 2 % y 3,6 % de píxeles con color, y no se incrustan.
 
-## Mutaciones de las pruebas del generador: 35 de 35
-Cada mutación cambia el script, el documento o la prueba, corre `tests/test_pdf_arquitectura.py` y restaura el archivo; debe hacer fallar al menos una prueba. «ERROR» es un error al cargar el módulo con el documento mutado, que también hace fallar todas las pruebas.
+## Mutaciones de las pruebas del generador: 35 de 35 (repetidas el 2026-11-21)
+Cada mutación cambia el script, el documento o la prueba, corre `tests/test_pdf_arquitectura.py` y restaura el archivo; debe hacer fallar al menos una prueba. «ERROR» es un error al cargar el módulo con el documento mutado, que también hace fallar todas las pruebas. En esta repetición, las dos mutaciones de la portada se reescribieron sobre el texto vigente (estado Aprobado y versión 1.0 con la fecha de la aprobación); las 35 se detectaron y `git status` quedó sin cambios.
 | Grupo | Mutación | Archivo | Resultado | Prueba que falla |
 |---|---|---|---|---|
 | marcadores | el script deja de pedir los marcadores | `scripts/arquitectura/generar_pdf_arquitectura.py` | DETECTADA | `test_el_pie_y_los_parametros_de_impresion_piden_marcadores_pie_en_todas_las_paginas_y_a4` |
@@ -66,10 +66,8 @@ Cada mutación cambia el script, el documento o la prueba, corre `tests/test_pdf
 | documento | falta el estado en la portada | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `ERROR` |
 | documento | la versión sin fecha en la portada | `docs/arquitectura/arquitectura_del_sistema.md` | DETECTADA | `test_el_pie_y_los_parametros_de_impresion_piden_marcadores_pie_en_todas_las_paginas_y_a4` |
 
-Vueltas: la primera dio 27 de 29 (una mutación no se detectaba, porque la prueba usaba bytes que fallaban por otras razones y no probaba la cabecera, y otra era inválida, porque debilitaba la propia prueba); la segunda, 28 de 28; la tercera, con el índice corregido, 29 de 29; la cuarta, tras pasar los ADR a ir seguidos, agregar las dos figuras y la opción `--nombre`, dio la serie de arriba (7 mutaciones nuevas: los ADR que vuelven a empezar cada uno en su página y las de las figuras).
-
 ## Qué NO se verificó
 - Que otro equipo, otro Edge u otras fuentes de Windows den el mismo sha256: el PDF se vería igual, porque las fuentes quedan incrustadas, pero el archivo puede cambiar.
-- Que el PDF se vea bien en todas sus páginas: se miraron a ojo las que se nombran arriba, no las 38.
+- Que el PDF se vea bien en todas sus páginas: se miraron a ojo las que se nombran arriba y, en esta generación, la portada (estado Aprobado, versión 1.0, aprobadores con fecha y el pie), no las 39.
 - Que lo abra bien un visor distinto del de Edge (el archivo anterior estaba abierto en Acrobat cuando se generó este).
 - Que el pie salga sin numeración en la portada: no se puede con este método.
