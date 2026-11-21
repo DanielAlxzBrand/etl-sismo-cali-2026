@@ -2,7 +2,7 @@ EV-117 · PDF del documento de arquitectura y de los ADR, su comprobación y las
 
 Qué es: el PDF que sale de `docs/arquitectura/arquitectura_del_sistema.md` y de los 15 ADR con `scripts/arquitectura/generar_pdf_arquitectura.py` (D108), su comprobación con `--verificar` y las mutaciones de `tests/test_pdf_arquitectura.py`.
 Todo son mediciones de una máquina (Windows 11, PowerShell, Python 3.13.0, Microsoft Edge 157.0.4341.60, que escribe `Skia/PDF m157`). No se usó Docker. No se tocó data/, src/ ni el pipeline. Lo que había en dist/ (zips, guías y versiones anteriores del PDF) se apartó a una carpeta fuera del repositorio antes de generar: en dist/ queda solo este PDF, con su nombre canónico.
-Fuente del PDF: el árbol de trabajo del cierre (2026-11-21), con el documento en versión 1.0, estado Aprobado, aprobado por los tres autores el 2026-11-20, y el historial ya reescrito sin los pies de coautoría (el árbol de cada commit no cambió; ver `docs/evidencias/mapa_de_commits.md`). El PDF no se versiona: se escribió en dist/, que Git ignora, y la regla de make_dist.py deja fuera de cualquier zip un PDF de docs/arquitectura/.
+Fuente del PDF: el árbol de trabajo del cierre (2026-11-21), con el documento en versión 1.0, estado Aprobado, aprobado por los tres autores el 2026-11-20. El PDF no se versiona: se escribió en dist/, que Git ignora, y la regla de make_dist.py deja fuera de cualquier zip un PDF de docs/arquitectura/.
 
 ## El PDF final (versión 1.0, Aprobado; ADR seguidos y dos figuras en gris)
 | Dato | Valor |
