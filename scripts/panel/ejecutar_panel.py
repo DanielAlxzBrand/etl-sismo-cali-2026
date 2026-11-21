@@ -2,7 +2,7 @@
 
 Uso:  python scripts/panel/ejecutar_panel.py [--almacenamiento sqlite|mysql] [--puerto-api N] [--puerto-panel N] [--verificar] [--duracion S]
 Sin opciones espera hasta Ctrl+C. Con --verificar arranca, comprueba que ambos responden, imprime las URL y cierra; con --duracion N los mantiene N segundos y los cierra solos (útil para pruebas y evidencias).
-Si un puerto está ocupado elige uno libre. La configuración de Streamlit viaja por variables de entorno: no crea `.streamlit/` ni archivos en el repo ni en el HOME.
+Si un puerto está ocupado elige uno libre y lo avisa. La configuración de Streamlit viaja por variables de entorno, así que no crea `.streamlit/` ni archivos en el repo ni en el HOME.
 `--almacenamiento mysql` solo cambia la fuente de la API (la lee de `.env` por su cuenta; el lanzador no la ve ni la imprime).
 Códigos de salida: 0 correcto; 1 la API no arrancó; 2 el panel no arrancó; 3 un proceso terminó antes de tiempo.
 """

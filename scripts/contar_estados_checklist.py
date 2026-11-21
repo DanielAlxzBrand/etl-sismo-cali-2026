@@ -1,7 +1,7 @@
 """Cuenta los ítems del checklist por estado y escribe (o comprueba) la línea de conteo de `estado_checklist.md`.
 
-Por qué existe: el conteo estaba escrito a mano y se desactualizó (decía 8 con matiz y 17 Cumple cuando la tabla tenía 9 y 16). Ahora la línea la
-produce este script leyendo la columna «estado vigente» de la tabla de los 30 ítems; nadie la escribe a mano.
+Por qué existe: el conteo lo escribíamos a mano y se desactualizó (decía 8 con matiz y 17 Cumple cuando la tabla tenía 9 y 16). Ahora la línea la
+produce este script leyendo la columna «estado vigente» de la tabla de los 30 ítems, y ya nadie la escribe a mano.
 
 Uso, desde la raíz del repositorio:
     python scripts/contar_estados_checklist.py              # imprime el conteo
@@ -18,7 +18,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCUMENTO = ROOT / "docs" / "checklist" / "estado_checklist.md"
-# Vocabulario completo, en el orden en que se muestra el conteo.
+# Todos los estados, en el orden en que mostramos el conteo.
 ESTADOS = ["Cumple", "Cumple con matiz", "En curso", "Pendiente (hecho externo)", "No iniciado", "N/A justificado", "No cumple"]
 FILA_ITEM = re.compile(r"^\| (\d\.\d) \| «.*?» \| ([^|]+) \| ([^|]+) \| ([^|]+) \| ([^|]+) \| .*\|$", re.M)
 LINEA_CONTEO = re.compile(r"^Conteo por estado vigente: .*$", re.M)

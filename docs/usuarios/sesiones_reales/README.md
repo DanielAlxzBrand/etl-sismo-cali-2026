@@ -1,6 +1,6 @@
 # Sesiones reales
 
-**Esta carpeta está vacía de resultados hasta que el equipo realice sesiones reales con personas usuarias.** Hoy solo contiene las tres plantillas, con su encabezado y ninguna fila. No hay participantes, tiempos ni respuestas, y no se inventan.
+**Esta carpeta está vacía de resultados hasta que el equipo realice sesiones reales con personas usuarias.** Hoy solo contiene las tres plantillas, con su encabezado y ninguna fila. No hay participantes, tiempos ni respuestas, y no los inventamos.
 
 ## Qué va aquí y qué no
 - **Va:** una fila por tarea y persona en `registro.csv`, una fila por persona en `cuestionarios.csv` y, si el equipo lo decide, las fricciones observadas en `friccion.csv`; todos con códigos `P01`, `P02`… y con `origen = real`.

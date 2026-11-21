@@ -15,7 +15,7 @@ y consumos de memoria son de **una sola máquina**, no una garantía.
 | Guía | [modo_minimo.md](modo_minimo.md) | [modo_completo.md](modo_completo.md) |
 | Sirve para | reproducir las cifras, mirar el panel y correr las pruebas | ver la carga relacional, el DAG programado y las tablas en el navegador |
 
-Si solo se quiere reproducir el análisis, el modo mínimo basta: el modo completo agrega servicios que no cambian ninguna cifra.
+Si solo se quiere reproducir el análisis, con el modo mínimo alcanza: el modo completo suma servicios que no cambian ninguna cifra.
 
 ## 2. Requisitos
 | Requisito | Para qué | Cómo comprobarlo |

@@ -2,7 +2,7 @@
 
 Uso:  python scripts/cargar_mysql.py --destino mysql [--base principal|prueba] [--lote N]
       python scripts/cargar_mysql.py --destino sqlite --sqlite-ruta RUTA.db [--lote N]   (la ruta no puede estar dentro de data/)
-Lee solo data/ y no modifica main.py ni load_database.py. Informa en el registro (sin credenciales) y devuelve 0 si cargó o ya estaba cargada.
+Solo lee data/ y no toca main.py ni load_database.py. Cuenta lo que pasa en el registro (sin credenciales) y devuelve 0 si cargó o si ya estaba cargada.
 """
 import argparse
 import sys
