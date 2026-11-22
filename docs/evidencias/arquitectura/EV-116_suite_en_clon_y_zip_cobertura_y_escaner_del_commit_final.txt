@@ -24,3 +24,9 @@ Cambio posterior al P3 (2026-11-21), sin repetir el P3: el documento de contexto
 - Suite completa en el repositorio: 1472 passed, 1 aviso, en 576,57 s; escáner de secretos 0; escáner de términos con historial 0; validar_checklist --todos 31 de 31.
 - PDF de arquitectura regenerado: 1.515.888 bytes, sha256 232c5d905b488feec845137b2cf0444bd292912980fae5ba4dbe91dc567bf15a (el mismo que antes: el documento no cambió).
 - El zip nuevo frente al que pasó el P3 (643 archivos, sha256 1fe361d8…): 644 archivos; uno nuevo (el documento de contexto) y distintos solo README.md, docs/README.md, docs/checklist/estado_checklist.md, guia_de_evidencias.md, trazabilidad.csv y trazabilidad.md, los cuatro documentos de docs/estrategia/, docs/gold/resultados.md, docs/proyecto/comprension_proyecto1.md, tests/test_dist.py, tests/test_readme_cifras.py, este archivo y el manifiesto de evidencias.
+
+Segundo cambio posterior al P3 (2026-11-21): en tests/test_sesiones_simuladas_incorporadas.py el nombre de usuario de Windows, que solo aparecía en tres aserciones que comprueban que las evidencias no lo contengan, se escribe partido en dos cadenas; lo que comprueban no cambia. Después del cambio:
+- Suite completa en el repositorio: 1472 passed, 1 aviso, en 798,70 s; escáner de secretos 0; escáner de términos con historial 0 y del árbol 0.
+- El nombre de usuario: 0 archivos en el contenido de main; en la historia quedan los dos commits antiguos que lo contienen.
+- PDF de arquitectura sin cambios (mismo sha256 232c5d905b488feec845137b2cf0444bd292912980fae5ba4dbe91dc567bf15a).
+- El zip nuevo frente al anterior (644 archivos, sha256 0e950a2c…): mismos 644 archivos; difieren solo tests/test_sesiones_simuladas_incorporadas.py, este archivo y el manifiesto de evidencias.
