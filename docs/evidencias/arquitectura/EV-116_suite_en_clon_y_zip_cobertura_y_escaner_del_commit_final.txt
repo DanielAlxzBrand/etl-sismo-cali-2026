@@ -19,3 +19,8 @@ La omitida en el zip es la del historial de git (el zip no lo trae), la única q
 El zip de la fila de arriba es el que se probó; el zip que se entrega se arma después de registrar esta evidencia y difiere de él solo en este archivo y en el manifiesto de evidencias.
 
 Qué NO demuestra: que la suite pase en otra máquina, con otro intérprete o con Docker y MySQL (eso lo cubren EV-100 y la ejecución sobre un zip de EV-121), ni que los tiempos y el pico valgan en otro equipo.
+
+Cambio posterior al P3 (2026-11-21), sin repetir el P3: el documento de contexto y problema es del equipo y vuelve al árbol y al zip (docs/proyecto/referencias/contexto_y_problema.pdf, con sus citas como estaban), y el README enlaza el repositorio de GitHub (privado por ahora) y sus issues como canal de contacto. Después del cambio:
+- Suite completa en el repositorio: 1472 passed, 1 aviso, en 576,57 s; escáner de secretos 0; escáner de términos con historial 0; validar_checklist --todos 31 de 31.
+- PDF de arquitectura regenerado: 1.515.888 bytes, sha256 232c5d905b488feec845137b2cf0444bd292912980fae5ba4dbe91dc567bf15a (el mismo que antes: el documento no cambió).
+- El zip nuevo frente al que pasó el P3 (643 archivos, sha256 1fe361d8…): 644 archivos; uno nuevo (el documento de contexto) y distintos solo README.md, docs/README.md, docs/checklist/estado_checklist.md, guia_de_evidencias.md, trazabilidad.csv y trazabilidad.md, los cuatro documentos de docs/estrategia/, docs/gold/resultados.md, docs/proyecto/comprension_proyecto1.md, tests/test_dist.py, tests/test_readme_cifras.py, este archivo y el manifiesto de evidencias.
