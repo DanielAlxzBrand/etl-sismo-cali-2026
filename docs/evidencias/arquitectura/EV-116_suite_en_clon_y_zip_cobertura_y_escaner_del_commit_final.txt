@@ -1,32 +1,21 @@
-EV-116 · Suite completa en un clon y en un zip temporal, cobertura de src/, informe de pruebas y escáner de secretos sobre el commit 0b392e1, medidos el 2026-11-17 (sin Docker)
+EV-116 · Suite completa en un clon limpio y en el zip final, informe de pruebas y escáneres sobre el árbol del cierre final, medidos el 2026-11-21 (sin Docker)
 
-Qué es: las mediciones de pruebas del documento de arquitectura y de los ADR (ítem 7.3) sobre el commit 0b392e1, con el árbol de trabajo sin cambios (git status vacío) al empezar. Se hizo en una carpeta temporal fuera del repositorio y fuera de dist/.
-Todo son mediciones de una máquina (Windows 11, PowerShell, Python 3.13.0, coverage 7.17.3; procesador de 12 hilos lógicos). En otro equipo cambian.
-No se usó Docker. No se tocó data/, src/, el pipeline, las etiquetas ni los zips de dist/ (mismos archivos antes y después).
+Qué es: la corrida única de comprobación del cierre final (P3), hecha una sola vez después de reescribir el historial y antes de la etiqueta de cierre. Árbol medido: 720fcdd03ba4c4f792a80bc860c03edf1e9b4138 (git status vacío al empezar). Se trabajó en una carpeta temporal fuera del repositorio y fuera de dist/.
+Todo son mediciones de una máquina (Windows 11, PowerShell, Python 3.13.0). En otro equipo cambian.
+No se usó Docker. No se tocó data/, src/ ni el pipeline.
 
-ADVERTENCIA SOBRE EL ENTORNO: la suite se ejecutó con el intérprete del proyecto (el .venv de este repositorio, ya instalado) y NO con un entorno virtual nuevo creado para esta medición. No es la medición de una máquina limpia (esa es EV-113, que sí creó un entorno nuevo e instaló los requisitos).
-Tampoco se controló la carga de la máquina: había otras aplicaciones abiertas (un navegador, entre otras) y, al comprobarlo después, quedaban unos 2 GB de memoria libre. No medimos la carga durante la suite.
-
-Resultados sobre el commit 0b392e1:
+ADVERTENCIA SOBRE EL ENTORNO: la suite se ejecutó con el intérprete del proyecto (el .venv de este repositorio, ya instalado) y no con un entorno virtual nuevo creado para esta medición. La primera vez en un entorno nuevo es la repetición del 2026-11-21 de EV-113.
 
 | Medición | Comando o método | Resultado |
 |---|---|---|
-| Suite en un clon | git clone --no-hardlinks del repositorio a una carpeta temporal; python scripts\evidencias\medir_memoria_suite.py desde el clon | 1381 passed, 0 omitidas, 1 aviso, en 661,78 s (668 s con el medidor); pico de 283 MiB (187 procesos); git status del clon, sin cambios |
-| Zip temporal | scripts/make_dist.empaquetar con la carpeta de salida fuera de dist/ | etl_sismo_20261117.zip, 623 archivos, 27,24 MB, sha256 95e541e52ebd9a2de16196151a642caba12ed546df897ddac4bd79e807022269; sin .git ni .env; dist/ sin cambios |
-| Suite en el zip descomprimido | python scripts\evidencias\medir_memoria_suite.py desde la carpeta del zip | 1380 passed y 1 omitida, 1 aviso, en 315,49 s (318 s con el medidor); pico de 285 MiB (100 procesos) |
-| Cobertura de src/ | COVERAGE_FILE=<carpeta temporal>\.coverage python -m coverage run --source=src -m pytest -q -p no:cacheprovider, en otro zip descomprimido; python -m coverage report | 531 líneas sin ejecutar de 2.365 = 77,55 %, que se redondea a 78 %; la suite bajo coverage: 1380 passed y 1 omitida en 497,80 s |
-| Informe de pruebas | python scripts/informe_pruebas.py (en el repositorio) | 1381 pruebas, 1381 pasan, 0 fallan, 0 omitidas, 621,3 s; cobertura de src/ y scripts/ en conjunto: 74,7 % de 6.125 líneas; cobertura_pruebas.csv sin cambios respecto de la pasada anterior |
-| Escáner de secretos | python scripts/escanear_secretos.py --canario-env; y python scripts/escanear_secretos.py --zip <zip temporal> --sin-historial | hallazgos 0 sobre el árbol, el historial y la comprobación canario (variables leídas de .env: MYSQL_DOCKER_PASSWORD, MYSQL_LECTURA_PASSWORD y MYSQL_PASSWORD, solo nombres, sin valores); hallazgos 0 sobre el zip temporal |
+| Suite completa en el clon limpio | git clone; python scripts/evidencias/medir_memoria_suite.py | 1472 passed, 1 aviso, en 660,40 s (664 s con el medidor); pico 2223 MiB (212 procesos); código 0; git status del clon después: sin cambios |
+| Zip final | python scripts/make_dist.py | etl_sismo_20261121.zip, 643 archivos, 27.060.821 bytes, sha256 1fe361d86cc9df0d6106e5289b21a1ace1bdc3875f6264ec17f937967bee7d13; sin .git ni .env |
+| Suite completa en el zip descomprimido | python scripts/evidencias/medir_memoria_suite.py | 1471 passed, 1 omitida, 1 aviso, en 756,76 s (761 s con el medidor); pico 2223 MiB (235 procesos); código 0 |
+| Escáner de secretos del zip | python scripts/escanear_secretos.py --zip … --sin-historial | hallazgos: 0 |
+| Escáner de términos en el zip descomprimido | python scripts/escanear_terminos.py | hallazgos: 0 |
+| Informe de pruebas con cobertura (mismo día, en el repositorio) | python scripts/informe_pruebas.py | 1472 de 1472 en verde; cobertura total 74,6 % de 7.010 líneas (docs/validacion/informe_pruebas.md) |
 
-La prueba omitida del zip: tests\test_secretos.py:44, «sin historial de git (el zip no lo trae) o sin el binario git: solo corre en un clon con git». Es la única; en el clon con Git no se omite ninguna, como dice el README.
-La cobertura de 78 % no cambió respecto de EV-114 (531 de 2.365 líneas sin ejecutar): src/ no cambió.
+La omitida en el zip es la del historial de git (el zip no lo trae), la única que dice el README.
+El zip de la fila de arriba es el que se probó; el zip que se entrega se arma después de registrar esta evidencia y difiere de él solo en este archivo y en el manifiesto de evidencias.
 
-Pasada anterior del mismo día, sobre el commit 950e54c (1377 pruebas), que no se había registrado: clon 1377 passed en 343,35 s (pico de 285 MiB, 106 procesos); zip 1376 passed y 1 omitida en 305,67 s (283 MiB); cobertura de src/ igual (531 de 2.365, 78 %), con la suite bajo coverage en 373,05 s; informe en 493,3 s; escáner con 0 hallazgos.
-La suite en el clon tardó 343 s en esa pasada y 662 s en la de este registro, con el mismo código de pruebas salvo cuatro pruebas nuevas. No identificamos la causa de la diferencia: la carga de la máquina no se midió. El zip tardó 306 s y 315 s. Los tiempos varían de una pasada a otra en la misma máquina (EV-113 ya lo decía: de 267 s a 409 s en pasadas anteriores); esta pasada del clon quedó por encima de ese rango y el README no lo cita como garantía.
-
-Qué NO se verificó:
-- Una máquina limpia de verdad ni un entorno virtual nuevo (ver la advertencia de arriba).
-- Que otra persona obtenga los mismos tiempos, ni la causa de la pasada lenta del clon.
-- Todo lo que necesita Docker o MySQL: no se ejecutó hoy; lo respaldan EV-100 y EV-107.
-- Que las líneas ejecutadas estén bien comprobadas: la cobertura mide ejecución, no la calidad de las aserciones; clean_api.py e integrate.py se ejecutan en subprocesos que coverage no sigue, y extract_api.py necesita red.
-- El archivo .env de Airflow no existe en esta máquina (orquestacion/.env), así que sus valores no se buscaron con el canario.
+Qué NO demuestra: que la suite pase en otra máquina, con otro intérprete o con Docker y MySQL (eso lo cubren EV-100 y la ejecución sobre un zip de EV-121), ni que los tiempos y el pico valgan en otro equipo.
