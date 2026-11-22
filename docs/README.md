@@ -158,7 +158,7 @@
 | componente | estado |
 |---|---|
 | Documentación y demostración | en construcción: el documento de arquitectura y el README están escritos (el documento, aprobado, versión 1.0, 2026-11-20); falta el guion de demostración |
-| Cierre y paquete | en construcción: falta publicar el repositorio y armar el paquete final |
+| Cierre y paquete | en construcción: el repositorio ya está publicado en GitHub (privado por ahora) y falta armar el paquete final |
 
 Las evidencias del almacenamiento relacional están en `docs/evidencias/almacenamiento/`; las de la orquestación están en `docs/evidencias/orquestacion/`; las del panel, en `docs/evidencias/panel/`; las del endurecimiento (instalación desde cero, mutaciones y Airflow en vivo), en `docs/evidencias/endurecimiento/`; las de los servicios locales, en `docs/evidencias/servicios/`; las de la evaluación del panel y sus ajustes, en `docs/evidencias/usuarios/` y `docs/evidencias/ajustes_ux/`; las de la auditoría intermedia (independencia del repositorio), en `docs/evidencias/auditoria/`.
 

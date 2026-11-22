@@ -9,7 +9,7 @@ Un pipeline ETL con capas Bronze, Silver y Gold que junta una capa satelital de 
 ## 1. Descripción y madurez
 Estudiamos, con un indicador satelital, el cambio visible en **5.146 construcciones de 7 comunas de Cali** tras el sismo de magnitud 7,4 del 10 de agosto de 2026, y lo comparamos entre los estratos 1 a 6 del barrio. El proyecto descarga las fuentes abiertas, las guarda sin tocarlas (Bronze), las limpia y las une (Silver), calcula indicadores con intervalos de confianza (Gold) y los entrega por una API de solo lectura, un panel y dos bases de datos. El análisis completo, con su lectura y sus límites, está en [docs/gold/resultados.md](docs/gold/resultados.md).
 
-**Madurez: MVP académico, ejecutable en local.** Lo que existe y se probó: el pipeline completo, la API, el panel, la carga a MySQL, el DAG en Airflow y phpMyAdmin de solo lectura. Lo que no existe: sesiones con personas usuarias (aún sin sesiones reales), despliegue en un servidor, integración continua, alertas externas y un repositorio publicado. Todo se probó en Windows 11 con PowerShell y Python 3.13.0; en otros sistemas no lo probamos.
+**Madurez: MVP académico, ejecutable en local.** Lo que existe y se probó: el pipeline completo, la API, el panel, la carga a MySQL, el DAG en Airflow, phpMyAdmin de solo lectura y el repositorio publicado en GitHub (privado por ahora). Lo que no existe: sesiones con personas usuarias (aún sin sesiones reales), despliegue en un servidor, integración continua y alertas externas. Todo se probó en Windows 11 con PowerShell y Python 3.13.0; en otros sistemas no lo probamos.
 
 **Resumen del resultado.** Con este proxy y esta muestra no se detecta diferencia en la proporción de construcciones con cambio satelital severo (severo estricto, proxy de daño) entre los estratos 3 a 5 y 1 a 2 (6,33 % frente a 5,84 %; diferencia +0,49 puntos porcentuales). Esto no equivale a decir que el estrato no influye: el indicador es un proxy y la muestra la definieron los polígonos de afectación.
 
@@ -501,7 +501,7 @@ Las decisiones, con sus alternativas, su razón y su riesgo, están en [docs/DEC
 El documento de arquitectura del sistema, con 15 registros de decisión (ADR) y diagramas en texto, está en [docs/arquitectura/arquitectura_del_sistema.md](docs/arquitectura/arquitectura_del_sistema.md) y [docs/arquitectura/adr/](docs/arquitectura/adr/). Está aprobado (versión 1.0, 2026-11-20).
 
 ## 17. Contribución y estándares
-Esta sección cuenta cómo trabajamos hoy; todavía no tenemos un flujo de solicitudes de cambio; los temas abiertos van a los [issues](https://github.com/DanielAlxzBrand/etl-sismo-cali-2026/issues).
+Esta sección cuenta cómo trabajamos hoy: todavía no tenemos un flujo de solicitudes de cambio y los temas abiertos van a los [issues](https://github.com/DanielAlxzBrand/etl-sismo-cali-2026/issues).
 
 - **Ramas y commits:** el trabajo vive en la rama `desarrollo`; la rama `master` conserva un punto anterior y no se ha vuelto a integrar. No hay rama `main`. Cada commit es pequeño, va en español y nombra el componente que cambia.
 - **Pruebas primero:** una regla, una prueba. Las reglas de documentos también se prueban (cifras, enlaces, términos prohibidos) y cada prueba nueva trae su caso negativo.
@@ -532,7 +532,7 @@ Esta sección cuenta cómo trabajamos hoy; todavía no tenemos un flujo de solic
 | Sesiones con personas usuarias | material preparado (protocolo, guion, consentimiento, análisis probado con datos sintéticos rotulados); **aún sin sesiones reales** (hubo 2 sesiones simuladas, en una sola ronda, que no son sesiones con personas) |
 | Documento de arquitectura completo y registros de decisión por separado | escritos, revisados y aprobados (versión 1.0, 2026-11-20) |
 | Guion y grabación de la demostración | por hacer |
-| Publicación del repositorio | por hacer |
+| Publicación del repositorio | hecha en GitHub, con visibilidad privada por ahora; Diego y Jhoan lo probaron según informaron al equipo (ver el ítem 7.1 de la checklist) |
 
 La línea «aún sin sesiones reales» se actualiza cuando existan registros reales en `docs/usuarios/sesiones_reales/`; una prueba falla si ese directorio tiene registros reales y esta línea sigue diciendo lo contrario.
 
@@ -555,7 +555,7 @@ A quién acudir según el tema:
 | Sesiones con personas usuarias: protocolo y análisis | Diego Fernando Gordillo Londoño |
 | Documentación y demostración | Jhoan Sebastián Castellanos Mayor |
 
-El repositorio está en [GitHub](https://github.com/DanielAlxzBrand/etl-sismo-cali-2026) y por ahora es privado. El canal de contacto son sus [issues](https://github.com/DanielAlxzBrand/etl-sismo-cali-2026/issues): ahí van las preguntas, los errores y las propuestas. Las decisiones del proyecto se registran en [docs/DECISIONES.md](docs/DECISIONES.md).
+El repositorio está publicado en [GitHub](https://github.com/DanielAlxzBrand/etl-sismo-cali-2026) con visibilidad privada por ahora, así que solo lo abre quien tenga acceso. El canal de contacto son sus [issues](https://github.com/DanielAlxzBrand/etl-sismo-cali-2026/issues): ahí van las preguntas, los errores y las propuestas. Las decisiones del proyecto se registran en [docs/DECISIONES.md](docs/DECISIONES.md).
 
 ## 20. Licencia y créditos
 - **Código:** licencia MIT, en [LICENSE](LICENSE), a nombre de las tres personas del proyecto. Cubre el código (`src/`, `scripts/`, `tests/`, `dags/`, `orquestacion/`, `servicios/` y los notebooks) y la documentación propia.

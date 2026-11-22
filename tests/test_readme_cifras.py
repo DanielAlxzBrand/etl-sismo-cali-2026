@@ -408,7 +408,7 @@ def test_la_seccion_de_contacto_nombra_a_las_tres_personas_con_su_responsabilida
     for persona, rol in roles.items():
         assert re.search(rf"(?m)^\| {persona} \| {re.escape(rol)}", seccion), persona
     assert "@" not in seccion and "no describe quién hizo cada parte hasta hoy" in seccion
-    assert "https://github.com/DanielAlxzBrand/etl-sismo-cali-2026/issues" in seccion and "por ahora es privado" in seccion, "el canal de contacto son los issues del repositorio"
+    assert "https://github.com/DanielAlxzBrand/etl-sismo-cali-2026/issues" in seccion and "visibilidad privada por ahora" in seccion, "el canal de contacto son los issues del repositorio"
 
 
 def test_todo_lo_que_el_readme_enlaza_viaja_en_el_zip():
