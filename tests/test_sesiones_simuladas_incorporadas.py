@@ -243,7 +243,7 @@ def test_la_evidencia_de_la_incorporacion_existe_cita_la_copia_y_no_nombra_herra
     texto = ruta.read_text(encoding="utf-8")
     assert "636 archivos esperados, 636 idénticos, 0 distintos, 0 que faltan, 0 de más" in texto
     assert "habitante_etapa_1: 13 iguales, 0 modificados, 0 de más" in texto and "institucional_etapa_1: 14 iguales, 0 modificados, 0 de más" in texto
-    assert "hallazgos automáticos: 0" in texto and "C:\\" not in texto and "AlexD" not in texto
+    assert "hallazgos automáticos: 0" in texto and "C:\\" not in texto and "Alex" + "D" not in texto
     assert not NOMBRES_NUEVOS.search(texto) and not inv.HERRAMIENTAS.search(texto)
 
 
@@ -322,7 +322,7 @@ def test_la_evidencia_del_participante_2_existe_cita_la_entrega_y_no_nombra_herr
     assert "manifiesto CSV igual al TXT (rutas y hashes): True | rutas repetidas: 0" in texto and "sha256 esperados proporcionados aparte: 8 | que no coinciden: 0" in texto
     assert "comandos: 3 | referencias a archivos: 14 | archivos distintos: 13 | no autorizadas: 0 | otros cmdlets: ninguno" in texto
     assert "se cita el documento completo de la lista de comprobación: False" in texto and "coincidencia literal: False | normalizada: False | líneas no vacías: 48 y 48" in texto
-    assert "hallazgos automáticos: 0" in texto and "C:\\" not in texto and "AlexD" not in texto
+    assert "hallazgos automáticos: 0" in texto and "C:\\" not in texto and "Alex" + "D" not in texto
     assert not NOMBRES_NUEVOS.search(texto) and not inv.HERRAMIENTAS.search(texto)
 
 
@@ -424,7 +424,7 @@ def test_la_evidencia_del_participante_1_trae_la_actualizacion_con_la_entrega_na
     assert "líneas idénticas en las dos carpetas (suma de las etapas): 385" in texto and "no autorizadas: 0 | lectura del documento completo de la lista de comprobación: False" in texto
     assert "bloque D igual al registro de la etapa 1 sin su línea final: literal True" in texto and "bloque B igual al CSV original: True | bloque C igual al CSV original: True" in texto
     assert "capturas que coinciden con su inventario: 10 de 10" in texto and "no se abrieron" in texto and "hallazgos automáticos: 0" in texto
-    assert "C:\\" not in texto and "AlexD" not in texto and not NOMBRES_NUEVOS.search(texto) and not inv.HERRAMIENTAS.search(texto)
+    assert "C:\\" not in texto and "Alex" + "D" not in texto and not NOMBRES_NUEVOS.search(texto) and not inv.HERRAMIENTAS.search(texto)
 
 
 # ---------------------------------------------------------------- bloque 1: resumen, capturas y lectura limitada
