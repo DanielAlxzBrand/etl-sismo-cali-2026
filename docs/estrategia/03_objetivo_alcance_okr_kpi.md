@@ -5,7 +5,7 @@
 > **Etiquetas de evidencia.** [Evidencia en el repo: `ruta`] = existe en el repositorio; [Fuente externa: URL y fecha de consulta]; [Criterio aplicado: descripción] = regla o decisión nuestra, explicada; [Hipótesis de diseño: criterio y experimento de validación propuesto, no ejecutado] = hipótesis de diseño con su experimento, sin ejecutar. Las cifras se leen de `data/silver`, `data/gold` y `config/config.yaml`.
 
 ## 1. Objetivo y alcance
-**Objetivo del Proyecto 1 (Avance 1).** «Evidenciar, con datos reales, si la severidad del daño estructural en Cali se explica mejor por la vulnerabilidad geotécnica/constructiva de cada zona que por su nivel socioeconómico.» [Documento de contexto del curso, no incluido en el repositorio, p. 5]
+**Objetivo del Proyecto 1 (Avance 1).** «Evidenciar, con datos reales, si la severidad del daño estructural en Cali se explica mejor por la vulnerabilidad geotécnica/constructiva de cada zona que por su nivel socioeconómico.» [Evidencia en el repo: `docs/proyecto/referencias/contexto_y_problema.pdf, p. 5`]
 
 **Objetivo general del proyecto.** Entregar un servicio de análisis reproducible de impacto sísmico por zonas, con incertidumbre explícita: un pipeline ETL medallion que integra una capa satelital de construcciones con el estrato por barrio de 2015, calcula indicadores con intervalos y los expone mediante una API de solo lectura, un almacenamiento relacional con historial, una orquestación programada y un dashboard. [Evidencia en el repo: `README.md §1 y §3`; `docs/proyecto/decisiones_tecnicas.md`] La API ya existe; el almacenamiento relacional, la orquestación y el dashboard están **en construcción**.
 
@@ -21,7 +21,7 @@
 **Fuera del alcance.** Las comunas ausentes (incluida la Comuna 2) y la zona rural; el daño interno y cualquier evaluación estructural; causalidad; amenaza sísmica oficial; antigüedad constructiva; el seguimiento de verificación de la Alcaldía; modelos de aprendizaje automático. [Evidencia en el repo: `README.md §11 y §17`; `docs/gold/KPIs.md «Qué NO se puede concluir»`]
 
 ## 2. OKR
-**Objetivo (Avance 1).** «Evidenciar, con datos reales, si la severidad del daño estructural en Cali se explica mejor por la vulnerabilidad geotécnica/constructiva de cada zona que por su nivel socioeconómico.» [Documento de contexto del curso, no incluido en el repositorio, p. 5]
+**Objetivo (Avance 1).** «Evidenciar, con datos reales, si la severidad del daño estructural en Cali se explica mejor por la vulnerabilidad geotécnica/constructiva de cada zona que por su nivel socioeconómico.» [Evidencia en el repo: `docs/proyecto/referencias/contexto_y_problema.pdf, p. 5`]
 
 | KR | redacción del Avance 1 | KPI operativo del Avance 1 | meta o umbral del Avance 1 | fuente prevista | estado en este avance (tabla de alcance del README) |
 |---|---|---|---|---|---|
@@ -31,7 +31,7 @@
 | KR4 | «Establecer si el estrato socioeconómico explica o no el patrón de daño» | % de colapsos por estrato socioeconómico (1 a 6) | Confirmar o descartar la hipótesis de que el daño depende principalmente del estrato | Datos Abiertos Cali / DANE — Estratificación | **cubierto con el proxy satelital**: K1 y K2 |
 | KR5 | «Medir el avance de verificación oficial de los reportes ciudadanos» | % de reportes ciudadanos verificados técnicamente vs. pendientes | Seguimiento periódico del avance de verificación mientras la Alcaldía actualiza el repositorio | Repositorio Oficial — Alcaldía de Cali | **fuera de alcance**: seguimiento, no es ETL |
 
-Fuente de la redacción: [Documento de contexto del curso, no incluido en el repositorio, p. 5-6]. Fuente del estado: [Evidencia en el repo: `README.md §3`]. Los KPI del Avance 1 (conteos de colapsos por barrio, porcentaje de reportes verificados) no son los K1 a K6: son medidas sobre datos oficiales por punto que no tenemos. K1 a K6 son tasas de severo estricto sobre un proxy satelital.
+Fuente de la redacción: [Evidencia en el repo: `docs/proyecto/referencias/contexto_y_problema.pdf, p. 5-6`]. Fuente del estado: [Evidencia en el repo: `README.md §3`]. Los KPI del Avance 1 (conteos de colapsos por barrio, porcentaje de reportes verificados) no son los K1 a K6: son medidas sobre datos oficiales por punto que no tenemos. K1 a K6 son tasas de severo estricto sobre un proxy satelital.
 
 **Justificación del estado**
 - **KR1** (parcial). Medimos concentración con el proxy satelital (K3, K6), no con conteos de colapsos totales o parciales. Solo 7 comunas.

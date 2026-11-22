@@ -2,7 +2,7 @@
 
 ![Python 3.13](docs/img/insignias/python.svg) ![Airflow 3.3.2](docs/img/insignias/airflow.svg) ![MySQL 8.0](docs/img/insignias/mysql.svg) ![Pruebas automáticas](docs/img/insignias/pruebas.svg) ![Cobertura de src](docs/img/insignias/cobertura.svg) ![Licencia MIT](docs/img/insignias/licencia.svg) ![Madurez: MVP académico](docs/img/insignias/madurez.svg) ![Última verificación](docs/img/insignias/verificacion.svg)
 
-[Documentación](docs/README.md) · [Análisis](docs/gold/resultados.md) · [Datos](data/) · [Guía de instalación](docs/instalacion/README.md)
+[Documentación](docs/README.md) · [Análisis](docs/gold/resultados.md) · [Datos](data/) · [Guía de instalación](docs/instalacion/README.md) · [Issues](https://github.com/DanielAlxzBrand/etl-sismo-cali-2026/issues)
 
 Un pipeline ETL con capas Bronze, Silver y Gold que junta una capa satelital de impacto en construcciones con el estrato socioeconómico del barrio. Incluye una API de solo lectura, un panel, dos almacenes (SQLite y MySQL) y orquestación con Airflow.
 
@@ -408,7 +408,7 @@ Lo que no hay: pruebas de carga, de fuzzing ni de otro sistema operativo distint
 Decidimos no incluir alertas ni métricas externas (Slack, PagerDuty, Prometheus): el proyecto corre en una máquina local y no hay un servicio desplegado que alguien tenga que vigilar. Si algún día se despliega, esta sección es la primera que habría que ampliar.
 
 ## 12. Despliegue e integración continua
-**No hay despliegue en un servidor ni integración continua.** Tenemos un solo entorno, el local: no hay staging ni producción. Tampoco hay repositorio remoto publicado, así que no hay flujos automáticos. Lo que sí tenemos es un procedimiento manual que repetimos igual cada vez:
+**No hay despliegue en un servidor ni integración continua.** Tenemos un solo entorno, el local: no hay staging ni producción. El repositorio está en GitHub (privado por ahora) y no tiene flujos automáticos. Lo que sí tenemos es un procedimiento manual que repetimos igual cada vez:
 
 1. Las pruebas completas en un clon y en el zip.
 2. `python scripts\make_dist.py` arma el zip por lista de inclusión: nunca entran `.env`, `.git`, `.venv`, `logs` ni `dist`.
@@ -501,7 +501,7 @@ Las decisiones, con sus alternativas, su razón y su riesgo, están en [docs/DEC
 El documento de arquitectura del sistema, con 15 registros de decisión (ADR) y diagramas en texto, está en [docs/arquitectura/arquitectura_del_sistema.md](docs/arquitectura/arquitectura_del_sistema.md) y [docs/arquitectura/adr/](docs/arquitectura/adr/). Está aprobado (versión 1.0, 2026-11-20).
 
 ## 17. Contribución y estándares
-Esta sección cuenta cómo trabajamos hoy; no tenemos un flujo de solicitudes de cambio porque no hay un repositorio publicado.
+Esta sección cuenta cómo trabajamos hoy; todavía no tenemos un flujo de solicitudes de cambio; los temas abiertos van a los [issues](https://github.com/DanielAlxzBrand/etl-sismo-cali-2026/issues).
 
 - **Ramas y commits:** el trabajo vive en la rama `desarrollo`; la rama `master` conserva un punto anterior y no se ha vuelto a integrar. No hay rama `main`. Cada commit es pequeño, va en español y nombra el componente que cambia.
 - **Pruebas primero:** una regla, una prueba. Las reglas de documentos también se prueban (cifras, enlaces, términos prohibidos) y cada prueba nueva trae su caso negativo.
@@ -555,7 +555,7 @@ A quién acudir según el tema:
 | Sesiones con personas usuarias: protocolo y análisis | Diego Fernando Gordillo Londoño |
 | Documentación y demostración | Jhoan Sebastián Castellanos Mayor |
 
-El repositorio aún no está publicado, así que todavía no hay un canal de contacto público. Cuando se publique, esta sección enlazará a sus issues. Las decisiones del proyecto se registran en [docs/DECISIONES.md](docs/DECISIONES.md).
+El repositorio está en [GitHub](https://github.com/DanielAlxzBrand/etl-sismo-cali-2026) y por ahora es privado. El canal de contacto son sus [issues](https://github.com/DanielAlxzBrand/etl-sismo-cali-2026/issues): ahí van las preguntas, los errores y las propuestas. Las decisiones del proyecto se registran en [docs/DECISIONES.md](docs/DECISIONES.md).
 
 ## 20. Licencia y créditos
 - **Código:** licencia MIT, en [LICENSE](LICENSE), a nombre de las tres personas del proyecto. Cubre el código (`src/`, `scripts/`, `tests/`, `dags/`, `orquestacion/`, `servicios/` y los notebooks) y la documentación propia.

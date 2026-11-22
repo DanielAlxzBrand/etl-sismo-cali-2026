@@ -13,7 +13,7 @@
 | [comprension_proyecto1.md](proyecto/comprension_proyecto1.md) | qué pide el enunciado y qué heredamos del documento de contexto y problema |
 | [entorno.md](proyecto/entorno.md) | estado del entorno (Python, paquetes, WSL2, Docker, MySQL) y qué falta instalar por componente |
 | [decisiones_tecnicas.md](proyecto/decisiones_tecnicas.md) | decisiones técnicas de los componentes (API, almacén, panel, orquestación, MLOps) con respaldos |
-| `proyecto/referencias/` | la imagen del enunciado del flujo (el documento de contexto del curso no se incluye en el repositorio) |
+| `proyecto/referencias/` | documento de contexto y problema (`contexto_y_problema.pdf`) y la imagen del enunciado del flujo |
 
 ### `estrategia/` · problema, stakeholders, objetivos y MVP
 | documento | para qué sirve |
