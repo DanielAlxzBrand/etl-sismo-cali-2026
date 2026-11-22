@@ -158,7 +158,7 @@
 | componente | estado |
 |---|---|
 | Documentación y demostración | en construcción: el documento de arquitectura y el README están escritos (el documento, aprobado, versión 1.0, 2026-11-20); falta el guion de demostración |
-| Cierre y paquete | en construcción: el repositorio ya está publicado en GitHub (privado por ahora) y falta armar el paquete final |
+| Cierre y paquete | hecho, con matiz en 7.1: el repositorio está publicado en GitHub (privado por ahora) y el paquete final está armado (el zip por lista de inclusión de `scripts/make_dist.py`); Diego y Jhoan lo probaron desde un clon y lo informaron al equipo, sin commit ni salidas registradas |
 
 Las evidencias del almacenamiento relacional están en `docs/evidencias/almacenamiento/`; las de la orquestación están en `docs/evidencias/orquestacion/`; las del panel, en `docs/evidencias/panel/`; las del endurecimiento (instalación desde cero, mutaciones y Airflow en vivo), en `docs/evidencias/endurecimiento/`; las de los servicios locales, en `docs/evidencias/servicios/`; las de la evaluación del panel y sus ajustes, en `docs/evidencias/usuarios/` y `docs/evidencias/ajustes_ux/`; las de la auditoría intermedia (independencia del repositorio), en `docs/evidencias/auditoria/`.
 
@@ -174,7 +174,7 @@ Las evidencias del almacenamiento relacional están en `docs/evidencias/almacena
 | Usuarios, UX y finanzas | 3.3, 6.1, 6.2, 6.3, 6.4 | hecho en lo técnico; 6.1, 6.2 y 6.3 esperan sesiones reales (hecho externo) |
 | Servicios locales | avance de 7.1; revalida 4.1, 4.2 y 5.4 | hecho |
 | Documentación y demostración | 6.5, 7.2, 7.3, 7.4, 7.5 | en construcción |
-| Cierre y paquete | 7.1 | en construcción |
+| Cierre y paquete | 7.1 | hecho; 7.1 en Cumple con matiz (el matiz está en su fila de la checklist) |
 
 El detalle de cada ítem (estado, evidencia y cómo validarlo) está en `docs/checklist/estado_checklist.md`.
 
