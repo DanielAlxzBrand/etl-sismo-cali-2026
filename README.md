@@ -285,7 +285,17 @@ Tiempos medidos, todos de una máquina de desarrollo con Windows 11 y 15,7 GB de
 Todos los tiempos son de una máquina y varían según el equipo, la conexión y lo que Docker ya tenga descargado. Los de la instalación, las suites, Docker y el DAG son de la ejecución del 2026-11-21 sobre un zip nuevo (EV-121); el pipeline y el arranque del panel, de la repetición de EV-113 del mismo día. No decimos cuánto tarda una persona en total porque depende de la conexión y de cada equipo.
 
 ### Modo completo en resumen
-Con el modo mínimo funcionando, el modo completo agrega, en este orden: las tres cuentas de MySQL (`.\.venv\Scripts\python.exe scripts\mysql\configurar_mysql.py`, con sus opciones `--usuario-docker` y `--usuario-lectura`; cada una pide la contraseña del administrador por teclado y guarda las credenciales solo en `.env`), la carga a MySQL, la carpeta de Airflow (`scripts\orquestacion\preparar_airflow.py`) con `docker compose build`, `docker compose up airflow-init` y `docker compose up -d`, y phpMyAdmin. La guía con lo que debe verse en cada comando y los errores comunes está en [docs/instalacion/guia_modo_completo.md](docs/instalacion/guia_modo_completo.md).
+Con el modo mínimo funcionando, el modo completo agrega, en este orden: las tres cuentas de MySQL (tres comandos aparte, los de abajo), la carga a MySQL, la carpeta de Airflow (`scripts\orquestacion\preparar_airflow.py`) con `docker compose build`, `docker compose up airflow-init` y `docker compose up -d`, y phpMyAdmin. Cada uno de los tres comandos de las cuentas pide la contraseña del administrador por teclado y guarda las credenciales solo en `.env`:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\mysql\configurar_mysql.py                                       # sismo_etl: el pipeline y la API
+.\.venv\Scripts\python.exe scripts\mysql\configurar_mysql.py --usuario-docker --origen localhost   # sismo_airflow: la tarea de carga del DAG
+.\.venv\Scripts\python.exe scripts\mysql\configurar_mysql.py --usuario-lectura                     # sismo_lectura: phpMyAdmin, solo lectura
+```
+
+Dos avisos. Cada ejecución que actúa rota la contraseña de su cuenta, así que solo sirve el `.env` de la última carpeta donde se ejecutó: el `.env` de otra copia del proyecto que usara esas cuentas deja de autenticar. Y si un `.env` quedó desfasado (el script responde «sin cambios» porque ya trae las variables, pero la cuenta no autentica), se vuelve a ejecutar el comando de esa cuenta con `--rotar`.
+
+La guía con lo que debe verse en cada comando y los errores comunes está en [docs/instalacion/guia_modo_completo.md](docs/instalacion/guia_modo_completo.md).
 
 ## 8. Ejecución del pipeline
 Hay un solo entorno, el local (la máquina de quien lo ejecuta): no hay staging ni producción.
