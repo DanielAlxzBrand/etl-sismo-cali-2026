@@ -50,3 +50,22 @@ Qué NO se verificó y por qué:
 - Una máquina limpia de verdad: este equipo ya tenía Python 3.13, Git, Docker y MySQL, y pip descargó con la caché de la máquina.
 - Que otra persona obtenga los mismos tiempos.
 - La interrupción manual del panel con Ctrl+C.
+
+Repetición del 2026-11-21 (cierre final), sobre el árbol con 1472 pruebas, en un clon nuevo cuya ruta tiene espacios y caracteres no ASCII («clon ev113 Ã±andÃº», 43 caracteres; el nombre quedó así porque PowerShell 5.1 leyó el script sin BOM, y sirve igual para probar una ruta con caracteres no ASCII). Sin Docker.
+
+| Paso | Comando | Resultado |
+|---|---|---|
+| Clon | git clone | 1,4 s |
+| Diagnóstico antes del entorno | py -3.13 scripts\preparar_entorno.py | código 1, como se espera sin entorno |
+| Entorno virtual | py -3.13 -m venv .venv | 14,2 s |
+| Activación | . .\.venv\Scripts\Activate.ps1 | funcionó |
+| Instalación | python -m pip install -r requirements.txt | 273,2 s, código 0 |
+| Comprobación | python -m pip check | No broken requirements found |
+| Pipeline, primera ejecución | python main.py --stage all | 9,63 s, código 0 |
+| Pipeline, tres repeticiones con scripts/finanzas/medir_recursos.py | tiempo y pico de memoria | mediana 4,7 s y 149 MB |
+
+Las dos líneas «Salida:» son las mismas de arriba. Tras el pipeline, git status del clon muestra los dos archivos que dice el README (data/gold/etl_sismo.db y docs/silver/reglas_silver.md).
+
+Panel y API (scripts\panel\ejecutar_panel.py --duracion 60 desde el clon): /health de la API respondió 200 a los 4,5 s con "estado":"ok" y almacenamiento sqlite; el panel respondió 200 a los 6,8 s. Al cerrar no quedó ningún proceso escuchando en 8000 ni en 8501; --verificar terminó con código 0. Al final, git status del clon: sin cambios.
+
+La suite completa en el clon y en el zip de esta repetición es la corrida única del cierre final, registrada en EV-116.

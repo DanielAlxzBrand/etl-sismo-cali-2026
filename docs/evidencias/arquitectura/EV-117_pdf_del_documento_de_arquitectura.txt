@@ -2,13 +2,13 @@ EV-117 · PDF del documento de arquitectura y de los ADR, su comprobación y las
 
 Qué es: el PDF que sale de `docs/arquitectura/arquitectura_del_sistema.md` y de los 15 ADR con `scripts/arquitectura/generar_pdf_arquitectura.py` (D108), su comprobación con `--verificar` y las mutaciones de `tests/test_pdf_arquitectura.py`.
 Todo son mediciones de una máquina (Windows 11, PowerShell, Python 3.13.0, Microsoft Edge 157.0.4341.60, que escribe `Skia/PDF m157`). No se usó Docker. No se tocó data/, src/ ni el pipeline. Lo que había en dist/ (zips, guías y versiones anteriores del PDF) se apartó a una carpeta fuera del repositorio antes de generar: en dist/ queda solo este PDF, con su nombre canónico.
-Fuente del PDF: el árbol de trabajo del cierre (2026-11-21), con el documento en versión 1.0, estado Aprobado, aprobado por los tres autores el 2026-11-20. El PDF no se versiona: se escribió en dist/, que Git ignora, y la regla de make_dist.py deja fuera de cualquier zip un PDF de docs/arquitectura/.
+Fuente del PDF: el árbol del cierre final (2026-11-21), con el documento en versión 1.0, estado Aprobado, aprobado por los tres autores el 2026-11-20, y la cifra de pruebas en 1472 (generado de nuevo después de sincronizar esa cifra; mismo sha256 en las dos ejecuciones de --verificar). El PDF no se versiona: se escribió en dist/, que Git ignora, y la regla de make_dist.py deja fuera de cualquier zip un PDF de docs/arquitectura/.
 
 ## El PDF final (versión 1.0, Aprobado; ADR seguidos y dos figuras en gris)
 | Dato | Valor |
 |---|---|
 | Archivo | dist/arquitectura_del_sistema_y_adr.pdf (nombre canónico; la única versión que queda en dist/) |
-| Tamaño y sha256 | 1.515.903 bytes · 5f13321f7ec734ef739517816dab75c303e9765226c420467fbe808b93453503 |
+| Tamaño y sha256 | 1.515.888 bytes · 232c5d905b488feec845137b2cf0444bd292912980fae5ba4dbe91dc567bf15a |
 | Páginas | 39: portada, índice, el documento y el anexo con los 15 ADR seguidos; el único salto de página nuevo del anexo es el de su título |
 | Figuras | 2 imágenes en gris incrustadas, `docs/diagramas/arquitectura.png` en la sección 6 («Figura 1») y `docs/diagramas/flujo_dag.png` en la sección 9 («Figura 2»), agregadas al PDF sin cambiar ningún archivo de Markdown; los dos diagramas en color (`*_nueva.png`) no se incrustan |
 | Marcadores | 169 títulos en el PDF = 168 encabezados del HTML más el título del documento |

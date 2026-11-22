@@ -273,16 +273,16 @@ Tiempos medidos, todos de una máquina de desarrollo con Windows 11 y 15,7 GB de
 | Qué | Tiempo | Origen | Fecha |
 |---|---|---|---|
 | Crear el entorno virtual e instalar `requirements.txt` | 377 s (la última medición, de punta a punta con el entorno nuevo) | [EV-121](docs/evidencias/readme/EV-121_tiempos_de_la_ejecucion_sobre_el_zip.txt); antes, 311 s en [EV-113](docs/evidencias/readme/EV-113_primera_vez_y_suite_en_clon_y_zip.txt), 251 s en [EV-100](docs/evidencias/modo_completo/EV-100_guia_seguida_desde_un_zip_nuevo.txt) y 288 s en [EV-083](docs/evidencias/servicios/EV-083_suite_sin_utf8_antes.txt) | 2026-11-21 |
-| `python main.py --stage all` | 10,3 s la primera vez; mediana de 3 repeticiones: 2,9 s y 148 MB de pico | EV-113 | 2026-11-16 |
+| `python main.py --stage all` | 9,6 s la primera vez; mediana de 3 repeticiones: 4,7 s y 149 MB de pico (en 2026-11-16: 10,3 s, y 2,9 s y 148 MB) | EV-113 | 2026-11-21 |
 | Suite completa en el repositorio | unos 455 s con 1.466 pruebas (una fallaba por una cifra del documento de arquitectura, ya corregida); en 2026-11-16, de 343 s a 409 s con 1.330 pruebas y de 323 a 452 MiB de pico (EV-113) | EV-121 | 2026-11-21 |
 | Suite completa en el zip descomprimido | 773 s con 1.466 pruebas (1 omitida; una fallaba por una ruta del árbol del README, ya corregida); en 2026-11-16, de 267 s a 358 s con 1.329 pruebas y 1 omitida (EV-113) | EV-121 | 2026-11-21 |
-| API y panel con `ejecutar_panel.py` | la API responde a los 2,2 s y el panel a los 5,4 s | EV-113 | 2026-11-16 |
+| API y panel con `ejecutar_panel.py` | la API responde a los 4,5 s y el panel a los 6,8 s (en 2026-11-16: 2,2 s y 5,4 s) | EV-113 | 2026-11-21 |
 | `docker compose build` de Airflow | 9 s | EV-121 | 2026-11-21 |
 | `docker compose up airflow-init` | 112 s | EV-121 | 2026-11-21 |
 | `docker compose up -d` de Airflow | 261 s (con la descarga de imágenes) | EV-121 | 2026-11-21 |
 | Las cuatro tareas del DAG | 34 s la primera corrida (unos 12 s en EV-100) | EV-121 | 2026-11-21 |
 
-Todos los tiempos son de una máquina y varían según el equipo, la conexión y lo que Docker ya tenga descargado. Los de la instalación, las suites, Docker y el DAG son de la ejecución del 2026-11-21 sobre un zip nuevo (EV-121); el pipeline y el arranque del panel, de EV-113. No decimos cuánto tarda una persona en total porque depende de la conexión y de cada equipo.
+Todos los tiempos son de una máquina y varían según el equipo, la conexión y lo que Docker ya tenga descargado. Los de la instalación, las suites, Docker y el DAG son de la ejecución del 2026-11-21 sobre un zip nuevo (EV-121); el pipeline y el arranque del panel, de la repetición de EV-113 del mismo día. No decimos cuánto tarda una persona en total porque depende de la conexión y de cada equipo.
 
 ### Modo completo en resumen
 Con el modo mínimo funcionando, el modo completo agrega, en este orden: las tres cuentas de MySQL (`.\.venv\Scripts\python.exe scripts\mysql\configurar_mysql.py`, con sus opciones `--usuario-docker` y `--usuario-lectura`; cada una pide la contraseña del administrador por teclado y guarda las credenciales solo en `.env`), la carga a MySQL, la carpeta de Airflow (`scripts\orquestacion\preparar_airflow.py`) con `docker compose build`, `docker compose up airflow-init` y `docker compose up -d`, y phpMyAdmin. La guía con lo que debe verse en cada comando y los errores comunes está en [docs/instalacion/guia_modo_completo.md](docs/instalacion/guia_modo_completo.md).
@@ -457,7 +457,7 @@ Mediciones locales de una máquina, con su fecha ([docs/finanzas/recursos_medido
 
 | Qué | Valor | Fecha |
 |---|---|---|
-| Pipeline completo | 2,9 s y 148 MB de pico (mediana de 3 repeticiones en un clon nuevo) | 2026-11-16 |
+| Pipeline completo | 4,7 s y 149 MB de pico (mediana de 3 repeticiones en un clon nuevo) | 2026-11-21 |
 | Latencia de la API sobre SQLite, mediana por ruta | de 3,6 a 13,9 ms | 2026-11-14 |
 | Carga a MySQL de 5.622 filas, fila a fila frente a lotes de 2.000 | 2,415 s frente a 0,715 s | 2026-11-14 |
 | Memoria de la API y el panel en reposo | unos 160 MiB | 2026-11-15 |
