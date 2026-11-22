@@ -9,7 +9,7 @@
 | Revisión de la documentación | Jhoan Sebastián Castellanos Mayor, 2026-11-18 |
 | Aprobadores | Daniel Alexander Brand García, Jhoan Sebastián Castellanos Mayor y Diego Fernando Gordillo Londoño, 2026-11-20 |
 | Estado | Aprobado |
-| Repositorio | aún no está publicado; cuando se publique, esta tabla enlazará a sus issues (ver el [README](../../README.md#19-contacto-y-responsables)) |
+| Repositorio | publicado en GitHub con visibilidad privada por ahora; sus issues son el canal de contacto y los abre quien tenga acceso (ver el [README](../../README.md#19-contacto-y-responsables)) |
 | Registros de decisión | los 15 ADR de [adr/](adr/), listados en la sección 10; las decisiones completas están en [docs/DECISIONES.md](../DECISIONES.md) (D1 a D113) |
 
 Este documento describe cómo está construido el sistema hoy y por qué lo construimos así. Lo escribimos como estudiantes que hicimos el proyecto: donde algo no existe decimos «no lo hicimos» o «no aplica» y damos la razón, y no rellenamos con contenido genérico. Para cada cifra o afirmación indicamos de dónde sale (un archivo, una evidencia o una decisión del repositorio), y varias cifras las comparan pruebas automáticas con lo medido. Lo que no pudimos verificar, o depende de la máquina de quien lo ejecute, lo marcamos como límite.
@@ -84,7 +84,7 @@ Cada uno es una decisión de alcance, con su razón.
 | Dimensiones de cambio lento (SCD) | no llegan cambios que registrar; cada corrida es una copia completa |
 | Despliegue en la nube | todo corre en una máquina local y el panel no está desplegado; los precios de nube no existen en el proyecto |
 | Infraestructura como código con Terraform | no hay nada que aprovisionar; el compose y el Dockerfile declaran lo que sí se levanta |
-| Integración continua | no hay repositorio remoto publicado; el procedimiento de entrega es manual (sección 14) |
+| Integración continua | el repositorio está publicado en GitHub (privado por ahora) y no tiene flujos automáticos; el procedimiento de entrega es manual (sección 14) |
 | Alertas externas (Slack, PagerDuty, Prometheus) | no hay un servicio desplegado que alguien deba vigilar |
 | Modelos predictivos | el proyecto calcula indicadores estadísticos; no entrena modelos |
 | Evaluación estructural de predios | nuestro indicador es un proxy satelital y no se mezcla con las inspecciones de la Alcaldía |
@@ -363,7 +363,7 @@ El modelo de costos tiene siete categorías y fórmulas con símbolos; los preci
 
 ## 14. Despliegue y operaciones
 - **Entornos:** uno solo, el local; no hay staging ni producción.
-- **CI/CD:** no hay. No existe un repositorio remoto publicado. El procedimiento manual que repetimos: las pruebas completas en un clon y en el zip, `python scripts\make_dist.py` arma el zip por lista de inclusión, `python scripts\orquestacion\sincronizar_dag.py --verificar` comprueba que el DAG versionado y el de Airflow son idénticos, `python scripts\escanear_secretos.py` debe terminar en `hallazgos: 0`, y las etiquetas de Git por componente marcan cada cierre.
+- **CI/CD:** no hay. El repositorio está publicado en GitHub con visibilidad privada por ahora y no tiene flujos automáticos. El procedimiento manual que repetimos: las pruebas completas en un clon y en el zip, `python scripts\make_dist.py` arma el zip por lista de inclusión, `python scripts\orquestacion\sincronizar_dag.py --verificar` comprueba que el DAG versionado y el de Airflow son idénticos, `python scripts\escanear_secretos.py` debe terminar en `hallazgos: 0`, y las etiquetas de Git por componente marcan cada cierre.
 - **Estrategia de despliegue:** no aplica; no desplegamos en ningún servidor.
 - **Ramas:** el trabajo vive en la rama `desarrollo`; la rama `master` conserva un punto anterior y no se ha vuelto a integrar. No hay rama `main`.
 - **Configuración por entorno:** `config/config.yaml` y las variables de `.env` (12 nombres en `.env.example`, nunca valores).
@@ -408,7 +408,7 @@ La probabilidad y el impacto son juicio del equipo, sin cifras; se basan en las 
 **Propuesta del equipo, no compromiso:**
 | Plazo | Mejora propuesta |
 |---|---|
-| Corto | publicar el repositorio y enlazar sus issues desde el README; comprobar la ejecución desde cero en otros equipos; hacer las sesiones con personas usuarias; grabar la demostración |
+| Corto | cambiar la visibilidad del repositorio de privada a pública cuando el equipo lo decida, para que cualquiera abra los issues enlazados desde el README; comprobar la ejecución desde cero en otros equipos; hacer las sesiones con personas usuarias; grabar la demostración |
 | Medio | ampliar la cobertura a la Comuna 2 y a las demás comunas ausentes; repetir el análisis con un estrato actualizado; agregar una validación explícita de las columnas de la fuente; evaluar reintentos de tareas en el DAG |
 | Largo | incorporar la amenaza sísmica oficial; comparar el proxy con las inspecciones de la Alcaldía; si el sistema se despliega, agregar autenticación, integración continua y alertas |
 

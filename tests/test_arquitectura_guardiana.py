@@ -87,12 +87,12 @@ def problemas_del_documento(texto, base):
     errores += problemas_de_redaccion(resto, base)
     if secciones_numeradas(texto) != list(range(1, 19)):
         errores.append("las secciones numeradas no son 1 a 18 en orden")
-    # metadatos honestos: la tabla de la sección 1 dice Aprobado, la versión 1.0, la revisión con nombre y fecha, los tres aprobadores con la fecha de la aprobación, y repositorio sin publicar (no basta con que la palabra aparezca en otro lugar)
+    # metadatos honestos: la tabla de la sección 1 dice Aprobado, la versión 1.0, la revisión con nombre y fecha, los tres aprobadores con la fecha de la aprobación, y repositorio publicado en GitHub con visibilidad privada por ahora (no basta con que la palabra aparezca en otro lugar)
     portada = re.search(r"(?ms)^## 1\. .*?(?=^## 2\. )", texto)
     portada = portada.group(0) if portada else ""
     for regla, descripcion in ((r"(?m)^\| Estado \| Aprobado \|$", "estado Aprobado"), (rf"(?m)^\| Revisión de la documentación \| {re.escape(REVISOR)}, \d{{4}}-\d{{2}}-\d{{2}} \|$", "revisión con nombre y fecha"),
                                (rf"(?m)^\| Aprobadores \| {re.escape(APROBADORES)}, {APROBACION} \|$", "los tres aprobadores con la fecha de la aprobación"), (rf"(?m)^\| Versión y fecha \| 1\.0, {APROBACION} \|$", "versión 1.0 y su fecha"),
-                               (r"(?m)^\| Repositorio \| aún no está publicado\b", "repositorio sin publicar")):
+                               (r"(?m)^\| Repositorio \| publicado en GitHub con visibilidad privada por ahora\b", "repositorio publicado con visibilidad privada por ahora")):
         if not re.search(regla, portada):
             errores.append(f"falta en los metadatos de la sección 1: {descripcion}")
     return errores
@@ -311,7 +311,7 @@ def test_d106_registra_la_estructura_y_marca_d21_y_d5_sin_reescribirlas():
 def _doc_bueno():
     cuerpo = "\n".join(f"## {n}. Sección {n}\nTexto." for n in range(2, 18))
     return (f"# Título\n\n## 1. Portada\n| Campo | Valor |\n|---|---|\n| Versión y fecha | 1.0, 2026-11-20 |\n| Revisión de la documentación | {REVISOR}, 2026-11-18 |\n| Aprobadores | {APROBADORES}, {APROBACION} |\n| Estado | Aprobado |\n"
-            f"| Repositorio | aún no está publicado |\n\n{cuerpo}\n## 18. Glosario y referencias\nTexto. Un Aprobado más.\n\n{LINEA_CITA_DOC}\n")
+            f"| Repositorio | publicado en GitHub con visibilidad privada por ahora |\n\n{cuerpo}\n## 18. Glosario y referencias\nTexto. Un Aprobado más.\n\n{LINEA_CITA_DOC}\n")
 
 
 def test_un_documento_correcto_no_tiene_problemas():
@@ -379,7 +379,8 @@ def test_las_secciones_y_los_metadatos_se_exigen():
     assert problemas_del_documento(_doc_bueno().replace(f"| Revisión de la documentación | {REVISOR}, 2026-11-18 |", f"| Revisión de la documentación | {REVISOR} |"), base), "revisión sin fecha"
     assert problemas_del_documento(_doc_bueno().replace(f"| Revisión de la documentación | {REVISOR}, 2026-11-18 |", "| Revisión de la documentación | Alguien, 2026-11-18 |"), base), "revisión de otra persona"
     assert problemas_del_documento(_doc_bueno().replace("| Versión y fecha | 1.0, 2026-11-20 |\n", ""), base), "falta la versión y la fecha"
-    assert problemas_del_documento(_doc_bueno().replace("aún no está publicado", "https://ejemplo.invalido/repo"), base), "repositorio inventado"
+    assert problemas_del_documento(_doc_bueno().replace("publicado en GitHub con visibilidad privada por ahora", "https://ejemplo.invalido/repo"), base), "repositorio inventado"
+    assert problemas_del_documento(_doc_bueno().replace("publicado en GitHub con visibilidad privada por ahora", "aún no está publicado"), base), "repositorio dado por no publicado"
     assert problemas_del_documento(_doc_bueno().replace("## 1. Portada\n", "## 1. Portada\nTexto.\n").replace("| Estado | Aprobado |\n", ""), base), "falta el estado"
 
 
