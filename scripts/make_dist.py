@@ -3,7 +3,8 @@
 En el primer nivel dejamos pasar los archivos de `RAIZ_ARCHIVOS` y las carpetas de `RAIZ_CARPETAS` (`dags/`, `orquestacion/` y `servicios/` solo si existen). Adentro de esas carpetas se excluyen
 cachés, `*.pyc`, `logs/`, el `.env` real, toda carpeta oculta (la que empieza por punto) y todo entorno virtual, que reconocemos por el nombre y sobre todo por lo que trae:
 `pyvenv.cfg`, `site-packages`, `conda-meta`, `python.exe`, `Scripts/python*` o `bin/python*`. En `docs/` solo entran los PDF de
-`docs/proyecto/referencias/` y `docs/retroalimentacion/`. Cuando el zip está armado se revisa su contenido y, si algo sobra, falla con un mensaje claro.
+`docs/proyecto/referencias/` y `docs/retroalimentacion/`. La única excepción a la regla de las carpetas ocultas es el flujo de integración continua: entra `.github/workflows/etl.yml`, ese archivo y ningún otro.
+Cuando el zip está armado se revisa su contenido y, si algo sobra, falla con un mensaje claro.
 """
 import os
 import re
@@ -16,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RAIZ_ARCHIVOS = ("README.md", "LICENSE", "main.py", "requirements.txt", "pytest.ini", ".env.example", ".gitignore", ".gitattributes")
 RAIZ_CARPETAS = ("config", "src", "scripts", "tests", "notebooks", "docs", "data", "dags", "orquestacion", "servicios")
 PDF_PERMITIDOS = ("docs/proyecto/referencias/", "docs/retroalimentacion/")
+OCULTOS_PERMITIDOS = (".github/workflows/etl.yml",)   # único archivo de una carpeta oculta que viaja en el zip
 EXCLUIR_DIRS = {".git", "dist", "logs", "__pycache__", ".ipynb_checkpoints", ".pytest_cache", "venv", "env", ".env", "site-packages"}
 EXCLUIR_PREFIJOS = (".venv",)
 EXCLUIR_NOMBRES = {".env", "pyvenv.cfg"}
@@ -49,7 +51,7 @@ def archivo_excluido(p, root):
 def listar(root):
     """Archivos a empaquetar: los de primer nivel permitidos y los de las carpetas permitidas (sin entrar a las excluidas)."""
     root = Path(root)
-    salida = [root / f for f in RAIZ_ARCHIVOS if (root / f).is_file()]
+    salida = [root / f for f in RAIZ_ARCHIVOS + OCULTOS_PERMITIDOS if (root / f).is_file()]
     for nombre in RAIZ_CARPETAS:
         base = root / nombre
         if not base.is_dir() or dir_excluido(base):
@@ -65,6 +67,8 @@ def prohibidos(nombres):
     """Entradas del zip que nunca deben estar: entornos virtuales, cachés, `.env`, `dist/`, `.git/`, registros `.log`, notas locales."""
     malos = []
     for n in nombres:
+        if n in OCULTOS_PERMITIDOS:
+            continue
         partes = n.split("/")
         if (n == ".env" or partes[-1] == ".env" or any(x in n for x in PROHIBIDOS_EN_ZIP) or n.startswith("dist/")
                 or any(x in {"venv", "env", "Scripts"} or x.startswith(".") for x in partes[:-1]) or (partes[0] == "logs" and n.endswith(".log"))):
@@ -75,7 +79,7 @@ def prohibidos(nombres):
 def fuera_de_la_lista(nombres):
     """Entradas cuyo primer nivel no está en la lista permitida."""
     permitidos = set(RAIZ_ARCHIVOS) | set(RAIZ_CARPETAS)
-    return [n for n in nombres if n.split("/")[0] not in permitidos]
+    return [n for n in nombres if n.split("/")[0] not in permitidos and n not in OCULTOS_PERMITIDOS]
 
 
 def pdf_no_permitidos(nombres):

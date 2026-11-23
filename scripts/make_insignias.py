@@ -3,7 +3,7 @@
 Uso, desde la raíz:  python scripts/make_insignias.py [--pruebas N] [--cobertura "77 %"]
 Cada valor sale de un archivo del repositorio: Python de la cabecera de `requirements.txt`, Airflow del `FROM` de `orquestacion/Dockerfile`, el número de pruebas de la recolección
 de pytest (o de `--pruebas`), la licencia de `LICENSE`, la fecha de EV-100 del manifiesto de evidencias. La cobertura no se mide aquí: se pasa con `--cobertura` y debe salir de una medición registrada en `docs/evidencias/readme/`.
-Qué NO hace: no promete nada que el repositorio no pueda comprobar (no hay insignias de integración continua porque no hay integración continua).
+Qué NO hace: no promete nada que el repositorio no pueda comprobar (no hay insignia del flujo de integración continua porque todavía no ha corrido en GitHub).
 `tests/test_readme_cifras.py` comprueba que el texto de cada insignia coincida con lo que miden esos archivos.
 """
 import argparse

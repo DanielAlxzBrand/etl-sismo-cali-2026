@@ -114,7 +114,8 @@ def test_un_entorno_simulado_sin_pyvenv_cfg_dentro_de_una_carpeta_permitida_no_e
 
 def test_las_exclusiones_se_aplican_siempre(tmp_path):
     prohibidas = [".env", "logs/etl.log", "src/logs/x.log", "dist/z.zip", ".git/config", ".venv/pyvenv.cfg", ".venv_test/a", "venv/a", "env/a", ".pytest_cache/v", "herramienta_local.md",
-                  ".herramienta_local/s.json", "src/__pycache__/a.pyc", "src/b.pyc", "notebooks/.ipynb_checkpoints/n-checkpoint.ipynb"]
+                  ".herramienta_local/s.json", "src/__pycache__/a.pyc", "src/b.pyc", "notebooks/.ipynb_checkpoints/n-checkpoint.ipynb",
+                  ".github/workflows/otro.yml", ".github/ISSUE_TEMPLATE/a.md", ".github/CODEOWNERS"]   # de .github solo viaja etl.yml (ver la prueba de las carpetas ocultas)
     nombres = _empaquetar(tmp_path, prohibidas)
     assert sorted(nombres) == sorted(PERMITIDOS)
 
@@ -138,6 +139,7 @@ def test_el_repo_real_solo_empaqueta_primer_nivel_permitido():
     assert make_dist.fuera_de_la_lista(nombres) == [] and make_dist.pdf_no_permitidos(nombres) == []
     assert "requirements.txt" in nombres and "data/gold/etl_sismo.db" in nombres and ".env" not in nombres
     assert not any(n.startswith(("logs/", "dist/")) for n in nombres)
+    assert [n for n in nombres if n.startswith(".github/")] == [".github/workflows/etl.yml"]   # el flujo de integración continua viaja en el zip, y solo ese archivo
 
 
 def test_una_carpeta_llamada_env_con_punto_no_entra(tmp_path):
@@ -148,13 +150,19 @@ def test_ninguna_carpeta_oculta_dentro_de_las_carpetas_permitidas_entra(tmp_path
     nombres = _empaquetar(tmp_path, ["src/.herramienta_local/x.json", "docs/.otra/y.md", "tests/.cache_local/z.txt", "scripts/a/.oculta/b.py"])
     assert sorted(nombres) == sorted(PERMITIDOS)
     assert make_dist.prohibidos(["src/.herramienta_local/x.json"]) == ["src/.herramienta_local/x.json"]
+    # la única excepción es el flujo de integración continua: ese archivo entra y pasa la verificación; ninguna otra cosa de .github
+    con = _empaquetar(tmp_path / "con_flujo", [".github/workflows/etl.yml", ".github/workflows/otro.yml", ".github/CODEOWNERS"])
+    assert sorted(con) == sorted(PERMITIDOS + [".github/workflows/etl.yml"])
+    make_dist.verificar(con)
+    assert make_dist.prohibidos([".github/workflows/otro.yml", ".github/workflows/etl.yml"]) == [".github/workflows/otro.yml"]
+    assert make_dist.fuera_de_la_lista([".github/CODEOWNERS", ".github/workflows/etl.yml"]) == [".github/CODEOWNERS"]
 
 
 def test_el_repo_real_empaqueta_el_panel_y_su_lanzador_sin_carpetas_ocultas_ni_credenciales():
     nombres = [p.relative_to(ROOT).as_posix() for p in make_dist.listar(ROOT)]
     assert "src/panel/app.py" in nombres and "src/panel/cliente_api.py" in nombres and "src/panel/paginas/respuesta.py" in nombres
     assert "scripts/panel/ejecutar_panel.py" in nombres and "tests/test_panel_paginas.py" in nombres
-    assert not [n for n in nombres if any(parte.startswith(".") and parte != ".env.example" and parte != ".gitignore" and parte != ".gitattributes" for parte in n.split("/"))]
+    assert not [n for n in nombres if n not in make_dist.OCULTOS_PERMITIDOS and any(parte.startswith(".") and parte != ".env.example" and parte != ".gitignore" and parte != ".gitattributes" for parte in n.split("/"))]
     assert ".env" not in nombres and make_dist.fuera_de_la_lista(nombres) == []
 
 

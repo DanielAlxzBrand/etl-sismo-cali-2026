@@ -9,7 +9,7 @@ Un pipeline ETL con capas Bronze, Silver y Gold que junta una capa satelital de 
 ## 1. Descripción y madurez
 Estudiamos, con un indicador satelital, el cambio visible en **5.146 construcciones de 7 comunas de Cali** tras el sismo de magnitud 7,4 del 10 de agosto de 2026, y lo comparamos entre los estratos 1 a 6 del barrio. El proyecto descarga las fuentes abiertas, las guarda sin tocarlas (Bronze), las limpia y las une (Silver), calcula indicadores con intervalos de confianza (Gold) y los entrega por una API de solo lectura, un panel y dos bases de datos. El análisis completo, con su lectura y sus límites, está en [docs/gold/resultados.md](docs/gold/resultados.md).
 
-**Madurez: MVP académico, ejecutable en local.** Lo que existe y se probó: el pipeline completo, la API, el panel, la carga a MySQL, el DAG en Airflow, phpMyAdmin de solo lectura y el repositorio publicado en GitHub (privado por ahora). Lo que no existe: sesiones con personas usuarias (aún sin sesiones reales), despliegue en un servidor, integración continua y alertas externas. Todo se probó en Windows 11 con PowerShell y Python 3.13.0; en otros sistemas no lo probamos.
+**Madurez: MVP académico, ejecutable en local.** Lo que existe y se probó: el pipeline completo, la API, el panel, la carga a MySQL, el DAG en Airflow, phpMyAdmin de solo lectura y el repositorio publicado en GitHub (privado por ahora). Lo que existe pero todavía no se probó: el flujo de integración continua de GitHub Actions, que aún no ha corrido. Lo que no existe: sesiones con personas usuarias (aún sin sesiones reales), despliegue en un servidor y alertas externas. Todo se probó en Windows 11 con PowerShell y Python 3.13.0; en otros sistemas no lo probamos.
 
 **Resumen del resultado.** Con este proxy y esta muestra no se detecta diferencia en la proporción de construcciones con cambio satelital severo (severo estricto, proxy de daño) entre los estratos 3 a 5 y 1 a 2 (6,33 % frente a 5,84 %; diferencia +0,49 puntos porcentuales). Esto no equivale a decir que el estrato no influye: el indicador es un proxy y la muestra la definieron los polígonos de afectación.
 
@@ -37,7 +37,7 @@ Los tres recuadros siguientes son los mismos de [docs/gold/resultados.md](docs/g
 Las cifras de la evaluación estructural son cifras reportadas por la prensa citando a la Alcaldía; no las cotejamos con una fuente oficial descargable. La unidad (predios) no es la nuestra (construcciones), por lo que no las comparamos ni las mezclamos con ninguna cifra de Gold.
 
 ## 2. Insignias
-Las insignias están bajo el título. Cada valor sale de un archivo del repositorio y una prueba comprueba que coincida: Python de `requirements.txt`, Airflow del `Dockerfile` de `orquestacion/`, el número de pruebas de la recolección de pytest, la licencia de `LICENSE` y la fecha de la última verificación del manifiesto de evidencias. La última verificación es la fecha de [EV-100](docs/evidencias/modo_completo/EV-100_guia_seguida_desde_un_zip_nuevo.txt), la guía del modo completo seguida desde un zip nuevo; no es una ejecución automática. La cobertura es la de `src/` sin red, medida con la suite completa ([EV-114](docs/evidencias/readme/EV-114_cobertura_de_src_repetida.txt)); es una cota inferior porque parte del código se ejecuta en subprocesos que la medición no sigue. No hay insignias de integración continua porque no hay integración continua (sección 12).
+Las insignias están bajo el título. Cada valor sale de un archivo del repositorio y una prueba comprueba que coincida: Python de `requirements.txt`, Airflow del `Dockerfile` de `orquestacion/`, el número de pruebas de la recolección de pytest, la licencia de `LICENSE` y la fecha de la última verificación del manifiesto de evidencias. La última verificación es la fecha de [EV-100](docs/evidencias/modo_completo/EV-100_guia_seguida_desde_un_zip_nuevo.txt), la guía del modo completo seguida desde un zip nuevo; no es una ejecución automática. La cobertura es la de `src/` sin red, medida con la suite completa ([EV-114](docs/evidencias/readme/EV-114_cobertura_de_src_repetida.txt)); es una cota inferior porque parte del código se ejecuta en subprocesos que la medición no sigue. No hay insignia del flujo de integración continua porque todavía no ha corrido en GitHub (sección 12).
 
 ## 3. Tabla de contenidos
 - [1. Descripción y madurez](#1-descripción-y-madurez)
@@ -168,6 +168,9 @@ Docker Desktop con WSL2 se usó solo para Airflow y phpMyAdmin (Docker 29.9.3 y 
 ├── requirements.txt          # dependencias con versión exacta (Python 3.13)
 ├── pytest.ini                # configuración de las pruebas
 ├── .env.example              # nombres de las variables de entorno, sin valores
+├── .github/
+│   └── workflows/
+│       └── etl.yml           # flujo de integración continua de GitHub Actions; todavía no ha corrido
 ├── LICENSE                   # licencia MIT del código
 ├── config/
 │   ├── config.yaml           # fuentes, umbrales, fechas, rutas, registro de ejecución, API y panel
@@ -418,7 +421,7 @@ Lo que no hay: pruebas de carga, de fuzzing ni de otro sistema operativo distint
 Decidimos no incluir alertas ni métricas externas (Slack, PagerDuty, Prometheus): el proyecto corre en una máquina local y no hay un servicio desplegado que alguien tenga que vigilar. Si algún día se despliega, esta sección es la primera que habría que ampliar.
 
 ## 12. Despliegue e integración continua
-**No hay despliegue en un servidor ni integración continua.** Tenemos un solo entorno, el local: no hay staging ni producción. El repositorio está en GitHub (privado por ahora) y no tiene flujos automáticos. Lo que sí tenemos es un procedimiento manual que repetimos igual cada vez:
+**No hay despliegue en un servidor.** Tenemos un solo entorno, el local: no hay staging ni producción. El repositorio está en GitHub (privado por ahora). Lo que usamos hasta hoy es un procedimiento manual que repetimos igual cada vez:
 
 1. Las pruebas completas en un clon y en el zip.
 2. `python scripts\make_dist.py` arma el zip por lista de inclusión: nunca entran `.env`, `.git`, `.venv`, `logs` ni `dist`.
@@ -427,6 +430,8 @@ Decidimos no incluir alertas ni métricas externas (Slack, PagerDuty, Prometheus
 5. Etiquetas de Git por componente marcan cada cierre.
 
 Docker se usa solo para Airflow y phpMyAdmin; el pipeline, la API y el panel corren con Python en la máquina.
+
+**Integración continua.** Escribimos un flujo de GitHub Actions en [.github/workflows/etl.yml](.github/workflows/etl.yml). Se dispara con cada cambio a `main`, con cada solicitud de cambio hacia `main` y a mano. Corre solo en `windows-latest` con Python 3.13: instala `requirements.txt`, corre las pruebas, el escáner de secretos y el de términos (también sobre el historial) y repite `main.py --stage all` sin red para comparar el resultado con lo versionado. No usa secretos, MySQL ni Docker. **Todavía no ha corrido en GitHub**: hasta que lo haga no decimos que pasa, no tiene insignia y no hemos probado la suite en Linux. La decisión está en D114.
 
 ## 13. Errores, reintentos y recuperación
 - **Descargas:** `requests` hace hasta 3 intentos por petición (reintenta si falla la conexión o la respuesta es 5xx), con una pausa de 0,5 s, 1 s y 1,5 s después de cada intento fallido, y espera como máximo 30 s por intento a que el servidor conteste (`timeout_s` de `config/config.yaml`, sección `http`, que acota la conexión y la espera de datos, no el tiempo total). Una extracción se considera completa solo si existe el conteo posterior de la capa.
@@ -488,7 +493,7 @@ Con 8 GB de RAM no conviene encender todo a la vez; esa configuración no está 
 **Costos en la nube: no aplican.** Todo corre en una máquina local, así que no hay precios que medir. La estructura de costos, con las fórmulas y los precios como parámetros vacíos, está en [docs/finanzas/estructura_costos.md](docs/finanzas/estructura_costos.md); no inventamos ninguna cifra monetaria.
 
 ## 16. Decisiones de arquitectura
-Las decisiones, con sus alternativas, su razón y su riesgo, están en [docs/DECISIONES.md](docs/DECISIONES.md) (D1 a D113). Las que más condicionan el diseño:
+Las decisiones, con sus alternativas, su razón y su riesgo, están en [docs/DECISIONES.md](docs/DECISIONES.md) (D1 a D114). Las que más condicionan el diseño:
 
 | Decisión | Qué decidimos | Por qué |
 |---|---|---|

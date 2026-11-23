@@ -1,0 +1,79 @@
+# Integración continua del proyecto ETL del sismo de Cali.
+#
+# Qué hace: en cada cambio a main (y en cada solicitud de cambio hacia main) instala las dependencias,
+# corre todas las pruebas, corre los escáneres del repositorio y repite el pipeline sobre los datos
+# que ya están versionados para comprobar que las salidas no cambian.
+#
+# Qué NO hace: no usa secretos ni contraseñas, no necesita MySQL ni Docker y no descarga nada de las
+# fuentes externas (ArcGIS, WFS, datos.gov.co). Bronze ya está en el repositorio, así que el pipeline
+# corre sin red. Tampoco despliega nada.
+#
+# Dónde corre: solo en windows-latest, que es el sistema en el que probamos todo el proyecto.
+# En Linux no lo hemos probado, por eso no está en este flujo.
+#
+# Estado: este archivo todavía no ha corrido en GitHub. Hasta que lo haga no afirmamos que pasa.
+name: etl
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# El flujo solo lee el repositorio.
+permissions:
+  contents: read
+
+# Si llega un cambio nuevo a la misma rama mientras corre uno anterior, cancelamos el anterior.
+concurrency:
+  group: etl-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pruebas:
+    name: pruebas y escáneres (windows)
+    runs-on: windows-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Descargar el repositorio con todo su historial
+        uses: actions/checkout@v7
+        with:
+          # El historial completo hace falta para el escáner de términos con historial y para
+          # las pruebas que leen git. En una solicitud de cambio probamos el último commit de
+          # la rama del cambio, no el commit de fusión que crea GitHub.
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Instalar Python 3.13
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Instalar las dependencias
+        run: python -m pip install -r requirements.txt
+
+      - name: Correr las pruebas
+        run: python -m pytest -q -p no:cacheprovider
+
+      - name: Escáner de secretos
+        run: python scripts/escanear_secretos.py
+
+      - name: Escáner de términos
+        run: python scripts/escanear_terminos.py
+
+      - name: Escáner de términos sobre el historial
+        run: python scripts/escanear_terminos.py --historial
+
+      # Va después de las pruebas porque escribe en data/ y en docs/silver/. Dos archivos cambian
+      # siempre aunque los datos sean iguales (la base SQLite no se escribe igual byte a byte y una
+      # línea de reglas_silver.md), así que los dejamos fuera de la comparación.
+      - name: Repetir el pipeline sin red y comparar con lo versionado
+        run: |
+          python main.py --stage all
+          git diff --exit-code -- . ':(exclude)data/gold/etl_sismo.db' ':(exclude)docs/silver/reglas_silver.md'
