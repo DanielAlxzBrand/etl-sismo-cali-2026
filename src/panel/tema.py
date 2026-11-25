@@ -3,7 +3,13 @@ from src.panel.configuracion import cargar_panel
 
 
 def colores():
+    """Paleta Okabe-Ito de los gráficos que distinguen categorías."""
     return dict(cargar_panel()["colores"])
+
+
+def interfaz():
+    """Paleta verde de la interfaz (fondos, botones y barra lateral); los gráficos usan `colores`."""
+    return dict(cargar_panel()["interfaz"])
 
 
 def _canal(c):

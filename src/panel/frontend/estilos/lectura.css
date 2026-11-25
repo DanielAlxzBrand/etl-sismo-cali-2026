@@ -1,0 +1,20 @@
+/* La capa educativa solo usa clases del artículo y controles HTML públicos. */
+.prueba-v3 [hidden]{display:none!important}
+.prueba-v3 .herramientas,.prueba-v3 .herramientas>div,.cuaderno-cab,.pie-cuaderno,.aviso-v3>div,.pie-v3{display:flex;align-items:center;flex-wrap:wrap;gap:6px 14px}
+.prueba-v3 .herramientas{justify-content:space-between;border-block:1px solid #cfddd5;background:#f8faf9;padding:6px 14px;margin:0 0 10px}
+.prueba-v3 .rotulo{font:650 12px/1.4 "Segoe UI",sans-serif;letter-spacing:.035em;color:#465e53}
+.prueba-v3 button,.prueba-v3 .accion{appearance:none;background:none;border:1px solid transparent;border-radius:5px;color:#075c50;padding:4px 7px;min-height:32px;cursor:pointer;text-decoration:none;font:600 13px/1.4 "Segoe UI",sans-serif}
+.prueba-v3 button:hover,.prueba-v3 .accion:hover,.prueba-v3 button[aria-expanded=true],.prueba-v3 button[aria-pressed=true]{border-color:#b7cdc1;background:#e6f2ec}
+.prueba-v3 button:disabled{color:#63736b;background:transparent;border-color:transparent;cursor:default}
+.cuaderno{background:white;border:1px solid #c4d7cb;border-radius:10px;padding:12px 16px;margin-bottom:12px}
+.cuaderno{border-left:3px solid #087a6b}.cuaderno-cab,.pie-v3{justify-content:space-between}.cuaderno h2{margin:3px 0 5px}.cuaderno small{display:block;margin-top:6px;color:#465e53}
+.pie-cuaderno{margin-top:8px}.pie-cuaderno label{margin-left:auto;font-size:13px}.pie-cuaderno input{accent-color:#087a6b;vertical-align:middle}
+.ayuda-ic{position:relative}.ayuda-ic summary{cursor:pointer;color:#075c50;text-decoration:underline dotted;text-underline-offset:3px}.ayuda-ic p{position:absolute;right:0;top:100%;z-index:7;width:min(290px,74vw);margin:5px 0 0;padding:12px 14px;background:white;border:1px solid #aec6b8;border-radius:8px;font-size:14px}.pie-v3{justify-content:flex-end;padding:8px}
+.prueba-v3 .glos h3{font:650 15px/1.4 "Segoe UI",sans-serif;color:#075c50;margin:12px 0 4px}.prueba-v3 .glos h3:first-child{margin-top:0}
+.aviso-v3{position:fixed;right:18px;bottom:16px;z-index:10;max-width:min(380px,calc(100% - 36px));padding:14px 16px;background:white;border:1px solid #aec6b8;border-left:4px solid #087a6b;border-radius:10px;box-shadow:0 4px 16px #15372c19}
+.aviso-v3 p{font-weight:650;margin:4px 0}.aviso-v3>div{gap:2px 4px}
+.exposicion-v3:modal{position:fixed;inset:0;background:#eff4f1;color:#172a25;border:0;margin:0;width:100%;max-width:none;height:100%;max-height:none;box-sizing:border-box;padding:clamp(14px,3vw,48px);overflow:auto}
+.exposicion-v3 .prueba-v3{max-width:1540px;margin:auto}.exposicion-v3 .dato{min-height:clamp(44px,5.7vh,70px)}
+@media(prefers-reduced-motion:no-preference){.prueba-v3 .kpis>div,.prueba-v3 button,.prueba-v3 .accion,.prueba-v3 .notas aside{transition:border-color .14s,background-color .14s}.prueba-v3 .cuaderno:not([hidden]),.prueba-v3 .aviso-v3:not([hidden]){animation:entrada 150ms ease-out}}
+@media(max-width:800px){.prueba-v3 .herramientas{gap:2px}.prueba-v3 .herramientas>div{gap:4px}.pie-cuaderno label{margin-left:0}}
+

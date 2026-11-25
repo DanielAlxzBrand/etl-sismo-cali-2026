@@ -1,0 +1,36 @@
+/* Ajustes de la integración con el panel real (D115). Va al final: solo cambia lo que el diseño aprobado resolvía con cifras de muestra.
+   Las categorías de los gráficos (muestra suficiente y muestra baja) usan la paleta Okabe-Ito de config.yaml, que el lanzador entrega como --cat-suficiente y --cat-baja;
+   la interfaz (marco, fondos, botones) conserva la paleta verde. La muestra baja se distingue además por texto y por trazo discontinuo, nunca solo por color. */
+.prueba-v3 .barra-tasa{background:var(--cat-suficiente)}
+.prueba-v3 .baja .barra-tasa{background:#fff;border:2px dashed var(--cat-baja)}
+.prueba-v3 .banda{background:color-mix(in srgb,var(--cat-suficiente) 16%,transparent)}
+.prueba-v3 .baja .banda{background:color-mix(in srgb,var(--cat-baja) 18%,transparent)}
+.prueba-v3 .punto{background:var(--cat-suficiente)}
+.prueba-v3 .baja .punto{background:#fff;border:2px solid var(--cat-baja)}
+.prueba-v3 .leyenda span:nth-child(1) i{background:var(--cat-suficiente)}
+.prueba-v3 .leyenda span:nth-child(2) i{background:#fff;border:2px dashed var(--cat-baja)}
+.prueba-v3 .etiqueta small{color:#854a00}
+.prueba-v3 .notas aside p+p{margin-top:6px}
+.prueba-v3 .detalle .pie-tabla{font-size:13px;color:#425c53}
+.prueba-v3 .detalle details.lectura-fila summary{font-weight:650;color:#172a25;cursor:pointer}
+.prueba-v3 .detalle th[scope=row]{white-space:normal;min-width:150px;text-align:left}
+
+/* Línea de estado y pie nativos de Streamlit dentro del lienzo */
+.st-key-lienzo [data-testid="stCaptionContainer"]{color:#425c53}
+
+/* Botón de descarga nativo con la apariencia de las acciones del diseño */
+.st-key-exportar [data-testid="stDownloadButton"] button{background:#075c50;border:1px solid #075c50;border-radius:22px;min-height:32px;padding:2px 16px}
+.st-key-exportar [data-testid="stDownloadButton"] button:hover{background:#064d43;border-color:#064d43}
+.st-key-exportar [data-testid="stDownloadButton"] button p{color:#fff;font:600 13px/1.4 "Segoe UI",Arial,sans-serif}
+.st-key-exportar [data-testid="stDownloadButton"] button:focus-visible{outline:3px solid #006958;outline-offset:2px}
+.st-key-barra_herramientas{align-items:center}
+.st-key-barra_herramientas .lectura-v3 .herramientas{margin:0}
+
+/* Imagen de la barra lateral: archivo local reducido, entregado como variable --cali por la hoja que genera el lanzador de estilos */
+.st-key-cali_pie .cali{aspect-ratio:2.4;background:var(--cali) 50% 48%/cover no-repeat;display:block;width:100%}
+.st-key-lienzo{min-height:60vh}
+/* En pantallas estrechas las tres tarjetas del resumen pasan a la línea siguiente en lugar de salirse del recuadro. */
+@media(max-width:800px){.prueba-v3 .titular{flex-wrap:wrap}.prueba-v3 .kpis{flex-shrink:1;flex-wrap:wrap;max-width:100%;row-gap:8px}}
+/* En el modo presentación la barra lateral de Streamlit quedaba por encima del lienzo y tapaba la figura: se oculta mientras dura la presentación. */
+.stApp:has(.st-key-lienzo.exposicion-local) [data-testid="stSidebar"],.stApp:has(.st-key-lienzo.exposicion-local) [data-testid="stSidebarCollapsedControl"]{display:none!important}
+@media(prefers-reduced-motion:reduce){.st-key-lienzo *,.st-key-lienzo *:before{animation:none!important;transition:none!important}}

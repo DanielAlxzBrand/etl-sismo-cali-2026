@@ -1,0 +1,17 @@
+{
+  "interpretacion": "Ubique la diferencia y su intervalo respecto de cero. Consulte qué cambia frente al escenario de referencia.",
+  "precauciones": "S4 tiene baja confianza. Lea S2 junto con S1 y revise el soporte por comuna antes de interpretar el ajuste.",
+  "fichas": [
+    {"titulo": "Qué representa un escenario", "explicacion": "La comparación se repite con otra decisión de inclusión o de clasificación. Los escenarios representan variantes analíticas sobre el mismo problema.", "categoria": "Método del proyecto", "termino": "sensibilidad"},
+    {"titulo": "Comparar dentro de una comuna", "explicacion": "El ajuste combina comparaciones dentro de comunas. La presencia de ambos grupos en cada comuna determina el soporte de la comparación.", "categoria": "Método del proyecto", "termino": "razón ajustada (Mantel-Haenszel)"},
+    {"titulo": "Por qué se distingue el techo", "explicacion": "Ampliar la definición para incluir el posible cambio de techo altera qué cuenta como caso. La página señala la baja confianza de ese escenario.", "categoria": "Método del proyecto", "termino": "daño visible"}
+  ],
+  "pasos": [
+    {"titulo": "Partir de S0", "region": "Escenarios", "texto": "S0 sirve de referencia para leer las variantes de la comparación."},
+    {"titulo": "Reconocer los grupos", "region": "Escenarios y resultados", "texto": "Compare las tasas de los grupos 3-5 y 1-2 en cada escenario."},
+    {"titulo": "Interpretar el signo", "region": "Diferencia entre grupos", "texto": "El signo indica qué tasa es mayor al restar la de 1-2 a la de 3-5."},
+    {"titulo": "Ubicar el cero", "region": "Intervalo de Newcombe", "texto": "Si la línea cruza cero, la igualdad sigue siendo compatible con esa comparación."},
+    {"titulo": "Revisar las variantes", "region": "S2 y S4", "texto": "Lea S2 junto con S1. S4 amplía la definición de daño y tiene baja confianza."},
+    {"titulo": "Examinar el soporte", "region": "Razón ajustada por comuna", "texto": "Para ajustar se necesita presencia de ambos grupos dentro de comunas. Si el soporte no alcanza, la página avisa en lugar de mostrar un valor."}
+  ]
+}

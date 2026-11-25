@@ -14,7 +14,8 @@ _espec = importlib.util.spec_from_file_location("ejecutar_panel", RAIZ / "script
 lanzador = importlib.util.module_from_spec(_espec)
 _espec.loader.exec_module(lanzador)
 
-COLORES = {"principal": "#0072B2", "texto": "#1F2933", "fondo": "#FFFFFF", "fondo_secundario": "#F0F4F8"}
+INTERFAZ = {"principal": "#087A6B", "texto": "#172A25", "fondo": "#EFF4F1", "fondo_secundario": "#FFFFFF", "lateral_fondo": "#0E211B", "lateral_fondo_secundario": "#1C4035",
+            "lateral_principal": "#86D8BD", "lateral_texto": "#EDF6F1"}
 
 
 class ProcesoFalso:
@@ -77,16 +78,17 @@ def test_el_comando_del_panel_usa_streamlit_run_sobre_la_aplicacion():
 
 
 def test_el_entorno_del_panel_es_local_sin_cabeza_y_sin_telemetria():
-    e = lanzador.entorno_panel(8601, "http://127.0.0.1:8123", base={"PATH": "x"}, colores=COLORES)
+    e = lanzador.entorno_panel(8601, "http://127.0.0.1:8123", base={"PATH": "x"}, interfaz=INTERFAZ)
     assert e["STREAMLIT_SERVER_HEADLESS"] == "true" and e["STREAMLIT_SERVER_ADDRESS"] == "127.0.0.1" and e["STREAMLIT_SERVER_PORT"] == "8601"
     assert e["STREAMLIT_BROWSER_GATHER_USAGE_STATS"] == "false" and e["STREAMLIT_SERVER_SHOW_EMAIL_PROMPT"] == "false"
-    assert e["STREAMLIT_THEME_PRIMARY_COLOR"] == "#0072B2" and e["PANEL_API_URL"] == "http://127.0.0.1:8123" and e["PATH"] == "x"
+    assert e["STREAMLIT_THEME_PRIMARY_COLOR"] == "#087A6B" and e["PANEL_API_URL"] == "http://127.0.0.1:8123" and e["PATH"] == "x"      # la interfaz va en verde (D115)
+    assert e["STREAMLIT_THEME_SIDEBAR_BACKGROUND_COLOR"] == "#0E211B" and e["STREAMLIT_THEME_SIDEBAR_TEXT_COLOR"] == "#EDF6F1"
 
 
 def test_el_entorno_del_panel_no_recibe_credenciales_de_mysql():
     clave, valor = "MYSQL_" + "PASSWORD", "no-debe-" + "pasar"      # concatenados para que el escáner no vea una contraseña literal
     base = {clave: valor, "MYSQL_USER": "u", "OTRA": "1"}
-    e = lanzador.entorno_panel(8601, "http://127.0.0.1:8123", base=base, colores=COLORES)
+    e = lanzador.entorno_panel(8601, "http://127.0.0.1:8123", base=base, interfaz=INTERFAZ)
     assert not [k for k in e if k.startswith("MYSQL_")] and e["OTRA"] == "1"
     assert base[clave] == valor      # no altera el entorno original
 
@@ -96,6 +98,7 @@ def test_los_nombres_de_las_variables_de_streamlit_existen_en_su_configuracion()
                             env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1", "PYTHONIOENCODING": "utf-8"}).stdout
     for opcion in ("headless", "address", "gatherUsageStats", "showEmailPrompt", "fileWatcherType", "toolbarMode", "primaryColor", "textColor", "secondaryBackgroundColor"):
         assert opcion in salida, opcion
+    assert "theme.sidebar" in salida       # los cuatro colores de la barra lateral que entrega el lanzador (D115)
 
 
 # ---------- puertos ----------

@@ -1,0 +1,17 @@
+{
+  "interpretacion": "Esta página dice de dónde salen los datos, con qué licencia se publican y qué no se puede concluir con ellos. Antes de citar un indicador, identifique su fuente, la unidad observada y los registros de su denominador.",
+  "precauciones": "Una imagen satelital aporta evidencia visible, no una evaluación estructural. Cualquier afirmación sobre el sismo debe apoyarse en los resultados de este proyecto y en sus límites.",
+  "fichas": [
+    {"titulo": "Qué observa el satélite", "explicacion": "Las imágenes permiten comparar cambios visibles. Una evaluación estructural del interior requiere otra clase de evidencia.", "categoria": "Método del proyecto", "termino": "proxy de daño"},
+    {"titulo": "Conservar la unidad de análisis", "explicacion": "Una característica del barrio describe una agrupación. Extenderla a cada inmueble exige información individual adicional.", "categoria": "Estadística", "termino": "falacia ecológica"},
+    {"titulo": "La ausencia también se documenta", "explicacion": "Registrar los faltantes permite explicar la base de una tasa y considerar los dos extremos posibles al revisar las cotas.", "categoria": "Método del proyecto", "termino": "cotas por «sin datos»"}
+  ],
+  "pasos": [
+    {"titulo": "Ubicar el corte", "region": "Fecha de corte y población", "texto": "La fecha de corte dice a qué versión de los datos pertenecen todas las cifras de la página."},
+    {"titulo": "Identificar las unidades", "region": "Construcciones, comunas y códigos de barrio", "texto": "Los conteos corresponden a unidades distintas del mismo inventario."},
+    {"titulo": "Seguir la procedencia", "region": "Fuentes y licencias", "texto": "Cada fila identifica el rol, el publicador, la licencia y las fechas de una fuente."},
+    {"titulo": "Reconocer el entorno", "region": "Estado del sistema", "texto": "El estado del servicio, el almacenamiento activo y las filas por tabla describen el equipo donde se ejecuta el panel."},
+    {"titulo": "Leer las limitaciones", "region": "Limitaciones del panel", "texto": "Es un panel local de solo lectura; las latencias que se midan son de una máquina concreta y no hay evaluación con personas usuarias."},
+    {"titulo": "Acotar el uso", "region": "Qué no se puede concluir", "texto": "Los ocho puntos dicen qué no se debe afirmar con estas cifras. Revíselos antes de citar una tasa."}
+  ]
+}

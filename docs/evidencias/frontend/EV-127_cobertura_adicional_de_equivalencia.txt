@@ -1,0 +1,14 @@
+Cobertura adicional de la equivalencia del panel: código original (commit fb52df9) frente al integrado (D115, D116 y D117), sobre los puntos que EV-122 no cubría.
+Fecha: 2026-11-24. Misma API real en memoria sobre una copia temporal de la SQLite, en solo lectura; cada comprobación ejecuta el script original (`git show fb52df9:src/panel/paginas/<página>.py`) y la página integrada con las mismas respuestas.
+Qué NO demuestra: cómo se ven las páginas en un navegador ni que el JavaScript funcione; eso lo registran EV-124, EV-125, EV-126 y EV-128. Tampoco sustituye a EV-122: lo completa con los gráficos, la degradación, el glosario, los casos con datos mal formados y el CSV.
+
+OK    Gráfico de sensibilidades: especificación idéntica y título partido en líneas cuyo texto unido es el literal original de fb52df9
+OK    Gráfico de construcciones: especificación idéntica (datos, ejes, colores, leyenda y tooltips)
+OK    Degradación: avisos idénticos y sin excepciones con la API caída y con cada ruta de la página caída (48 casos: 8 páginas x 3 fallos x 2)
+OK    Glosario: la cabecera de cada una de las ocho páginas trae exactamente los términos y definiciones de la fuente única (`glosario.entradas`), cerrada
+OK    Concentración, nota de K3 sin el formato esperado: tarjetas, tabla y avisos idénticos
+OK    Concentración, K4 sin valor p: tarjetas, tabla y avisos idénticos
+OK    CSV de Construcciones: bytes idénticos a los de la función original en tres consultas reales (sin filtro, comuna 20 en página 2, estrato 3 con cambio severo)
+
+Resultado: 7 de 7
+Con esta evidencia y EV-122 (21 de 21) las comprobaciones de equivalencia con el panel original suman 28 de 28. No son pruebas automatizadas del repositorio: son guiones de comparación que se ejecutaron una vez y cuyo resultado queda registrado aquí.

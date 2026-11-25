@@ -1,0 +1,56 @@
+# Capturas del panel definitivo (ocho páginas, herramientas de lectura, estados elegidos y móvil)
+- comando: `python scripts/evidencias/capturas_panel_definitivo.py (navegador sin ventana por DevTools)`
+- fecha: 2026-11-24T20:05:52-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 711.9 s
+- Python: 3.13.0
+- commit del repositorio: fb52df9
+
+Navegador: msedge.exe Edg/158.0.4370.33 sin ventana, por el protocolo DevTools; escritorio de 1440 x 900 px y móvil de 390 x 844 px con el doble de densidad.
+Panel: http://127.0.0.1:8766 (lanzado con scripts/panel/ejecutar_panel.py; API en http://127.0.0.1:8765, almacenamiento SQLite; /health: estado ok, corte 2026-09-02).
+Cada imagen es una «captura automatizada del navegador» del panel real con los datos de la API del proyecto; ninguna proviene del diseño de ejemplo ni muestra datos sensibles.
+
+Comprobación del texto de cada página en el momento de la captura:
+
+| Página | Recuadro de alcance | Fecha de corte 2026-09-02 | Errores en pantalla |
+|---|---|---|---|
+| Respuesta | sí | sí | ninguno |
+| Estratos (K1) | sí | sí | ninguno |
+| Comunas (K6) | sí | sí | ninguno |
+| Sensibilidades (S0 a S5) | sí | sí | ninguno |
+| Concentración (K3 y K4) | sí | sí | ninguno |
+| Calidad de la llave | sí | sí | ninguno |
+| Construcciones | sí | sí | ninguno |
+| Fuentes y sistema | sí | sí | ninguno |
+
+Imágenes (optimizadas a 256 colores; el sha256 es el del archivo guardado):
+
+| Archivo | Tamaño en píxeles | Peso | sha256 | Qué muestra |
+|---|---|---|---|---|
+| `docs/img/panel/escritorio_01_respuesta.png` | 1440 x 900 | 61 KB | 1c72176392e519b7b2852127b6ba41f33d5bb6e3d3356f382dc23d481466c289 | Respuesta, vista superior de escritorio |
+| `docs/img/panel/escritorio_02_estratos.png` | 1440 x 900 | 73 KB | 784825e02a94d4592b526a4c9ef359e37bb2161c2bd30a9aae7dd55862b22e9c | Estratos (K1), vista superior de escritorio |
+| `docs/img/panel/escritorio_03_comunas.png` | 1440 x 900 | 68 KB | 3eef6364ce15c63834898f0f8ea0e105fe4060cdf6dc59bf88a6a331fab947bc | Comunas (K6), vista superior de escritorio |
+| `docs/img/panel/escritorio_04_sensibilidades.png` | 1440 x 900 | 55 KB | bb1ed23108042597fc086b162631dc688787ea7042f9ec76262c2bbc1090ada2 | Sensibilidades (S0 a S5), vista superior de escritorio |
+| `docs/img/panel/escritorio_05_concentracion.png` | 1440 x 900 | 55 KB | a4434d1a0e71ada984f2125d554f2052790be29b12cf661e8b4f549ac24ab6d5 | Concentración (K3 y K4), vista superior de escritorio |
+| `docs/img/panel/escritorio_06_calidad.png` | 1440 x 900 | 61 KB | 7f0c647a452ef40bc4137c0c2b3c9ebfa15873f8561d5efe1f538736b95924fa | Calidad de la llave, vista superior de escritorio |
+| `docs/img/panel/escritorio_07_construcciones.png` | 1440 x 900 | 58 KB | e734e04f42c49800ffcbe503dfd205e95e7b40af5c537de36bc352329eb26557 | Construcciones, vista superior de escritorio |
+| `docs/img/panel/escritorio_08_fuentes.png` | 1440 x 900 | 60 KB | a4a90847fbcd313a37959c66ff6a00305dba0e304c789a22d0cdd73b72d3b77d | Fuentes y sistema, vista superior de escritorio |
+| `docs/img/panel/herramienta_01_respuesta_guia.png` | 1440 x 900 | 62 KB | 27228b45fdd4113121a7366b6d191eaeb989a40537a13e19fd528451169b7058 | Respuesta con la guía de lectura en el paso cuatro (conteos reales de K2) |
+| `docs/img/panel/herramienta_02_estratos_curiosidad.png` | 1440 x 900 | 67 KB | bdf3f91a4067d642bfbd70fe7036986829f1f962f44b6e2a3654dbc03c067065 | Estratos con la primera curiosidad abierta |
+| `docs/img/panel/herramienta_03_estratos_presentacion.png` | 1440 x 900 | 59 KB | 34f40c7de8ebd16c59ecd3aae38aa439714c7acfd79216f25859c131fae56d4b | Estratos en modo presentación (a pantalla completa, sin la barra lateral) |
+| `docs/img/panel/estado_04_estratos_puntos_y_seleccion.png` | 1440 x 900 | 44 KB | d3ea78e8ccd0738bcbf93775ad48aa4133f181f64193e013ee5901c7cd986e3d | Estratos en la vista de puntos e intervalos con el Estrato 4 destacado |
+| `docs/img/panel/estado_05_comunas_detalle.png` | 1440 x 900 | 56 KB | face90f44712281ebc5a4079a7611e5a75d060cc31d2f67d3fde96e5cbe21647 | Comunas con una comuna destacada y su lectura en palabras en el detalle |
+| `docs/img/panel/estado_07_sensibilidades_mantel_haenszel.png` | 1440 x 900 | 68 KB | 8632e44dea446f1a3409d84d44a1e38fd8a79fe6653cdd6192c23119e94e8d65 | Sensibilidades con la razón ajustada de Mantel-Haenszel y sus seis avisos |
+| `docs/img/panel/estado_08_concentracion_k4.png` | 1440 x 900 | 56 KB | 87ac7d2976c6e6151b15d3cd9b11edd0227512b31ef8ffb95cbd8b9147c2f2e3 | Concentración con K4: Spearman, barrios incluidos y valor p de permutación |
+| `docs/img/panel/estado_09_calidad_revision.png` | 1440 x 900 | 73 KB | 53a160c803a60bbb175cd35a56246747a95452a797ecbb10c85da08d447babdb | Calidad de la llave con los códigos de barrio por revisar |
+| `docs/img/panel/estado_10_fuentes_limites.png` | 1440 x 900 | 63 KB | 5302681bef9311d76d65fe08edf349550a7ed9b3570975a99c13150cae287241 | Fuentes y sistema con los ocho puntos de lo que no se puede concluir |
+| `docs/img/panel/estado_06_construcciones_fila_elegida.png` | 1440 x 900 | 53 KB | fcdb340fae399c9e378105aa5bf2526e9cd8545d724715b69969c0bf9820f3b8 | Construcciones con la fila 2 de la página elegida: «Qué significa esta fila», la descarga del CSV y la dispersión |
+| `docs/img/panel/movil_01_estratos_inicio.png` | 780 x 1688 | 77 KB | 5929cc7db0aaca771a662ae50f71d7c9bc2b695d06108310bdeacb495f00c9ec | Estratos en pantalla de móvil: cabecera con su ícono, tarjetas de cifras y recuadro de alcance |
+| `docs/img/panel/movil_02_estratos_figura.png` | 780 x 1688 | 76 KB | 1163a6160f22cf07c0e16fb9ac44def2561fec4aa91ea344e4e76c2a55f1d3a7 | Estratos en pantalla de móvil: figura de tasas con sus intervalos |
+| `docs/img/panel/movil_03_construcciones_tabla.png` | 780 x 1688 | 42 KB | 6d17dd077f25fe248ef78cdb1b22a60695da62da9ad90ad6255830f01bb57c83 | Construcciones en pantalla de móvil: filtros, página y tabla con selección |
+| `docs/img/panel/movil_04_sensibilidades_grafico.png` | 780 x 1688 | 50 KB | 6c056f65f4d3c8082b0d86c1449ed03d6dfd2aa3a683be849f40864585546e74 | Sensibilidades en pantalla de móvil: gráfico de diferencias (el título llega en dos líneas y la primera queda recortada por arriba) |
+| `docs/img/panel/movil_00_estratos_y_construcciones.png` | 1400 x 1002 | 176 KB | a644a6bb60fbac422568922bc83baed14e9bc3babdea4ed72c243859a1b09682 | Las tres primeras capturas de móvil lado a lado (para el README) |
+
+Copias para el README (mismos bytes): `docs/img/readme/panel_principal.png` (de `escritorio_02_estratos.png`), `docs/img/readme/panel_guia_de_lectura.png` (de `herramienta_01_respuesta_guia.png`), `docs/img/readme/panel_construcciones.png` (de `estado_06_construcciones_fila_elegida.png`), `docs/img/readme/panel_movil.png` (de `movil_00_estratos_y_construcciones.png`).
+Procesos del panel o de la API que quedan vivos al terminar: 0.
+Resultado: las ocho páginas se capturaron con su alcance visible, la fecha de corte real y sin avisos de error.

@@ -29,7 +29,7 @@ Todas tienen el mismo marco: título, la pregunta de negocio que responden, el e
 | Fuentes y sistema | ¿De dónde salen los datos y qué no se puede concluir? | fuentes con su publicador, licencia y fechas, estado del sistema, los puntos de «qué no se puede concluir» y las limitaciones del panel |
 
 ### Dónde se ve cada respuesta
-Esta guía cuenta qué hay en cada página, pero **no repite las cifras ni los nombres que el panel muestra**: cambian si cambian los datos. Para leerlos hay que abrir la página; la lectura de la captura de datos vigente está en [`docs/gold/resultados.md`](../gold/resultados.md).
+Las capturas de cada página, de las herramientas de lectura y de la vista de móvil están en la [galería del panel](galeria.md). Esta guía cuenta qué hay en cada página, pero **no repite las cifras ni los nombres que el panel muestra**: cambian si cambian los datos. Para leerlos hay que abrir la página; la lectura de la captura de datos vigente está en [`docs/gold/resultados.md`](../gold/resultados.md).
 - **¿Se nota diferencia entre los estratos 3-5 y 1-2?** Página Respuesta: las dos tasas, la diferencia con su intervalo y la lectura generada.
 - **¿Qué estratos no se deben ordenar frente a los demás?** Página Estratos (K1): los grupos con pocos casos severos llevan el texto «muestra baja».
 - **¿En qué comuna se concentran los estratos 1-2?** Página Comunas (K6): la composición por grupo de estrato y el texto que dice qué comuna concentra los estratos 1-2.
@@ -48,12 +48,20 @@ Esta guía cuenta qué hay en cada página, pero **no repite las cifras ni los n
 - **Formato:** coma decimal, punto de miles y signo menos «−»; las diferencias se dan en puntos porcentuales (pp).
 
 ### Qué cambió tras la evaluación heurística (D87 a D90)
-- **Glosario:** cada página termina con un desplegable cerrado, «Glosario de esta página: qué significan los términos técnicos», con los términos que esa página usa.
+- **Glosario:** desde D115 cada página lo trae en su cabecera, en el botón cerrado «Glosario de esta página», con cómo interpretar la página, los términos que usa y las precauciones; antes era un desplegable al final.
 - **Tablas anchas:** la tabla que tiene cuatro columnas o más lleva encima el aviso «Tabla ancha: en una pantalla estrecha, deslícela hacia los lados para ver todas las columnas».
 - **Gráficos de tasas:** las barras son horizontales, una por fila con su etiqueta completa; la línea que cruza cada barra y las rayas de sus extremos son los límites del intervalo de Wilson, y el pie del gráfico lo dice.
 - **Pantallas estrechas:** la barra lateral se abre sola en pantallas anchas y queda plegada en las estrechas; para abrirla se usa el botón de la esquina superior izquierda.
 - **Coordenadas:** los ejes de latitud y longitud de la dispersión se rotulan «grados decimales» y llevan cuatro decimales.
 - Los botones que Streamlit pone en las tablas y los gráficos («Download as CSV», «Fullscreen», «Search»…) siguen en inglés: la versión fijada no permite traducirlos ni ocultarlos (F-11 aplazado, EV-080).
+
+### Herramientas de lectura de cada página (D115 a D117)
+Las ocho páginas comparten la misma interfaz: cabecera con la ruta, el corte de datos y el glosario; el título con su icono y la pregunta; el recuadro de alcance; y una barra de **Herramientas de lectura** con cuatro botones.
+- **Guía de lectura:** seis pasos que recorren la página, cada uno con la región de la página a la que se refiere; empiezan por el significado práctico de lo que se ve y siguen con el detalle técnico. «Anterior» y «Siguiente» la recorren y «Cerrar» (o Escape) la guarda.
+- **Curiosidades:** tres explicaciones cortas por página, cada una con el término del glosario en que se apoya. Si «Mostrar curiosidades automáticamente» está activo, el panel avisa de una a los cuarenta segundos de uso activo de la página; «Desactivar avisos» lo apaga y la elección se recuerda mientras dure la pestaña.
+- **Presentar:** pone el contenido de la página a pantalla completa, sin la barra lateral, para exponerlo; «Salir de presentación» o Escape vuelven a la vista normal.
+- **Exportar:** descarga un HTML autónomo con lo que muestra la página (figura, tablas, lectura generada, alcance, fecha de corte y fuente), sin scripts ni recursos externos; en Construcciones lleva solo las filas de la página mostrada y, aparte, sigue el botón «Descargar CSV (filas mostradas)».
+En las figuras de tasas (Estratos y Comunas) se puede cambiar entre barras, puntos con intervalos y tabla, elegir una fila para destacarla en el detalle y desplegar la lectura de cada fila; al pasar el puntero por una fila, un recuadro explica su tasa, su intervalo y sus conteos. En Construcciones, al elegir una fila de la tabla, «Qué significa esta fila» la cuenta en palabras; al cambiar de página o de filtros la elección se limpia. La escala del eje de una figura de tasas se calcula con los datos: no es comparable entre capturas distintas.
 
 ## 4. Avisos y errores
 Si la API está apagada, tarda demasiado o su almacenamiento no está disponible, cada página muestra un aviso en español con el motivo y mantiene visible el alcance; nunca muestra una traza. Al volver la API, basta recargar la página (un fallo no queda guardado en la caché).

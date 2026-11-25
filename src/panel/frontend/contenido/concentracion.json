@@ -1,0 +1,17 @@
+{
+  "interpretacion": "Esta página responde dónde se reúnen los casos y si el estrato del barrio se relaciona con su tasa. Lea cada cifra junto con el número de construcciones del barrio y recuerde que cada barrio cuenta como una sola observación.",
+  "precauciones": "Que un barrio reúna muchos casos puede deberse a que tiene muchas construcciones. La concentración de casos no mide el riesgo, y una correlación entre barrios no se traslada a cada construcción.",
+  "fichas": [
+    {"titulo": "Muchos casos no siempre es más riesgo", "explicacion": "Un barrio con muchas construcciones suele sumar más casos aunque su tasa sea moderada. Por eso el conteo se lee junto con el peso del barrio en el total de construcciones observadas.", "categoria": "Estadística", "termino": "concentración"},
+    {"titulo": "Qué compara Spearman", "explicacion": "Dice si los barrios de estrato más alto tienden a tener tasas más altas o más bajas. Técnicamente usa los rangos de las dos variables, y cada barrio aporta una observación.", "categoria": "Estadística", "termino": "correlación de Spearman"},
+    {"titulo": "Qué aporta el valor p de permutación", "explicacion": "Indica qué tan fácil sería ver una asociación como la observada si el estrato no tuviera relación con la tasa. Se obtiene reordenando los datos muchas veces, con una semilla fija.", "categoria": "Estadística", "termino": "p de permutación"}
+  ],
+  "pasos": [
+    {"titulo": "Ver dónde se reúnen los casos", "region": "K3 · Concentración de los casos", "texto": "Los barrios líderes son los que reúnen más construcciones con cambio satelital severo. La tabla los lista con su participación en el total de casos."},
+    {"titulo": "Leer la participación", "region": "Severos en barrios líderes", "texto": "Cada porcentaje divide los casos de esos barrios entre todos los casos severos de la muestra que tienen barrio asignado."},
+    {"titulo": "Comparar el peso", "region": "Peso de esos barrios", "texto": "Compara cuántas construcciones con datos tienen esos barrios frente al total observado. Si pesan mucho, es natural que reúnan muchos casos."},
+    {"titulo": "Distinguir casos de riesgo", "region": "Lectura generada", "texto": "La lectura generada recuerda que concentrar casos no es lo mismo que tener mayor riesgo."},
+    {"titulo": "Cambiar de unidad", "region": "K4 · Estrato y tasa por barrio", "texto": "Ahora la unidad es el barrio, no la construcción. La correlación de Spearman relaciona el estrato moda del barrio con su tasa de severos."},
+    {"titulo": "Leer las ausencias", "region": "p de permutación", "texto": "Si la API no trae el valor p, la tarjeta muestra una raya. Que falte no equivale a una correlación cero ni a que no haya relación."}
+  ]
+}

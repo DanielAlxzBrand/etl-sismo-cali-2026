@@ -1,0 +1,30 @@
+<div class="lectura-v3"><article class="vista prueba-v3">
+<nav class="herramientas" aria-label="Herramientas de lectura">
+  <span class="rotulo">Herramientas de lectura</span>
+  <div>
+    <button type="button" data-accion="guia" aria-expanded="false" aria-controls="cuaderno">Guía de lectura</button>
+    <button type="button" data-accion="fichas" aria-expanded="false" aria-controls="cuaderno">Curiosidades</button>
+    <button type="button" data-accion="presentar" aria-pressed="false">Presentar</button>
+  </div>
+</nav>
+<section id="cuaderno" class="cuaderno" hidden aria-label="Apoyo a la lectura">
+  <div class="cuaderno-cab"><b class="rotulo" data-parte="serie"></b><button type="button" data-accion="cerrar">Cerrar</button></div>
+  <h2 data-parte="titulo" tabindex="-1"></h2>
+  <p data-parte="texto"></p>
+  <small data-parte="fuente"></small>
+  <div class="pie-cuaderno">
+    <button type="button" data-accion="anterior">Anterior</button>
+    <button type="button" data-accion="siguiente">Siguiente</button>
+    <label><input type="checkbox" data-auto checked> Mostrar curiosidades automáticamente</label>
+  </div>
+</section>
+<aside class="aviso-v3" hidden aria-label="Curiosidad de la página">
+  <span class="rotulo">Curiosidad de la página</span>
+  <p role="status"></p>
+  <div>
+    <button type="button" data-accion="leer">Leer curiosidad</button>
+    <button type="button" data-accion="silenciar">Desactivar avisos</button>
+    <button type="button" data-accion="ocultar">Cerrar</button>
+  </div>
+</aside>
+</article></div>

@@ -1,0 +1,14 @@
+Tiempo de ejecución del script de cada página (AppTest, API real en memoria, mediana de cinco ejecuciones tras una de calentamiento) y tamaño del HTML propio.
+Fecha: 2026-11-24. Comparación entre el código original (commit fb52df9) y el integrado, en la misma máquina y con el navegador abierto al mismo tiempo, así que las diferencias de unos cientos de milisegundos están dentro del ruido.
+Qué NO demuestra: la latencia que ve una persona en el navegador ni el rendimiento en otra máquina.
+
+página           original ms  integrado ms  diferencia  HTML propio KB
+respuesta               1114          1340        +226            10.6
+estratos                1348          1112        -236            60.6
+comunas                 1455          1150        -305            17.7
+sensibilidades          1332          1264         -68             4.9
+concentracion           1324          1229         -94             8.5
+calidad                 2154          1665        -489             4.4
+construcciones          1639          1224        -414             9.0
+fuentes                 1640          1192        -448             3.8
+mediana                 1401          1227

@@ -1,0 +1,32 @@
+Recorrido interactivo en el navegador del panel completo (ocho páginas), 2026-11-24.
+Cómo se hizo: panel y API locales con el lanzador (almacenamiento SQLite, sin Docker ni MySQL), el navegador integrado de la aplicación y guiones de JavaScript de solo lectura que accionan los controles de la página y miden lo que se ve.
+Qué NO demuestra: la lectura de un lector de pantalla, otros navegadores ni la opinión de personas usuarias; es una comprobación técnica del propio equipo.
+
+1. Herramientas de lectura, una por una (escritorio, 1400 px)
+   Página                     glosario  guía      curiosidades  presentación  barra lateral  salida con Escape  exportación
+   Respuesta                  12 términos  6 pasos   3 (3 de 3)    abre y cierra  se oculta      sí                 «Exportar informe»
+   Estratos (K1)              7 términos   6 pasos   3 (3 de 3)    abre y cierra  se oculta      sí                 «Exportar figura»
+   Comunas (K6)               7 términos   6 pasos   3 (3 de 3)    abre y cierra  se oculta      sí                 «Exportar figura»
+   Sensibilidades (S0 a S5)   12 términos  6 pasos   3 (3 de 3)    abre y cierra  se oculta      sí                 «Exportar informe»
+   Concentración (K3 y K4)    8 términos   6 pasos   3 (3 de 3)    abre y cierra  se oculta      sí                 «Exportar informe»
+   Calidad de la llave        6 términos   6 pasos   3 (3 de 3)    abre y cierra  se oculta      sí                 «Exportar informe»
+   Construcciones             7 términos   6 pasos   3 (2 de 3 vistas) abre y cierra se oculta     sí                 «Exportar informe» y «Descargar CSV (filas mostradas)»
+   Fuentes y sistema          6 términos   6 pasos   3 (3 de 3)    abre y cierra  se oculta      sí                 «Exportar informe»
+   En la guía, «Siguiente» queda deshabilitado en el paso seis; las tres curiosidades de cada página son distintas.
+
+2. Aviso temporizado: con el temporizador en su estado normal el aviso de una curiosidad aparece a los 40 segundos de uso activo de la página (33 segundos medidos más 7 acumulados antes) con el título de una curiosidad («El tamaño de la base importa» en Comunas) y tres botones: «Leer curiosidad», «Desactivar avisos» y «Cerrar». El temporizador solo corre cuando la ventana tiene el foco.
+
+3. Contraste del texto dibujado (WCAG: 4,5 a 1; 3 a 1 para texto grande) sobre el fondo efectivo de cada elemento
+   Respuesta 77 textos, Estratos 165, Comunas 219, Sensibilidades 86, Concentración 61, Calidad 101, Construcciones 49, Fuentes 98: ninguno por debajo del mínimo.
+
+4. Desbordamiento horizontal de la página (scrollWidth mayor que el ancho de la ventana) a 1400, 768 y 375 px: ninguna de las ocho páginas desborda en ninguno de los tres anchos.
+
+5. Teclado: con 12 pulsaciones de Tab desde el inicio el foco llega a un rótulo del detalle de Comunas con :focus-visible activo y contorno de 3 px sólido (rgb 0, 105, 88); no hay ningún tabindex positivo. En el modo presentación el foco queda atrapado dentro de la página y Escape lo cierra.
+
+6. Movimiento reducido: el navegador del recorrido tenía activa la preferencia «reducir movimiento»; no había ninguna animación en curso y la hoja de estilo trae 14 reglas condicionadas a esa preferencia.
+
+7. Construcciones (filtros, paginación y selección): el contador y la tabla cambian con los filtros y con la página, y la API recibe siempre el límite configurado y el desplazamiento de la página; al elegir una fila se abre «Qué significa esta fila» con su lectura en palabras (por ejemplo, la construcción de la tercera fila: barrio, comuna, clase satelital, estrato del barrio y nombre validado); sin selección el desplegable muestra la instrucción «Seleccione una fila de la tabla para leerla en palabras. Al cambiar de página o de filtros la selección se limpia.» en lugar de describir una fila que nadie eligió.
+
+8. Sensibilidades en móvil (375 px): el título del gráfico, que Vega recortaba con puntos suspensivos («…por esc…»), llega ahora en dos líneas completas («Diferencia de tasas (3-5 menos» / «1-2) por escenario»); el texto no cambió.
+
+9. Exportaciones HTML: los informes se abren sin scripts ni recursos externos y con fondo claro propio (antes salían ilegibles con el tema oscuro del navegador porque no fijaban fondo).

@@ -80,10 +80,21 @@ def _columnas_pedidas(pagina, api):
     return llamadas
 
 
-@pytest.mark.parametrize("pagina,esperadas", [("respuesta", [2, 2, 3]), ("fuentes", [2, 2]), ("concentracion", [2, 3])])
-def test_las_tarjetas_de_cifras_largas_van_de_dos_en_dos(api, pagina, esperadas):
-    """Con cuatro por fila, a 1024 px la caja de la cifra medía unos 97 píxeles y «6,33 %» y «2026-09-02» salían recortadas (F-01)."""
-    assert _columnas_pedidas(pagina, api) == esperadas
+@pytest.mark.parametrize("pagina,esperadas", [("fuentes", [4]), ("concentracion", [2, 3]), ("calidad", [3])])
+def test_las_tarjetas_html_de_cifras_largas_van_agrupadas_sin_recortar_ninguna_cifra(paginas, pagina, esperadas):
+    """Antes eran métricas nativas de dos en dos (F-01: con cuatro por fila, a 1024 px, «6,33 %» y «2026-09-02» salían recortadas); ahora son tarjetas HTML (D116) que parten la línea y no recortan.
+    Cada grupo lleva a lo sumo tres columnas (cuatro tarjetas se reparten en dos filas de dos) y todas conservan su cifra completa."""
+    html = "".join(h.value for h in paginas[pagina].html)
+    tarjetas = pa.fichas_html(paginas[pagina])
+    assert sum(esperadas) == len(tarjetas) and all(t.value for t in tarjetas)
+    assert "fichas-tres" in html or pagina == "fuentes"
+
+
+def test_respuesta_reparte_sus_tarjetas_en_dos_y_tres_columnas(paginas):
+    """Antes eran métricas de dos en dos (F-01); ahora son tarjetas HTML: dos paneles de dos tarjetas y uno de tres, sin recortar ninguna cifra."""
+    html = "".join(h.value for h in paginas["respuesta"].html)
+    assert html.count('<div class="fichas">') == 2 and html.count('<div class="fichas fichas-tres">') == 1
+    assert len(pa.fichas_html(paginas["respuesta"])) == 7
 
 
 def test_ninguna_pagina_pide_mas_de_tres_columnas_de_tarjetas(api):
@@ -153,6 +164,33 @@ def test_el_pie_de_los_graficos_de_barras_explica_la_linea_y_las_rayas():
     assert pies and "límite inferior" in pies[0] and "superior" in pies[0] and "rayas" in pies[0] and "Wilson" in pies[0]
 
 
+@pytest.mark.parametrize("titulo", ["Diferencia de tasas (3-5 menos 1-2) por escenario", "Corto", "Una palabra larguísima sin espacios que no cabe de ninguna manera en una línea", ""])
+def test_un_titulo_largo_se_parte_en_lineas_sin_cambiar_el_texto(titulo):
+    """En 390 px Vega recortaba el título del gráfico de diferencias con puntos suspensivos; ahora se parte en los espacios y el texto científico no cambia (D116)."""
+    partido = componentes.partir_titulo(titulo)
+    lineas = [partido] if isinstance(partido, str) else partido
+    assert " ".join(lineas) == titulo
+    assert all(len(linea) <= componentes.LARGO_MAXIMO_LINEA_TITULO or " " not in linea for linea in lineas)
+    assert isinstance(partido, str) == (len(titulo) <= componentes.LARGO_MAXIMO_LINEA_TITULO or " " not in titulo)
+
+
+def test_el_titulo_del_grafico_de_diferencias_llega_en_lineas_que_caben_en_pantalla_estrecha(api):
+    titulo = _graficos_de("sensibilidades", api)[0]["title"]["text"]
+    assert isinstance(titulo, list) and " ".join(titulo) == "Diferencia de tasas (3-5 menos 1-2) por escenario"
+    assert all(len(linea) <= componentes.LARGO_MAXIMO_LINEA_TITULO for linea in titulo)
+
+
+def test_el_grafico_de_diferencias_deja_aire_arriba_para_su_titulo_de_varias_lineas(api):
+    """Vega mide el título de varias líneas con menos altura de la que dibuja y recortaba la primera línea contra el borde del gráfico (medido en el navegador: 8,5 px en 1440, 768 y 375 px);
+    el relleno superior de 16 px (D119) deja ese margen. No cambia el texto, los datos, los ejes ni los colores."""
+    espec = _graficos_de("sensibilidades", api)[0]
+    assert isinstance(espec["title"]["text"], list), "el título llega en varias líneas"
+    relleno = espec["padding"]
+    assert relleno["top"] >= 16 and all(relleno[lado] >= 5 for lado in ("right", "bottom", "left")), "el relleno superior da cabida a la primera línea del título"
+    assert relleno == componentes.RELLENO_GRAFICO_CON_TITULO
+    assert " ".join(espec["title"]["text"]) == "Diferencia de tasas (3-5 menos 1-2) por escenario" and espec["height"] == componentes.ALTO_GRAFICO
+
+
 def test_el_grafico_de_diferencias_explica_el_punto_la_linea_y_la_linea_discontinua():
     df = pd.DataFrame({"escenario": ["S0", "S1"], "dif_pp": [0.5, 0.2], "inf_pp": [-2.0, -2.5], "sup_pp": [2.5, 2.0], "dif_txt": ["+0,5 pp", "+0,2 pp"], "ic_txt": ["x", "y"]})
     pies = []
@@ -161,10 +199,7 @@ def test_el_grafico_de_diferencias_explica_el_punto_la_linea_y_la_linea_disconti
     assert "Cada punto" in pies[0] and "límite inferior" in pies[0] and "discontinua" in pies[0] and "Newcombe" in pies[0]
 
 
-@pytest.mark.parametrize("pagina", ["estratos", "comunas"])
-def test_las_paginas_de_barras_entregan_el_grafico_horizontal(api, pagina):
-    espec = _graficos_de(pagina, api)[0]
-    assert espec["layer"][0]["encoding"]["y"]["type"] == "nominal"
+# Comunas y Estratos ya no usan Altair (D115): su figura horizontal, con todas sus etiquetas, se comprueba en tests/test_panel_frontend.py
 
 
 # ---------------------------------------------------------------- F-13 · coordenadas
@@ -239,6 +274,7 @@ def test_la_paleta_sigue_siendo_la_apta_para_daltonismo():
 def _texto_sin_glosario(at):
     glos = {m.value for e in at.expander for m in e.markdown}
     partes = [m.value for m in at.markdown if m.value not in glos] + [e.value for g in (at.caption, at.subheader, at.title, at.warning, at.info) for e in g]
+    partes.append(pa.texto_html(at, sin_glosario=True))     # la interfaz propia (D115) también cuenta, menos su glosario
     for m in at.metric:
         partes += [m.label, m.value, m.help or ""]
     for t in list(at.dataframe) + list(at.table):
@@ -256,6 +292,11 @@ def test_el_glosario_tiene_entrada_para_cada_termino_declarado_y_cada_pagina_del
 @pytest.mark.parametrize("pagina", PAGINAS)
 def test_cada_pagina_muestra_su_glosario_completo_y_cerrado(paginas, pagina):
     at = paginas[pagina]
+    if pagina in pa.PAGINAS_CON_INTERFAZ_PROPIA:      # D115: el glosario va en la cabecera propia, cerrado, con los mismos términos y definiciones
+        pares, cerrado = pa.glosario_html(at)
+        assert cerrado and pares == [tuple(x) for x in glosario.entradas(pagina)] and pares
+        assert not [e for e in at.expander if e.label.startswith("Glosario")]
+        return
     desplegables = [e for e in at.expander if e.label.startswith("Glosario")]
     assert len(desplegables) == 1
     mostrados = [m.value for m in desplegables[0].markdown]
@@ -279,10 +320,10 @@ def test_el_glosario_no_afirma_causalidad_ni_lleva_cifras_propias():
 
 def test_negativa_una_pagina_sin_glosario_o_sin_un_termino_se_detecta(api):
     with mock.patch.object(glosario, "desplegable"):
-        sin = pa.pagina("estratos", api)
+        sin = pa.pagina("comunas", api)       # Estratos ya no usa el desplegable (D115); su negativa equivalente está en tests/test_panel_frontend.py
     assert not [e for e in sin.expander if e.label.startswith("Glosario")]
-    recortado = dict(glosario.TERMINOS_POR_PAGINA, estratos=tuple(k for k in glosario.TERMINOS_POR_PAGINA["estratos"] if k != "intervalo de Wilson"))
+    recortado = dict(glosario.TERMINOS_POR_PAGINA, comunas=tuple(k for k in glosario.TERMINOS_POR_PAGINA["comunas"] if k != "intervalo de Wilson"))
     with mock.patch.object(glosario, "TERMINOS_POR_PAGINA", recortado):
-        at = pa.pagina("estratos", api)
+        at = pa.pagina("comunas", api)
     assert "intervalo de wilson" not in "".join(m.value.lower() for e in at.expander for m in e.markdown)
     assert "wilson" in _texto_sin_glosario(at)

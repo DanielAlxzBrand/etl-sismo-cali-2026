@@ -246,10 +246,48 @@ def test_el_readme_usa_las_copias_en_gris_de_los_diagramas_aportados_y_las_captu
         assert f"]({ruta})" in README_TEXTO, ruta
         assert (ROOT / ruta).is_file() and (ROOT / original).is_file(), ruta
         assert original not in README_TEXTO and "docs/diagramas/" not in README_TEXTO, "el README no apunta a los originales en color"
-    for captura in ("airflow_dag", "phpmyadmin_tablas", "phpmyadmin_insert_rechazado", "panel_respuesta", "api_docs"):
+    for captura in ("airflow_dag", "phpmyadmin_tablas", "phpmyadmin_insert_rechazado", "api_docs"):
         assert f"](docs/img/readme/{captura}.png)" in README_TEXTO, captura
     for insignia in ("python", "airflow", "mysql", "pruebas", "cobertura", "licencia", "madurez"):
         assert f"](docs/img/insignias/{insignia}.svg)" in README_TEXTO, insignia
+
+
+CAPTURAS_DEL_PANEL = {"panel_principal": "escritorio_02_estratos", "panel_guia_de_lectura": "herramienta_01_respuesta_guia", "panel_construcciones": "estado_06_construcciones_fila_elegida",
+                      "panel_movil": "movil_00_estratos_y_construcciones"}   # copia del README -> captura de la galería de la que sale (mismos bytes)
+REGISTRO_CAPTURAS_PANEL = ROOT / "docs" / "evidencias" / "frontend" / "EV-128_capturas_definitivas_del_panel.txt"
+REGISTRO_TITULO_SENSIBILIDADES = ROOT / "docs" / "evidencias" / "frontend" / "EV-129_titulo_del_grafico_de_sensibilidades.txt"   # capturas posteriores a EV-128 (D119); EV-128 no se reescribe
+
+
+def capturas_sin_registro(carpeta, registro):
+    """Nombres de las imágenes de `carpeta` cuyo nombre o sha256 no aparece en el texto del registro (lista vacía si todas están registradas)."""
+    import hashlib
+
+    return [p.name for p in sorted(carpeta.glob("*.png")) if p.name not in registro or hashlib.sha256(p.read_bytes()).hexdigest() not in registro]
+
+
+def test_el_readme_usa_las_capturas_vigentes_del_panel_y_no_la_del_panel_anterior():
+    for copia, origen in CAPTURAS_DEL_PANEL.items():
+        assert f"](docs/img/readme/{copia}.png)" in README_TEXTO, copia
+        assert (ROOT / "docs" / "img" / "readme" / f"{copia}.png").read_bytes() == (ROOT / "docs" / "img" / "panel" / f"{origen}.png").read_bytes(), copia
+    assert "panel_respuesta" not in README_TEXTO, "la captura del panel anterior queda como evidencia histórica, no en el README"
+    assert "](docs/panel/galeria.md)" in README_TEXTO
+
+
+def test_las_capturas_de_la_galeria_del_panel_estan_en_sus_registros():
+    registros = REGISTRO_CAPTURAS_PANEL.read_text(encoding="utf-8") + REGISTRO_TITULO_SENSIBILIDADES.read_text(encoding="utf-8")
+    assert capturas_sin_registro(ROOT / "docs" / "img" / "panel", registros) == []
+
+
+def test_una_captura_sin_registro_o_alterada_se_detecta(tmp_path):
+    import hashlib
+
+    (tmp_path / "a.png").write_bytes(b"uno")
+    (tmp_path / "b.png").write_bytes(b"dos")
+    registro = f"a.png {hashlib.sha256(b'uno').hexdigest()}\nb.png {hashlib.sha256(b'otro contenido').hexdigest()}\n"
+    assert capturas_sin_registro(tmp_path, registro) == ["b.png"], "una imagen alterada tras el registro no coincide"
+    assert capturas_sin_registro(tmp_path, registro + f"b.png {hashlib.sha256(b'dos').hexdigest()}") == []
+    (tmp_path / "c.png").write_bytes(b"tres")
+    assert capturas_sin_registro(tmp_path, registro) == ["b.png", "c.png"], "una imagen nueva sin registrar"
 
 
 def test_cada_figura_del_readme_tiene_un_pie_que_la_describe():

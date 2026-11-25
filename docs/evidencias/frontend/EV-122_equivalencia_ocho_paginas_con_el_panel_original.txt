@@ -1,0 +1,26 @@
+Equivalencia de las ocho páginas del panel: código original (commit fb52df9) frente al integrado (D115, D116 y D117).
+Fecha: 2026-11-24. Misma API real en memoria sobre una copia temporal de la SQLite, en solo lectura. Cada comprobación compara tablas, tarjetas, avisos y textos generados con las funciones de siempre.
+Qué NO demuestra: cómo se ven en un navegador ni que el JavaScript funcione; eso lo registran EV-124, EV-125 y EV-126.
+
+OK    Respuesta: 7 tarjetas (rótulo, valor y detalle)
+OK    Respuesta: lectura, cotas e intervalo de Newcombe
+OK    Estratos: tabla de K1 idéntica
+OK    Estratos: lectura generada y avisos
+OK    Comunas: tabla «detalle por comuna» idéntica
+OK    Comunas: tabla «composición» idéntica
+OK    Comunas: lectura y comuna que concentra los estratos 1-2
+OK    Sensibilidades: tabla, 6 avisos de Mantel-Haenszel, lectura, viñetas y notas
+OK    Concentración: 5 tarjetas (K3 y K4 con Spearman y valor p)
+OK    Concentración: 1 tabla(s) interactiva(s) y 0 fija(s) idénticas
+OK    Concentración: lectura generada y notas
+OK    Calidad: 3 tarjetas de cobertura
+OK    Calidad: 1 tabla(s) interactiva(s) y 1 fija(s) idénticas
+OK    Calidad: confianza, resumen de la revisión y aviso «Qué NO demuestra»
+OK    Fuentes: 4 tarjetas de población y corte
+OK    Fuentes: 1 tabla(s) interactiva(s) y 1 fija(s) idénticas
+OK    Fuentes: los 8 límites y las 4 limitaciones, notas e imágenes
+OK    Construcciones (sin filtros, página 1): tabla, contador, filtros, página y avisos idénticos
+OK    Construcciones (comuna 20 con cambio severo): tabla, contador, filtros, página y avisos idénticos
+OK    Construcciones (página 2): tabla, contador, filtros, página y avisos idénticos
+OK    Construcciones (página fuera de rango tras filtrar): tabla, contador, filtros, página y avisos idénticos
+Resultado: 21 de 21 comprobaciones idénticas

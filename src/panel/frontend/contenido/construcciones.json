@@ -1,0 +1,17 @@
+{
+  "interpretacion": "Esta página muestra las construcciones que hay detrás de las cifras. Elija filtros, recorra las páginas y lea cada fila junto con su barrio, su estrato y su clase satelital.",
+  "precauciones": "Una página de la tabla no representa a toda la muestra. Un registro sin datos carece de clasificación satelital, y el estrato describe al barrio, no a la construcción.",
+  "fichas": [
+    {"titulo": "Cuatro clases de observación", "explicacion": "La capa distingue escombros, cambio de techo, ausencia de cambio visible y ausencia de datos. Cada clase se interpreta de forma distinta.", "categoria": "Método del proyecto", "termino": "clase de daño"},
+    {"titulo": "Qué describe el estrato de una fila", "explicacion": "El estrato corresponde al barrio, no a la construcción de esa fila. Esa diferencia de escala importa al interpretar un registro.", "categoria": "Método del proyecto", "termino": "estrato"},
+    {"titulo": "Cómo leer una coordenada", "explicacion": "Una coordenada en grados decimales expresa la posición con decimales; la coma de los ejes marca esa parte decimal. Los ejes llevan cuatro decimales para no confundirla con miles.", "categoria": "Lectura del gráfico", "termino": "grados decimales"}
+  ],
+  "pasos": [
+    {"titulo": "Delimitar la consulta", "region": "Filtrar construcciones", "texto": "Los filtros acotan las construcciones por comuna, estrato y cambio satelital severo. La API los aplica sobre toda la muestra, no solo sobre la página que se ve."},
+    {"titulo": "Entender la página", "region": "Contador y paginación", "texto": "El contador se refiere a todos los registros que cumplen los filtros. La tabla muestra un lote por página, con el tamaño que fija la configuración."},
+    {"titulo": "Reconocer una observación", "region": "Filas mostradas", "texto": "Seleccione una fila para leer en palabras su identificación, su barrio y su clase. La clase describe lo que registra la observación satelital."},
+    {"titulo": "Leer la consulta actual", "region": "Contador y filas mostradas", "texto": null},
+    {"titulo": "Leer la ubicación", "region": "Ubicación por clase de daño", "texto": "Cada marca ubica una fila de la página según su longitud y su latitud en grados decimales. La forma identifica la clase y varios registros pueden compartir coordenadas. No es un mapa."},
+    {"titulo": "Usar el detalle con cuidado", "region": "Alcance y exportación", "texto": "Sin datos significa que falta clasificación. El estrato se asignó al barrio. Lo exportado son solo las filas mostradas, y el cambio visible no permite diagnosticar daño estructural."}
+  ]
+}

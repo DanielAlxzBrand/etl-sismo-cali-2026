@@ -1,0 +1,26 @@
+# Título del gráfico de diferencias de Sensibilidades corregido (D119), a 1440, 768 y 375 píxeles
+- comando: `python scripts/evidencias/capturas_titulo_sensibilidades.py (navegador sin ventana por DevTools)`
+- fecha: 2026-11-24T20:39:14-05:00 (America/Bogota)
+- código de salida: 0
+- duración: 57.7 s
+- Python: 3.13.0
+- commit del repositorio: 4cf8b20
+
+Navegador: msedge.exe Edg/158.0.4370.33 sin ventana, por el protocolo DevTools. Panel lanzado con scripts/panel/ejecutar_panel.py (API y panel en 127.0.0.1, SQLite).
+Texto del título medido: «Diferencia de tasas (3-5 menos1-2) por escenario». El texto científico no cambió: se compara con el literal de la página en las pruebas (tests/test_panel_ajustes.py).
+
+Medidas del título dentro del SVG del gráfico (distancias desde su borde superior; antes de la corrección, medido con el mismo método a 1440 px, el título empezaba a -8,5 px, es decir, la primera línea quedaba recortada):
+
+| Ventana | Captura | Líneas del título | Borde superior del título | Borde inferior del título | Primer rótulo del eje | Desborda en horizontal | Peso | sha256 | Correcto |
+|---|---|---|---|---|---|---|---|---|---|
+| 1440 x 900 | `docs/img/panel/sensibilidades_titulo_1440x900.png` | 2 | 7 px | 42 px | 66.5 px | no | 61 KB | 33d22e8cde34b66a1ca8ba14d7320459db3daa183fb4df0e8e527f479cdca5e7 | sí |
+| 768 x 1024 | `docs/img/panel/sensibilidades_titulo_768x1024.png` | 2 | 7 px | 42 px | 66.5 px | no | 37 KB | 3524c8089d6c68bc224cb90f5273a7a3d6839411e87d69a57ad3c4a70b991765 | sí |
+| 375 x 812 | `docs/img/panel/sensibilidades_titulo_375x812.png` | 2 | 7 px | 42 px | 66.5 px | no | 50 KB | bd14ba9dd29314256218cb0541ac48051e9264a2febc143aa19284d915794601 | sí |
+
+Criterio de «correcto»: el borde superior del título está dentro del gráfico (4 px o más), su borde inferior queda al menos 8 px por encima del primer rótulo del eje, el título tiene dos líneas, la página no desborda y el texto de la página trae el alcance y la razón ajustada de Mantel-Haenszel.
+
+Tooltip de un punto a 1440 px: «Escenario / S0 / Diferencia / +0,49 / pp / Intervalo / de / Newcombe / [−2,36; / +2,55] / pp» (trae el escenario y el intervalo de Newcombe).
+Guía de lectura a 1440 px: «Guía de lectura · 1 de 6» (abre).
+
+Procesos del panel o de la API que quedan vivos al terminar: 0.
+Resultado: el título se muestra completo en los tres tamaños, sin superponerse, y el tooltip y la guía siguen funcionando.

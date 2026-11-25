@@ -1,0 +1,19 @@
+{
+  "interpretacion": "Lea cada tasa junto con el denominador y la composición por grupo de estrato.",
+  "precauciones": "Una tasa de comuna describe las construcciones observadas en conjunto. No identifica el estado de una construcción individual.",
+  "como_leer": "La marca muestra la tasa y la línea delimita el intervalo de Wilson al 95 %. Seleccione una fila para destacarla en el detalle.",
+  "como_leer_columnas": "La tasa usa como base las construcciones con datos de la comuna. El intervalo de Wilson indica su incertidumbre. Las dos últimas columnas describen los registros que quedaron sin clasificación.",
+  "fichas": [
+    {"titulo": "El tamaño de la base importa", "explicacion": "Dos comunas con el mismo número de casos severos pueden tener tasas distintas si difieren sus denominadores.", "categoria": "Estadística", "termino": "sin datos"},
+    {"titulo": "Del grupo al edificio hay un salto", "explicacion": "El promedio de una comuna reúne construcciones distintas. Asignarlo a una construcción concreta confunde dos escalas de observación.", "categoria": "Estadística", "termino": "falacia ecológica"},
+    {"titulo": "Leer también las ausencias", "explicacion": "La tabla separa los registros sin clasificación. Conviene leer ese conteo antes de comparar las tasas territoriales.", "categoria": "Método del proyecto", "termino": "sin datos"}
+  ],
+  "pasos": [
+    {"titulo": "Localizar la comparación", "region": "Tasa por comuna", "texto": "Cada fila reúne los registros asignados a una comuna."},
+    {"titulo": "Leer el porcentaje", "region": "Severos / con datos", "texto": "La tasa divide los casos severos por los registros con clasificación satelital."},
+    {"titulo": "Seguir el intervalo", "region": "Wilson al 95 %", "texto": "El punto o el extremo de la barra ubica la tasa. La línea muestra su incertidumbre."},
+    {"titulo": "Identificar la base", "region": "Detalle por comuna", "texto": "Dos comunas pueden tener la misma tasa con cantidades diferentes de construcciones. Busque ambas bases en la tabla."},
+    {"titulo": "Examinar la mezcla", "region": "Composición por comuna", "texto": "Observe cuántos registros aporta cada grupo de estrato dentro de la comuna."},
+    {"titulo": "Delimitar la conclusión", "region": "Alcance", "texto": "La tasa resume la muestra territorial. Una construcción individual requiere su propia observación."}
+  ]
+}

@@ -101,3 +101,12 @@ panel:   # interfaz de solo lectura sobre la API (Panel); sin secretos
     texto_secundario: "#4A5560"  # texto de los gráficos (ejes y leyendas); contraste calculado en scripts/panel/contraste.py
     fondo: "#FFFFFF"
     fondo_secundario: "#F0F4F8"
+  interfaz:   # paleta verde de la interfaz (fondos, botones, barra lateral; D115); los gráficos que distinguen categorías siguen con la paleta de `colores`
+    principal: "#087A6B"
+    texto: "#172A25"
+    fondo: "#EFF4F1"
+    fondo_secundario: "#FFFFFF"
+    lateral_fondo: "#0E211B"
+    lateral_fondo_secundario: "#1C4035"
+    lateral_principal: "#86D8BD"
+    lateral_texto: "#EDF6F1"

@@ -12,3 +12,7 @@ data/** -text
 *.txt text eol=lf
 LICENSE text eol=lf
 *.svg text eol=lf
+*.js text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.webp binary

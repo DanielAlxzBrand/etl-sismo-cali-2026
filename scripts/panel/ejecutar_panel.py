@@ -57,18 +57,23 @@ def comando_panel(puerto, python=None):
     return [python or sys.executable, "-m", "streamlit", "run", "src/panel/app.py", "--server.port", str(puerto)]
 
 
-def entorno_panel(puerto_panel, url_api, base=None, colores=None):
-    """Entorno del proceso de Streamlit: sin cabeza, solo local, sin estadísticas de uso ni avisos, tema y URL de la API."""
+def entorno_panel(puerto_panel, url_api, base=None, interfaz=None):
+    """Entorno del proceso de Streamlit: sin cabeza, solo local, sin estadísticas de uso ni avisos, tema de la interfaz (paleta verde de `panel.interfaz`, D115) y URL de la API.
+
+    Los gráficos no toman su paleta de aquí: la paleta Okabe-Ito de `panel.colores` la aplica el código de cada gráfico.
+    """
     entorno = dict(os.environ if base is None else base)
     for nombre in [k for k in entorno if k.startswith("MYSQL_")]:
         del entorno[nombre]          # el panel no necesita ni recibe credenciales
-    c = colores or cargar_panel()["colores"]
+    c = interfaz or cargar_panel()["interfaz"]
     entorno.update({
         "STREAMLIT_SERVER_HEADLESS": "true", "STREAMLIT_SERVER_ADDRESS": HOST, "STREAMLIT_SERVER_PORT": str(puerto_panel),
         "STREAMLIT_BROWSER_GATHER_USAGE_STATS": "false", "STREAMLIT_SERVER_SHOW_EMAIL_PROMPT": "false", "STREAMLIT_SERVER_FILE_WATCHER_TYPE": "none",
         "STREAMLIT_CLIENT_TOOLBAR_MODE": "minimal", "STREAMLIT_GLOBAL_DEVELOPMENT_MODE": "false",
         "STREAMLIT_THEME_BASE": "light", "STREAMLIT_THEME_PRIMARY_COLOR": c["principal"], "STREAMLIT_THEME_TEXT_COLOR": c["texto"],
         "STREAMLIT_THEME_BACKGROUND_COLOR": c["fondo"], "STREAMLIT_THEME_SECONDARY_BACKGROUND_COLOR": c["fondo_secundario"],
+        "STREAMLIT_THEME_SIDEBAR_BACKGROUND_COLOR": c["lateral_fondo"], "STREAMLIT_THEME_SIDEBAR_SECONDARY_BACKGROUND_COLOR": c["lateral_fondo_secundario"],
+        "STREAMLIT_THEME_SIDEBAR_PRIMARY_COLOR": c["lateral_principal"], "STREAMLIT_THEME_SIDEBAR_TEXT_COLOR": c["lateral_texto"],
         "PANEL_API_URL": url_api, "PYTHONDONTWRITEBYTECODE": "1",
     })
     return entorno
