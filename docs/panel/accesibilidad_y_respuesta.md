@@ -62,4 +62,4 @@ La interfaz de hoy usa la paleta verde de `panel.interfaz` para fondos, botones 
 - **Aviso temporizado:** a los 40 segundos de uso activo de la página aparece el aviso de una curiosidad, con «Leer curiosidad», «Desactivar avisos» y «Cerrar»; el temporizador solo corre con la ventana enfocada.
 - **Significado sin depender del color:** la muestra baja se distingue por el trazo discontinuo y por el texto «Muestra baja», no solo por el color (se ve en las capturas de la [galería](galeria.md)).
 
-Siguen pendientes, y no se afirman: la lectura con un lector de pantalla, otros navegadores, un nivel de conformidad con WCAG y la opinión de personas usuarias. El título del gráfico de Sensibilidades con su primera línea recortada está anotado en [pruebas_panel.md](pruebas_panel.md).
+Siguen pendientes, y no se afirman: la lectura con un lector de pantalla, otros navegadores, un nivel de conformidad con WCAG y la opinión de personas usuarias. El título del gráfico de Sensibilidades, que quedaba con su primera línea recortada, se corrigió (D119) y se midió a 1440, 768 y 375 píxeles ([EV-129](../evidencias/frontend/EV-129_titulo_del_grafico_de_sensibilidades.txt)).

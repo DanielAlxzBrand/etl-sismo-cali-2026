@@ -1,6 +1,6 @@
 # Galería del panel
 
-Capturas del panel de consulta en su versión vigente (interfaz propia de D115 a D117), una por página y de cada herramienta de lectura, más los estados elegidos y la vista de móvil. Son **capturas automatizadas del navegador** (no las toma una persona) sobre el panel real, arrancado con el lanzador oficial, con los datos de la API del proyecto (almacenamiento SQLite, fecha de corte 2026-09-02). No hay maquetas, cifras de ejemplo ni datos sensibles: cada captura se tomó con la línea de estado de la API visible y el recuadro de alcance en pantalla, y el registro [EV-128](../evidencias/frontend/EV-128_capturas_definitivas_del_panel.txt) comprobó, para las ocho páginas, que el alcance, la fecha de corte y la ausencia de errores en pantalla estaban en el texto de la página.
+Capturas del panel de consulta en su versión vigente (interfaz propia de D115 a D117), una por página y de cada herramienta de lectura, más los estados elegidos y la vista de móvil. Son **capturas automatizadas del navegador** (no las toma una persona) sobre el panel real, arrancado con el lanzador oficial, con los datos de la API del proyecto (almacenamiento SQLite, fecha de corte 2026-09-02). No hay maquetas, cifras de ejemplo ni datos sensibles: las capturas de las ocho páginas se tomaron con la línea de estado de la API visible y el recuadro de alcance en pantalla, y el registro [EV-128](../evidencias/frontend/EV-128_capturas_definitivas_del_panel.txt) (más EV-129 para las tres del título corregido) comprobó, para las ocho páginas, que el alcance, la fecha de corte y la ausencia de errores en pantalla estaban en el texto de la página.
 
 | | |
 |---|---|
@@ -24,9 +24,15 @@ Las capturas anteriores del panel (EV-054, EV-073 a EV-081 y la hoja de la guía
 ![Comunas en escritorio: figura de tasas de las siete comunas con sus intervalos de Wilson](../img/panel/escritorio_03_comunas.png)
 
 ### Sensibilidades (S0 a S5)
-![Sensibilidades en escritorio: gráfico de la diferencia de tasas por escenario con su intervalo de Newcombe](../img/panel/escritorio_04_sensibilidades.png)
+![Sensibilidades en escritorio: gráfico de la diferencia de tasas por escenario con su intervalo de Newcombe y el título completo](../img/panel/sensibilidades_titulo_1440x900.png)
 
-Límite conocido: el título del gráfico llega en dos líneas (D117, para que no se recorte con puntos suspensivos en móvil) y su primera línea queda cortada por el borde superior del gráfico. El texto es el original y el resto del gráfico se lee completo; está anotado como pendiente de corregir en [pruebas_panel.md](pruebas_panel.md).
+Corrección del título (D119): el título del gráfico, en dos líneas, se veía con su primera línea recortada por el borde superior del gráfico; hoy se ve completo. Las capturas de comprobación a 1440, 768 y 375 píxeles son de [EV-129](../evidencias/frontend/EV-129_titulo_del_grafico_de_sensibilidades.txt):
+
+![Sensibilidades a 768 por 1024 píxeles con el título del gráfico completo](../img/panel/sensibilidades_titulo_768x1024.png)
+
+![Sensibilidades a 375 por 812 píxeles con el título del gráfico completo](../img/panel/sensibilidades_titulo_375x812.png)
+
+Las capturas [escritorio_04_sensibilidades.png](../img/panel/escritorio_04_sensibilidades.png) y [movil_04_sensibilidades_grafico.png](../img/panel/movil_04_sensibilidades_grafico.png) son de EV-128, tomadas antes de la corrección: siguen como se registraron y muestran el título recortado, así que no representan la versión vigente.
 
 ### Concentración (K3 y K4)
 ![Concentración en escritorio: tarjetas de K3 con la participación de los barrios líderes y su peso, y el aviso de una curiosidad de la página](../img/panel/escritorio_05_concentracion.png)
@@ -93,7 +99,7 @@ Fuentes y sistema, los ocho puntos de «qué no se puede concluir» y las limita
 | [movil_01_estratos_inicio.png](../img/panel/movil_01_estratos_inicio.png) | inicio de Estratos: cabecera con su ícono, tarjetas de cifras y recuadro de alcance |
 | [movil_02_estratos_figura.png](../img/panel/movil_02_estratos_figura.png) | figura de tasas de Estratos con sus intervalos |
 | [movil_03_construcciones_tabla.png](../img/panel/movil_03_construcciones_tabla.png) | filtros, página y tabla de Construcciones |
-| [movil_04_sensibilidades_grafico.png](../img/panel/movil_04_sensibilidades_grafico.png) | gráfico de Sensibilidades, con el título en dos líneas y la primera recortada por arriba (el mismo límite de escritorio) |
+| [movil_04_sensibilidades_grafico.png](../img/panel/movil_04_sensibilidades_grafico.png) | gráfico de Sensibilidades antes de la corrección del título (EV-128, con la primera línea recortada); la versión corregida a 375 píxeles es `sensibilidades_titulo_375x812.png` |
 
 ## Para repetirlas
 Con el entorno virtual creado, `python scripts/evidencias/capturas_panel_definitivo.py` vuelve a generar todas las imágenes y su registro; tarda unos 15 minutos porque cada página se espera hasta que Streamlit termina de dibujarla. Si cambia la interfaz hay que volver a ejecutarlo, revisar cada imagen, registrar el resultado en el manifiesto de evidencias y copiar al README las cuatro imágenes que usa.

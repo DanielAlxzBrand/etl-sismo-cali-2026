@@ -170,6 +170,7 @@ def grafico_tasas(df, x, titulo, descripcion, alto=ALTO_GRAFICO, titulo_x=None):
     st.caption(PIE_INTERVALO)
 
 
+RELLENO_GRAFICO_CON_TITULO = {"top": 16, "right": 5, "bottom": 5, "left": 5}   # el relleno de siempre de Vega (5 px) con más aire arriba: Vega mide el título de varias líneas con una altura menor que la que dibuja y recortaba la primera línea (D119)
 LARGO_MAXIMO_LINEA_TITULO = 34   # caracteres por línea del título de un gráfico para que quepa a 390 px sin que Vega lo recorte con puntos suspensivos (D116)
 
 
@@ -200,7 +201,7 @@ def grafico_diferencias(df, x, titulo, descripcion, alto=ALTO_GRAFICO):
         tooltip=[alt.Tooltip(f"{x}:N", title="Escenario"), alt.Tooltip("dif_txt:N", title="Diferencia"), alt.Tooltip("ic_txt:N", title="Intervalo de Newcombe")])
     error = base.mark_errorbar(color=col["texto"], thickness=2, ticks=True).encode(y=alt.Y("inf_pp:Q", title=""), y2="sup_pp:Q")
     cero = alt.Chart(pd.DataFrame({"y": [0]})).mark_rule(color=col["secundario"], strokeDash=[6, 4], size=2).encode(y="y:Q")
-    chart = alt.layer(cero, error, puntos).properties(title=alt.TitleParams(partir_titulo(titulo), fontSize=14, anchor="start", color=col["texto"]), height=alto)
+    chart = alt.layer(cero, error, puntos).properties(title=alt.TitleParams(partir_titulo(titulo), fontSize=14, anchor="start", color=col["texto"]), height=alto, padding=RELLENO_GRAFICO_CON_TITULO)
     st.altair_chart(_con_texto_oscuro(chart.properties(description=descripcion)), width="stretch")
     st.caption("Cada punto es la diferencia observada en ese escenario; la línea vertical que lo cruza va del límite inferior al superior del intervalo de Newcombe al 95 % y las rayas de sus extremos "
                "marcan esos límites. La línea discontinua marca la ausencia de diferencia.")

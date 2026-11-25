@@ -180,6 +180,17 @@ def test_el_titulo_del_grafico_de_diferencias_llega_en_lineas_que_caben_en_panta
     assert all(len(linea) <= componentes.LARGO_MAXIMO_LINEA_TITULO for linea in titulo)
 
 
+def test_el_grafico_de_diferencias_deja_aire_arriba_para_su_titulo_de_varias_lineas(api):
+    """Vega mide el título de varias líneas con menos altura de la que dibuja y recortaba la primera línea contra el borde del gráfico (medido en el navegador: 8,5 px en 1440, 768 y 375 px);
+    el relleno superior de 16 px (D119) deja ese margen. No cambia el texto, los datos, los ejes ni los colores."""
+    espec = _graficos_de("sensibilidades", api)[0]
+    assert isinstance(espec["title"]["text"], list), "el título llega en varias líneas"
+    relleno = espec["padding"]
+    assert relleno["top"] >= 16 and all(relleno[lado] >= 5 for lado in ("right", "bottom", "left")), "el relleno superior da cabida a la primera línea del título"
+    assert relleno == componentes.RELLENO_GRAFICO_CON_TITULO
+    assert " ".join(espec["title"]["text"]) == "Diferencia de tasas (3-5 menos 1-2) por escenario" and espec["height"] == componentes.ALTO_GRAFICO
+
+
 def test_el_grafico_de_diferencias_explica_el_punto_la_linea_y_la_linea_discontinua():
     df = pd.DataFrame({"escenario": ["S0", "S1"], "dif_pp": [0.5, 0.2], "inf_pp": [-2.0, -2.5], "sup_pp": [2.5, 2.0], "dif_txt": ["+0,5 pp", "+0,2 pp"], "ic_txt": ["x", "y"]})
     pies = []

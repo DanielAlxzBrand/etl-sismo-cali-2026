@@ -255,6 +255,7 @@ def test_el_readme_usa_las_copias_en_gris_de_los_diagramas_aportados_y_las_captu
 CAPTURAS_DEL_PANEL = {"panel_principal": "escritorio_02_estratos", "panel_guia_de_lectura": "herramienta_01_respuesta_guia", "panel_construcciones": "estado_06_construcciones_fila_elegida",
                       "panel_movil": "movil_00_estratos_y_construcciones"}   # copia del README -> captura de la galería de la que sale (mismos bytes)
 REGISTRO_CAPTURAS_PANEL = ROOT / "docs" / "evidencias" / "frontend" / "EV-128_capturas_definitivas_del_panel.txt"
+REGISTRO_TITULO_SENSIBILIDADES = ROOT / "docs" / "evidencias" / "frontend" / "EV-129_titulo_del_grafico_de_sensibilidades.txt"   # capturas posteriores a EV-128 (D119); EV-128 no se reescribe
 
 
 def capturas_sin_registro(carpeta, registro):
@@ -272,8 +273,9 @@ def test_el_readme_usa_las_capturas_vigentes_del_panel_y_no_la_del_panel_anterio
     assert "](docs/panel/galeria.md)" in README_TEXTO
 
 
-def test_las_capturas_de_la_galeria_del_panel_estan_en_su_registro():
-    assert capturas_sin_registro(ROOT / "docs" / "img" / "panel", REGISTRO_CAPTURAS_PANEL.read_text(encoding="utf-8")) == []
+def test_las_capturas_de_la_galeria_del_panel_estan_en_sus_registros():
+    registros = REGISTRO_CAPTURAS_PANEL.read_text(encoding="utf-8") + REGISTRO_TITULO_SENSIBILIDADES.read_text(encoding="utf-8")
+    assert capturas_sin_registro(ROOT / "docs" / "img" / "panel", registros) == []
 
 
 def test_una_captura_sin_registro_o_alterada_se_detecta(tmp_path):

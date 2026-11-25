@@ -144,7 +144,7 @@
 | [adr/](arquitectura/adr/) | 15 registros de decisión (ADR), uno por archivo, con sus alternativas registradas y las que hoy descartamos |
 
 ### Decisiones
-[DECISIONES.md](DECISIONES.md): todas las decisiones con alternativas, razón, riesgo y fecha (D1 a D118; las nuevas continúan desde D119).
+[DECISIONES.md](DECISIONES.md): todas las decisiones con alternativas, razón, riesgo y fecha (D1 a D119; las nuevas continúan desde D120).
 
 ### Almacenamiento relacional (MySQL)
 | documento | contenido |
