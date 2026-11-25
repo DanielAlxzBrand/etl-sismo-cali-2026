@@ -66,10 +66,30 @@ def barrio_norm_sin_aclarar(texto):
 
 
 # ---------------------------------------------------------------- cifras medidas
+def cifra_del_documento_vigente(cifras_del_documento, n, decisiones):
+    """True si el documento cita el recuento actual, o uno anterior que una decisión posterior declara: el documento aprobado conserva su cifra (D115) y la decisión lo dice con su cifra y el nombre del documento."""
+    if cifras_del_documento == [n]:
+        return True
+    if len(cifras_del_documento) != 1 or cifras_del_documento[0] >= n:
+        return False
+    c = cifras_del_documento[0]
+    return any("documento de arquitectura" in p and f"{c} pruebas" in p and "conserva su cifra" in p for p in decisiones.splitlines() if p.startswith("**D"))
+
+
 def test_el_numero_de_pruebas_del_documento_es_el_de_la_recoleccion():
     n = sum(_recolectadas().values())
-    assert cifras_de_pruebas(DOC_TEXTO) == [n], (cifras_de_pruebas(DOC_TEXTO), n)
+    assert cifra_del_documento_vigente(cifras_de_pruebas(DOC_TEXTO), n, DECISIONES), (cifras_de_pruebas(DOC_TEXTO), n)
     assert not re.search(r"\b\d{4} en total\b", DOC_TEXTO), "un recuento escrito sin el formato **N pruebas**"
+
+
+def test_negativa_una_cifra_anterior_del_documento_solo_vale_si_una_decision_la_declara():
+    declara = "**D900 · x.** el documento de arquitectura aprobado conserva su cifra de 100 pruebas, la de su fecha."
+    assert cifra_del_documento_vigente([120], 120, "")                      # la cifra actual siempre vale
+    assert cifra_del_documento_vigente([100], 120, declara)                 # una anterior declarada vale
+    assert not cifra_del_documento_vigente([100], 120, "")                  # sin decisión que la declare, no
+    assert not cifra_del_documento_vigente([100], 120, declara.replace("100 pruebas", "99 pruebas"))      # la decisión nombra otra cifra
+    assert not cifra_del_documento_vigente([100], 120, declara.replace("conserva su cifra", "cambia"))   # la decisión no dice que se conserva
+    assert not cifra_del_documento_vigente([130], 120, declara) and not cifra_del_documento_vigente([100, 120], 120, declara)   # una cifra mayor o dos cifras distintas no valen
 
 
 def test_las_rutas_el_panel_y_las_tablas_del_documento_son_los_de_la_aplicacion_y_los_almacenes():

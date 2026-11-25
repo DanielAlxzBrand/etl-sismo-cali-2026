@@ -1,0 +1,17 @@
+{
+  "interpretacion": "Esta página dice qué tan confiable es la unión entre cada construcción y el estrato de su barrio. Lea la cobertura junto con las comprobaciones de nombre y de polígono.",
+  "precauciones": "Encontrar un código en las dos fuentes no confirma por sí solo que los barrios correspondan, y que el nombre coincida no garantiza que el código sea el correcto.",
+  "fichas": [
+    {"titulo": "La unión depende de una llave", "explicacion": "La llave enlaza una construcción con el estrato de su barrio. Una unión ausente deja ese atributo sin asignar.", "categoria": "Método del proyecto", "termino": "llave"},
+    {"titulo": "Cobertura no es lo mismo que acierto", "explicacion": "La cobertura cuenta cuántas construcciones encontraron correspondencia; no dice si esa correspondencia es la correcta. Para eso se comprueban también los nombres y los polígonos.", "categoria": "Método del proyecto", "termino": "cobertura de la llave"},
+    {"titulo": "Una segunda señal de identidad", "explicacion": "Comparar el nombre del barrio aporta otra señal sobre la unión, incluso cuando los códigos ya coinciden.", "categoria": "Método del proyecto", "termino": "nombre validado"}
+  ],
+  "pasos": [
+    {"titulo": "Ver qué tan confiable es la unión", "region": "Cobertura y validación", "texto": "La llave relaciona cada construcción con la información de su barrio. Las tres tarjetas resumen cuántas uniones lo lograron."},
+    {"titulo": "Entender la cobertura", "region": "Cobertura de la llave", "texto": "El número de uniones logradas se lee junto con la cantidad de registros buscados."},
+    {"titulo": "Revisar el atributo", "region": "Estrato válido", "texto": "Una coincidencia de códigos permite buscar el estrato; revise también si el atributo quedó informado."},
+    {"titulo": "Contrastar nombres", "region": "Nombre validado", "texto": "La comprobación de nombres aporta una segunda señal para interpretar una unión."},
+    {"titulo": "Comparar grupos", "region": "Nombre validado según la coincidencia con el polígono", "texto": "El porcentaje de cada fila usa el total de su propio grupo."},
+    {"titulo": "Examinar pendientes", "region": "Códigos de barrio sin nombre validado", "texto": "La tabla identifica códigos para revisión. Una diferencia exige examinar las dos fuentes; por sí sola no prueba una mala asignación."}
+  ]
+}

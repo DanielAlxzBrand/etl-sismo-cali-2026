@@ -1,0 +1,17 @@
+{
+  "interpretacion": "Lea la diferencia en puntos porcentuales junto con su intervalo y los conteos de ambos grupos.",
+  "precauciones": "Una diferencia observada entre grupos no atribuye el cambio al estrato.",
+  "fichas": [
+    {"titulo": "Cómo se lee un punto porcentual", "explicacion": "Una resta entre dos porcentajes se expresa en puntos porcentuales. El orden de los grupos determina el signo.", "categoria": "Estadística", "termino": "puntos porcentuales"},
+    {"titulo": "El valor de referencia de una razón", "explicacion": "Una razón de tasas igual a uno indica igualdad de las tasas comparadas, siempre que el cociente esté definido.", "categoria": "Estadística", "termino": "razón de tasas"},
+    {"titulo": "Un intervalo para la diferencia", "explicacion": "La comparación principal tiene su propio intervalo. Para leer la diferencia, ubique el cero dentro o fuera de ese intervalo.", "categoria": "Estadística", "termino": "intervalo de Newcombe"}
+  ],
+  "pasos": [
+    {"titulo": "Comparar dos grupos", "region": "Pregunta de investigación", "texto": "La pregunta compara el porcentaje de construcciones con cambio satelital severo entre los grupos de estratos 3-5 y 1-2."},
+    {"titulo": "Identificar la base", "region": "Tasas de los dos grupos", "texto": "El estrato corresponde al barrio. Cada tasa cuenta casos severos entre construcciones que sí tienen clasificación satelital."},
+    {"titulo": "Leer las unidades", "region": "Diferencia y razón", "texto": "Restar las tasas da puntos porcentuales. Dividirlas da una razón. La igualdad entre tasas corresponde a cero en la resta y a uno en la razón."},
+    {"titulo": "Leer los conteos", "region": "Tasas de los dos grupos", "texto": null},
+    {"titulo": "Ubicar el cero", "region": "Intervalo de la diferencia", "texto": "Compare los dos límites de Newcombe con cero. Si el intervalo abarca cero, la igualdad de tasas sigue siendo compatible con estas observaciones."},
+    {"titulo": "Revisar el alcance", "region": "Calidad de la unión", "texto": "La cobertura indica cuántas construcciones encontraron una llave. Incluso con buena cobertura, ubicación y estrato pueden estar relacionados. Esta comparación por sí sola no identifica una causa."}
+  ]
+}

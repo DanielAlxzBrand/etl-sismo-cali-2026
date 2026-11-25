@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="es-CO"><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'">
+<title>$titulo</title>
+<style>
+html{color-scheme:light}body{background:#fff;font:16px/1.5 system-ui,sans-serif;color:#172a25;max-width:980px;margin:32px auto;padding:0 16px}
+svg{width:100%;height:auto}.scroll{overflow:auto}table{border-collapse:collapse;width:100%}
+td,th{padding:7px;text-align:right;border-bottom:1px solid #baccc1}th:first-child{text-align:left}
+small{display:block;color:#854a00}aside{padding:12px;background:#edf6f1;margin:12px 0}
+.fichas{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px;margin:8px 0}.ficha{padding:10px 12px;background:#eff4f1;border-radius:6px}.ficha b{display:block;font-size:1.5em}
+.panel{margin:18px 0}.panel h2{font-size:1.15em;margin:0 0 6px}.lectura{padding:10px 12px;background:#edf6f1;border-left:4px solid #087a6b;margin:8px 0}.lectura strong{display:block}.pie-tabla{font-size:.9em;color:#425c53}
+details summary{cursor:pointer}details p{margin:4px 0}
+text{font:13px system-ui,sans-serif;fill:#172a25}.eje text{fill:#425c53;font-size:12px}
+@media print{body{margin:0;font-size:10pt}.scroll{overflow:visible}svg{max-height:31vh}}
+</style>
+<main>
+<p>Sismo de Cali · $ruta</p>
+<h1>$titulo</h1>
+<p><strong>Corte de datos:</strong> $corte</p>
+<aside>$alcance</aside>
+$figura
+$detalle
+<p>$lectura</p>
+<footer>$fuente</footer>
+</main>
+</html>

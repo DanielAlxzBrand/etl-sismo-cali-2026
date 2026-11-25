@@ -1,0 +1,18 @@
+{
+  "respuesta": "M2 13h5l3-9 4 16 3-9h5",
+  "comunas": "M2 5l6-3 8 3 6-3v17l-6 3-8-3-6 3z M8 2v17 M16 5v17",
+  "sensibilidades": "M3 7h18 M3 17h18 M8 4v6 M16 14v6",
+  "concentracion": "M12 2a10 10 0 1 0 .1 0 M12 7a5 5 0 1 0 .1 0 M12 11v2",
+  "calidad": "M15 3a5 5 0 1 0 .1 0 M12 12l-9 9h5v-3h3",
+  "construcciones": "M3 21V9h7v12 M10 21V3h10v18 M13 7h4 M13 11h4 M13 15h4 M2 21h20",
+  "fuentes": "M3 6a9 4 0 1 0 18 0a9 4 0 1 0-18 0 M3 6v12c0 5 18 5 18 0V6 M3 12c0 5 18 5 18 0",
+  "capas": "M2 7l10-5 10 5-10 5z M2 12l10 5 10-5 M2 17l10 5 10-5",
+  "barras": "M4 19V13h3v6z M10 19V8h3v11z M16 19V4h3v15z",
+  "cautela": "M12 3L2 20h20z M12 9v5 M12 17v.3",
+  "intervalo": "M4 8v8 M20 8v8 M4 12h16 M12 8v8",
+  "tabla": "M3 4h18v16H3z M3 9h18 M9 9v11 M3 14h18",
+  "libro": "M2 5q5-2 10 1 5-3 10-1v14q-5-2-10 0-5-2-10 0z M12 6v13",
+  "luz": "M8 15a7 7 0 1 1 8 0l-1 3H9z M10 21h4",
+  "descarga": "M12 3v12 M7 10l5 5 5-5 M4 16v5h16v-5",
+  "alcance": "M12 2l8 3v6q0 7-8 11-8-4-8-11V5z M8 11l3 3 5-6"
+}

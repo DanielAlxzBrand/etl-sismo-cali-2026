@@ -1,7 +1,7 @@
 """Componentes comunes del panel: marco de página, recuadro de alcance, avisos de fallo, tarjetas, tablas y gráficos Altair.
 
 Solo lectura: nada de aquí abre archivos ni bases; los datos llegan ya leídos por el cliente de la API. Sin HTML propio, sin JavaScript
-y sin recursos externos. Ningún número se escribe en el código: todas las cifras vienen de los datos y se dan formato con `formato`.
+y sin recursos externos: el HTML, el CSS y el JavaScript propios viven solo en `src/panel/frontend/` (D115). Ningún número se escribe en el código: todas las cifras vienen de los datos y se dan formato con `formato`.
 """
 import altair as alt
 import pandas as pd
@@ -35,14 +35,17 @@ def fallo(resultado):
     return True
 
 
+def alcance_markdown(metadata=None):
+    """Texto del recuadro de alcance (DP-4) en Markdown: proxy de daño, tasas condicionales a la muestra y estrato de 2015. Lo comparten el recuadro nativo y la interfaz propia (D115)."""
+    alcance = " " + metadata["alcance_temporal"] if isinstance(metadata, dict) and "alcance_temporal" in metadata else " El estrato es anterior al evento y se asignó por lados de manzana al barrio."
+    return ("**Alcance.** El cambio satelital severo (severo estricto) es un **proxy de daño**, no una evaluación estructural. "
+            "Las tasas son **condicionales a esta muestra** y no son prevalencias de Cali." + alcance)
+
+
 def recuadro_alcance(metadata=None):
     """Recuadro permanente de alcance (DP-4): proxy de daño, tasas condicionales a la muestra y estrato de 2015."""
-    alcance = " " + metadata["alcance_temporal"] if isinstance(metadata, dict) and "alcance_temporal" in metadata else " El estrato es anterior al evento y se asignó por lados de manzana al barrio."
     with st.container(border=True, key="alcance"):
-        st.markdown(
-            "**Alcance.** El cambio satelital severo (severo estricto) es un **proxy de daño**, no una evaluación estructural. "
-            "Las tasas son **condicionales a esta muestra** y no son prevalencias de Cali." + alcance
-        )
+        st.markdown(alcance_markdown(metadata))
 
 
 def encabezado(salud):
@@ -55,13 +58,17 @@ def encabezado(salud):
     st.caption(f"API: {estado} · almacenamiento: {s.get('almacenamiento')} · fecha de corte: {s.get('fecha_corte') or formato.SIN_DATO}")
 
 
+def texto_pie(metadata):
+    """Texto del pie con la fuente y las licencias que informa la API."""
+    if not isinstance(metadata, dict) or not isinstance(metadata.get("licencias"), dict):
+        return "Fuente: datos publicados por la API del proyecto."
+    licencias = "; ".join(f"{k}: {str(v).split(' (')[0]}" for k, v in metadata["licencias"].items())
+    return f"Fuente: capa de edificaciones y estrato por barrio, procesados por este proyecto. Licencias: {licencias}."
+
+
 def pie(metadata):
     """Pie con la fuente y las licencias que informa la API."""
-    if not isinstance(metadata, dict) or not isinstance(metadata.get("licencias"), dict):
-        st.caption("Fuente: datos publicados por la API del proyecto.")
-        return
-    licencias = "; ".join(f"{k}: {str(v).split(' (')[0]}" for k, v in metadata["licencias"].items())
-    st.caption(f"Fuente: capa de edificaciones y estrato por barrio, procesados por este proyecto. Licencias: {licencias}.")
+    st.caption(texto_pie(metadata))
 
 
 def marco(api, id_pagina, cuerpo):
@@ -110,7 +117,7 @@ def tarjetas(items, por_fila=POR_FILA):
                 tarjeta(etiqueta, valor, ayuda)
 
 
-def tabla(df, clave=None, texto_largo=False):
+def tabla(df, clave=None, texto_largo=False, seleccion=False):
     """Tabla con texto ya formateado; sin índice. Con `texto_largo` se dibuja completa (el texto se parte en líneas) en lugar de una cuadrícula con desplazamiento.
 
     Si tiene `UMBRAL_COLUMNAS_ANCHAS` columnas o más, avisa antes de la tabla que puede deslizarse hacia los lados (F-03, D87): a 390 px la tabla se corta en el borde y no se notaba que había más columnas.
@@ -120,6 +127,8 @@ def tabla(df, clave=None, texto_largo=False):
         st.caption(AVISO_TABLA_ANCHA)
     if texto_largo:
         st.table(df.style.hide(axis="index"))
+    elif seleccion:
+        return st.dataframe(df, hide_index=True, width="stretch", key=clave, on_select="rerun", selection_mode="single-row")   # D116: la fila elegida alimenta «Qué significa esta fila»
     else:
         st.dataframe(df, hide_index=True, width="stretch", key=clave)
 
@@ -161,6 +170,22 @@ def grafico_tasas(df, x, titulo, descripcion, alto=ALTO_GRAFICO, titulo_x=None):
     st.caption(PIE_INTERVALO)
 
 
+LARGO_MAXIMO_LINEA_TITULO = 34   # caracteres por línea del título de un gráfico para que quepa a 390 px sin que Vega lo recorte con puntos suspensivos (D116)
+
+
+def partir_titulo(titulo, maximo=LARGO_MAXIMO_LINEA_TITULO):
+    """Parte un título largo en líneas, solo en los espacios y sin cambiar ninguna palabra: unidas con un espacio dan el texto original. Un título corto se devuelve tal cual."""
+    lineas, actual = [], ""
+    for palabra in str(titulo).split(" "):
+        if actual and len(actual) + 1 + len(palabra) > maximo:
+            lineas.append(actual)
+            actual = palabra
+        else:
+            actual = f"{actual} {palabra}".strip()
+    lineas.append(actual)
+    return lineas if len(lineas) > 1 else lineas[0]
+
+
 def grafico_diferencias(df, x, titulo, descripcion, alto=ALTO_GRAFICO):
     """Puntos con intervalo de Newcombe para la diferencia en puntos porcentuales por escenario. `df`: x, dif_pp, inf_pp, sup_pp, dif_txt, ic_txt.
 
@@ -175,7 +200,7 @@ def grafico_diferencias(df, x, titulo, descripcion, alto=ALTO_GRAFICO):
         tooltip=[alt.Tooltip(f"{x}:N", title="Escenario"), alt.Tooltip("dif_txt:N", title="Diferencia"), alt.Tooltip("ic_txt:N", title="Intervalo de Newcombe")])
     error = base.mark_errorbar(color=col["texto"], thickness=2, ticks=True).encode(y=alt.Y("inf_pp:Q", title=""), y2="sup_pp:Q")
     cero = alt.Chart(pd.DataFrame({"y": [0]})).mark_rule(color=col["secundario"], strokeDash=[6, 4], size=2).encode(y="y:Q")
-    chart = alt.layer(cero, error, puntos).properties(title=alt.TitleParams(titulo, fontSize=14, anchor="start", color=col["texto"]), height=alto)
+    chart = alt.layer(cero, error, puntos).properties(title=alt.TitleParams(partir_titulo(titulo), fontSize=14, anchor="start", color=col["texto"]), height=alto)
     st.altair_chart(_con_texto_oscuro(chart.properties(description=descripcion)), width="stretch")
     st.caption("Cada punto es la diferencia observada en ese escenario; la línea vertical que lo cruza va del límite inferior al superior del intervalo de Newcombe al 95 % y las rayas de sus extremos "
                "marcan esos límites. La línea discontinua marca la ausencia de diferencia.")

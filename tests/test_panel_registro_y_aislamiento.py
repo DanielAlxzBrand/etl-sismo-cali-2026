@@ -21,6 +21,19 @@ SIN_CIFRAS = {"claves.py", "registro.py"}   # identificadores de datos y definic
 PERMITIDO_CON_DIGITOS = re.compile(r"95 %|\b0\b|\bic95_(?:inf|sup)\b|\bnombre_csv_2015\b|utf-8|\b[1-6]-[1-6]\b|\bK[1-6]\b|\bS[0-5]\b|\bE[1-6]\b|%[sd]|\{[^}]*\}")
 
 
+# D115: los módulos de `src/panel/frontend/` arman HTML y pueden nombrar etiquetas de encabezado (h1 a h6), la palabra «base64» de los URI de datos y el sufijo «-v3» de las clases de la hoja de estilo
+# aprobada (prueba-v3, pie-v3, aviso-v3, lectura-v3); no pueden escribir ninguna otra cifra.
+PERMITIDO_FRONTEND = re.compile(PERMITIDO_CON_DIGITOS.pattern + r"|\bh[1-6]\b|base64|-v3\b")
+LECTOR_DE_ACTIVOS = PANEL / "frontend" / "activos.py"
+
+
+def cifras_sobrantes(valor, permitido):
+    """True si el texto lleva dígitos que no son de la lista permitida (colores, formatos de número y clases de caracteres no cuentan)."""
+    resto = permitido.sub("", valor)
+    resto = re.sub(r"#[0-9A-Fa-f]{6}|\.\d+f|'[^']*'|\[[^\]]*\]", "", resto)
+    return bool(re.search(r"\d", resto))
+
+
 @pytest.fixture(scope="module")
 def rutas_api():
     return set(crear_app().openapi()["paths"])
@@ -157,6 +170,8 @@ def test_solo_la_configuracion_lee_archivos_y_solo_lee_yaml():
         abre = re.search(r"\bopen\(|read_csv|read_json|read_text|read_bytes|sqlite|\.db\b|\.jsonl\b", texto)
         if ruta.name == "configuracion.py":
             assert "yaml.safe_load" in texto
+        elif ruta == LECTOR_DE_ACTIVOS:
+            continue   # D115: el único lector de recursos de la interfaz; solo lee dentro de `frontend/` (lo vigila tests/test_panel_frontend.py)
         else:
             assert abre is None, (ruta.name, abre and abre.group(0))
 
@@ -179,9 +194,7 @@ def test_ninguna_cifra_escrita_a_mano_en_los_textos_del_panel():
             if isinstance(n, ast.Constant) and isinstance(n.value, str) and id(n) not in docstrings:
                 if ruta.name in ("configuracion.py", "tema.py", "app.py"):
                     continue
-                resto = PERMITIDO_CON_DIGITOS.sub("", n.value)
-                resto = re.sub(r"#[0-9A-Fa-f]{6}|\.\d+f|'[^']*'|\[[^\]]*\]", "", resto)   # colores, formatos y clases de caracteres de las expresiones regulares
-                assert not re.search(r"\d", resto), (ruta.name, n.value)
+                assert not cifras_sobrantes(n.value, PERMITIDO_FRONTEND if "frontend" in ruta.parts else PERMITIDO_CON_DIGITOS), (ruta.name, n.value)
 
 
 def test_el_analisis_detecta_un_panel_que_viola_las_reglas(tmp_path):

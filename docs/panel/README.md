@@ -11,6 +11,7 @@ El panel es una interfaz Streamlit (`src/panel/`) que muestra los resultados de 
 | [trazabilidad_ui.md](trazabilidad_ui.md) | componente → ruta de la API → campo → archivo de salida → KPI → pregunta de negocio (generado) |
 | [pruebas_panel.md](pruebas_panel.md) | qué cubre cada tipo de prueba y los resultados leídos de las evidencias |
 | [accesibilidad_y_respuesta.md](accesibilidad_y_respuesta.md) | contrastes calculados, mediciones locales y lo que queda pendiente porque depende de personas usuarias |
+| [galeria.md](galeria.md) | capturas vigentes de las ocho páginas, de las herramientas de lectura, de estados elegidos y de móvil, con la forma en que se obtuvieron |
 
 ## Cómo ejecutarlo
 ```powershell
@@ -19,7 +20,7 @@ El panel es una interfaz Streamlit (`src/panel/`) que muestra los resultados de 
 Arranca la API y el panel, imprime las dos direcciones y los cierra con Ctrl+C. La evidencia de una ejecución real está en [EV-052](../evidencias/panel/EV-052_ejecucion_real.txt).
 
 ## Evidencias (`docs/evidencias/panel/`)
-EV-051 instalación de Streamlit sin tocar la línea base · EV-052 ejecución real con el lanzador · EV-053 equivalencia de los datos entre SQLite y MySQL · EV-054 capturas automatizadas de las ocho páginas · EV-055 mediciones locales · EV-056 comprobación canario · EV-057 contrastes · EV-058 a EV-060 imágenes generadas desde las salidas · EV-061 pruebas en un clon limpio.
+EV-051 instalación de Streamlit sin tocar la línea base · EV-052 ejecución real con el lanzador · EV-053 equivalencia de los datos entre SQLite y MySQL · EV-054 capturas automatizadas de las ocho páginas · EV-055 mediciones locales · EV-056 comprobación canario · EV-057 contrastes · EV-058 a EV-060 imágenes generadas desde las salidas · EV-061 pruebas en un clon limpio. La integración de la interfaz propia (D115 a D117) está en `docs/evidencias/frontend/`: EV-122 y EV-127 equivalencia con el panel original, EV-123 rendimiento, EV-124 recorrido en el navegador, EV-125 y EV-126 hojas de capturas de la integración y EV-128 capturas vigentes (`docs/img/panel/`). Las evidencias anteriores describen el panel que existía cuando se registraron.
 
 ## Alcance y límites
 - **Qué afirmamos:** el panel muestra las cifras de Gold tal como las sirve la API, con el alcance visible en cada página; los valores coinciden con las salidas del pipeline y con los dos almacenamientos.

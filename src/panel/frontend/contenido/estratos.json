@@ -1,0 +1,20 @@
+{
+  "interpretacion": "Elija un estrato en el gráfico. En la fila destacada de la tabla, lea «Severos» junto con «Con datos» antes de comparar porcentajes.",
+  "precauciones": "Revise la marca «Muestra baja» y los registros sin datos. Las cotas muestran qué pasaría en dos extremos posibles de clasificación.",
+  "como_leer": "La marca muestra la tasa y la línea delimita el intervalo de Wilson al 95 %. Seleccione una fila para destacarla en el detalle.",
+  "ayuda_intervalo": "El intervalo de Wilson usa los casos con clasificación. Las cotas incorporan los faltantes bajo dos supuestos extremos. La marca «Muestra baja» la entrega la API y señala un grupo con pocas construcciones severas.",
+  "como_leer_columnas": "Severos cuenta los cambios observados. Con datos es la base de la tasa. Wilson muestra la incertidumbre de esa tasa. Sin datos cuenta los faltantes y las cotas los sitúan en los dos extremos posibles.",
+  "fichas": [
+    {"titulo": "Quién entra en la tasa", "explicacion": "«Con datos» cuenta las construcciones que pudieron clasificarse. La columna «Sin datos» permite ver cuáles quedaron fuera del denominador.", "categoria": "Método del proyecto", "termino": "sin datos"},
+    {"titulo": "Dos extremos para los faltantes", "explicacion": "La cota inferior asigna cero casos severos entre los faltantes. La superior los trata a todos como severos. Así se ve cuánto depende la lectura de esos registros.", "categoria": "Método del proyecto", "termino": "cotas por «sin datos»"},
+    {"titulo": "Qué indican los extremos de la línea", "explicacion": "La posición de la marca indica la tasa observada. Los dos extremos de la línea muestran los límites del intervalo de esa misma fila.", "categoria": "Lectura del gráfico", "termino": "intervalo de Wilson"}
+  ],
+  "pasos": [
+    {"titulo": "Ubicar el grupo", "region": "Tasa por estrato", "texto": "Cada fila reúne construcciones según el estrato asignado a su barrio. El gráfico permite comparar el cambio que se observa desde el satélite."},
+    {"titulo": "Contar la base", "region": "Severos y con datos", "texto": "El numerador cuenta los casos con cambio severo. El denominador cuenta todas las construcciones del grupo con clasificación satelital."},
+    {"titulo": "Seguir una fila", "region": "Barras, puntos y tabla", "texto": "Lea la escala horizontal en porcentaje. La barra termina en la tasa, igual que el punto en la vista alternativa. La línea abarca el intervalo. Seleccione la categoría para encontrarla en el detalle."},
+    {"titulo": "Traducir la tasa", "region": "Detalle por estrato", "texto": null},
+    {"titulo": "Distinguir dos rangos", "region": "Intervalos y cotas", "texto": "Wilson expresa incertidumbre sobre la tasa con datos. Las cotas muestran dos extremos según cómo se clasifiquen los faltantes. Revise ambas columnas y la marca de muestra baja."},
+    {"titulo": "Delimitar la lectura", "region": "Alcance", "texto": "El porcentaje describe esta muestra. La comparación estadística entre grupos requiere el intervalo de su diferencia. La clasificación satelital no evalúa la estructura del edificio."}
+  ]
+}

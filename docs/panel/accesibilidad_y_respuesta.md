@@ -2,6 +2,8 @@
 
 Este documento reúne **mediciones y verificaciones técnicas** reutilizables. No cierra el ítem 3.3 del checklist (usabilidad, capacidad de respuesta y coherencia visual): ese ítem necesita sesiones reales con personas usuarias, que no se han hecho (las dos sesiones simuladas no lo son).
 
+**Vigencia.** Las secciones 1 a 3 describen el panel anterior a la interfaz propia de D115 a D117 (sus mediciones, EV-054 y EV-073 a EV-080, se hicieron con esa versión y siguen siendo evidencia histórica). Los colores de los gráficos que distinguen categorías (paleta Okabe-Ito de `panel.colores`) son los mismos de hoy, así que la tabla de contrastes de la sección 1 sigue valiendo para ellos; lo que se midió de la interfaz vigente está en la sección 6.
+
 ## 1. Contrastes calculados
 Relación de contraste según la fórmula de luminancia relativa de WCAG 2.x, calculada con `python scripts/panel/contraste.py` ([EV-057](../evidencias/panel/EV-057_contrastes.txt), regenerada con la paleta actual). Se informan los valores; no se declara un nivel de conformidad. La regla que adoptamos es de **4,5 a 1 para el texto y 3 a 1 para los elementos gráficos** (D89) y una prueba la comprueba leyendo la configuración.
 
@@ -50,3 +52,14 @@ La diferencia entre almacenamientos viene de que la API abre una conexión a MyS
 ## 5. Alcance y límites
 - **Qué afirmamos:** los contrastes calculados, los tiempos medidos en este equipo (con su variabilidad), las capturas en tres anchos y las revisiones técnicas descritas.
 - **Qué NO afirmamos:** conformidad con un nivel de accesibilidad, usabilidad medida con personas ni rendimiento en otro equipo.
+
+## 6. Interfaz propia vigente (D115 a D117)
+La interfaz de hoy usa la paleta verde de `panel.interfaz` para fondos, botones y barra lateral, y conserva Okabe-Ito para las categorías de los gráficos. Lo que se midió en el navegador sobre el panel real ([EV-124](../evidencias/frontend/EV-124_recorrido_en_navegador_de_las_ocho_paginas.txt), 2026-11-24, medidas del equipo con guiones de solo lectura; no hay lector de pantalla ni personas usuarias):
+- **Contraste del texto dibujado** (4,5 a 1 para texto normal y 3 a 1 para texto grande, sobre el fondo efectivo de cada elemento): 856 textos en las ocho páginas, ninguno por debajo del mínimo. No incluye el texto que Streamlit dibuja en el lienzo de sus tablas interactivas.
+- **Desbordamiento horizontal:** ninguna de las ocho páginas desborda a 1400, 768 ni 375 píxeles de ancho.
+- **Teclado:** el foco se ve con un contorno sólido de 3 píxeles, no hay `tabindex` positivo, en el modo presentación el foco queda dentro de la página y Escape lo cierra; en la guía, «Siguiente» se deshabilita en el último paso.
+- **Movimiento reducido:** la hoja de estilo trae 14 reglas condicionadas a esa preferencia y con ella activa no había animaciones en curso.
+- **Aviso temporizado:** a los 40 segundos de uso activo de la página aparece el aviso de una curiosidad, con «Leer curiosidad», «Desactivar avisos» y «Cerrar»; el temporizador solo corre con la ventana enfocada.
+- **Significado sin depender del color:** la muestra baja se distingue por el trazo discontinuo y por el texto «Muestra baja», no solo por el color (se ve en las capturas de la [galería](galeria.md)).
+
+Siguen pendientes, y no se afirman: la lectura con un lector de pantalla, otros navegadores, un nivel de conformidad con WCAG y la opinión de personas usuarias. El título del gráfico de Sensibilidades con su primera línea recortada está anotado en [pruebas_panel.md](pruebas_panel.md).

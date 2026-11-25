@@ -117,6 +117,7 @@
 | [trazabilidad_ui.md](panel/trazabilidad_ui.md) | componente, ruta de la API, campo, archivo de salida y pregunta de negocio (generado) |
 | [pruebas_panel.md](panel/pruebas_panel.md) | pruebas del panel y resultados de las evidencias |
 | [accesibilidad_y_respuesta.md](panel/accesibilidad_y_respuesta.md) | contrastes calculados, mediciones locales y lo pendiente de usuarios |
+| [galeria.md](panel/galeria.md) | capturas vigentes del panel: las ocho páginas, las herramientas de lectura, estados elegidos y móvil |
 
 ### Usuarios y finanzas
 | documento | contenido |
@@ -143,7 +144,7 @@
 | [adr/](arquitectura/adr/) | 15 registros de decisión (ADR), uno por archivo, con sus alternativas registradas y las que hoy descartamos |
 
 ### Decisiones
-[DECISIONES.md](DECISIONES.md): todas las decisiones con alternativas, razón, riesgo y fecha (D1 a D114; las nuevas continúan desde D115).
+[DECISIONES.md](DECISIONES.md): todas las decisiones con alternativas, razón, riesgo y fecha (D1 a D118; las nuevas continúan desde D119).
 
 ### Almacenamiento relacional (MySQL)
 | documento | contenido |
@@ -160,7 +161,7 @@
 | Documentación y demostración | en construcción: el documento de arquitectura y el README están escritos (el documento, aprobado, versión 1.0, 2026-11-20); falta el guion de demostración |
 | Cierre y paquete | hecho, con matiz en 7.1: el repositorio está publicado en GitHub (privado por ahora) y el paquete final está armado (el zip por lista de inclusión de `scripts/make_dist.py`); Diego y Jhoan lo probaron desde un clon y lo informaron al equipo, sin commit ni salidas registradas |
 
-Las evidencias del almacenamiento relacional están en `docs/evidencias/almacenamiento/`; las de la orquestación están en `docs/evidencias/orquestacion/`; las del panel, en `docs/evidencias/panel/`; las del endurecimiento (instalación desde cero, mutaciones y Airflow en vivo), en `docs/evidencias/endurecimiento/`; las de los servicios locales, en `docs/evidencias/servicios/`; las de la evaluación del panel y sus ajustes, en `docs/evidencias/usuarios/` y `docs/evidencias/ajustes_ux/`; las de la auditoría intermedia (independencia del repositorio), en `docs/evidencias/auditoria/`.
+Las evidencias del almacenamiento relacional están en `docs/evidencias/almacenamiento/`; las de la orquestación están en `docs/evidencias/orquestacion/`; las del panel, en `docs/evidencias/panel/` (las de la interfaz propia vigente, D115 a D117, en `docs/evidencias/frontend/`); las del endurecimiento (instalación desde cero, mutaciones y Airflow en vivo), en `docs/evidencias/endurecimiento/`; las de los servicios locales, en `docs/evidencias/servicios/`; las de la evaluación del panel y sus ajustes, en `docs/evidencias/usuarios/` y `docs/evidencias/ajustes_ux/`; las de la auditoría intermedia (independencia del repositorio), en `docs/evidencias/auditoria/`.
 
 ## Componentes del proyecto y los ítems del checklist que cierran
 | componente | ítems que cierra | estado |

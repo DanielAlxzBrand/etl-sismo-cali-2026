@@ -50,7 +50,8 @@ def _k(datos, kpi, grupo=None):
 
 
 def _metricas(at):
-    return {m.label: m for m in at.metric}
+    """Cifras de la página por rótulo: las métricas nativas y las tarjetas de la interfaz propia (D115), ambas con `.value` y `.help`."""
+    return {**{f.label: f for f in pa.fichas_html(at)}, **{m.label: m for m in at.metric}}
 
 
 def _con_datos(gold):
@@ -88,7 +89,8 @@ def test_respuesta_muestra_k5_con_el_formato_de_los_documentos(paginas, datos):
 
 # ---------- Estratos (K1) ----------
 def test_estratos_coincide_con_k1_y_con_los_conteos_de_gold_final(paginas, datos):
-    tabla = paginas[0]["estratos"].dataframe[0].value
+    html = pa.tablas_html(paginas[0]["estratos"])[0]          # la tabla de la interfaz propia (D115): cada celda es texto de la página, no un DataFrame
+    tabla = [dict(zip(html[0], fila)) for fila in html[1:]]
     filas = [r for r in datos["kpis"] if r["kpi_id"] == "K1"]
     assert len(tabla) == len(filas) == 6
     cd = _con_datos(datos["gold"])
@@ -97,7 +99,7 @@ def test_estratos_coincide_con_k1_y_con_los_conteos_de_gold_final(paginas, datos
         e = int(r["grupo"][-1])
         del_estrato = [g for g in cd if g["estrato"] and int(float(g["estrato"])) == e]
         k = sum(_b(g["severo_estricto"]) for g in del_estrato)
-        fila = tabla.iloc[i]
+        fila = tabla[i]
         assert fila["Severos"] == formato.numero(k) and fila["Con datos"] == formato.numero(len(del_estrato))
         assert fila["Tasa"] == formato.porcentaje(k / len(del_estrato))
         assert fila["Intervalo de Wilson"] == formato.intervalo(_f(r["ic95_inf"]), _f(r["ic95_sup"]))
@@ -108,7 +110,7 @@ def test_estratos_coincide_con_k1_y_con_los_conteos_de_gold_final(paginas, datos
 
 # ---------- Comunas (K6 y composición) ----------
 def test_comunas_coincide_con_k6_y_con_los_conteos_de_gold_final(paginas, datos):
-    tabla = paginas[0]["comunas"].dataframe[0].value
+    tabla = pa.tabla_html_df(paginas[0]["comunas"], 0)
     filas = [r for r in datos["kpis"] if r["kpi_id"] == "K6"]
     assert len(tabla) == len(filas) == 7
     cd = _con_datos(datos["gold"])
@@ -124,7 +126,7 @@ def test_comunas_coincide_con_k6_y_con_los_conteos_de_gold_final(paginas, datos)
 
 
 def test_la_composicion_por_comuna_y_grupo_coincide_con_gold_final(paginas, datos):
-    tabla = paginas[0]["comunas"].dataframe[1].value
+    tabla = pa.tabla_html_df(paginas[0]["comunas"], 1)
     grupo = lambda e: "1-2" if e <= 2 else ("3-5" if e <= 5 else "6")   # noqa: E731
     cuenta, severos = Counter(), Counter()
     for g in _con_datos(datos["gold"]):
@@ -138,7 +140,7 @@ def test_la_composicion_por_comuna_y_grupo_coincide_con_gold_final(paginas, dato
             if col in tabla.columns:
                 assert fila[col] == formato.numero(cuenta[(fila["Comuna"], g)]), (fila["Comuna"], g)
                 assert fila[f"Estratos {g}: severos"] == formato.numero(severos[(fila["Comuna"], g)])
-    assert "Comuna 20" in "\n".join(m.value for m in paginas[0]["comunas"].info)
+    assert "Comuna 20" in pa.texto_html(paginas[0]["comunas"])      # la frase de la comuna que concentra los estratos 1-2 (D115: ya no es un aviso nativo)
 
 
 # ---------- Sensibilidades ----------

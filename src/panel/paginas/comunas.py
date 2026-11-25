@@ -1,9 +1,16 @@
-"""Página «Comunas (K6 y composición)»: tasa por comuna con intervalo y la composición por grupo de estrato."""
+"""Página «Comunas (K6 y composición)»: tasa por comuna con intervalo y la composición por grupo de estrato.
+
+Desde D115 se dibuja con la interfaz propia (figura de barras, puntos y tabla, glosario, guía, curiosidades, modo presentación y exportación). Los datos, el formato y los textos son los de siempre.
+"""
 import pandas as pd
 import streamlit as st
 
 from src.panel import claves, componentes, formato, redaccion
-from src.panel.paginas._comun import filas_tasa, texto_ic
+from src.panel.frontend import comunas as vista
+from src.panel.frontend import lectura
+from src.panel.frontend import vista as base
+from src.panel.frontend.marco import dibujar, marco
+from src.panel.paginas._comun import texto_ic
 
 ID = "comunas"
 GRUPOS = (claves.GRUPO_COMPOSICION_1_2, claves.GRUPO_COMPOSICION_3_5)
@@ -24,9 +31,20 @@ def _tabla_composicion(composicion):
     return pd.DataFrame(registros)
 
 
+def tabla_k6(filas):
+    """DataFrame de texto de «Detalle por comuna»: una fila por comuna, con las cifras ya formateadas."""
+    return pd.DataFrame([{
+        "Comuna": f["comuna"] + (f" ({componentes.ETIQUETA_BAJA})" if f["muestra_baja"] else ""),
+        "Severos": formato.numero(f["severos"]), "Con datos": formato.numero(f["n_con_datos"]), "Tasa": formato.porcentaje(f["tasa"]),
+        "Intervalo de Wilson": texto_ic(f["ic95_inf"], f["ic95_sup"]), "Sin datos": formato.numero(f["n_sin_datos"]),
+        "% sin datos": formato.porcentaje(f["pct_sin_datos"], 1),
+    } for f in filas])
+
+
 def render(api):
-    def cuerpo():
+    def cuerpo(contexto):
         r = api("/comunas")
+        dibujar(base.cabecera(contexto.pagina, contexto.grupo, contexto.corte, contexto.metadata))
         if componentes.fallo(r):
             return
         filas = r.datos
@@ -34,26 +52,18 @@ def render(api):
             st.warning("La API no devolvió filas de K6.")
             return
         etiquetas = ["Comuna " + f["comuna"] for f in filas]
-        componentes.grafico_tasas(filas_tasa(filas, etiquetas, clave_tasa="tasa"), "grupo", "Tasa de cambio satelital severo por comuna",
-                                  "Barras de la tasa por comuna con su intervalo de Wilson; las comunas con muestra baja llevan esa etiqueta.", titulo_x="Comuna")
-        st.subheader("Detalle por comuna")
-        tabla = pd.DataFrame([{
-            "Comuna": f["comuna"] + (f" ({componentes.ETIQUETA_BAJA})" if f["muestra_baja"] else ""),
-            "Severos": formato.numero(f["severos"]), "Con datos": formato.numero(f["n_con_datos"]), "Tasa": formato.porcentaje(f["tasa"]),
-            "Intervalo de Wilson": texto_ic(f["ic95_inf"], f["ic95_sup"]), "Sin datos": formato.numero(f["n_sin_datos"]),
-            "% sin datos": formato.porcentaje(f["pct_sin_datos"], 1),
-        } for f in filas])
-        componentes.tabla(tabla)
-        st.markdown("**Lectura generada.** " + redaccion.conclusion_comunas(filas))
-        st.subheader("Composición por comuna y grupo de estrato")
+        tabla = tabla_k6(filas)
+        conclusion = redaccion.conclusion_comunas(filas)
         c = api("/composicion")
+        composicion = comuna = None
+        if c.ok and c.datos:
+            composicion, comuna = _tabla_composicion(c.datos), redaccion.comuna_que_concentra(c.datos, claves.GRUPO_COMPOSICION_1_2)
+        documento = vista.lamina(contexto.pagina, contexto.grupo, contexto.corte, contexto.metadata, filas, etiquetas, tabla, conclusion, composicion, comuna)
+        lectura.herramientas(ID, contexto.pagina.titulo, vista.guia(), base.curiosidades(ID), documento, "comunas_tasa_por_comuna.html")
+        dibujar(vista.cuerpo(filas, etiquetas, tabla, conclusion, composicion, comuna))
         if componentes.fallo(c):
             return
         if not c.datos:
             st.warning("La API no devolvió la composición por comuna.")
-            return
-        componentes.tabla(_tabla_composicion(c.datos))
-        st.caption("Construcciones con datos satelitales y severas por comuna y grupo de estrato (los grupos de estrato son los que define la API).")
-        st.info(redaccion.comuna_que_concentra(c.datos, claves.GRUPO_COMPOSICION_1_2))
 
-    componentes.marco(api, ID, cuerpo)
+    marco(api, ID, cuerpo)

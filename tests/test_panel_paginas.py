@@ -60,8 +60,8 @@ def test_cada_pagina_se_renderiza_sin_excepciones_y_con_titulo_y_pregunta(render
     at = renderizadas[pagina]
     assert len(at.exception) == 0
     p = registro.pagina(pagina)
-    assert at.title[0].value == p.titulo
-    assert p.pregunta in [c.value for c in at.caption]
+    assert pa.titulo(at) == p.titulo
+    assert pa.pregunta_visible(at, p.pregunta)
 
 
 @pytest.mark.parametrize("pagina", PAGINAS)
@@ -93,7 +93,7 @@ def test_cada_pagina_muestra_la_fecha_de_corte_el_estado_de_la_api_y_la_fuente(r
     ("fuentes", ["Fecha de corte", "Construcciones", "Comunas", "Códigos de barrio"]),
 ])
 def test_las_paginas_con_metricas_muestran_las_esperadas(renderizadas, pagina, fragmentos):
-    etiquetas = [m.label for m in renderizadas[pagina].metric]
+    etiquetas = [m.label for m in renderizadas[pagina].metric] + [f.label for f in pa.fichas_html(renderizadas[pagina])]
     for f in fragmentos:
         assert f in etiquetas
 
@@ -107,11 +107,11 @@ def test_la_respuesta_redacta_la_conclusion_con_la_regla(renderizadas):
 
 def test_estratos_marca_la_muestra_baja_con_texto_y_no_ordena(renderizadas):
     at = renderizadas["estratos"]
-    tabla = at.dataframe[0].value
-    bajos = tabla[tabla["Estrato"].str.contains("muestra baja")]["Estrato"].tolist()
-    assert bajos == ["Estrato 1 (muestra baja)", "Estrato 2 (muestra baja)", "Estrato 6 (muestra baja)"]
+    tabla = pa.tablas_html(at)[0]        # la tabla de la interfaz propia (D115): encabezado y una fila por estrato
+    estratos = [fila[0] for fila in tabla[1:]]
+    assert [e for e in estratos if "muestra baja" in e] == ["Estrato 1 (muestra baja)", "Estrato 2 (muestra baja)", "Estrato 6 (muestra baja)"]
     assert "no se ordenan" in pa.textos(at)
-    assert tabla["Estrato"].tolist()[0].startswith("Estrato 1")   # orden natural de los estratos, no un ranking
+    assert estratos[0].startswith("Estrato 1")   # orden natural de los estratos, no un ranking
 
 
 def test_sensibilidades_muestra_seis_escenarios_y_advierte_de_mantel_haenszel(renderizadas):
@@ -200,7 +200,7 @@ def test_si_falla_solo_la_ruta_de_la_pagina_el_resto_sigue_visible(entorno, pagi
     at = pa.pagina(pagina, _con_fallo(entorno, ruta, FALLOS[fallo]))
     _sin_traza(at)
     assert len(at.warning) >= 1
-    assert at.title[0].value == registro.pagina(pagina).titulo
+    assert pa.titulo(at) == registro.pagina(pagina).titulo
     assert any(c.value.startswith("API: en línea") for c in at.caption)
 
 

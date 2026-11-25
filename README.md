@@ -184,7 +184,7 @@ Docker Desktop con WSL2 se usó solo para Airflow y phpMyAdmin (Docker 29.9.3 y 
 │   ├── transform/            # limpieza, llave, JOIN y Gold
 │   ├── load/                 # carga a SQLite y carga relacional a MySQL (esquemas en sql/)
 │   ├── api/                  # API de solo lectura
-│   ├── panel/                # panel Streamlit (páginas en paginas/)
+│   ├── panel/                # panel Streamlit (páginas en paginas/, interfaz propia en frontend/)
 │   ├── common.py             # configuración, manifiesto y sha256
 │   └── logger.py             # registro de ejecución con enmascarado de secretos
 ├── tests/                    # pruebas automáticas
@@ -254,7 +254,7 @@ python main.py --stage all
 python -m pytest -q -p no:cacheprovider
 python scripts\panel\ejecutar_panel.py                  # API en 8000 y panel en 8501; Ctrl+C cierra los dos
 ```
-Qué debe verse: `python main.py --stage all` termina con líneas como `Salida: construcciones=5146 barrios=346 integrado=5146 | cobertura de llave=99.8834% (pasa)` y `Salida: gold_final=5146 filas | kpis_gold=23 filas (6 indicadores) | sensibilidades=107 filas`; las pruebas terminan con `1472 passed`. El pipeline no necesita red ni claves, porque Bronze ya está en el repositorio. El archivo `.env` se crea al configurar el modo completo y nunca se versiona; `.env.example` trae solo los nombres de sus 12 variables y la tabla siguiente dice para qué sirve cada una (nunca valores):
+Qué debe verse: `python main.py --stage all` termina con líneas como `Salida: construcciones=5146 barrios=346 integrado=5146 | cobertura de llave=99.8834% (pasa)` y `Salida: gold_final=5146 filas | kpis_gold=23 filas (6 indicadores) | sensibilidades=107 filas`; las pruebas terminan con `1611 passed`. El pipeline no necesita red ni claves, porque Bronze ya está en el repositorio. El archivo `.env` se crea al configurar el modo completo y nunca se versiona; `.env.example` trae solo los nombres de sus 12 variables y la tabla siguiente dice para qué sirve cada una (nunca valores):
 
 | Variable | Para qué sirve | Obligatoria | Modo |
 |---|---|---|---|
@@ -339,15 +339,67 @@ La API tiene **11 rutas GET**: `/calidad`, `/composicion`, `/comunas`, `/constru
 
 *Figura 4. Muestra la lista de rutas de la API de solo lectura.*
 
-![Página Respuesta del panel, con el recuadro de alcance y la respuesta a la pregunta de negocio](docs/img/readme/panel_respuesta.png)
-
-*Figura 5. Muestra la página Respuesta del panel con su recuadro de alcance.*
+El panel se describe con sus capturas en la subsección [El panel de consulta](#el-panel-de-consulta), al final de esta sección.
 
 **Carga a MySQL:**
 ```powershell
 .\.venv\Scripts\python.exe scripts\cargar_mysql.py --destino mysql
 .\.venv\Scripts\python.exe scripts\mysql\verificar_mysql.py
 ```
+
+### El panel de consulta
+El panel es una interfaz web local, hecha con Streamlit, para leer los resultados sin abrir archivos ni bases de datos. Pide todo a la API de solo lectura, y cada cifra, intervalo, tabla y texto que muestra sale de lo que la API sirve desde Gold, con los mismos formatos y las mismas redacciones que usa el resto del proyecto. No calcula ni modifica datos. Está pensado para que una persona sin formación estadística pueda ir de la pregunta ("¿el estrato cambia la tasa de cambio satelital severo?") a la cifra y a lo que esa cifra permite y no permite decir: cada página abre con su pregunta, un recuadro de alcance y un glosario, y las que presentan resultados traen además una lectura generada en palabras.
+
+![Panel de consulta en la página Estratos (K1): barra lateral con la ilustración de Cali, cabecera con tarjetas de cifras, recuadro de alcance, herramientas de lectura y figura de tasas con intervalos de Wilson](docs/img/readme/panel_principal.png)
+
+*Figura 5. Muestra la página Estratos (K1) del panel, con datos reales de la API: la tasa de cambio satelital severo de cada estrato con su intervalo de Wilson.*
+
+**Qué ofrece.**
+- **Gráficos que se pueden leer de tres maneras.** En Estratos y Comunas, la misma figura se ve como barras, como puntos con intervalos o como tabla; en Sensibilidades y Construcciones los gráficos son nativos, con ayuda emergente al pasar el cursor. Las muestras bajas se distinguen por el trazo discontinuo y por un texto, no solo por el color; los colores de las categorías son los de la paleta Okabe-Ito, pensada para quienes distinguen mal algunos colores.
+- **Gráfico y tabla coordinados.** En Estratos y Comunas, elegir una fila del detalle marca su barra en la figura.
+- **Tarjetas de cifras** con su rótulo, su valor y una línea de detalle.
+- **Ayuda de lectura en cada una de las ocho páginas:** un glosario de la página (de 6 a 12 términos), una guía de lectura de 6 pasos, tres curiosidades, cada una con su fundamento en el método o en el glosario del proyecto, y un aviso opcional que ofrece una curiosidad tras 40 segundos de uso activo de la página (se puede desactivar o cerrar).
+- **Modo presentación,** que deja la página a pantalla completa y sin la barra lateral; Escape o el botón «Salir de presentación» lo cierran.
+- **Exportaciones.** Cada página descarga un archivo HTML autónomo (sin scripts ni recursos externos) con su figura o sus tablas, el alcance, la fecha de corte y la fuente; Construcciones suma un CSV de las filas mostradas, en el que una celda de texto que empezaría una fórmula de hoja de cálculo lleva una comilla simple delante.
+- **Construcciones con filtros y paginación.** Los filtros por comuna, estrato y cambio severo y la página de 50 filas los aplica la API sobre toda la muestra; al elegir una fila de la tabla, «Qué significa esta fila» la cuenta en palabras.
+- **Adaptable y accesible.** Se midió que ninguna de las ocho páginas desborda en pantallas de 1400, 768 y 375 píxeles de ancho, que ningún texto queda por debajo del contraste mínimo de WCAG, que el foco del teclado se ve con un contorno de 3 píxeles y que la interfaz respeta la preferencia de movimiento reducido. Esas medidas son del equipo, sobre Edge; no se probó con un lector de pantalla ni con otros navegadores (ver [docs/panel/accesibilidad_y_respuesta.md](docs/panel/accesibilidad_y_respuesta.md)).
+
+![Página Respuesta del panel con la guía de lectura abierta en el paso cuatro, que cita los conteos reales de la muestra, y las tarjetas de la comparación entre grupos](docs/img/readme/panel_guia_de_lectura.png)
+
+*Figura 6. Muestra la página Respuesta con la guía de lectura abierta en su cuarto paso de seis y debajo las tarjetas de diferencia y razón de tasas.*
+
+**Las ocho páginas.**
+
+| Página | Pregunta que responde | Qué muestra |
+|---|---|---|
+| Respuesta | ¿Se detecta diferencia en la tasa de cambio satelital severo entre los estratos 3 a 5 y 1 a 2? | la diferencia con su intervalo de Newcombe, la razón de tasas, la tasa de cada grupo con su intervalo de Wilson y una lectura generada con sus cautelas |
+| Estratos (K1) | ¿Cuál es la tasa en cada estrato y qué tan segura es? | la tasa de cada estrato con su intervalo, las construcciones con y sin datos satelitales y el detalle por estrato |
+| Comunas (K6) | ¿Cómo se reparte la tasa por comuna y dónde se concentran los estratos 1 y 2? | la tasa de las siete comunas con su intervalo, su detalle leído en palabras y la composición por grupo de estrato |
+| Sensibilidades (S0 a S5) | ¿Cambia la conclusión si se cambia el filtro de la llave o la definición de daño? | la diferencia de cada escenario con su intervalo, la tabla de escenarios y la razón ajustada por comuna de Mantel-Haenszel con sus avisos |
+| Concentración (K3 y K4) | ¿Se concentran los casos en pocos barrios y se asocia el estrato con la tasa por barrio? | los barrios con más casos severos, su peso en el total y la correlación de Spearman con su valor p de permutación |
+| Calidad de la llave | ¿Qué tan confiable es la unión entre las construcciones y el estrato del barrio? | la cobertura de la llave, el estrato válido, el nombre validado y los códigos de barrio por revisar |
+| Construcciones | ¿Qué construcciones hay detrás de las cifras y dónde están? | la tabla paginada con filtros y selección de fila, la descarga del CSV y la dispersión de ubicaciones |
+| Fuentes y sistema | ¿De dónde salen los datos, con qué licencia y qué no se puede concluir? | la fecha de corte y la población, las fuentes y sus licencias, el estado del sistema y los ocho puntos de «qué no se puede concluir» |
+
+![Página Construcciones del panel con los filtros, la tabla paginada, una fila elegida y su lectura en palabras](docs/img/readme/panel_construcciones.png)
+
+*Figura 7. Muestra la página Construcciones con la fila 2 de la primera página elegida y su lectura en palabras bajo la tabla.*
+
+![Tres capturas del panel en una pantalla de 390 píxeles de ancho: la página Estratos, su figura de tasas y la tabla de Construcciones con sus filtros](docs/img/readme/panel_movil.png)
+
+*Figura 8. Muestra el panel en una pantalla de móvil: el inicio de Estratos, su figura de tasas y los filtros y la tabla de Construcciones.*
+
+Las capturas de las ocho páginas, de las herramientas de lectura y de la vista de móvil están en la [galería del panel](docs/panel/galeria.md), con la forma en que se obtuvieron. Todas son capturas del navegador sobre el panel real con los datos de la API (fecha de corte 2026-09-02), no maquetas.
+
+**Cómo abrirlo.** Hace falta lo mismo que para el modo mínimo: Python 3.13 y las dependencias de `requirements.txt` (entre ellas Streamlit 1.67.0 y Altair 6.3.0); no necesita Docker ni MySQL.
+```powershell
+.\.venv\Scripts\python.exe scripts\panel\ejecutar_panel.py
+```
+El lanzador arranca la API en `http://127.0.0.1:8000` y el panel en `http://127.0.0.1:8501`, imprime las dos direcciones y cierra ambos con Ctrl+C. Con `--almacenamiento mysql` la API sirve desde MySQL, y `--puerto-api` y `--puerto-panel` cambian los puertos. Abra la dirección del panel en cualquier navegador moderno; las pruebas de pantalla del equipo se hicieron en Edge.
+
+**Cómo está hecho y qué no hace.** La interfaz propia (HTML, CSS y JavaScript) vive solo en `src/panel/frontend/`, que es el único lugar donde se permite (decisiones D115 a D117 en [docs/DECISIONES.md](docs/DECISIONES.md)); el JavaScript solo maneja la guía, las curiosidades, el aviso, el modo presentación y la selección, escribe todo texto con `textContent` y no calcula nada científico. Los cálculos viven en el pipeline y la API; el panel aplica los mismos formatos y redacciones a lo que la API entrega. Las tablas, los avisos, los filtros y los gráficos nativos siguen siendo componentes de Streamlit. Más detalle en [docs/panel/arquitectura_panel.md](docs/panel/arquitectura_panel.md) y en la [guía de uso](docs/panel/guia_de_uso.md).
+
+**Advertencias que el panel repite en cada página.** El cambio satelital severo es un proxy de daño y no una evaluación estructural; las tasas describen esta muestra, que definieron los polígonos de afectación de 7 comunas, y no son prevalencias de Cali; el estrato es de 2015 y se asignó por lados de manzana; un grupo marcado como muestra baja se muestra pero no se ordena frente a otros; y una asociación no establece causalidad. El panel no se ha probado con personas usuarias.
 
 ## 9. Diseño de datos y contratos
 **Bronze.** Cada petición se guarda byte a byte y `data/bronze/manifest.jsonl` registra una línea por archivo (8 en total) con `source_id`, `url`, `params`, `fetched_at_utc`, `http_status`, `rows`, `bytes`, `sha256` y `path`. Los archivos se abren en modo exclusivo, así que ninguno se sobrescribe. Las tres fuentes y sus términos están en [docs/bronze/catalogo_fuentes_metadatos.md](docs/bronze/catalogo_fuentes_metadatos.md).
@@ -360,7 +412,7 @@ La API tiene **11 rutas GET**: `/calidad`, `/composicion`, `/comunas`, `/constru
 
 ![phpMyAdmin con las siete tablas de la base sismo_cali y sus filas, abierto con la cuenta de solo lectura](docs/img/readme/phpmyadmin_tablas.png)
 
-*Figura 6. Muestra las siete tablas de MySQL con sus filas.*
+*Figura 9. Muestra las siete tablas de MySQL con sus filas.*
 
 **Contratos.** No usamos un registro de esquemas externo. Los contratos son cuatro y cada uno tiene pruebas:
 
@@ -387,7 +439,7 @@ La API tiene **11 rutas GET**: `/calidad`, `/composicion`, `/comunas`, `/constru
 | `silver.muestra_baja_severos` | 30 | severos por debajo de los cuales un grupo se marca de muestra baja |
 
 ## 10. Calidad y pruebas
-Hay **1472 pruebas** automáticas, sin red ni servidor MySQL. Se ejecutan con `python -m pytest -q -p no:cacheprovider` y deben terminar con `1472 passed` en un clon con Git instalado; en un clon con Git no se omite ninguna; en el zip descomprimido con Git se omite 1 (`test_sin_hallazgos_en_el_historial_de_git`, porque el zip no trae historial) y sin Git se omiten 10: esa, 8 que arman un repositorio temporal y 1 que arma el zip y corre las demás. La lista está en la sección 3.1 de [docs/instalacion/README.md](docs/instalacion/README.md), medida con 1.007 pruebas ([EV-096](docs/evidencias/auditoria/EV-096_independencia_repetida_y_omisiones.txt)).
+Hay **1611 pruebas** automáticas, sin red ni servidor MySQL. Se ejecutan con `python -m pytest -q -p no:cacheprovider` y deben terminar con `1611 passed` en un clon con Git instalado; en un clon con Git no se omite ninguna; en el zip descomprimido con Git se omite 1 (`test_sin_hallazgos_en_el_historial_de_git`, porque el zip no trae historial) y sin Git se omiten 10: esa, 8 que arman un repositorio temporal y 1 que arma el zip y corre las demás. La lista está en la sección 3.1 de [docs/instalacion/README.md](docs/instalacion/README.md), medida con 1.007 pruebas ([EV-096](docs/evidencias/auditoria/EV-096_independencia_repetida_y_omisiones.txt)).
 
 - **Qué cubren:** el pipeline (llaves, duplicados, tipos, Wilson, Newcombe, Mantel-Haenszel), la reproducción byte a byte de la línea base, la API (estructura, solo GET, sin escritura), el panel (las ocho páginas con la API real en memoria, formato de cifras, aislamiento), la carga relacional (idempotencia, historial, reversión, integridad referencial), el DAG y los compose analizados como texto, el empaquetado y la gestión de secretos.
 - **Las cifras de los documentos se prueban contra las salidas.** Este README, el documento de resultados y la guía de instalación afirman cifras; una prueba extrae cada una del texto y la compara con la medida. Si alguien edita una cifra, o la deja desactualizada en un solo lugar, la prueba falla.
@@ -459,7 +511,7 @@ Docker se usa solo para Airflow y phpMyAdmin; el pipeline, la API y el panel cor
 
 ![Intento de INSERT rechazado por MySQL para la cuenta de solo lectura en phpMyAdmin](docs/img/readme/phpmyadmin_insert_rechazado.png)
 
-*Figura 7. Muestra que MySQL rechaza una escritura hecha con la cuenta de solo lectura.*
+*Figura 10. Muestra que MySQL rechaza una escritura hecha con la cuenta de solo lectura.*
 
 **Datos de personas.** En ninguna capa hay nombres, documentos ni datos de contacto de personas. Trabajamos con huellas de construcciones y con el estrato por barrio: en Bronze vienen las columnas catastrales que publica la fuente, entre ellas identificadores de predio (`PREDIO`, `NUMEPRED` e `ID_PREDIO`); Silver los descarta (regla R10) y Gold conserva las coordenadas del centroide de cada construcción. Una huella identifica un lugar y no a quien vive allí; no evaluamos si, cruzada con otras fuentes, podría asociarse a una persona, y no hacemos afirmaciones jurídicas.
 
@@ -493,7 +545,7 @@ Con 8 GB de RAM no conviene encender todo a la vez; esa configuración no está 
 **Costos en la nube: no aplican.** Todo corre en una máquina local, así que no hay precios que medir. La estructura de costos, con las fórmulas y los precios como parámetros vacíos, está en [docs/finanzas/estructura_costos.md](docs/finanzas/estructura_costos.md); no inventamos ninguna cifra monetaria.
 
 ## 16. Decisiones de arquitectura
-Las decisiones, con sus alternativas, su razón y su riesgo, están en [docs/DECISIONES.md](docs/DECISIONES.md) (D1 a D114). Las que más condicionan el diseño:
+Las decisiones, con sus alternativas, su razón y su riesgo, están en [docs/DECISIONES.md](docs/DECISIONES.md) (D1 a D118). Las que más condicionan el diseño:
 
 | Decisión | Qué decidimos | Por qué |
 |---|---|---|

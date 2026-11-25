@@ -1,0 +1,36 @@
+/* Exclusivo del piloto. El marco expone las clases correspondientes a las claves públicas. */
+.st-key-lienzo{--papel:#fff;--tinta:#172a25;--acento:#087a6b;--linea:#cddbd3;--leve:#f6f9f7;--sombra:0 2px 6px #0e211b09}
+.prueba-v3{font-size:15px;line-height:1.5;font-variant-numeric:tabular-nums}
+.prueba-v3 .barra{border:1px solid var(--linea);border-radius:12px 12px 0 0;padding:8px 18px;gap:8px}
+.prueba-v3 .barra nav{font-size:13px;color:#425c53}.prueba-v3 .corte{border:0;background:var(--leve);padding:4px 10px}
+.prueba-v3 .titular{background:#fff;border:1px solid var(--linea);border-top:0;border-radius:0 0 12px 12px;padding:16px 20px;margin:0 0 12px;gap:16px;box-shadow:var(--sombra)}
+.prueba-v3 h1{font-size:clamp(26px,2.2vw,38px);font-weight:680;letter-spacing:-.045em}
+.prueba-v3 .titular p{max-width:72ch;font-size:15px}.prueba-v3 .kpis{gap:0;align-self:stretch;align-items:center}
+.prueba-v3 .kpis>div{border:0;border-left:1px solid var(--linea);border-radius:0;padding:2px 14px;text-align:left;line-height:1.35}
+.prueba-v3 .kpis b{font-size:24px;letter-spacing:-.035em}
+.prueba-v3 .alc{border:0;border-left:3px solid var(--acento);border-radius:0 6px 6px 0;background:#e4f3ed;margin:0;padding:9px 16px;font-size:14px}
+.prueba-v3 .herramientas{margin:8px 0 12px;padding:4px 8px 4px 14px;background:#fff;border:1px solid var(--linea);border-radius:8px}
+.prueba-v3 .herramientas>div{gap:4px}.prueba-v3 .herramientas button[data-accion=presentar]{border-color:#bdcdc3}.prueba-v3 .herramientas .accion{background:#075c50;color:white;margin-left:2px}
+.prueba-v3 .herramientas .accion:hover{background:#064d43}.prueba-v3 button,.prueba-v3 .accion{min-height:32px}
+.prueba-v3 .panel,.st-key-contenido_analitico{border:1px solid var(--linea);border-radius:12px;box-shadow:var(--sombra)}
+.prueba-v3 .panel{padding:clamp(16px,1.4vw,24px)}
+.prueba-v3 .panel h2,.st-key-contenido_analitico h2{font-size:21px;letter-spacing:-.032em}
+.prueba-v3 .leyenda{background:var(--leve);padding:6px 10px;border-radius:5px}
+.prueba-v3 .rotulos{font-size:11px;letter-spacing:.025em}.prueba-v3 .dato{border-bottom:1px solid #e8eeea}
+.prueba-v3 .ayuda{max-width:min(410px,70vw);z-index:6}.prueba-v3 .ayuda strong{color:#164e41}
+.prueba-v3 .fichas{gap:0;background:var(--leve);border:1px solid var(--linea);border-radius:8px;margin:12px 0}
+.prueba-v3 .ficha{padding:12px 16px;background:transparent;border:0;border-radius:0;font-size:14px;font-weight:600}
+.prueba-v3 .ficha+.ficha{border-left:1px solid var(--linea)}.prueba-v3 .ficha b{font-size:clamp(23px,1.85vw,33px);line-height:1.25;letter-spacing:-.04em;margin:4px 0}
+.prueba-v3 .ficha small{font-size:13px;font-weight:400}.prueba-v3 .balance .ficha:first-child b{color:#075c50}
+.prueba-v3 .balance,.prueba-v3 .evidencia{margin-bottom:12px}.prueba-v3 .balance p,.prueba-v3 .evidencia p{margin-top:4px}
+.clave-tabla{margin:6px 0;font-size:14px;color:#425c53}.clave-tabla summary,.lectura-fila summary{cursor:pointer;color:#075c50}
+.lectura-fila p{white-space:normal;min-width:110px;max-width:220px;font-weight:400;padding:6px 0}
+.prueba-v3 .aviso-v3{position:static;margin:0 0 12px;max-width:none;box-shadow:none;display:flex;align-items:center;gap:8px 16px;flex-wrap:wrap}
+.prueba-v3 .aviso-v3>div{margin-left:auto}.prueba-v3 .cuaderno h2:focus-visible{outline-offset:2px;width:fit-content}
+.st-key-menu a{border-radius:8px;padding-block:6px}.st-key-menu a[aria-current=page]{box-shadow:inset 3px 0 #86d8bd}
+.st-key-contenido_analitico{padding:clamp(16px,1.6vw,28px)}
+.st-key-lienzo.exposicion-local{position:fixed!important;inset:0;z-index:99999;overflow:auto;display:block;height:100dvh;width:100vw;padding:clamp(12px,3vw,48px) max(16px,calc((100vw - 1500px)/2));background:#eff4f1}
+.exposicion-local .dato{min-height:48px}.exposicion-local .prueba-v3,.exposicion-local .st-key-contenido_analitico{margin:auto;max-width:1500px}
+@media(max-width:850px){.prueba-v3 .titular{padding:12px 16px}.prueba-v3 .kpis>div:first-child{border-left:0;padding-left:0}.prueba-v3 .kpis>div{padding-inline:12px}.prueba-v3 .rotulos{font-size:10px}}
+@media(max-width:650px){.prueba-v3 .herramientas{align-items:start}.prueba-v3 .herramientas>div{flex-wrap:wrap}.prueba-v3 .fichas{grid-template-columns:1fr}.prueba-v3 .ficha+.ficha{border-left:0;border-top:1px solid var(--linea)}.prueba-v3 .aviso-v3>div{margin-left:0}.prueba-v3 .barra{padding:8px}.prueba-v3 .glos>div{width:min(300px,72vw);left:auto;right:0}.prueba-v3 .ayuda-ic p{right:0;width:min(235px,74vw)}}
+

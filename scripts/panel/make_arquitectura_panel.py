@@ -39,7 +39,7 @@ def main():
     ax.add_patch(FancyBboxPatch((0.2, 0.4), 25.6, 10.6, boxstyle="round,pad=0.02,rounding_size=0.15", facecolor="#F7F8FA", edgecolor="#C5CBD3", linewidth=1))
     ax.text(0.5, 10.75, "Una sola máquina (127.0.0.1): nada se publica fuera del equipo", fontsize=8.5, color="#52606D", va="top")
     caja(ax, 0.6, 3.6, 3.6, 5.2, "Navegador", "persona usuaria\n\nlee páginas,\nfiltra y descarga\nel CSV de lo\nque se muestra", AZUL)
-    caja(ax, 5.4, 3.6, 5.0, 5.2, "Streamlit (src/panel)", "app.py: navegación\nocho páginas: render(api)\ncomponentes y redacción\nregistro único de\ncomponentes\nsin HTML propio ni\nrecursos externos", VERDE)
+    caja(ax, 5.4, 3.6, 5.0, 5.2, "Streamlit (src/panel)", "app.py: navegación\nocho páginas: render(api)\ncomponentes y redacción\nregistro único de\ncomponentes\nfrontend/: HTML, CSS y JS\nsolo aquí, sin recursos\nexternos (D115 a D117)", VERDE)
     caja(ax, 11.6, 3.6, 3.8, 5.2, "Cliente HTTP", "cliente_api.py\nsolo GET, caché con\ntiempo de vida,\nerrores tipados en\nespañol, un reintento\nde conexión", VERDE)
     caja(ax, 16.6, 3.6, 4.0, 5.2, "API (src/api)", "11 rutas GET\nerrores JSON uniformes\nsin escritura\n\nrepositorio con\ninterfaz común", AMBAR)
     caja(ax, 21.8, 6.4, 3.7, 2.4, "SQLite", "etl_sismo.db\nmodo solo lectura", GRIS)

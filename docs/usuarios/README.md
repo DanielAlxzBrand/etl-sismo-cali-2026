@@ -4,6 +4,8 @@
 
 > **Dónde estamos, dicho sin rodeos.** Preparamos todo lo que el equipo necesita para hacer sesiones con personas usuarias y evaluamos el panel por dentro con las heurísticas de Nielsen, pero **todavía no hubo ninguna sesión con personas** (0 sesiones reales; hubo 2 sesiones simuladas, en una sola ronda, que no son sesiones reales): no hay participantes reales, tiempos ni respuestas medidas. Los ítems 6.1, 6.2, 6.3, 6.5 y 7.4 están en «Cumple con matiz» solo por la decisión D111 (evidencia simulada, sin personas reales); los hechos externos siguen sin ocurrir y nunca los marcamos «Cumple».
 
+> **Sobre las capturas y los registros de este componente.** La evaluación heurística, el registro de fricción, las capturas de EV-054 y EV-073 a EV-081 y la guía de las sesiones simuladas describen el panel que existía cuando se registraron, antes de la interfaz propia de D115 a D117. No se reescriben; lo que muestra el panel vigente está en la [galería del panel](../panel/galeria.md).
+
 ## Qué hay en esta carpeta
 | Archivo o carpeta | Para qué sirve | Estado |
 |---|---|---|

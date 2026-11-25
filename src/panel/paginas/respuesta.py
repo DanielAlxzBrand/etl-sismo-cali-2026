@@ -1,7 +1,13 @@
-"""Página «Respuesta»: pregunta de negocio, resultado de K2, frase generada y resumen de K5."""
+"""Página «Respuesta»: pregunta de negocio, resultado de K2, frase generada y resumen de K5.
+
+Desde D115 se dibuja con la interfaz propia (tarjetas, paneles, glosario, guía, curiosidades, modo presentación y exportación). Las cifras, los rótulos, los avisos y la frase generada son los de siempre.
+"""
 import streamlit as st
 
 from src.panel import claves, componentes, formato, redaccion
+from src.panel.frontend import lectura, vista
+from src.panel.frontend import respuesta as vista_respuesta
+from src.panel.frontend.marco import dibujar, marco
 from src.panel.paginas._comun import avisar_falta, por_grupo, texto_ic
 
 ID = "respuesta"
@@ -13,13 +19,32 @@ def _detalle(fila):
     return f"{formato.numero(fila['numerador'])} severos de {formato.numero(fila['denominador'])} · Wilson {texto_ic(fila['ic95_inf'], fila['ic95_sup'])}"
 
 
-def render(api):
-    """Dibuja la página «Respuesta»: las cuatro cifras de K2, la frase generada y el resumen de K5.
+def tarjetas_k2(t35, t12, dif, razon):
+    """Las cifras de K2 como `(etiqueta, valor, detalle)`: las dos tasas, la diferencia con su intervalo de Newcombe y la razón."""
+    etiqueta = "Tasa 1-2" + (f" ({componentes.ETIQUETA_BAJA})" if t12["muestra_baja"] else "")
+    tasas = [("Tasa 3-5", formato.porcentaje(t35["valor"]), _detalle(t35)), (etiqueta, formato.porcentaje(t12["valor"]), _detalle(t12))]
+    comparacion = [("Diferencia (3-5 menos 1-2)", formato.puntos_porcentuales(dif["valor"]), "Intervalo de Newcombe al 95 %: " + formato.intervalo(dif["ic95_inf"], dif["ic95_sup"], como="pp")),
+                   ("Razón de tasas (3-5 / 1-2)", formato.razon(razon["valor"]), "La razón no trae intervalo en Gold.")]
+    return tasas, comparacion
 
-    Las cuatro tarjetas de K2 van de dos en dos (F-01, D87) porque en una sola fila, a 1024 px, Streamlit recortaba «6,33 %» y «+0,49 pp». No decide ninguna conclusión: la frase la arma `redaccion`.
-    """
-    def cuerpo():
+
+def tarjetas_k5(filas):
+    """Las cifras de K5 presentes como `(etiqueta, valor, detalle)` y los rótulos de las que la API no trajo."""
+    tarjetas, faltan = [], []
+    for grupo, etiqueta in ETIQUETAS_K5.items():
+        fila = por_grupo(filas, claves.K5, grupo)
+        if fila:
+            tarjetas.append((etiqueta, formato.porcentaje(fila["valor"], DECIMALES_K5[grupo]), f"{formato.numero(fila['numerador'])} de {formato.numero(fila['denominador'])}"))
+        else:
+            faltan.append(etiqueta)
+    return tarjetas, faltan
+
+
+def render(api):
+    """Dibuja la página «Respuesta»: las cuatro cifras de K2, la frase generada y el resumen de K5. No decide ninguna conclusión: la frase la arma `redaccion`."""
+    def cuerpo(contexto):
         r = api("/kpis")
+        dibujar(vista.cabecera(contexto.pagina, contexto.grupo, contexto.corte, contexto.metadata))
         if componentes.fallo(r):
             return
         filas = r.datos
@@ -28,28 +53,17 @@ def render(api):
         if not (t35 and t12 and dif and razon):
             avisar_falta("el indicador K2 completo")
             return
-        st.subheader("Estratos 3-5 frente a 1-2")
-        etiqueta = "Tasa 1-2" + (f" ({componentes.ETIQUETA_BAJA})" if t12["muestra_baja"] else "")
-        componentes.tarjetas([
-            ("Tasa 3-5", formato.porcentaje(t35["valor"]), _detalle(t35)),
-            (etiqueta, formato.porcentaje(t12["valor"]), _detalle(t12)),
-            ("Diferencia (3-5 menos 1-2)", formato.puntos_porcentuales(dif["valor"]), "Intervalo de Newcombe al 95 %: " + formato.intervalo(dif["ic95_inf"], dif["ic95_sup"], como="pp")),
-            ("Razón de tasas (3-5 / 1-2)", formato.razon(razon["valor"]), "La razón no trae intervalo en Gold."),
-        ])
-        st.caption(f"Intervalo de la diferencia (Newcombe): {formato.intervalo(dif['ic95_inf'], dif['ic95_sup'], como='pp')}")
+        tasas, comparacion = tarjetas_k2(t35, t12, dif, razon)
+        intervalo = f"Intervalo de la diferencia (Newcombe): {formato.intervalo(dif['ic95_inf'], dif['ic95_sup'], como='pp')}"
         solapan = redaccion.se_solapan(t35["ic95_inf"], t35["ic95_sup"], t12["ic95_inf"], t12["ic95_sup"])
-        st.markdown("**Lectura generada.** " + redaccion.conclusion_diferencia(dif["valor"], dif["ic95_inf"], dif["ic95_sup"], solapan, bool(t12["muestra_baja"])))
+        frase = redaccion.conclusion_diferencia(dif["valor"], dif["ic95_inf"], dif["ic95_sup"], solapan, bool(t12["muestra_baja"]))
         cotas = redaccion.conclusion_cotas([t35, t12])
-        if cotas:
-            st.markdown(cotas)
-        st.subheader("Calidad de la unión (K5)")
-        for col, grupo in zip(st.columns(len(ETIQUETAS_K5)), ETIQUETAS_K5):
-            fila = por_grupo(filas, claves.K5, grupo)
-            with col:
-                if fila:
-                    componentes.tarjeta(ETIQUETAS_K5[grupo], formato.porcentaje(fila["valor"], DECIMALES_K5[grupo]),
-                                        f"{formato.numero(fila['numerador'])} de {formato.numero(fila['denominador'])}")
-                else:
-                    avisar_falta(ETIQUETAS_K5[grupo])
+        k5, faltan = tarjetas_k5(filas)
+        html = vista_respuesta.cuerpo(comparacion, intervalo, frase, cotas, tasas, k5)
+        documento = vista_respuesta.documento(contexto.pagina, contexto.grupo, contexto.corte, contexto.metadata, html, frase)
+        lectura.herramientas(ID, contexto.pagina.titulo, vista.guia(ID, vista_respuesta.ejemplo(t35, t12)), vista.curiosidades(ID), documento, "respuesta_informe.html", "Exportar informe")
+        dibujar(html)
+        for etiqueta in faltan:
+            avisar_falta(etiqueta)
 
-    componentes.marco(api, ID, cuerpo)
+    marco(api, ID, cuerpo)
