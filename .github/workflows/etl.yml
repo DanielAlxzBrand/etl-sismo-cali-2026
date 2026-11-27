@@ -11,7 +11,7 @@
 # Dónde corre: solo en windows-latest, que es el sistema en el que probamos todo el proyecto.
 # En Linux no lo hemos probado, por eso no está en este flujo.
 #
-# Estado: este archivo todavía no ha corrido en GitHub. Hasta que lo haga no afirmamos que pasa.
+# Estado: ejecutado con éxito en GitHub Actions; el historial del flujo en GitHub tiene el detalle de cada ejecución.
 name: etl
 
 on:

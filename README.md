@@ -545,7 +545,7 @@ Con 8 GB de RAM no conviene encender todo a la vez; esa configuración no está 
 **Costos en la nube: no aplican.** Todo corre en una máquina local, así que no hay precios que medir. La estructura de costos, con las fórmulas y los precios como parámetros vacíos, está en [docs/finanzas/estructura_costos.md](docs/finanzas/estructura_costos.md); no inventamos ninguna cifra monetaria.
 
 ## 16. Decisiones de arquitectura
-Las decisiones, con sus alternativas, su razón y su riesgo, están en [docs/DECISIONES.md](docs/DECISIONES.md) (D1 a D119). Las que más condicionan el diseño:
+Las decisiones, con sus alternativas, su razón y su riesgo, están en [docs/DECISIONES.md](docs/DECISIONES.md) (D1 a D120). Las que más condicionan el diseño:
 
 | Decisión | Qué decidimos | Por qué |
 |---|---|---|
