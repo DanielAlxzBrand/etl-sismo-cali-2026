@@ -611,6 +611,7 @@ def test_las_insignias_van_bajo_el_titulo_y_hay_enlaces_rapidos():
     assert "todavía no ha corrido" not in README and "pipeline passing" not in README.lower()
     flujo = (ROOT / ".github" / "workflows" / "etl.yml").read_text(encoding="utf-8")   # lo que el README afirma del flujo coincide con el archivo
     assert re.search(r"(?m)^name: etl$", flujo) and "branches: [main]" in flujo and "runs-on: windows-latest" in flujo and "solo en `windows-latest`" in README
+    assert "se ve sin iniciar sesión (sección 12)" in README and "si este no es público" not in README and "al menos tres ejecuciones exitosas al 2026-11-24" in README
 
 
 def test_una_insignia_fuera_de_la_cabecera_se_detecta():
