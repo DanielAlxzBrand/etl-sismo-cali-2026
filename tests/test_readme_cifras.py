@@ -606,7 +606,11 @@ def test_las_insignias_van_bajo_el_titulo_y_hay_enlaces_rapidos():
     assert "## 2. Insignias" in README and "](docs/img/insignias/" not in README.split("## 2. Insignias")[1], "las insignias no se repiten en la sección 2"
     for destino in ("docs/README.md", "docs/gold/resultados.md", "data/", "docs/instalacion/README.md"):
         assert f"]({destino})" in cabecera, destino
-    assert "No hay insignia del flujo de integración continua porque todavía no ha corrido en GitHub" in README and "pipeline passing" not in README.lower()
+    url = "https://github.com/DanielAlxzBrand/etl-sismo-cali-2026/actions/workflows/etl.yml"
+    assert f"[![Flujo etl de GitHub Actions]({url}/badge.svg?branch=main)]({url})" in cabecera, "la insignia oficial del flujo, con su rama y su enlace al flujo"
+    assert "todavía no ha corrido" not in README and "pipeline passing" not in README.lower()
+    flujo = (ROOT / ".github" / "workflows" / "etl.yml").read_text(encoding="utf-8")   # lo que el README afirma del flujo coincide con el archivo
+    assert re.search(r"(?m)^name: etl$", flujo) and "branches: [main]" in flujo and "runs-on: windows-latest" in flujo and "solo en `windows-latest`" in README
 
 
 def test_una_insignia_fuera_de_la_cabecera_se_detecta():
@@ -647,7 +651,7 @@ def test_las_fechas_de_descarga_y_de_corte_del_readme_son_las_del_manifiesto_y_d
 
 def test_las_ramas_citadas_en_el_readme_existen_en_el_repositorio():
     citadas = set(re.findall(r"la rama `(\w+)`", README))
-    assert citadas == {"desarrollo", "master"} and "integra a `main`" not in README
+    assert citadas == {"desarrollo", "master"} and "integra a `main`" not in README and "No hay rama `main`" not in README
     if not (ROOT / ".git").exists():
         return   # el zip no trae historial: sin repositorio no hay ramas que comprobar
     # en un clon solo la rama activa es local y las demás son ramas de seguimiento («origin/master»): se aceptan las dos

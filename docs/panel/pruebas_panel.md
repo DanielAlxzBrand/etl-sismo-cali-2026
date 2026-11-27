@@ -45,7 +45,7 @@ La revisión visual de las primeras capturas automatizadas mostró texto cortado
 ## 5. Verificaciones pendientes y límites conocidos de la interfaz integrada
 Lo siguiente no se ha hecho y no debe darse por probado:
 - **La suite completa en un clon limpio y sobre el zip armado desde la rama** una vez incorporada; las 1612 pruebas se recolectan, y la última corrida completa registrada es la de la integración, en el árbol de trabajo.
-- **La primera corrida del flujo de integración continua de GitHub Actions** (`etl.yml`), que todavía no ha corrido.
+- **El flujo de integración continua de GitHub Actions** (`etl.yml`) corrió con éxito tres veces en `windows-latest` (D120); no se ha ejecutado en otros sistemas operativos.
 - **El panel con la interfaz propia sirviendo desde MySQL** (modo completo): la equivalencia entre SQLite y MySQL de [EV-053](../evidencias/panel/EV-053_equivalencia_almacenes.txt) es de la versión anterior del panel; las pruebas de la integración usan SQLite.
 - **Otros navegadores y lectores de pantalla:** las medidas de contraste, desbordamiento, teclado y movimiento reducido son del equipo y de Edge; no hay lectura con un lector de pantalla ni opinión de personas usuarias.
 - **El título del gráfico de Sensibilidades** se corrigió (D119): su primera línea quedaba recortada por el borde superior del gráfico y hoy se ve completa a 1440, 768 y 375 píxeles ([EV-129](../evidencias/frontend/EV-129_titulo_del_grafico_de_sensibilidades.txt)); una prueba fija el relleno superior que lo permite.

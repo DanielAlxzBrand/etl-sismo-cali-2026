@@ -1,6 +1,6 @@
 # ETL medallion del sismo M7.4 de Cali (10 de agosto de 2026)
 
-![Python 3.13](docs/img/insignias/python.svg) ![Airflow 3.3.2](docs/img/insignias/airflow.svg) ![MySQL 8.0](docs/img/insignias/mysql.svg) ![Pruebas automáticas](docs/img/insignias/pruebas.svg) ![Cobertura de src](docs/img/insignias/cobertura.svg) ![Licencia MIT](docs/img/insignias/licencia.svg) ![Madurez: MVP académico](docs/img/insignias/madurez.svg) ![Última verificación](docs/img/insignias/verificacion.svg)
+![Python 3.13](docs/img/insignias/python.svg) ![Airflow 3.3.2](docs/img/insignias/airflow.svg) ![MySQL 8.0](docs/img/insignias/mysql.svg) ![Pruebas automáticas](docs/img/insignias/pruebas.svg) ![Cobertura de src](docs/img/insignias/cobertura.svg) ![Licencia MIT](docs/img/insignias/licencia.svg) ![Madurez: MVP académico](docs/img/insignias/madurez.svg) ![Última verificación](docs/img/insignias/verificacion.svg) [![Flujo etl de GitHub Actions](https://github.com/DanielAlxzBrand/etl-sismo-cali-2026/actions/workflows/etl.yml/badge.svg?branch=main)](https://github.com/DanielAlxzBrand/etl-sismo-cali-2026/actions/workflows/etl.yml)
 
 [Documentación](docs/README.md) · [Análisis](docs/gold/resultados.md) · [Datos](data/) · [Guía de instalación](docs/instalacion/README.md) · [Issues](https://github.com/DanielAlxzBrand/etl-sismo-cali-2026/issues)
 
@@ -9,7 +9,7 @@ Un pipeline ETL con capas Bronze, Silver y Gold que junta una capa satelital de 
 ## 1. Descripción y madurez
 Estudiamos, con un indicador satelital, el cambio visible en **5.146 construcciones de 7 comunas de Cali** tras el sismo de magnitud 7,4 del 10 de agosto de 2026, y lo comparamos entre los estratos 1 a 6 del barrio. El proyecto descarga las fuentes abiertas, las guarda sin tocarlas (Bronze), las limpia y las une (Silver), calcula indicadores con intervalos de confianza (Gold) y los entrega por una API de solo lectura, un panel y dos bases de datos. El análisis completo, con su lectura y sus límites, está en [docs/gold/resultados.md](docs/gold/resultados.md).
 
-**Madurez: MVP académico, ejecutable en local.** Lo que existe y se probó: el pipeline completo, la API, el panel, la carga a MySQL, el DAG en Airflow, phpMyAdmin de solo lectura y el repositorio publicado en GitHub (privado por ahora). Lo que existe pero todavía no se probó: el flujo de integración continua de GitHub Actions, que aún no ha corrido. Lo que no existe: sesiones con personas usuarias (aún sin sesiones reales), despliegue en un servidor y alertas externas. Todo se probó en Windows 11 con PowerShell y Python 3.13.0; en otros sistemas no lo probamos.
+**Madurez: MVP académico, ejecutable en local.** Lo que existe y se probó: el pipeline completo, la API, el panel, la carga a MySQL, el DAG en Airflow, phpMyAdmin de solo lectura, el repositorio publicado en GitHub (privado por ahora) y el flujo de integración continua de GitHub Actions, que corrió con éxito tres veces (sección 12). Lo que no existe: sesiones con personas usuarias (aún sin sesiones reales), despliegue en un servidor y alertas externas. Todo se probó en Windows 11 con PowerShell y Python 3.13.0; en otros sistemas no lo probamos.
 
 **Resumen del resultado.** Con este proxy y esta muestra no se detecta diferencia en la proporción de construcciones con cambio satelital severo (severo estricto, proxy de daño) entre los estratos 3 a 5 y 1 a 2 (6,33 % frente a 5,84 %; diferencia +0,49 puntos porcentuales). Esto no equivale a decir que el estrato no influye: el indicador es un proxy y la muestra la definieron los polígonos de afectación.
 
@@ -37,7 +37,7 @@ Los tres recuadros siguientes son los mismos de [docs/gold/resultados.md](docs/g
 Las cifras de la evaluación estructural son cifras reportadas por la prensa citando a la Alcaldía; no las cotejamos con una fuente oficial descargable. La unidad (predios) no es la nuestra (construcciones), por lo que no las comparamos ni las mezclamos con ninguna cifra de Gold.
 
 ## 2. Insignias
-Las insignias están bajo el título. Cada valor sale de un archivo del repositorio y una prueba comprueba que coincida: Python de `requirements.txt`, Airflow del `Dockerfile` de `orquestacion/`, el número de pruebas de la recolección de pytest, la licencia de `LICENSE` y la fecha de la última verificación del manifiesto de evidencias. La última verificación es la fecha de [EV-100](docs/evidencias/modo_completo/EV-100_guia_seguida_desde_un_zip_nuevo.txt), la guía del modo completo seguida desde un zip nuevo; no es una ejecución automática. La cobertura es la de `src/` sin red, medida con la suite completa ([EV-114](docs/evidencias/readme/EV-114_cobertura_de_src_repetida.txt)); es una cota inferior porque parte del código se ejecuta en subprocesos que la medición no sigue. No hay insignia del flujo de integración continua porque todavía no ha corrido en GitHub (sección 12).
+Las insignias están bajo el título. Cada valor sale de un archivo del repositorio y una prueba comprueba que coincida: Python de `requirements.txt`, Airflow del `Dockerfile` de `orquestacion/`, el número de pruebas de la recolección de pytest, la licencia de `LICENSE` y la fecha de la última verificación del manifiesto de evidencias. La última verificación es la fecha de [EV-100](docs/evidencias/modo_completo/EV-100_guia_seguida_desde_un_zip_nuevo.txt), la guía del modo completo seguida desde un zip nuevo; no es una ejecución automática. La cobertura es la de `src/` sin red, medida con la suite completa ([EV-114](docs/evidencias/readme/EV-114_cobertura_de_src_repetida.txt)); es una cota inferior porque parte del código se ejecuta en subprocesos que la medición no sigue. La insignia del flujo de integración continua es la oficial de GitHub Actions (`badge.svg?branch=main` del flujo `etl.yml`): no sale de un archivo del repositorio sino del último resultado del flujo sobre `main`, y solo se muestra a quien tenga acceso al repositorio si este no es público (sección 12).
 
 ## 3. Tabla de contenidos
 - [1. Descripción y madurez](#1-descripción-y-madurez)
@@ -170,7 +170,7 @@ Docker Desktop con WSL2 se usó solo para Airflow y phpMyAdmin (Docker 29.9.3 y 
 ├── .env.example              # nombres de las variables de entorno, sin valores
 ├── .github/
 │   └── workflows/
-│       └── etl.yml           # flujo de integración continua de GitHub Actions; todavía no ha corrido
+│       └── etl.yml           # flujo de integración continua de GitHub Actions
 ├── LICENSE                   # licencia MIT del código
 ├── config/
 │   ├── config.yaml           # fuentes, umbrales, fechas, rutas, registro de ejecución, API y panel
@@ -483,7 +483,7 @@ Decidimos no incluir alertas ni métricas externas (Slack, PagerDuty, Prometheus
 
 Docker se usa solo para Airflow y phpMyAdmin; el pipeline, la API y el panel corren con Python en la máquina.
 
-**Integración continua.** Escribimos un flujo de GitHub Actions en [.github/workflows/etl.yml](.github/workflows/etl.yml). Se dispara con cada cambio a `main`, con cada solicitud de cambio hacia `main` y a mano. Corre solo en `windows-latest` con Python 3.13: instala `requirements.txt`, corre las pruebas, el escáner de secretos y el de términos (también sobre el historial) y repite `main.py --stage all` sin red para comparar el resultado con lo versionado. No usa secretos, MySQL ni Docker. **Todavía no ha corrido en GitHub**: hasta que lo haga no decimos que pasa, no tiene insignia y no hemos probado la suite en Linux. La decisión está en D114.
+**Integración continua.** Escribimos un flujo de GitHub Actions en [.github/workflows/etl.yml](.github/workflows/etl.yml). Se dispara con cada cambio a `main`, con cada solicitud de cambio hacia `main` y a mano. Corre solo en `windows-latest` con Python 3.13: instala `requirements.txt`, corre las pruebas, el escáner de secretos y el de términos (también sobre el historial) y repite `main.py --stage all` sin red para comparar el resultado con lo versionado. No usa secretos, MySQL ni Docker. **Ha corrido con éxito tres veces en GitHub** (según el historial de ejecuciones del flujo, que no está copiado en el repositorio): el 2026-11-23, la primera, sobre `main` (6 min 17 s); el 2026-11-24, sobre la solicitud de cambio n.º 1 de `integracion-frontend` (4 min 15 s); y el 2026-11-24, sobre `main` después de integrar esa solicitud (4 min 14 s). Solo se ha ejecutado en `windows-latest`: no hemos probado la suite en Linux ni en otro sistema. El estado del último resultado lo muestra la insignia de la cabecera. La decisión está en D114.
 
 ## 13. Errores, reintentos y recuperación
 - **Descargas:** `requests` hace hasta 3 intentos por petición (reintenta si falla la conexión o la respuesta es 5xx), con una pausa de 0,5 s, 1 s y 1,5 s después de cada intento fallido, y espera como máximo 30 s por intento a que el servidor conteste (`timeout_s` de `config/config.yaml`, sección `http`, que acota la conexión y la espera de datos, no el tiempo total). Una extracción se considera completa solo si existe el conteo posterior de la capa.
@@ -545,7 +545,7 @@ Con 8 GB de RAM no conviene encender todo a la vez; esa configuración no está 
 **Costos en la nube: no aplican.** Todo corre en una máquina local, así que no hay precios que medir. La estructura de costos, con las fórmulas y los precios como parámetros vacíos, está en [docs/finanzas/estructura_costos.md](docs/finanzas/estructura_costos.md); no inventamos ninguna cifra monetaria.
 
 ## 16. Decisiones de arquitectura
-Las decisiones, con sus alternativas, su razón y su riesgo, están en [docs/DECISIONES.md](docs/DECISIONES.md) (D1 a D119). Las que más condicionan el diseño:
+Las decisiones, con sus alternativas, su razón y su riesgo, están en [docs/DECISIONES.md](docs/DECISIONES.md) (D1 a D120). Las que más condicionan el diseño:
 
 | Decisión | Qué decidimos | Por qué |
 |---|---|---|
@@ -568,9 +568,9 @@ Las decisiones, con sus alternativas, su razón y su riesgo, están en [docs/DEC
 El documento de arquitectura del sistema, con 15 registros de decisión (ADR) y diagramas en texto, está en [docs/arquitectura/arquitectura_del_sistema.md](docs/arquitectura/arquitectura_del_sistema.md) y [docs/arquitectura/adr/](docs/arquitectura/adr/). Está aprobado (versión 1.0, 2026-11-20).
 
 ## 17. Contribución y estándares
-Esta sección cuenta cómo trabajamos hoy: todavía no tenemos un flujo de solicitudes de cambio y los temas abiertos van a los [issues](https://github.com/DanielAlxzBrand/etl-sismo-cali-2026/issues).
+Esta sección cuenta cómo trabajamos hoy: los temas abiertos van a los [issues](https://github.com/DanielAlxzBrand/etl-sismo-cali-2026/issues).
 
-- **Ramas y commits:** el trabajo vive en la rama `desarrollo`; la rama `master` conserva un punto anterior y no se ha vuelto a integrar. No hay rama `main`. Cada commit es pequeño, va en español y nombra el componente que cambia.
+- **Ramas, solicitudes de cambio y commits:** `main` es la rama que vigila el flujo de integración continua; la integración del panel llegó a ella por la solicitud de cambio n.º 1, desde `integracion-frontend`; la rama `master` conserva un punto anterior y no se ha vuelto a integrar. Estado no verificado en GitHub: la rama `desarrollo` existe solo en el repositorio local del equipo, en un commit anterior a esa solicitud, y no está publicada. Cada commit es pequeño, va en español y nombra el componente que cambia.
 - **Pruebas primero:** una regla, una prueba. Las reglas de documentos también se prueban (cifras, enlaces, términos prohibidos) y cada prueba nueva trae su caso negativo.
 - **Antes de commitear:** correr las pruebas afectadas y `python scripts\escanear_secretos.py`.
 - **Archivos:** UTF-8 y saltos de línea LF (`.gitattributes` fija los bytes de `data/`); rutas con `pathlib`; versiones exactas en `requirements.txt`.
